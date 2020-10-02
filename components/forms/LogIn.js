@@ -144,8 +144,7 @@ export default function SignupForm() {
                                             />
                                         </Grid>
                                     </Grid>
-                                </Form>
-                                <Button
+                                    <Button
                                     type='submit'
                                     fullWidth
                                     variant='contained'
@@ -155,6 +154,8 @@ export default function SignupForm() {
                                 >
                                     Register
                                 </Button>
+                                </Form>
+                                
                                 <Grid container>
                                     <Grid item xs>
                                         <Link href='#' variant='body2'>

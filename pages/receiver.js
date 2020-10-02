@@ -18,7 +18,7 @@ export default function ReceiverAddress() {
         <div>
             {' '}
             <Head>
-                <title>Payment Method</title>
+                <title>Receiver</title>
                 <link rel='icon' href='/a.ico' />
                 <link
                     rel='stylesheet'
@@ -47,7 +47,7 @@ export default function ReceiverAddress() {
                         >
                             <Box height='100%'>
                                 <Typography variant='h5'>
-                                    <strong>Payment Method</strong>
+                                    <strong>Shipping Address</strong>
                                 </Typography>
                             </Box>
                         </Box>
@@ -58,18 +58,7 @@ export default function ReceiverAddress() {
                             borderRadius='borderRadius'
                             style={{ backgroundColor: 'white' }}
                         >
-                            <Typography variant='h6'>Bkash</Typography>
-                            <Typography variant='h6'>Roket</Typography>
-                            <Typography variant='h6'>
-                                Cash on Delivery
-                            </Typography>
-                            <Button
-                                fullWidth
-                                variant='contained'
-                                color='primary'
-                            >
-                                Confirm
-                            </Button>
+                            <Receiver />
                         </Box>
                     </Grid>
                     <Grid item xs={12} sm>
@@ -77,7 +66,7 @@ export default function ReceiverAddress() {
                             p={2}
                             m={3}
                             boxShadow={1}
-                            height='100%'
+                            height='93%'
                             borderRadius='borderRadius'
                             style={{ backgroundColor: 'white' }}
                         >

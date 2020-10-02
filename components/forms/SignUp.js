@@ -213,17 +213,18 @@ export default function SignupForm() {
                                             />
                                         </Grid>
                                     </Grid>
+                                    <Button
+                                        type='submit'
+                                        fullWidth
+                                        variant='contained'
+                                        color='primary'
+                                        className={classes.submit}
+                                        disabled={isSubmitting}
+                                    >
+                                        Register
+                                    </Button>
                                 </Form>
-                                <Button
-                                    type='submit'
-                                    fullWidth
-                                    variant='contained'
-                                    color='primary'
-                                    className={classes.submit}
-                                    disabled={isSubmitting}
-                                >
-                                    Register
-                                </Button>
+
                                 <Grid container justify='flex-end'>
                                     <Grid item>
                                         <Link href='#' variant='body2'>

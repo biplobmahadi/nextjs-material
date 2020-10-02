@@ -13,6 +13,7 @@ import ProductCard from '../components/ProductCard';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';
 import FormikFormDemo from '../components/FormikFormDemo';
+import Receiver from '../components/forms/Receiver';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -268,9 +269,6 @@ export default function Index() {
             <Footer />
             <Box style={{ backgroundColor: '#E6E6FA' }} mt={4}>
                 <MainFooter />
-            </Box>
-            <Box m={4} pb={4}>
-                <FormikFormDemo />
             </Box>
         </div>
     );

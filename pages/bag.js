@@ -29,7 +29,7 @@ export default function Bag() {
             </Head>
             <ButtonAppBar />
             <Box
-                mt={12}
+                mt={11}
                 mx={3}
                 p={2}
                 borderRadius='borderRadius'
@@ -135,9 +135,6 @@ export default function Bag() {
             </Box>
             <Box style={{ backgroundColor: '#E6E6FA' }} mt={4}>
                 <MainFooter />
-            </Box>
-            <Box m={4} pb={4}>
-                <FormikFormDemo />
             </Box>
         </div>
     );
