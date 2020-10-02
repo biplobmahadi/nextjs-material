@@ -219,7 +219,7 @@ export default function SignupForm() {
                                 size='small'
                                 name='date'
                                 initialFocusedDate={null}
-                                defaultValue={null}
+                                // defaultValue={null}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position='end'>
