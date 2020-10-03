@@ -35,239 +35,156 @@ export default function Index() {
                 ></meta>
             </Head>
             <ButtonAppBar />
-            <Box
-                mt={11}
-                mx={3}
-                p={2}
-                textAlign='center'
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
-                <Carousel />
-            </Box>
-            {/* <Carousel /> */}
-            <Box
-                mx={3}
-                mt={4}
-                p={2}
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
-                <Box
-                    p={2}
-                    display='flex'
-                    alignItems='center'
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
-                >
-                    <Box height='100%' flexGrow={1}>
-                        <Typography variant='h3'>Tranding Now</Typography>
+            <Box style={{ backgroundColor: '#E6E6FA' }}>
+                <Box mt={8} pt={3} px={3}>
+                    <Carousel />
+                </Box>
+
+                <Box mx={3} mt={8}>
+                    <Box
+                        p={2}
+                        display='flex'
+                        alignItems='center'
+                        borderRadius='borderRadius'
+                        style={{ backgroundColor: 'white' }}
+                    >
+                        <Box height='100%' flexGrow={1}>
+                            <Typography variant='h4' component='h4'>
+                                Tranding Now
+                            </Typography>
+                        </Box>
+                        <Box height='100%'>
+                            <Button
+                                variant='contained'
+                                size='small'
+                                color='secondary'
+                            >
+                                <Box px={3}>See All</Box>
+                            </Button>
+                        </Box>
                     </Box>
-                    <Box height='100%'>
-                        <Button
-                            variant='contained'
-                            size='small'
-                            color='secondary'
-                        >
-                            <Box px={3}>See All</Box>
-                        </Button>
+                    <Box mt={2}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <Card />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <Card />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <Card />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <Card />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <Card />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <Card />
+                            </Grid>
+                        </Grid>
                     </Box>
                 </Box>
 
-                <Grid container spacing={3}>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <Card />
+                <Box mx={3} mt={8}>
+                    <Box
+                        p={2}
+                        display='flex'
+                        alignItems='center'
+                        borderRadius='borderRadius'
+                        style={{ backgroundColor: 'white' }}
+                    >
+                        <Box height='100%' flexGrow={1}>
+                            <Typography variant='h4' component='h4'>
+                                Topwear Product
+                            </Typography>
                         </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <Card />
+                        <Box height='100%'>
+                            <Button
+                                variant='contained'
+                                size='small'
+                                color='secondary'
+                            >
+                                <Box px={3}>See All</Box>
+                            </Button>
                         </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <Card />
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <Card />
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <Card />
-                        </Box>
-                    </Grid>
-                </Grid>
-            </Box>
-
-            <Box
-                mx={3}
-                my={4}
-                p={2}
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
-                <Box
-                    p={2}
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
-                >
-                    <Typography variant='h4'>Footwear Product</Typography>
+                    </Box>
+                    <Box mt={2}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                        </Grid>
+                    </Box>
                 </Box>
 
-                <Grid container spacing={3}>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <ProductCard />
+                <Box mx={3} mt={8}>
+                    <Box
+                        p={2}
+                        display='flex'
+                        alignItems='center'
+                        borderRadius='borderRadius'
+                        style={{ backgroundColor: 'white' }}
+                    >
+                        <Box height='100%' flexGrow={1}>
+                            <Typography variant='h4' component='h4'>
+                                Footwear Product
+                            </Typography>
                         </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <ProductCard />
+                        <Box height='100%'>
+                            <Button
+                                variant='contained'
+                                size='small'
+                                color='secondary'
+                            >
+                                <Box px={3}>See All</Box>
+                            </Button>
                         </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <ProductCard />
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <ProductCard />
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <ProductCard />
-                        </Box>
-                    </Grid>
-                </Grid>
-            </Box>
-
-            <Box
-                mx={3}
-                my={4}
-                p={2}
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
-                <Box
-                    p={2}
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
-                >
-                    <Typography variant='h4'>Footwear Product</Typography>
+                    </Box>
+                    <Box mt={2}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard />
+                            </Grid>
+                        </Grid>
+                    </Box>
                 </Box>
-
-                <Grid container spacing={3}>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <ProductCard />
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <ProductCard />
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <ProductCard />
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <ProductCard />
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Box
-                            style={{ backgroundColor: 'white' }}
-                            p={3}
-                            mt={2}
-                            borderRadius='borderRadius'
-                        >
-                            <ProductCard />
-                        </Box>
-                    </Grid>
-                </Grid>
             </Box>
-
-            <Footer />
-            <Box style={{ backgroundColor: '#E6E6FA' }} mt={4}>
+            <Box mt={6}>
+                <Footer />
+            </Box>
+            <Box bgcolor='background.default' mt={4}>
                 <MainFooter />
             </Box>
         </div>

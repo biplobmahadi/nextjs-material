@@ -13,6 +13,14 @@ const useStyles = makeStyles({
     root: {
         maxWidth: '100%',
     },
+
+    imgHover: {
+        overflow: 'hidden',
+    },
+    imgHoverZoom: {
+        transition: 'transform .5s ease',
+        '&:hover': { transform: 'scale(1.1)' },
+    },
 });
 
 export default function ImgMediaCard() {
@@ -22,32 +30,37 @@ export default function ImgMediaCard() {
         <Link href='/tranding-product'>
             <Card className={classes.root}>
                 <CardActionArea>
-                    <CardMedia
-                        component='img'
-                        alt='Contemplative Reptile'
-                        height='240'
-                        image='/aa.jpg'
-                        title='Contemplative Reptile'
-                    />
+                    <Box className={classes.imgHover} p={2}>
+                        <CardMedia
+                            className={classes.imgHoverZoom}
+                            component='img'
+                            alt='Tranding Product'
+                            height='180'
+                            image='/s2.jpg'
+                            title='Tranding Product'
+                        />
+                    </Box>
                     <CardContent>
-                        <Typography gutterBottom variant='h5' component='h2'>
+                        <Typography gutterBottom variant='h6' component='h6'>
                             <Box textAlign='center'>Khula Mela</Box>
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions style={{ justifyContent: 'center' }}>
-                    <Link href='/tranding-product'>
-                        <Button
-                            variant='contained'
-                            size='small'
-                            color='primary'
-                        >
-                            <Box textAlign='center' px={4}>
-                                Buy Now
-                            </Box>
-                        </Button>
-                    </Link>
-                </CardActions>
+                <Box pb={1}>
+                    <CardActions style={{ justifyContent: 'center' }}>
+                        <Link href='/tranding-product'>
+                            <Button
+                                variant='contained'
+                                size='small'
+                                color='primary'
+                            >
+                                <Box textAlign='center' px={4}>
+                                    Buy Now
+                                </Box>
+                            </Button>
+                        </Link>
+                    </CardActions>
+                </Box>
             </Card>
         </Link>
     );

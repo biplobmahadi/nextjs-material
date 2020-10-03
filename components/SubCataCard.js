@@ -13,6 +13,13 @@ const useStyles = makeStyles({
     root: {
         maxWidth: '100%',
     },
+    imgHover: {
+        overflow: 'hidden',
+    },
+    imgHoverZoom: {
+        transition: 'transform .5s ease',
+        '&:hover': { transform: 'scale(1.1)' },
+    },
 });
 
 export default function SubCataCard() {
@@ -23,20 +30,23 @@ export default function SubCataCard() {
             <Box textAlign='center'>
                 <Card className={classes.root}>
                     <CardActionArea>
-                        <CardMedia
-                            component='img'
-                            alt='Contemplative Reptile'
-                            height='200'
-                            image='/aa.jpg'
-                            title='Contemplative Reptile'
-                        />
+                        <Box className={classes.imgHover} p={2}>
+                            <CardMedia
+                                className={classes.imgHoverZoom}
+                                component='img'
+                                alt='Sub Category'
+                                height='180'
+                                image='/s2.jpg'
+                                title='Sub Category'
+                            />
+                        </Box>
                         <CardContent>
                             <Typography
                                 gutterBottom
-                                variant='h5'
-                                component='h2'
+                                variant='h6'
+                                component='h6'
                             >
-                                <Box textAlign='center'>Sub Cata</Box>
+                                <Box textAlign='center'>Sub Category</Box>
                             </Typography>
                         </CardContent>
                     </CardActionArea>

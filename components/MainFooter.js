@@ -136,7 +136,10 @@ export default function MainFooter() {
             </Box>
             <Divider variant='middle' />
             <Box textAlign='center' py={3}>
-                <p>Copyright &copy; Logo, 2020. All Right Reserved.</p>
+                <p>
+                    Copyright &copy; Logo, {new Date().getFullYear()}. All Right
+                    Reserved.
+                </p>
             </Box>
         </div>
     );
