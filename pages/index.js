@@ -35,7 +35,7 @@ export default function Index() {
                 ></meta>
             </Head>
             <ButtonAppBar />
-            <Box style={{ backgroundColor: '#E6E6FA' }}>
+            <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
                     <Carousel />
                 </Box>
@@ -181,10 +181,7 @@ export default function Index() {
                     </Box>
                 </Box>
             </Box>
-            <Box mt={6}>
-                <Footer />
-            </Box>
-            <Box bgcolor='background.default' mt={4}>
+            <Box mx={3} mt={6}>
                 <MainFooter />
             </Box>
         </div>
