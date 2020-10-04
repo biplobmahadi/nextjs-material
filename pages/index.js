@@ -50,7 +50,7 @@ export default function Index() {
                     >
                         <Box height='100%' flexGrow={1}>
                             <Typography variant='h4' component='h4'>
-                                Tranding Now
+                                Trending Now
                             </Typography>
                         </Box>
                         <Box height='100%'>

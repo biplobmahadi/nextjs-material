@@ -34,10 +34,10 @@ export default function SubCataCard() {
                             <CardMedia
                                 className={classes.imgHoverZoom}
                                 component='img'
-                                alt='Sub Category'
+                                alt='Brand Name'
                                 height='180'
                                 image='/s2.jpg'
-                                title='Sub Category'
+                                title='Brand Name'
                             />
                         </Box>
                         <CardContent>
@@ -46,7 +46,7 @@ export default function SubCataCard() {
                                 variant='h6'
                                 component='h6'
                             >
-                                <Box textAlign='center'>Sub Category</Box>
+                                <Box textAlign='center'>Brand Name</Box>
                             </Typography>
                         </CardContent>
                     </CardActionArea>

@@ -99,68 +99,25 @@ export default function ButtonAppBar() {
             onKeyDown={toggleDrawer(anchor, false)}
         >
             <List dense component='nav' aria-labelledby='nested-list-subheader'>
-                <Link href='/categories'>
+                <Link href='/trending'>
                     <ListItem button>
                         <ListItemIcon>
                             <SendIcon fontSize='small' />
                         </ListItemIcon>
-                        <ListItemText primary='Sent mail' />
+                        <ListItemText primary='Trending' />
                     </ListItem>
                 </Link>
-                <Link href='/tranding'>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <DraftsIcon fontSize='small' />
-                        </ListItemIcon>
-                        <ListItemText primary='Tranding' />
-                    </ListItem>
-                </Link>
-                <ListItem button onClick={handleClick}>
-                    <ListItemIcon>
-                        <InboxIcon fontSize='small' />
-                    </ListItemIcon>
-                    <ListItemText primary='Inbox' />
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={open} timeout='auto' unmountOnExit>
-                    <List dense component='div' disablePadding>
-                        <Link href='/sub-categories'>
-                            <ListItem button className={classes.nested}>
-                                <ListItemIcon>
-                                    <StarBorder fontSize='small' />
-                                </ListItemIcon>
-                                <ListItemText primary='Starred' />
-                            </ListItem>
-                        </Link>
-                        <ListItem button className={classes.nested}>
-                            <ListItemIcon>
-                                <StarBorder fontSize='small' />
-                            </ListItemIcon>
-                            <ListItemText primary='Starred' />
-                        </ListItem>
-                        <ListItem button className={classes.nested}>
-                            <ListItemIcon>
-                                <StarBorder fontSize='small' />
-                            </ListItemIcon>
-                            <ListItemText primary='Starred' />
-                        </ListItem>
-                    </List>
-                </Collapse>
+                <Divider variant='middle' />
+                {/* Men part starts */}
                 <ListItem button onClick={handleClickAgain}>
                     <ListItemIcon>
                         <InboxIcon fontSize='small' />
                     </ListItemIcon>
-                    <ListItemText primary='Inbox' />
+                    <ListItemText primary='Men' />
                     {openAgain ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
                 <Collapse in={openAgain} timeout='auto' unmountOnExit>
                     <List dense component='div' disablePadding>
-                        <ListItem button className={classes.nested}>
-                            <ListItemIcon>
-                                <StarBorder fontSize='small' />
-                            </ListItemIcon>
-                            <ListItemText primary='Starred' />
-                        </ListItem>
                         <ListItem
                             button
                             className={classes.nested}
@@ -169,7 +126,46 @@ export default function ButtonAppBar() {
                             <ListItemIcon>
                                 <InboxIcon fontSize='small' />
                             </ListItemIcon>
-                            <ListItemText primary='Inbox' />
+                            <ListItemText primary='Top Wear' />
+                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse
+                            in={openAgainAgain}
+                            timeout='auto'
+                            unmountOnExit
+                        >
+                            <List dense component='div' disablePadding>
+                                <Link href='/sub-categories'>
+                                    <ListItem
+                                        button
+                                        className={classes.nestedAgain}
+                                    >
+                                        <ListItemIcon>
+                                            <StarBorder fontSize='small' />
+                                        </ListItemIcon>
+                                        <ListItemText primary='Starred' />
+                                    </ListItem>
+                                </Link>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                        <ListItem
+                            button
+                            className={classes.nested}
+                            onClick={handleClickAgainAgain}
+                        >
+                            <ListItemIcon>
+                                <InboxIcon fontSize='small' />
+                            </ListItemIcon>
+                            <ListItemText primary='Bottom Wear' />
                             {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
                         <Collapse
@@ -196,6 +192,35 @@ export default function ButtonAppBar() {
                                     </ListItemIcon>
                                     <ListItemText primary='Starred' />
                                 </ListItem>
+                            </List>
+                        </Collapse>
+
+                        <ListItem
+                            button
+                            className={classes.nested}
+                            onClick={handleClickAgainAgain}
+                        >
+                            <ListItemIcon>
+                                <InboxIcon fontSize='small' />
+                            </ListItemIcon>
+                            <ListItemText primary='Foot Wear' />
+                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse
+                            in={openAgainAgain}
+                            timeout='auto'
+                            unmountOnExit
+                        >
+                            <List dense component='div' disablePadding>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
                                 <ListItem
                                     button
                                     className={classes.nestedAgain}
@@ -207,20 +232,456 @@ export default function ButtonAppBar() {
                                 </ListItem>
                             </List>
                         </Collapse>
-                        <ListItem button className={classes.nested}>
+                        <ListItem
+                            button
+                            className={classes.nested}
+                            onClick={handleClickAgainAgain}
+                        >
                             <ListItemIcon>
-                                <StarBorder fontSize='small' />
+                                <InboxIcon fontSize='small' />
                             </ListItemIcon>
-                            <ListItemText primary='Starred' />
+                            <ListItemText primary='Accessories' />
+                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
-                        <ListItem button className={classes.nested}>
+                        <Collapse
+                            in={openAgainAgain}
+                            timeout='auto'
+                            unmountOnExit
+                        >
+                            <List dense component='div' disablePadding>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Watches' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Glasses & Frames' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Bags' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Pandants & Lockets' />
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                        <ListItem
+                            button
+                            className={classes.nested}
+                            onClick={handleClickAgainAgain}
+                        >
                             <ListItemIcon>
-                                <StarBorder fontSize='small' />
+                                <InboxIcon fontSize='small' />
                             </ListItemIcon>
-                            <ListItemText primary='Starred' />
+                            <ListItemText primary='Health Care' />
+                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
+                        <Collapse
+                            in={openAgainAgain}
+                            timeout='auto'
+                            unmountOnExit
+                        >
+                            <List dense component='div' disablePadding>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                        <ListItem
+                            button
+                            className={classes.nested}
+                            onClick={handleClickAgainAgain}
+                        >
+                            <ListItemIcon>
+                                <InboxIcon fontSize='small' />
+                            </ListItemIcon>
+                            <ListItemText primary='Sports Wear' />
+                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse
+                            in={openAgainAgain}
+                            timeout='auto'
+                            unmountOnExit
+                        >
+                            <List dense component='div' disablePadding>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                            </List>
+                        </Collapse>
                     </List>
                 </Collapse>
+                {/* Men part completed */}
+                {/* Women part starts */}
+
+                <ListItem button onClick={handleClickAgain}>
+                    <ListItemIcon>
+                        <InboxIcon fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Women' />
+                    {openAgain ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openAgain} timeout='auto' unmountOnExit>
+                    <List dense component='div' disablePadding>
+                        <ListItem
+                            button
+                            className={classes.nested}
+                            onClick={handleClickAgainAgain}
+                        >
+                            <ListItemIcon>
+                                <InboxIcon fontSize='small' />
+                            </ListItemIcon>
+                            <ListItemText primary='Top Wear' />
+                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse
+                            in={openAgainAgain}
+                            timeout='auto'
+                            unmountOnExit
+                        >
+                            <List dense component='div' disablePadding>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                        <ListItem
+                            button
+                            className={classes.nested}
+                            onClick={handleClickAgainAgain}
+                        >
+                            <ListItemIcon>
+                                <InboxIcon fontSize='small' />
+                            </ListItemIcon>
+                            <ListItemText primary='Bottom Wear' />
+                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse
+                            in={openAgainAgain}
+                            timeout='auto'
+                            unmountOnExit
+                        >
+                            <List dense component='div' disablePadding>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                            </List>
+                        </Collapse>
+
+                        <ListItem
+                            button
+                            className={classes.nested}
+                            onClick={handleClickAgainAgain}
+                        >
+                            <ListItemIcon>
+                                <InboxIcon fontSize='small' />
+                            </ListItemIcon>
+                            <ListItemText primary='Foot Wear' />
+                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse
+                            in={openAgainAgain}
+                            timeout='auto'
+                            unmountOnExit
+                        >
+                            <List dense component='div' disablePadding>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                        <ListItem
+                            button
+                            className={classes.nested}
+                            onClick={handleClickAgainAgain}
+                        >
+                            <ListItemIcon>
+                                <InboxIcon fontSize='small' />
+                            </ListItemIcon>
+                            <ListItemText primary='Accessories' />
+                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse
+                            in={openAgainAgain}
+                            timeout='auto'
+                            unmountOnExit
+                        >
+                            <List dense component='div' disablePadding>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Watches' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Glasses & Frames' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Bags' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Pandants & Lockets' />
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                        <ListItem
+                            button
+                            className={classes.nested}
+                            onClick={handleClickAgainAgain}
+                        >
+                            <ListItemIcon>
+                                <InboxIcon fontSize='small' />
+                            </ListItemIcon>
+                            <ListItemText primary='Health Care' />
+                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse
+                            in={openAgainAgain}
+                            timeout='auto'
+                            unmountOnExit
+                        >
+                            <List dense component='div' disablePadding>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                        <ListItem
+                            button
+                            className={classes.nested}
+                            onClick={handleClickAgainAgain}
+                        >
+                            <ListItemIcon>
+                                <InboxIcon fontSize='small' />
+                            </ListItemIcon>
+                            <ListItemText primary='Sports Wear' />
+                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse
+                            in={openAgainAgain}
+                            timeout='auto'
+                            unmountOnExit
+                        >
+                            <List dense component='div' disablePadding>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                                <ListItem
+                                    button
+                                    className={classes.nestedAgain}
+                                >
+                                    <ListItemIcon>
+                                        <StarBorder fontSize='small' />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Starred' />
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                    </List>
+                </Collapse>
+                {/* Women part completed */}
+                <ListItem button>
+                    <ListItemIcon>
+                        <DraftsIcon fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Electronics & Gadgets' />
+                </ListItem>
+                <ListItem button>
+                    <ListItemIcon>
+                        <DraftsIcon fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Baby & Kids' />
+                </ListItem>
+                <ListItem button>
+                    <ListItemIcon>
+                        <DraftsIcon fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Home & Furniture' />
+                </ListItem>
+                <ListItem button>
+                    <ListItemIcon>
+                        <DraftsIcon fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Fasion & Beauty' />
+                </ListItem>
+                <ListItem button>
+                    <ListItemIcon>
+                        <DraftsIcon fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Sports & Outdoor' />
+                </ListItem>
+                <ListItem button>
+                    <ListItemIcon>
+                        <DraftsIcon fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Musical Instruments' />
+                </ListItem>
+                <ListItem button>
+                    <ListItemIcon>
+                        <DraftsIcon fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Premium Others' />
+                </ListItem>
+                <Divider variant='middle' />
+                <Link href='/brands'>
+                    <ListItem button>
+                        <ListItemIcon>
+                            <DraftsIcon fontSize='small' />
+                        </ListItemIcon>
+                        <ListItemText primary='Our Brands' />
+                    </ListItem>
+                </Link>
+                <ListItem button>
+                    <ListItemIcon>
+                        <DraftsIcon fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Music Show' />
+                </ListItem>
+                <ListItem button>
+                    <ListItemIcon>
+                        <DraftsIcon fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Logo Melaa' />
+                </ListItem>
             </List>
         </div>
     );
