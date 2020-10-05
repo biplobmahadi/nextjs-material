@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
-import SubCataCard from '../components/SubCataCard';
 import ProductDetails from '../components/ProductDetails';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';

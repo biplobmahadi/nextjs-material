@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
-import SubCataCard from '../components/SubCataCard';
+import BrandCard from '../components/BrandCard';
 import ProductCard from '../components/ProductCard';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';
@@ -47,49 +47,49 @@ export default function Categories() {
                 >
                     <Grid container spacing={3}>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                         <Grid item xs={12} sm={2}>
-                            <SubCataCard />
+                            <BrandCard />
                         </Grid>
                     </Grid>
                 </Box>
