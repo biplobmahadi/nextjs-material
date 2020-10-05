@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import ProductDetailsTable from './ProductDetailsTable';
-import SubCataCard from '../components/SubCataCard';
 import ProductCard from '../components/ProductCard';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';
