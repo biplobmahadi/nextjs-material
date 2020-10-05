@@ -32,9 +32,6 @@ export default function Login() {
             <Box mt={14} mb={10}>
                 <LogIn />
             </Box>
-            <Box style={{ backgroundColor: '#E6E6FA' }}>
-                <MainFooter />
-            </Box>
         </div>
     );
 }

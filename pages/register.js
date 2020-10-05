@@ -32,9 +32,6 @@ export default function Register() {
             <Box mt={14} mb={10}>
                 <SignUp />
             </Box>
-            <Box style={{ backgroundColor: '#E6E6FA' }}>
-                <MainFooter />
-            </Box>
         </div>
     );
 }

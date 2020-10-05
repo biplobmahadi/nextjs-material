@@ -27,7 +27,7 @@ export default function ImgMediaCard() {
     const classes = useStyles();
 
     return (
-        <Link href='/tranding-product'>
+        <Link href='/trending-product'>
             <Card className={classes.root}>
                 <CardActionArea>
                     <Box className={classes.imgHover} p={2}>

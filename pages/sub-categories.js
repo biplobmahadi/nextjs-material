@@ -1,10 +1,11 @@
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
 import ProductCard from '../components/ProductCard';
-import Footer from '../components/Footer';
+import FilterProductDialog from '../components/FilterProductDialog';
 import MainFooter from '../components/MainFooter';
+import FilterProduct from '../components/FilterProduct';
 import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -13,8 +14,24 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { boxSizing } from '@material-ui/system';
-
+import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+import { makeStyles } from '@material-ui/core/styles';
+import Hidden from '@material-ui/core/Hidden';
+const useStyles = makeStyles((theme) => ({
+    root: {
+        [theme.breakpoints.up('xl')]: {
+            marginRight: theme.spacing(5),
+        },
+    },
+    boot: {
+        [theme.breakpoints.up('xl')]: {
+            marginLeft: theme.spacing(4),
+        },
+    },
+}));
 export default function SubCategories() {
+    const classes = useStyles();
     return (
         <div>
             <Head>
@@ -42,203 +59,411 @@ export default function SubCategories() {
                             Men's Shirts
                         </Typography>
                     </Box>
+                    <Hidden lgUp>
+                        <Box mt={2}>
+                            <FilterProductDialog />
+                        </Box>
+                    </Hidden>
+
                     <Box mt={2}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} sm={3} xl={3}>
-                                <Box
-                                    style={{ backgroundColor: 'white' }}
-                                    p={3}
-                                    mr={5}
-                                    borderRadius='borderRadius'
-                                >
-                                    <Typography gutterBottom variant='h6'>
-                                        Filter by Price
-                                    </Typography>
-                                    <FormControl component='fieldset'>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                    </FormControl>
-                                </Box>
+                            <Hidden mdDown>
+                                <Grid item xs={12} sm={3} md={4} lg={3} xl={3}>
+                                    <Box
+                                        style={{ backgroundColor: 'white' }}
+                                        p={3}
+                                        className={classes.root}
+                                        borderRadius='borderRadius'
+                                    >
+                                        <Typography
+                                            gutterBottom
+                                            variant='h6'
+                                            component='h6'
+                                        >
+                                            Filter by Brands
+                                        </Typography>
+                                        <FormControl component='fieldset'>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label='Apple'
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label='Google'
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label='One Plus'
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label='Samsung'
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label='Nokia'
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                        </FormControl>
+                                    </Box>
 
-                                <Box
-                                    style={{ backgroundColor: 'white' }}
-                                    mt={3}
-                                    p={3}
-                                    mr={5}
-                                    borderRadius='borderRadius'
-                                >
-                                    <Typography gutterBottom variant='h6'>
-                                        Filter by Price
-                                    </Typography>
-                                    <FormControl component='fieldset'>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                    </FormControl>
-                                </Box>
+                                    <Box
+                                        style={{ backgroundColor: 'white' }}
+                                        mt={3}
+                                        p={3}
+                                        className={classes.root}
+                                        borderRadius='borderRadius'
+                                    >
+                                        <Typography
+                                            gutterBottom
+                                            variant='h6'
+                                            component='h6'
+                                        >
+                                            Filter by Price
+                                        </Typography>
+                                        <FormControl component='fieldset'>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label='Tk. 100 - 500'
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label='Tk. 100 - 500'
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label='Tk. 100 - 500'
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label='Tk. 100 - 500'
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label='Tk. 100 - 500'
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                        </FormControl>
+                                    </Box>
 
-                                <Box
-                                    style={{ backgroundColor: 'white' }}
-                                    mt={3}
-                                    p={3}
-                                    mr={5}
-                                    borderRadius='borderRadius'
-                                >
-                                    <Typography gutterBottom variant='h6'>
-                                        Filter by Price
-                                    </Typography>
-                                    <FormControl component='fieldset'>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                        <FormGroup aria-label='position' row>
-                                            <FormControlLabel
-                                                value='end'
-                                                control={
-                                                    <Checkbox color='secondary' />
-                                                }
-                                                label='Tk. 40 - 100'
-                                                labelPlacement='end'
-                                            />
-                                        </FormGroup>
-                                    </FormControl>
-                                </Box>
-                            </Grid>
-                            <Grid item xs={12} sm>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
+                                    <Box
+                                        style={{ backgroundColor: 'white' }}
+                                        mt={3}
+                                        p={3}
+                                        className={classes.root}
+                                        borderRadius='borderRadius'
+                                    >
+                                        <Typography
+                                            gutterBottom
+                                            variant='h6'
+                                            component='h6'
+                                        >
+                                            Filter by Ratings
+                                        </Typography>
+                                        <FormControl component='fieldset'>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label={
+                                                        <span>
+                                                            <StarIcon />
+                                                            <StarBorderIcon />
+                                                            <StarBorderIcon />
+                                                            <StarBorderIcon />
+                                                            <StarBorderIcon />
+                                                        </span>
+                                                    }
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label={
+                                                        <span>
+                                                            <StarIcon />
+                                                            <StarIcon />
+                                                            <StarBorderIcon />
+                                                            <StarBorderIcon />
+                                                            <StarBorderIcon />
+                                                        </span>
+                                                    }
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label={
+                                                        <span>
+                                                            <StarIcon />
+                                                            <StarIcon />
+                                                            <StarIcon />
+                                                            <StarBorderIcon />
+                                                            <StarBorderIcon />
+                                                        </span>
+                                                    }
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label={
+                                                        <span>
+                                                            <StarIcon />
+                                                            <StarIcon />
+                                                            <StarIcon />
+                                                            <StarIcon />
+                                                            <StarBorderIcon />
+                                                        </span>
+                                                    }
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value='end'
+                                                    control={
+                                                        <Checkbox color='secondary' />
+                                                    }
+                                                    label={
+                                                        <span>
+                                                            <StarIcon />
+                                                            <StarIcon />
+                                                            <StarIcon />
+                                                            <StarIcon />
+                                                            <StarIcon />
+                                                        </span>
+                                                    }
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                        </FormControl>
+                                    </Box>
                                 </Grid>
+                            </Hidden>
+
+                            <Grid item xs={12} sm={12} md={12} lg={9} xl={9}>
+                                <Box className={classes.boot}>
+                                    <Grid container spacing={2}>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={4}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={4}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={4}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={4}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={4}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={4}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={4}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={4}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={4}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={4}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                    </Grid>
+                                </Box>
                             </Grid>
                         </Grid>
                     </Box>

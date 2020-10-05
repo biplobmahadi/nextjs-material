@@ -155,8 +155,7 @@ export default function Product() {
 
             <ProductDetails />
 
-            <Footer />
-            <Box style={{ backgroundColor: '#E6E6FA' }} mt={4}>
+            <Box mx={3} mt={6}>
                 <MainFooter />
             </Box>
         </div>
