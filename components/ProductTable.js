@@ -165,7 +165,7 @@ export default function CustomPaginationActionsTable() {
                           )
                         : rows
                     ).map((row) => (
-                        <TableRow key={row.name}>
+                        <TableRow key={row.name} hover>
                             <TableCell component='th' scope='row'>
                                 {row.name}
                             </TableCell>

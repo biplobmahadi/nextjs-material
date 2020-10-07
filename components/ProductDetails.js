@@ -130,7 +130,8 @@ export default function ProductDetails() {
 
             <Box mx={3} mt={8}>
                 <Box
-                    p={2}
+                    px={2}
+                    py={1}
                     borderRadius='borderRadius'
                     style={{ backgroundColor: 'white' }}
                 >

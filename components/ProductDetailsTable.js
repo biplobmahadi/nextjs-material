@@ -43,7 +43,7 @@ export default function BasicTable() {
                 </TableHead>
                 <TableBody>
                     {rows.map((row) => (
-                        <TableRow key={row.name}>
+                        <TableRow hover key={row.name}>
                             <TableCell component='th' scope='row'>
                                 {row.name}
                             </TableCell>

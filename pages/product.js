@@ -24,6 +24,10 @@ import Zoom from 'react-medium-image-zoom';
 import ReactImageZoom from 'react-image-zoom';
 import { Button } from '@material-ui/core';
 export default function Product() {
+    const [value, setValue] = React.useState('/s1.jpg');
+    const handleImageClick = (value) => {
+        setValue(value);
+    };
     return (
         <div>
             <Head>
@@ -44,7 +48,8 @@ export default function Product() {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
                             <Box
-                                p={2}
+                                px={2}
+                                pt={2}
                                 mt={2}
                                 height='100%'
                                 borderRadius='borderRadius'
@@ -53,11 +58,57 @@ export default function Product() {
                                 <Zoom>
                                     <img
                                         alt='that wanaka tree'
-                                        src='/s1.jpg'
+                                        src={value}
                                         width='100%'
                                         height='100%'
                                     />
                                 </Zoom>
+                                <Box pt={2}>
+                                    <Grid
+                                        container
+                                        spacing={2}
+                                        direction='row'
+                                        justify='center'
+                                        alignItems='center'
+                                    >
+                                        <Grid item>
+                                            <img
+                                                alt='that wanaka tree'
+                                                src='/s1.jpg'
+                                                width='60px'
+                                                height='50px'
+                                                onClick={() =>
+                                                    handleImageClick('/s1.jpg')
+                                                }
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                        </Grid>
+                                        <Grid item>
+                                            <img
+                                                alt='that wanaka tree'
+                                                src='/s2.jpg'
+                                                width='60px'
+                                                height='50px'
+                                                onClick={() =>
+                                                    handleImageClick('/s2.jpg')
+                                                }
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                        </Grid>
+                                        <Grid item>
+                                            <img
+                                                alt='that wanaka tree'
+                                                src='/s3.jpg'
+                                                width='60px'
+                                                height='50px'
+                                                onClick={() =>
+                                                    handleImageClick('/s3.jpg')
+                                                }
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </Box>
                             </Box>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>

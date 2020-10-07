@@ -61,7 +61,9 @@ export default function SignupForm() {
                 review: '',
             }}
             validationSchema={Yup.object({
-                review: Yup.string().trim('Required').required('Required'),
+                review: Yup.string()
+                    .trim('Only Youtube Link Required')
+                    .required('Only Youtube Link Required'),
             })}
             onSubmit={(values, { setSubmitting }) => {
                 setTimeout(() => {
@@ -78,7 +80,7 @@ export default function SignupForm() {
                             type='text'
                             rows={4}
                             component={TextField}
-                            label='Give Youtube Link *'
+                            label='Give Video Review *'
                             fullWidth
                         />
                         <Button
