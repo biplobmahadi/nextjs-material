@@ -1,7 +1,8 @@
 import Head from 'next/head';
 import ProductDetailsTable from './ProductDetailsTable';
 import ProductCard from '../components/ProductCard';
-import Footer from '../components/Footer';
+import Review from './forms/Review';
+import VideoReview from './forms/VideoReview';
 import MainFooter from '../components/MainFooter';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
@@ -47,41 +48,44 @@ export default function ProductDetails() {
 
     return (
         <div>
-            <Box
-                m={3}
-                p={2}
-                textAlign='center'
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
-                <Grid container spacing={2}>
-                    <Grid item xs={12} sm={7}>
+            <Box mx={3} mt={8}>
+                <Grid container spacing={2} alignItems='stretch'>
+                    <Grid item xs={12} sm={12} md={12} lg={7} xl={7}>
                         <Box
                             p={2}
+                            height='100%'
                             borderRadius='borderRadius'
+                            textAlign='center'
                             style={{ backgroundColor: 'white' }}
                         >
-                            <Typography variant='h4'>
+                            <Typography variant='h4' component='h4'>
                                 Product Details
                             </Typography>
-                            <Divider variant='middle' />
+                            <Box mt={2}>
+                                <Divider variant='middle' />
+                            </Box>
+
                             <Box mt={2} borderRadius='borderRadius'>
                                 <ProductDetailsTable />
                             </Box>
                         </Box>
                     </Grid>
-                    <Grid item xs={12} sm>
+                    <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
                         <Box
                             p={2}
                             height='100%'
+                            textAlign='center'
                             borderRadius='borderRadius'
                             style={{ backgroundColor: 'white' }}
                         >
                             <Typography variant='h4'>Video Details</Typography>
-                            <Divider variant='middle' />
+                            <Box mt={2}>
+                                <Divider variant='middle' />
+                            </Box>
                             <Box mt={2}>
                                 <ReactPlayer
                                     width='100%'
+                                    height='324px'
                                     controls
                                     light
                                     url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
@@ -92,13 +96,7 @@ export default function ProductDetails() {
                 </Grid>
             </Box>
 
-            <Box
-                m={3}
-                p={2}
-                textAlign='center'
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
+            <Box mx={3} mt={8} textAlign='center'>
                 <Box
                     p={2}
                     borderRadius='borderRadius'
@@ -106,116 +104,198 @@ export default function ProductDetails() {
                 >
                     <Typography variant='h4'>You May Like</Typography>
                 </Box>
-                <Box
-                    style={{ backgroundColor: 'white' }}
-                    p={3}
-                    mt={2}
-                    borderRadius='borderRadius'
-                >
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} sm>
+                <Box mt={2}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                             <ProductCard />
                         </Grid>
-                        <Grid item xs={12} sm>
+                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                             <ProductCard />
                         </Grid>
-                        <Grid item xs={12} sm>
+                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                             <ProductCard />
                         </Grid>
-                        <Grid item xs={12} sm>
+                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                             <ProductCard />
                         </Grid>
-                        <Grid item xs={12} sm>
+                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                            <ProductCard />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                             <ProductCard />
                         </Grid>
                     </Grid>
                 </Box>
             </Box>
 
-            <Box
-                m={3}
-                p={2}
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
+            <Box mx={3} mt={8}>
                 <Box
                     p={2}
                     borderRadius='borderRadius'
                     style={{ backgroundColor: 'white' }}
                 >
-                    <Typography variant='h4'>Customer Video Review</Typography>
+                    <Grid
+                        container
+                        direction='row'
+                        justify='space-between'
+                        alignItems='center'
+                    >
+                        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                            <Typography variant='h4' component='h4'>
+                                Customer Video Review
+                            </Typography>
+                        </Grid>
+
+                        <Grid item>
+                            <Box>
+                                <VideoReview />
+                            </Box>
+                        </Grid>
+                    </Grid>
                 </Box>
-                <Box
-                    style={{ backgroundColor: 'white' }}
-                    p={3}
-                    mt={2}
-                    borderRadius='borderRadius'
-                >
-                    <Grid container spacing={4}>
-                        <Grid item xs={12} sm={4}>
-                            <ReactPlayer
-                                width='100%'
-                                height='280px'
-                                controls
-                                light
-                                url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
-                            />
+                <Box mt={2}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                            <Box
+                                borderRadius='borderRadius'
+                                style={{ backgroundColor: 'white' }}
+                            >
+                                <ReactPlayer
+                                    width='100%'
+                                    height='260px'
+                                    controls
+                                    light
+                                    url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
+                                />
+                                <Box px={3} py={1}>
+                                    <Box>
+                                        <Button
+                                            size='small'
+                                            startIcon={<ThumbUpIcon />}
+                                            fullWidth
+                                        >
+                                            Agreed (12)
+                                        </Button>
+                                    </Box>
+                                    <Box mt={1}>
+                                        <Button
+                                            fullWidth
+                                            size='small'
+                                            startIcon={<ThumbDownIcon />}
+                                        >
+                                            Disagreed (02)
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </Box>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <ReactPlayer
-                                width='100%'
-                                height='280px'
-                                controls
-                                light
-                                url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
-                            />
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                            <Box
+                                borderRadius='borderRadius'
+                                style={{ backgroundColor: 'white' }}
+                            >
+                                <ReactPlayer
+                                    width='100%'
+                                    height='260px'
+                                    controls
+                                    light
+                                    url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
+                                />
+                                <Box px={3} py={1}>
+                                    <Box>
+                                        <Button
+                                            size='small'
+                                            startIcon={<ThumbUpIcon />}
+                                            fullWidth
+                                        >
+                                            Agreed (12)
+                                        </Button>
+                                    </Box>
+                                    <Box mt={1}>
+                                        <Button
+                                            fullWidth
+                                            size='small'
+                                            startIcon={<ThumbDownIcon />}
+                                        >
+                                            Disagreed (02)
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </Box>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <ReactPlayer
-                                width='100%'
-                                height='280px'
-                                controls
-                                light
-                                url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
-                            />
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                            <Box
+                                borderRadius='borderRadius'
+                                style={{ backgroundColor: 'white' }}
+                            >
+                                <ReactPlayer
+                                    width='100%'
+                                    height='260px'
+                                    controls
+                                    light
+                                    url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
+                                />
+                                <Box px={3} py={1}>
+                                    <Box>
+                                        <Button
+                                            size='small'
+                                            startIcon={<ThumbUpIcon />}
+                                            fullWidth
+                                        >
+                                            Agreed (12)
+                                        </Button>
+                                    </Box>
+                                    <Box mt={1}>
+                                        <Button
+                                            fullWidth
+                                            size='small'
+                                            startIcon={<ThumbDownIcon />}
+                                        >
+                                            Disagreed (02)
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </Box>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <ReactPlayer
-                                width='100%'
-                                height='280px'
-                                controls
-                                light
-                                url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <ReactPlayer
-                                width='100%'
-                                height='280px'
-                                controls
-                                light
-                                url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <ReactPlayer
-                                width='100%'
-                                height='280px'
-                                controls
-                                light
-                                url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
-                            />
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                            <Box
+                                borderRadius='borderRadius'
+                                style={{ backgroundColor: 'white' }}
+                            >
+                                <ReactPlayer
+                                    width='100%'
+                                    height='260px'
+                                    controls
+                                    light
+                                    url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
+                                />
+                                <Box px={3} py={1}>
+                                    <Box>
+                                        <Button
+                                            size='small'
+                                            startIcon={<ThumbUpIcon />}
+                                            fullWidth
+                                        >
+                                            Agreed (12)
+                                        </Button>
+                                    </Box>
+                                    <Box mt={1}>
+                                        <Button
+                                            fullWidth
+                                            size='small'
+                                            startIcon={<ThumbDownIcon />}
+                                        >
+                                            Disagreed (02)
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </Box>
                         </Grid>
                     </Grid>
                 </Box>
             </Box>
 
-            <Box
-                m={3}
-                p={2}
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
+            <Box mx={3} mt={8}>
                 <Box
                     p={2}
                     textAlign='center'
@@ -224,83 +304,200 @@ export default function ProductDetails() {
                 >
                     <Typography variant='h4'>Review & Ratings</Typography>
                 </Box>
-                <Box
-                    style={{ backgroundColor: 'white' }}
-                    p={3}
-                    mt={2}
-                    textAlign='center'
-                    borderRadius='borderRadius'
-                >
-                    <Grid container spacing={4}>
-                        <Grid item xs={12} sm>
-                            <Box>
-                                <Typography variant='h4'>4.5</Typography>
-                                <StarIcon color='secondary' />
-                                <StarIcon color='secondary' />
-                                <StarIcon color='secondary' />
-                                <StarIcon color='secondary' />
-                                <StarIcon color='secondary' />
-                            </Box>
-                            <Box mt={2}>
+
+                <Box mt={2}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+                            <Box
+                                style={{ backgroundColor: 'white' }}
+                                p={2}
+                                height='100%'
+                                textAlign='center'
+                                borderRadius='borderRadius'
+                            >
                                 <Box>
+                                    <Typography variant='h4' component='h4'>
+                                        4.5
+                                    </Typography>
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
+                                    <Typography>45 Rating & Review</Typography>
                                 </Box>
-                                <Box>
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                </Box>
-                                <Box>
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                </Box>
-                                <Box>
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                </Box>
-                                <Box>
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                </Box>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} sm>
-                            <Typography variant='h4'>
-                                Text field form
-                            </Typography>
-                            <div className={classes.root}>
-                                <Rating
-                                    name='hover-feedback'
-                                    value={value}
-                                    precision={0.5}
-                                    onChange={(event, newValue) => {
-                                        setValue(newValue);
-                                    }}
-                                    onChangeActive={(event, newHover) => {
-                                        setHover(newHover);
-                                    }}
-                                />
-                                {value !== null && (
-                                    <Box ml={2}>
-                                        {labels[hover !== -1 ? hover : value]}
+                                <Box mt={3}>
+                                    <Box>
+                                        <Grid
+                                            container
+                                            justify='center'
+                                            alignItems='center'
+                                        >
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />{' '}
+                                            <span>
+                                                <Box pl={2}>
+                                                    <Typography>
+                                                        {' '}
+                                                        [10]
+                                                    </Typography>
+                                                </Box>
+                                            </span>
+                                        </Grid>
                                     </Box>
-                                )}
-                            </div>
+                                    <Box mt={1}>
+                                        <Grid
+                                            container
+                                            justify='center'
+                                            alignItems='center'
+                                        >
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />{' '}
+                                            <span>
+                                                <Box pl={2}>
+                                                    <Typography>
+                                                        {' '}
+                                                        [10]
+                                                    </Typography>
+                                                </Box>
+                                            </span>
+                                        </Grid>
+                                    </Box>
+                                    <Box mt={1}>
+                                        <Grid
+                                            container
+                                            justify='center'
+                                            alignItems='center'
+                                        >
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />{' '}
+                                            <span>
+                                                <Box pl={2}>
+                                                    <Typography>
+                                                        {' '}
+                                                        [10]
+                                                    </Typography>
+                                                </Box>
+                                            </span>
+                                        </Grid>
+                                    </Box>
+                                    <Box mt={1}>
+                                        <Grid
+                                            container
+                                            justify='center'
+                                            alignItems='center'
+                                        >
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />{' '}
+                                            <span>
+                                                <Box pl={2}>
+                                                    <Typography>
+                                                        {' '}
+                                                        [10]
+                                                    </Typography>
+                                                </Box>
+                                            </span>
+                                        </Grid>
+                                    </Box>
+                                    <Box mt={1}>
+                                        <Grid
+                                            container
+                                            justify='center'
+                                            alignItems='center'
+                                        >
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />
+                                            <StarIcon color='secondary' />{' '}
+                                            <span>
+                                                <Box pl={2}>
+                                                    <Typography>
+                                                        {' '}
+                                                        [10]
+                                                    </Typography>
+                                                </Box>
+                                            </span>
+                                        </Grid>
+                                    </Box>
+                                </Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+                            <Box
+                                style={{ backgroundColor: 'white' }}
+                                p={2}
+                                height='100%'
+                                textAlign='center'
+                                borderRadius='borderRadius'
+                            >
+                                <Box>
+                                    <Review />
+                                </Box>
+                                <Box pt={8}>
+                                    <Grid
+                                        container
+                                        direction='row'
+                                        justify='center'
+                                        alignItems='flex-end'
+                                        spacing={3}
+                                    >
+                                        <Grid item>
+                                            <div className={classes.root}>
+                                                <Rating
+                                                    name='hover-feedback'
+                                                    value={value}
+                                                    precision={0.5}
+                                                    onChange={(
+                                                        event,
+                                                        newValue
+                                                    ) => {
+                                                        setValue(newValue);
+                                                    }}
+                                                    onChangeActive={(
+                                                        event,
+                                                        newHover
+                                                    ) => {
+                                                        setHover(newHover);
+                                                    }}
+                                                />
+                                                {value !== null && (
+                                                    <Box ml={2}>
+                                                        {
+                                                            labels[
+                                                                hover !== -1
+                                                                    ? hover
+                                                                    : value
+                                                            ]
+                                                        }
+                                                    </Box>
+                                                )}
+                                            </div>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button
+                                                variant='contained'
+                                                size='small'
+                                                color='secondary'
+                                            >
+                                                <Box px={3}>Submit</Box>
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            </Box>
                         </Grid>
                     </Grid>
                 </Box>
@@ -311,42 +508,65 @@ export default function ProductDetails() {
                     style={{ backgroundColor: 'white' }}
                 >
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={12} md={12} lg={3} xl={2}>
                             <Box textAlign='center'>
-                                <Typography variant='h4'>User</Typography>
+                                <img
+                                    src='/aa.jpg'
+                                    alt=''
+                                    srcset=''
+                                    height='50'
+                                    width='50'
+                                    style={{ borderRadius: '50%' }}
+                                />
+                                <Typography variant='h6' component='h6'>
+                                    BIPLOB MAHADI
+                                </Typography>
                             </Box>
                         </Grid>
-                        <Grid item xs={12} sm={8}>
-                            <Box pr={3}>
-                                <Typography variant='h5'>
-                                    <Chip
-                                        label='2.5'
-                                        color='secondary'
-                                        size='small'
-                                    />{' '}
+                        <Grid item xs={12} sm={12} md={12} lg={7} xl={8}>
+                            <Box pr={2} pl={1}>
+                                <Box>
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
-                                </Typography>
-                                <Typography variant='p'>
+                                </Box>
+                                <Typography>
                                     Lorem ipsum dolor sit amet, consectetur
                                     adipisicing elit. Nihil porro quaerat totam
-                                    nesciunt recusandae ad deserunt fugit
-                                    corporis esse. Architecto neque molestias
-                                    excepturi a accusamus labore, consequuntur
-                                    iusto eos corrupti.
+                                    nesciunt recusandae deserunt fugit corporis
+                                    esse. Architecto neque molestias excepturi a
+                                    accusamus labore.
                                 </Typography>
+                                <Box pt={3}>
+                                    <Typography variant='p'>
+                                        19 February, 2020.
+                                    </Typography>
+                                </Box>
                             </Box>
                         </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Button size='small' startIcon={<ThumbUpIcon />}>
-                                Agreed
-                            </Button>
-                            <Button size='small' startIcon={<ThumbDownIcon />}>
-                                Disagreed
-                            </Button>
+                        <Grid item xs={12} sm={12} md={12} lg={2} xl={2}>
+                            <Box px={3}>
+                                <Box>
+                                    <Button
+                                        size='small'
+                                        startIcon={<ThumbUpIcon />}
+                                        fullWidth
+                                    >
+                                        Agreed (12)
+                                    </Button>
+                                </Box>
+                                <Box mt={1}>
+                                    <Button
+                                        fullWidth
+                                        size='small'
+                                        startIcon={<ThumbDownIcon />}
+                                    >
+                                        Disagreed (02)
+                                    </Button>
+                                </Box>
+                            </Box>
                         </Grid>
                     </Grid>
                 </Box>
@@ -357,88 +577,65 @@ export default function ProductDetails() {
                     style={{ backgroundColor: 'white' }}
                 >
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={12} md={12} lg={3} xl={2}>
                             <Box textAlign='center'>
-                                <Typography variant='h4'>User</Typography>
+                                <img
+                                    src='/aa.jpg'
+                                    alt=''
+                                    srcset=''
+                                    height='50'
+                                    width='50'
+                                    style={{ borderRadius: '50%' }}
+                                />
+                                <Typography variant='h6' component='h6'>
+                                    BIPLOB MAHADI
+                                </Typography>
                             </Box>
                         </Grid>
-                        <Grid item xs={12} sm={8}>
-                            <Box pr={3}>
-                                <Typography variant='h5'>
-                                    <Chip
-                                        label='2.5'
-                                        color='secondary'
-                                        size='small'
-                                    />{' '}
+                        <Grid item xs={12} sm={12} md={12} lg={7} xl={8}>
+                            <Box pr={2} pl={1}>
+                                <Box>
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
                                     <StarIcon color='secondary' />
-                                </Typography>
-                                <Typography variant='p'>
+                                </Box>
+                                <Typography>
                                     Lorem ipsum dolor sit amet, consectetur
                                     adipisicing elit. Nihil porro quaerat totam
-                                    nesciunt recusandae ad deserunt fugit
-                                    corporis esse. Architecto neque molestias
-                                    excepturi a accusamus labore, consequuntur
-                                    iusto eos corrupti.
+                                    nesciunt recusandae deserunt fugit corporis
+                                    esse. Architecto neque molestias excepturi a
+                                    accusamus labore.
                                 </Typography>
+                                <Box pt={3}>
+                                    <Typography variant='p'>
+                                        19 February, 2020.
+                                    </Typography>
+                                </Box>
                             </Box>
                         </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Button size='small' startIcon={<ThumbUpIcon />}>
-                                Agreed
-                            </Button>
-                            <Button size='small' startIcon={<ThumbDownIcon />}>
-                                Disagreed
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </Box>
-                <Box
-                    p={2}
-                    mt={2}
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
-                >
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={2}>
-                            <Box textAlign='center'>
-                                <Typography variant='h4'>User</Typography>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={8}>
-                            <Box pr={3}>
-                                <Typography variant='h5'>
-                                    <Chip
-                                        label='2.5'
-                                        color='secondary'
+                        <Grid item xs={12} sm={12} md={12} lg={2} xl={2}>
+                            <Box px={3}>
+                                <Box>
+                                    <Button
                                         size='small'
-                                    />{' '}
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                </Typography>
-                                <Typography variant='p'>
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipisicing elit. Nihil porro quaerat totam
-                                    nesciunt recusandae ad deserunt fugit
-                                    corporis esse. Architecto neque molestias
-                                    excepturi a accusamus labore, consequuntur
-                                    iusto eos corrupti.
-                                </Typography>
+                                        startIcon={<ThumbUpIcon />}
+                                        fullWidth
+                                    >
+                                        Agreed (12)
+                                    </Button>
+                                </Box>
+                                <Box mt={1}>
+                                    <Button
+                                        fullWidth
+                                        size='small'
+                                        startIcon={<ThumbDownIcon />}
+                                    >
+                                        Disagreed (02)
+                                    </Button>
+                                </Box>
                             </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <Button size='small' startIcon={<ThumbUpIcon />}>
-                                Agreed
-                            </Button>
-                            <Button size='small' startIcon={<ThumbDownIcon />}>
-                                Disagreed
-                            </Button>
                         </Grid>
                     </Grid>
                 </Box>

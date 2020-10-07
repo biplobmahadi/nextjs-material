@@ -43,25 +43,31 @@ export default function Index() {
                 <Box mx={3} mt={8}>
                     <Box
                         p={2}
-                        display='flex'
-                        alignItems='center'
                         borderRadius='borderRadius'
                         style={{ backgroundColor: 'white' }}
                     >
-                        <Box height='100%' flexGrow={1}>
-                            <Typography variant='h4' component='h4'>
-                                Trending Now
-                            </Typography>
-                        </Box>
-                        <Box height='100%'>
-                            <Button
-                                variant='contained'
-                                size='small'
-                                color='secondary'
-                            >
-                                <Box px={3}>See All</Box>
-                            </Button>
-                        </Box>
+                        <Grid
+                            container
+                            direction='row'
+                            justify='space-between'
+                            alignItems='center'
+                        >
+                            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+                                <Typography variant='h4' component='h4'>
+                                    Trending Now
+                                </Typography>
+                            </Grid>
+
+                            <Grid item>
+                                <Button
+                                    variant='contained'
+                                    size='small'
+                                    color='secondary'
+                                >
+                                    <Box px={3}>See All</Box>
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
@@ -90,25 +96,31 @@ export default function Index() {
                 <Box mx={3} mt={8}>
                     <Box
                         p={2}
-                        display='flex'
-                        alignItems='center'
                         borderRadius='borderRadius'
                         style={{ backgroundColor: 'white' }}
                     >
-                        <Box height='100%' flexGrow={1}>
-                            <Typography variant='h4' component='h4'>
-                                Topwear Product
-                            </Typography>
-                        </Box>
-                        <Box height='100%'>
-                            <Button
-                                variant='contained'
-                                size='small'
-                                color='secondary'
-                            >
-                                <Box px={3}>See All</Box>
-                            </Button>
-                        </Box>
+                        <Grid
+                            container
+                            direction='row'
+                            justify='space-between'
+                            alignItems='center'
+                        >
+                            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+                                <Typography variant='h4' component='h4'>
+                                    Topwear Product
+                                </Typography>
+                            </Grid>
+
+                            <Grid item>
+                                <Button
+                                    variant='contained'
+                                    size='small'
+                                    color='secondary'
+                                >
+                                    <Box px={3}>See All</Box>
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
@@ -137,25 +149,31 @@ export default function Index() {
                 <Box mx={3} mt={8}>
                     <Box
                         p={2}
-                        display='flex'
-                        alignItems='center'
                         borderRadius='borderRadius'
                         style={{ backgroundColor: 'white' }}
                     >
-                        <Box height='100%' flexGrow={1}>
-                            <Typography variant='h4' component='h4'>
-                                Footwear Product
-                            </Typography>
-                        </Box>
-                        <Box height='100%'>
-                            <Button
-                                variant='contained'
-                                size='small'
-                                color='secondary'
-                            >
-                                <Box px={3}>See All</Box>
-                            </Button>
-                        </Box>
+                        <Grid
+                            container
+                            direction='row'
+                            justify='space-between'
+                            alignItems='center'
+                        >
+                            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+                                <Typography variant='h4' component='h4'>
+                                    Footwear Product
+                                </Typography>
+                            </Grid>
+
+                            <Grid item>
+                                <Button
+                                    variant='contained'
+                                    size='small'
+                                    color='secondary'
+                                >
+                                    <Box px={3}>See All</Box>
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
