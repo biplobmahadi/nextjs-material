@@ -719,9 +719,7 @@ export default function ButtonAppBar() {
                             </Badge>
                         </IconButton>
                     </Link>
-                    <IconButton color='inherit' aria-label='lottery'>
-                        <BallotIcon />
-                    </IconButton>
+
                     <IconButton
                         color='inherit'
                         aria-label='account'

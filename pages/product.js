@@ -18,6 +18,10 @@ import RestoreIcon from '@material-ui/icons/Restore';
 import InfoIcon from '@material-ui/icons/Info';
 import RedeemIcon from '@material-ui/icons/Redeem';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
+import ReactImageMagnify from 'react-image-magnify';
+import Zoom from 'react-medium-image-zoom';
+
+import ReactImageZoom from 'react-image-zoom';
 import { Button } from '@material-ui/core';
 export default function Product() {
     return (
@@ -46,12 +50,14 @@ export default function Product() {
                                 borderRadius='borderRadius'
                                 style={{ backgroundColor: 'white' }}
                             >
-                                <img
-                                    src='/aa.jpg'
-                                    alt='product image'
-                                    height='100%'
-                                    width='100%'
-                                />
+                                <Zoom>
+                                    <img
+                                        alt='that wanaka tree'
+                                        src='/s1.jpg'
+                                        width='100%'
+                                        height='100%'
+                                    />
+                                </Zoom>
                             </Box>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
