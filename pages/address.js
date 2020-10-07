@@ -29,17 +29,19 @@ export default function Address() {
                 ></meta>
             </Head>
             <ButtonAppBar />
-            <Box
-                mt={12}
-                mx={3}
-                p={2}
-                textAlign='center'
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
-                <PaymentStepper />
+            <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                <Box mt={6} pt={3} px={3}>
+                    <Box
+                        py={2}
+                        textAlign='center'
+                        borderRadius='borderRadius'
+                        style={{ backgroundColor: '#E6E6FA' }}
+                    >
+                        <PaymentStepper />
+                    </Box>
+                </Box>
             </Box>
-            <Box style={{ backgroundColor: '#E6E6FA' }} mt={4}>
+            <Box mx={3} mt={6}>
                 <MainFooter />
             </Box>
         </div>

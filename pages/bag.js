@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import FormikFormDemo from '../components/FormikFormDemo';
+import Divider from '@material-ui/core/Divider';
 export default function Bag() {
     return (
         <div>
@@ -55,7 +56,7 @@ export default function Bag() {
                                         xl={6}
                                     >
                                         <Typography variant='h5' component='h5'>
-                                            My Bag{' '}
+                                            <strong>My Bag</strong>{' '}
                                             <Chip
                                                 label={`${12} items`}
                                                 color='secondary'
@@ -83,45 +84,171 @@ export default function Bag() {
                                 borderRadius='borderRadius'
                                 style={{ backgroundColor: 'white' }}
                             >
-                                <Typography variant='h4'>
-                                    Checkout Please
-                                </Typography>
-                                <Typography variant='h6'>
-                                    SubTotal = 122
-                                </Typography>
-                                <Typography variant='h6'>
-                                    Shipping = 122
-                                </Typography>
-                                <Typography variant='h6'>
-                                    Total = 122
-                                </Typography>
-                                <br />
-                                <br />
-                                <br />
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} sm>
-                                        <Link href='/address'>
-                                            <Button
-                                                variant='contained'
-                                                color='primary'
-                                            >
-                                                <Box textAlign='center' px={4}>
-                                                    Pay For You
-                                                </Box>
-                                            </Button>
-                                        </Link>
+                                <Box textAlign='center'>
+                                    <Typography variant='h5' component='h5'>
+                                        <strong>Checkout Please</strong>
+                                    </Typography>
+                                </Box>
+                                <Box py={2}>
+                                    <Divider variant='middle' />
+                                </Box>
+                                <Grid
+                                    container
+                                    direction='row'
+                                    justify='space-between'
+                                    alignItems='center'
+                                >
+                                    <Grid
+                                        item
+                                        xs={6}
+                                        sm={6}
+                                        md={6}
+                                        lg={6}
+                                        xl={6}
+                                    >
+                                        <Box px={5}>
+                                            <Typography>Sub Total</Typography>
+                                        </Box>
                                     </Grid>
-                                    <Grid item xs={12} sm>
+
+                                    <Grid item>
+                                        <Box px={5}>
+                                            {' '}
+                                            <Typography>122 TK.</Typography>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                                <Box py={1}>
+                                    <Divider variant='middle' />
+                                </Box>
+                                <Grid
+                                    container
+                                    direction='row'
+                                    justify='space-between'
+                                    alignItems='center'
+                                >
+                                    <Grid
+                                        item
+                                        xs={6}
+                                        sm={6}
+                                        md={6}
+                                        lg={6}
+                                        xl={6}
+                                    >
+                                        <Box px={5}>
+                                            <Typography>Shipping</Typography>
+                                        </Box>
+                                    </Grid>
+
+                                    <Grid item>
+                                        <Box px={5}>
+                                            <Typography>50 TK.</Typography>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                                <Box py={1}>
+                                    <Divider variant='middle' />
+                                </Box>
+                                <Grid
+                                    container
+                                    direction='row'
+                                    justify='space-between'
+                                    alignItems='center'
+                                >
+                                    <Grid
+                                        item
+                                        xs={6}
+                                        sm={6}
+                                        md={6}
+                                        lg={6}
+                                        xl={6}
+                                    >
+                                        <Box px={5}>
+                                            <Typography>Total</Typography>
+                                        </Box>
+                                    </Grid>
+
+                                    <Grid item>
+                                        <Box px={5}>
+                                            <Typography>500 TK.</Typography>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                                <Box py={1}>
+                                    <Divider variant='middle' />
+                                </Box>
+                                <Grid
+                                    container
+                                    direction='row'
+                                    justify='space-between'
+                                    alignItems='center'
+                                >
+                                    <Grid
+                                        item
+                                        xs={6}
+                                        sm={6}
+                                        md={6}
+                                        lg={6}
+                                        xl={6}
+                                    >
+                                        <Box px={5}>
+                                            <Typography>Gift Rapper</Typography>
+                                        </Box>
+                                    </Grid>
+
+                                    <Grid item>
+                                        <Box px={5}>
+                                            <Typography>50 TK.</Typography>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                                <Box py={1}>
+                                    <Divider variant='middle' />
+                                </Box>
+                                <Grid
+                                    container
+                                    direction='row'
+                                    justify='space-between'
+                                    alignItems='center'
+                                >
+                                    <Grid
+                                        item
+                                        xs={6}
+                                        sm={6}
+                                        md={6}
+                                        lg={6}
+                                        xl={6}
+                                    >
+                                        <Box px={5}>
+                                            <Typography>
+                                                <strong>Total Payable</strong>
+                                            </Typography>
+                                        </Box>
+                                    </Grid>
+
+                                    <Grid item>
+                                        <Box px={5}>
+                                            <Typography>
+                                                <strong>550 TK.</strong>
+                                            </Typography>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                                <Box py={1}>
+                                    <Divider variant='inset' />
+                                </Box>
+                                <Box pt={5} textAlign='right'>
+                                    <Link href='/address'>
                                         <Button
                                             variant='contained'
                                             color='primary'
                                         >
                                             <Box textAlign='center' px={4}>
-                                                Gift to Special
+                                                Pay For You
                                             </Box>
                                         </Button>
-                                    </Grid>
-                                </Grid>
+                                    </Link>
+                                </Box>
                             </Box>
                         </Grid>
                     </Grid>

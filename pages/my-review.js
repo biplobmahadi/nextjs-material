@@ -15,6 +15,7 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
+import Hidden from '@material-ui/core/Hidden';
 const useStyles = makeStyles({
     root: {
         flexGrow: 1,
@@ -44,116 +45,158 @@ export default function MyReview() {
                 ></meta>
             </Head>
             <ButtonAppBar />
-            <Box
-                mx={3}
-                mt={11}
-                p={2}
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
-                <Box
-                    p={2}
-                    boxShadow={1}
-                    textAlign='center'
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
-                >
-                    <img
-                        src='/aa.jpg'
-                        alt=''
-                        srcset=''
-                        height='60'
-                        width='60'
-                        style={{ borderRadius: '50%' }}
-                    />
-                    <Typography variant='h5'>
-                        <strong>BIPLOB MAHADI</strong>
-                    </Typography>
-                </Box>
-                <Box mt={3}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} sm={3}>
-                            <Box
-                                p={1}
-                                boxShadow={1}
-                                borderRadius='borderRadius'
-                                style={{ backgroundColor: 'white' }}
-                            >
-                                <AccountOptionList />
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} sm>
-                            <Box
-                                p={2}
-                                boxShadow={1}
-                                borderRadius='borderRadius'
-                                style={{ backgroundColor: 'white' }}
-                            >
-                                <Typography variant='h5'>
-                                    <strong>My Reviews & Ratings</strong>
-                                </Typography>
-                            </Box>
-                            <Paper className={classes.root}>
-                                <Tabs
-                                    value={value}
-                                    onChange={handleChange}
-                                    indicatorColor='primary'
-                                    textColor='primary'
-                                    centered
+            <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                <Box mt={8} pt={3} px={3}>
+                    <Box
+                        p={2}
+                        boxShadow={1}
+                        textAlign='center'
+                        borderRadius='borderRadius'
+                        style={{ backgroundColor: 'white' }}
+                    >
+                        <img
+                            src='/aa.jpg'
+                            alt=''
+                            srcset=''
+                            height='60'
+                            width='60'
+                            style={{ borderRadius: '50%' }}
+                        />
+                        <Typography variant='h5'>
+                            <strong>BIPLOB MAHADI</strong>
+                        </Typography>
+                    </Box>
+                    <Box mt={3}>
+                        <Grid container spacing={3}>
+                            <Hidden lgDown>
+                                <Grid
+                                    item
+                                    xs={12}
+                                    sm={12}
+                                    md={12}
+                                    lg={12}
+                                    xl={3}
                                 >
-                                    <Tab label='Reviewed Product' value='0' />
-                                    <Tab
-                                        label='Not Reviewed Product'
-                                        value='1'
-                                    />
-                                </Tabs>
-                            </Paper>
-                            <Box
-                                mt={2}
-                                p={2}
-                                boxShadow={1}
-                                borderRadius='borderRadius'
-                                style={{ backgroundColor: 'white' }}
-                            >
-                                {/* <Typography>{value}</Typography> */}
-                                <Grid container spacing={3}>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <ProductCard />
-                                    </Grid>
+                                    <Box
+                                        p={1}
+                                        boxShadow={1}
+                                        borderRadius='borderRadius'
+                                        style={{ backgroundColor: 'white' }}
+                                    >
+                                        <AccountOptionList />
+                                    </Box>
                                 </Grid>
-                            </Box>
+                            </Hidden>
+                            <Grid item xs={12} sm={12} md={12} lg={12} xl={9}>
+                                <Box
+                                    p={2}
+                                    boxShadow={1}
+                                    borderRadius='borderRadius'
+                                    style={{ backgroundColor: 'white' }}
+                                >
+                                    <Typography variant='h5'>
+                                        <strong>My Reviews & Ratings</strong>
+                                    </Typography>
+                                </Box>
+                                <Paper className={classes.root}>
+                                    <Tabs
+                                        value={value}
+                                        onChange={handleChange}
+                                        indicatorColor='primary'
+                                        textColor='primary'
+                                        variant='fullWidth'
+                                    >
+                                        <Tab
+                                            label='Reviewed Product'
+                                            value='0'
+                                        />
+                                        <Tab
+                                            label='Not Reviewed Product'
+                                            value='1'
+                                        />
+                                    </Tabs>
+                                </Paper>
+                                <Box mt={2}>
+                                    {/* <Typography>{value}</Typography> */}
+                                    <Grid container spacing={2}>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={3}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={3}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={3}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={3}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={3}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={3}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={3}
+                                            xl={3}
+                                        >
+                                            <ProductCard />
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </Box>
                 </Box>
             </Box>
-            <Box style={{ backgroundColor: '#E6E6FA' }} mt={4}>
+            <Box mx={3} mt={6}>
                 <MainFooter />
             </Box>
         </div>

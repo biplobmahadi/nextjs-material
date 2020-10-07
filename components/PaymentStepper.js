@@ -1,4 +1,4 @@
-import React from 'react';
+import Link from 'next/link';
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -6,6 +6,9 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import ReceiverAddress from './ReceiverAddress';
+import Receiver from './forms/Receiver';
+import Payment from './forms/Payment';
+import ConfirmPayment from './forms/ConfirmPayment';
 import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,8 +19,8 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(1),
     },
     instructions: {
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(1),
+        marginTop: theme.spacing(5),
+        marginBottom: theme.spacing(5),
     },
 }));
 
@@ -28,11 +31,11 @@ function getSteps() {
 function getStepContent(stepIndex) {
     switch (stepIndex) {
         case 0:
-            return <ReceiverAddress />;
+            return <Receiver />;
         case 1:
-            return 'What is an ad group anyways?';
+            return <Payment />;
         case 2:
-            return 'This is the bit I really care about!';
+            return <ConfirmPayment />;
         default:
             return 'Unknown stepIndex';
     }
@@ -73,10 +76,24 @@ export default function HorizontalLabelPositionBelowStepper() {
                 >
                     {activeStep === steps.length ? (
                         <div>
-                            <Typography className={classes.instructions}>
-                                All steps completed
+                            <Typography
+                                variant='h5'
+                                component='h5'
+                                className={classes.instructions}
+                            >
+                                <strong>Your Order is Confirmed !!</strong>
                             </Typography>
-                            <Button onClick={handleReset}>Reset</Button>
+                            <Box pb={3}>
+                                <Link href='/my-order-details'>
+                                    <Button
+                                        variant='contained'
+                                        size='small'
+                                        color='primary'
+                                    >
+                                        <Box px={2}>See Your Order Details</Box>
+                                    </Button>
+                                </Link>
+                            </Box>
                         </div>
                     ) : (
                         <div>
@@ -84,7 +101,7 @@ export default function HorizontalLabelPositionBelowStepper() {
                                 {getStepContent(activeStep)}
                             </Typography>
 
-                            <div>
+                            <Box py={3}>
                                 <Button
                                     variant='contained'
                                     size='small'
@@ -102,10 +119,10 @@ export default function HorizontalLabelPositionBelowStepper() {
                                     onClick={handleNext}
                                 >
                                     {activeStep === steps.length - 1
-                                        ? 'Finish'
+                                        ? 'Confirm'
                                         : 'Next'}
                                 </Button>
-                            </div>
+                            </Box>
                         </div>
                     )}
                 </Box>

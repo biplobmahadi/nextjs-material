@@ -24,7 +24,7 @@ import Container from '@material-ui/core/Container';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(10),
+        marginTop: theme.spacing(2),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -62,133 +62,135 @@ export default function SignupForm() {
         event.preventDefault();
     };
     return (
-        <Formik
-            initialValues={{
-                name: '',
-                phone: '',
-                otherPhone: '',
-                division: '',
-                city: '',
-                area: '',
-            }}
-            validationSchema={Yup.object({
-                name: Yup.string()
-                    .max(15, 'Must be 15 characters or less')
-                    .required('Required'),
-                phone: Yup.string()
-                    .matches(
-                        /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/,
-                        'Not valid bd phone number'
-                    )
-                    // .max(11, 'It is not a valid phone number')
-                    // .min(11, 'It is not a valid phone number')
-                    .required('Required'),
-                otherPhone: Yup.string().matches(
-                    /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/,
-                    'Not valid bd phone number'
-                ),
-                // .max(11, 'It is not a valid phone number')
-                // .min(11, 'It is not a valid phone number')
-                division: Yup.string().required('Required'),
-                city: Yup.string().required('Required'),
-                area: Yup.string().trim('Required').required('Required'),
+        <Container component='main' maxWidth='xs'>
+            <CssBaseline />
+            <div className={classes.paper}>
+                <Typography component='h5' variant='h5'>
+                    Receiver Address
+                </Typography>
+                <div className={classes.form}>
+                    <Formik
+                        initialValues={{
+                            name: '',
+                            phone: '',
+                            otherPhone: '',
+                            division: '',
+                            city: '',
+                            area: '',
+                        }}
+                        validationSchema={Yup.object({
+                            name: Yup.string()
+                                .max(15, 'Must be 15 characters or less')
+                                .required('Required'),
+                            phone: Yup.string()
+                                .matches(
+                                    /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/,
+                                    'Not valid bd phone number'
+                                )
+                                // .max(11, 'It is not a valid phone number')
+                                // .min(11, 'It is not a valid phone number')
+                                .required('Required'),
+                            otherPhone: Yup.string().matches(
+                                /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/,
+                                'Not valid bd phone number'
+                            ),
+                            // .max(11, 'It is not a valid phone number')
+                            // .min(11, 'It is not a valid phone number')
+                            division: Yup.string().required('Required'),
+                            city: Yup.string().required('Required'),
+                            area: Yup.string()
+                                .trim('Required')
+                                .required('Required'),
 
-                password: Yup.string().required('Required'),
-                confirmPassword: Yup.string().required('Required'),
-            })}
-            onSubmit={(values, { setSubmitting }) => {
-                setTimeout(() => {
-                    alert(JSON.stringify(values, null, 2));
-                    setSubmitting(false);
-                }, 400);
-            }}
-        >
-            {({ isSubmitting }) => (
-                <div>
-                    <Form>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <Field
-                                    name='name'
-                                    type='text'
-                                    component={TextField}
-                                    label='Full Name *'
-                                    variant='outlined'
-                                    size='small'
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Field
-                                    name='phone'
-                                    type='text'
-                                    component={TextField}
-                                    label='Phone Number *'
-                                    variant='outlined'
-                                    size='small'
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Field
-                                    name='otherPhone'
-                                    type='text'
-                                    component={TextField}
-                                    label='Other Phone Number'
-                                    variant='outlined'
-                                    size='small'
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Field
-                                    name='division'
-                                    type='text'
-                                    component={TextField}
-                                    label='Division *'
-                                    variant='outlined'
-                                    size='small'
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Field
-                                    name='city'
-                                    type='text'
-                                    component={TextField}
-                                    label='City *'
-                                    variant='outlined'
-                                    size='small'
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Field
-                                    name='area'
-                                    type='text'
-                                    multiline={true}
-                                    rows={4}
-                                    component={TextField}
-                                    label='Area *'
-                                    variant='outlined'
-                                    size='small'
-                                    fullWidth
-                                />
-                            </Grid>
-                        </Grid>
-                        <Button
-                            type='submit'
-                            fullWidth
-                            variant='contained'
-                            color='primary'
-                            className={classes.submit}
-                            disabled={isSubmitting}
-                        >
-                            Continue
-                        </Button>
-                    </Form>
+                            password: Yup.string().required('Required'),
+                            confirmPassword: Yup.string().required('Required'),
+                        })}
+                        onSubmit={(values, { setSubmitting }) => {
+                            setTimeout(() => {
+                                alert(JSON.stringify(values, null, 2));
+                                setSubmitting(false);
+                            }, 400);
+                        }}
+                    >
+                        {({ isSubmitting }) => (
+                            <div>
+                                <Form>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12}>
+                                            <Field
+                                                name='name'
+                                                type='text'
+                                                component={TextField}
+                                                label='Full Name *'
+                                                variant='outlined'
+                                                size='small'
+                                                fullWidth
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Field
+                                                name='phone'
+                                                type='text'
+                                                component={TextField}
+                                                label='Phone Number *'
+                                                variant='outlined'
+                                                size='small'
+                                                fullWidth
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Field
+                                                name='otherPhone'
+                                                type='text'
+                                                component={TextField}
+                                                label='Other Phone Number'
+                                                variant='outlined'
+                                                size='small'
+                                                fullWidth
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Field
+                                                name='division'
+                                                type='text'
+                                                component={TextField}
+                                                label='Division *'
+                                                variant='outlined'
+                                                size='small'
+                                                fullWidth
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Field
+                                                name='city'
+                                                type='text'
+                                                component={TextField}
+                                                label='City *'
+                                                variant='outlined'
+                                                size='small'
+                                                fullWidth
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Field
+                                                name='area'
+                                                type='text'
+                                                multiline={true}
+                                                rows={4}
+                                                component={TextField}
+                                                label='Area *'
+                                                variant='outlined'
+                                                size='small'
+                                                fullWidth
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </Form>
+                            </div>
+                        )}
+                    </Formik>
                 </div>
-            )}
-        </Formik>
+            </div>
+        </Container>
     );
 }
