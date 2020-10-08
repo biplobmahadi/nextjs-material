@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
 }));
+
 export default function SubCategories() {
     const classes = useStyles();
     return (
