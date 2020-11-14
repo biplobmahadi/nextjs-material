@@ -9,6 +9,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/system": "^4.9.14",
+    "axios": "^0.21.0",
     "clsx": "latest",
     "date-fns": "^2.16.1",
     "formik": "^2.1.6",

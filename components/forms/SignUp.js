@@ -7,13 +7,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import MenuItem from '@material-ui/core/MenuItem';
-
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -21,6 +17,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -42,20 +41,35 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const useRegister = () => {
+    const token = useSelector((state) => state.loginReducer.token);
+
+    const dispatch = useDispatch();
+    // need to show msg for email already used and password error with payload
+    const register = (userInfo, setSubmitting) => {
+        axios
+            .post('http://localhost:8000/rest-auth/registration/', userInfo)
+            .then((res) => {
+                console.log(res.data);
+                dispatch({ type: 'REGISTER', payload: res.data });
+                setSubmitting(false);
+            })
+            .catch((err) => {
+                console.log(err.response);
+                setSubmitting(false);
+            });
+    };
+    return { token, register };
+};
+
 export default function SignupForm() {
     const classes = useStyles();
-    const [values, setValues] = React.useState({
-        amount: '',
-        password: '',
-        weight: '',
-        weightRange: '',
-        showPassword: false,
-    });
-    const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
-    };
+    const { token, register } = useRegister();
+
+    const [showPassword, setShowPassword] = React.useState(false);
+
     const handleClickShowPassword = () => {
-        setValues({ ...values, showPassword: !values.showPassword });
+        setShowPassword(!showPassword);
     };
 
     const handleMouseDownPassword = (event) => {
@@ -74,31 +88,38 @@ export default function SignupForm() {
                 <div className={classes.form}>
                     <Formik
                         initialValues={{
-                            firstName: '',
-                            lastName: '',
                             email: '',
-                            password: '',
-                            confirmPassword: '',
+                            password1: '',
+                            password2: '',
+                            first_name: '',
+                            last_name: '',
                         }}
                         validationSchema={Yup.object({
-                            firstName: Yup.string()
+                            first_name: Yup.string()
                                 .max(15, 'Must be 15 characters or less')
                                 .required('Required'),
-                            lastName: Yup.string()
+                            last_name: Yup.string()
                                 .max(20, 'Must be 20 characters or less')
                                 .required('Required'),
                             email: Yup.string()
                                 .email('Invalid email address')
                                 .required('Required'),
 
-                            password: Yup.string().required('Required'),
-                            confirmPassword: Yup.string().required('Required'),
+                            password1: Yup.string()
+                                .matches(
+                                    /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+                                    'Need min 8 characters with at least one letter and one number'
+                                )
+                                .required('Required'),
+                            password2: Yup.string()
+                                .oneOf(
+                                    [Yup.ref('password1'), null],
+                                    'Both password must match'
+                                )
+                                .required('Required'),
                         })}
                         onSubmit={(values, { setSubmitting }) => {
-                            setTimeout(() => {
-                                alert(JSON.stringify(values, null, 2));
-                                setSubmitting(false);
-                            }, 400);
+                            register(values, setSubmitting);
                         }}
                     >
                         {({ isSubmitting }) => (
@@ -107,7 +128,7 @@ export default function SignupForm() {
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} sm={6}>
                                             <Field
-                                                name='firstName'
+                                                name='first_name'
                                                 type='text'
                                                 component={TextField}
                                                 label='First Name *'
@@ -118,7 +139,7 @@ export default function SignupForm() {
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <Field
-                                                name='lastName'
+                                                name='last_name'
                                                 type='text'
                                                 component={TextField}
                                                 label='Last Name *'
@@ -140,9 +161,9 @@ export default function SignupForm() {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field
-                                                name='password'
+                                                name='password1'
                                                 type={
-                                                    values.showPassword
+                                                    showPassword
                                                         ? 'text'
                                                         : 'password'
                                                 }
@@ -164,7 +185,7 @@ export default function SignupForm() {
                                                                 }
                                                                 edge='end'
                                                             >
-                                                                {values.showPassword ? (
+                                                                {showPassword ? (
                                                                     <Visibility fontSize='small' />
                                                                 ) : (
                                                                     <VisibilityOff fontSize='small' />
@@ -177,9 +198,9 @@ export default function SignupForm() {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field
-                                                name='confirmPassword'
+                                                name='password2'
                                                 type={
-                                                    values.showPassword
+                                                    showPassword
                                                         ? 'text'
                                                         : 'password'
                                                 }
@@ -201,7 +222,7 @@ export default function SignupForm() {
                                                                 }
                                                                 edge='end'
                                                             >
-                                                                {values.showPassword ? (
+                                                                {showPassword ? (
                                                                     <Visibility fontSize='small' />
                                                                 ) : (
                                                                     <VisibilityOff fontSize='small' />

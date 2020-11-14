@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import counterReducer from './counterReducer';
-import clockReducer from './clockReducer';
+import loginReducer from './loginReducer';
+import registerReducer from './registerReducer';
 
 const rootReducer = combineReducers({
-    counterReducer: counterReducer,
-    clockReducer: clockReducer,
+    loginReducer: loginReducer,
+    registerReducer: registerReducer,
 });
 
 export default rootReducer;
