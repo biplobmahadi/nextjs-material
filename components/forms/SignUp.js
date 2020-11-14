@@ -17,6 +17,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Alert from '@material-ui/lab/Alert';
 
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
@@ -85,6 +86,11 @@ export default function SignupForm() {
                 <Typography component='h1' variant='h5'>
                     Register
                 </Typography>
+                <Box mt={2}>
+                    <Alert severity='error'>
+                        This is an error alert — check it out!
+                    </Alert>
+                </Box>
                 <div className={classes.form}>
                     <Formik
                         initialValues={{
