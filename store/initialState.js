@@ -1,8 +1,6 @@
 const initialState = {
-    lastUpdate: 0,
-    light: false,
-    count: 0,
-    mama: 'mamakakhunkor',
+    // token: localStorage.getItem('haha_ecom_bangla_token'),
+    token: '',
 };
 
 export default initialState;
