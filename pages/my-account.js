@@ -18,17 +18,20 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AccountOptionList from '../components/AccountOptionList';
-
+import Cookies from 'js-cookie';
+import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Hidden from '@material-ui/core/Hidden';
+
 const useStyles = makeStyles({
     root: {
         flexGrow: 1,
         marginTop: '16px',
     },
 });
+
 export default function MyAccount(props) {
     const classes = useStyles();
     const [value, setValue] = React.useState('0');
@@ -159,30 +162,53 @@ export default function MyAccount(props) {
     );
 }
 
-export async function getServerSideProps(context) {
-    // let haha_ecom_bangla_token;
-    // if (typeof window !== 'undefined') {
-    //     haha_ecom_bangla_token = localStorage.getItem('haha_ecom_bangla_token');
-    // }
-    // const config = {
-    //     headers: {
-    //         Authorization: 'Token ' + haha_ecom_bangla_token,
-    //     },
-    // };
-    let data;
-    let error;
+// const fetchData = async () => {
+//     const config = {
+//         headers: {
+//             Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
+//         },
+//     };
+//     await axios
+//         .get('http://localhost:8000/products/')
+//         .then((res) => ({
+//             users: res.data,
+//         }))
+//         .catch((err) => ({
+//             error: err.response,
+//         }));
+// };
+// const config = {
+//     headers: {
+//         Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
+//     },
+// };
+const fetchData = async (config) =>
     await axios
-        .get('http://localhost:8000/products/')
-        .then((res) => {
-            data = res.data;
-        })
-        .catch((err) => {
-            error = err.response;
-        });
-    return {
-        props: {
-            data: JSON.parse(JSON.stringify(data)),
-            // error: JSON.parse(JSON.stringify(error)),
+        .get('http://localhost:8000/rest-auth/user/')
+        .then((res) => ({
+            error: false,
+            user: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+            user: null,
+        }));
+
+export async function getServerSideProps({ req }) {
+    const cookies = parseCookies(req);
+    const config = {
+        headers: {
+            Authorization: 'Token ' + cookies.haha_ecom_bangla_token,
         },
     };
+    const data = await fetchData(config);
+    return {
+        props: { data, config, cookies: cookies.haha_ecom_bangla_token },
+    };
+    // return {
+    //     props: {
+    //         data: JSON.stringify(data),
+    //         // error: JSON.parse(JSON.stringify(error)),
+    //     },
+    // };
 }

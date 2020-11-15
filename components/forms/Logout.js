@@ -5,6 +5,7 @@ import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Cookies from 'js-cookie';
 
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,7 +21,7 @@ const useLogout = () => {
             .then((res) => {
                 console.log(res.data);
                 dispatch({ type: 'LOGOUT', payload: res.data });
-                localStorage.removeItem('haha_ecom_bangla_token');
+                Cookies.remove('haha_ecom_bangla_token');
             })
             .catch((err) => console.log(err.response));
     };
@@ -31,7 +32,7 @@ export default function OrderCard() {
     const { token, logout } = useLogout();
     return (
         <Box textAlign='center'>
-            Do you want to logout?{' '}
+            Do you want to logout? {Cookies.get('haha_ecom_bangla_token')}
             <span>
                 {' '}
                 <Button variant='contained' color='primary' onClick={logout}>

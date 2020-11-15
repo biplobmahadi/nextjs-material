@@ -20,6 +20,7 @@ import Alert from '@material-ui/lab/Alert';
 import Link from '../../src/Link';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
+import Cookies from 'js-cookie';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -52,7 +53,7 @@ const useLogin = () => {
             .then((res) => {
                 console.log(res.data);
                 dispatch({ type: 'LOGIN', payload: res.data });
-                localStorage.setItem('haha_ecom_bangla_token', res.data.key);
+                Cookies.set('haha_ecom_bangla_token', res.data.key);
                 setSubmitting(false);
             })
             .catch((err) => {

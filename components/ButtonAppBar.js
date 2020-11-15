@@ -33,6 +33,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
+import Cookies from 'js-cookie';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -66,7 +67,7 @@ const useLogout = () => {
             .then((res) => {
                 console.log(res.data);
                 dispatch({ type: 'LOGOUT', payload: res.data });
-                localStorage.removeItem('haha_ecom_bangla_token');
+                Cookies.remove('haha_ecom_bangla_token');
             })
             .catch((err) => console.log(err.response));
     };
