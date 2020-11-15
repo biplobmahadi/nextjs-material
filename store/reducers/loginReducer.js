@@ -1,6 +1,10 @@
+let haha_ecom_bangla_token;
+if (typeof window !== 'undefined') {
+    haha_ecom_bangla_token = localStorage.getItem('haha_ecom_bangla_token');
+}
 const initialState = {
     // token: localStorage.getItem('haha_ecom_bangla_token'),
-    token: '',
+    token: haha_ecom_bangla_token,
 };
 
 function loginReducer(state = initialState, action) {

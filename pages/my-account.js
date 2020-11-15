@@ -2,7 +2,10 @@ import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
 import Card from '../components/Card';
 import ProductTable from '../components/ProductTable';
-import ProductCard from '../components/ProductCard';
+import ProfileCard from '../components/ProfileCard';
+import UpdateAccount from '../components/forms/UpdateAccount';
+import PasswordChange from '../components/forms/PasswordChange';
+import Logout from '../components/forms/Logout';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';
 import Box from '@material-ui/core/Box';
@@ -119,6 +122,42 @@ export default function MyAccount() {
                                         <Tab label='Logout' value='3' />
                                     </Tabs>
                                 </Paper>
+                                <Box
+                                    mt={2}
+                                    p={2}
+                                    boxShadow={1}
+                                    borderRadius='borderRadius'
+                                    style={{ backgroundColor: 'white' }}
+                                >
+                                    <ProfileCard />
+                                </Box>
+                                <Box
+                                    mt={2}
+                                    p={2}
+                                    boxShadow={1}
+                                    borderRadius='borderRadius'
+                                    style={{ backgroundColor: 'white' }}
+                                >
+                                    <UpdateAccount />
+                                </Box>
+                                <Box
+                                    mt={2}
+                                    p={2}
+                                    boxShadow={1}
+                                    borderRadius='borderRadius'
+                                    style={{ backgroundColor: 'white' }}
+                                >
+                                    <PasswordChange />
+                                </Box>
+                                <Box
+                                    mt={2}
+                                    p={2}
+                                    boxShadow={1}
+                                    borderRadius='borderRadius'
+                                    style={{ backgroundColor: 'white' }}
+                                >
+                                    <Logout />
+                                </Box>
                                 <Box
                                     mt={2}
                                     p={2}
