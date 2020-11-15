@@ -19,6 +19,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AccountOptionList from '../components/AccountOptionList';
 
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+
 import Hidden from '@material-ui/core/Hidden';
 const useStyles = makeStyles({
     root: {
@@ -26,10 +29,10 @@ const useStyles = makeStyles({
         marginTop: '16px',
     },
 });
-export default function MyAccount() {
+export default function MyAccount(props) {
     const classes = useStyles();
     const [value, setValue] = React.useState('0');
-
+    console.log(props);
     let output;
     if (value === '0') {
         output = <ProfileCard />;
@@ -154,4 +157,32 @@ export default function MyAccount() {
             </Box>
         </div>
     );
+}
+
+export async function getServerSideProps(context) {
+    // let haha_ecom_bangla_token;
+    // if (typeof window !== 'undefined') {
+    //     haha_ecom_bangla_token = localStorage.getItem('haha_ecom_bangla_token');
+    // }
+    // const config = {
+    //     headers: {
+    //         Authorization: 'Token ' + haha_ecom_bangla_token,
+    //     },
+    // };
+    let data;
+    let error;
+    await axios
+        .get('http://localhost:8000/products/')
+        .then((res) => {
+            data = res.data;
+        })
+        .catch((err) => {
+            error = err.response;
+        });
+    return {
+        props: {
+            data: JSON.parse(JSON.stringify(data)),
+            // error: JSON.parse(JSON.stringify(error)),
+        },
+    };
 }
