@@ -30,9 +30,21 @@ export default function MyAccount() {
     const classes = useStyles();
     const [value, setValue] = React.useState('0');
 
+    let output;
+    if (value === '0') {
+        output = <ProfileCard />;
+    } else if (value === '1') {
+        output = <UpdateAccount />;
+    } else if (value === '2') {
+        output = <PasswordChange />;
+    } else {
+        output = <Logout />;
+    }
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
     return (
         <div>
             {' '}
@@ -122,6 +134,7 @@ export default function MyAccount() {
                                         <Tab label='Logout' value='3' />
                                     </Tabs>
                                 </Paper>
+
                                 <Box
                                     mt={2}
                                     p={2}
@@ -129,43 +142,7 @@ export default function MyAccount() {
                                     borderRadius='borderRadius'
                                     style={{ backgroundColor: 'white' }}
                                 >
-                                    <ProfileCard />
-                                </Box>
-                                <Box
-                                    mt={2}
-                                    p={2}
-                                    boxShadow={1}
-                                    borderRadius='borderRadius'
-                                    style={{ backgroundColor: 'white' }}
-                                >
-                                    <UpdateAccount />
-                                </Box>
-                                <Box
-                                    mt={2}
-                                    p={2}
-                                    boxShadow={1}
-                                    borderRadius='borderRadius'
-                                    style={{ backgroundColor: 'white' }}
-                                >
-                                    <PasswordChange />
-                                </Box>
-                                <Box
-                                    mt={2}
-                                    p={2}
-                                    boxShadow={1}
-                                    borderRadius='borderRadius'
-                                    style={{ backgroundColor: 'white' }}
-                                >
-                                    <Logout />
-                                </Box>
-                                <Box
-                                    mt={2}
-                                    p={2}
-                                    boxShadow={1}
-                                    borderRadius='borderRadius'
-                                    style={{ backgroundColor: 'white' }}
-                                >
-                                    <Typography>{value}</Typography>
+                                    {output}
                                 </Box>
                             </Grid>
                         </Grid>
