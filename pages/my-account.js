@@ -34,13 +34,13 @@ const useStyles = makeStyles({
 });
 
 export default function MyAccount(props) {
-    // const router = useRouter();
+    const router = useRouter();
 
-    // useEffect(() => {
-    //     if (!Cookies.get('haha_ecom_bangla_token')) {
-    //         router.push('/login');
-    //     }
-    // }, []);
+    useEffect(() => {
+        if (!Cookies.get('haha_ecom_bangla_token')) {
+            router.push('/login');
+        }
+     }, []);
 
     const classes = useStyles();
     const [value, setValue] = React.useState('0');
@@ -184,17 +184,17 @@ const fetchData = async (config) =>
             user: null,
         }));
 
-export async function getServerSideProps({ req, res }) {
+export async function getServerSideProps({ req }) {
     const cookies = parseCookies(req);
     const haha_ecom_bangla_token = cookies.haha_ecom_bangla_token
         ? cookies.haha_ecom_bangla_token
         : null;
     // when there have no cookies in browser it will return undefined that is not serializable, thats why set it as null
-    if (req && !haha_ecom_bangla_token) {
-        console.log('server side');
-        res.writeHead(302, { Location: `/login` });
-        res.end();
-    }
+ //   if (req && !haha_ecom_bangla_token) {
+//        console.log('server side');
+ //       res.writeHead(302, { Location: `/login` });
+ //       res.end();
+ //   }
     const config = {
         headers: {
             Authorization: 'Token ' + haha_ecom_bangla_token,

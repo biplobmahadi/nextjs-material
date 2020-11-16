@@ -31,6 +31,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Box from '@material-ui/core/Box';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import Cookies from 'js-cookie';
@@ -61,13 +63,14 @@ const useLogout = () => {
 
     const dispatch = useDispatch();
     // need to show msg for email already used and password error with payload
-    const logout = () => {
+    const logout = (router) => {
         axios
             .post('http://localhost:8000/rest-auth/logout/')
             .then((res) => {
                 console.log(res.data);
                 dispatch({ type: 'LOGOUT', payload: res.data });
                 Cookies.remove('haha_ecom_bangla_token');
+router.push('/login');
             })
             .catch((err) => console.log(err.response));
     };
@@ -75,6 +78,7 @@ const useLogout = () => {
 };
 
 export default function ButtonAppBar() {
+const router = useRouter();
     const classes = useStyles();
     const { token, logout } = useLogout();
     // for menu
@@ -803,7 +807,7 @@ export default function ButtonAppBar() {
                         </Link>
                         <Divider variant='middle' />
                         <Link href='/'>
-                            <MenuItem onClick={logout}>
+                            <MenuItem onClick={(router)=>logout(router)}>
                                 <InboxIcon fontSize='small' />
                                 <Box ml={2}>Logout</Box>
                             </MenuItem>
