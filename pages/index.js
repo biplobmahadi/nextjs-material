@@ -18,8 +18,19 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import axios from 'axios';
 
-export default function Index() {
+export default function Index({ categories, error }) {
+    console.log({ categories, error });
+
+    let categoryNameTop = categories.filter(
+        (category) => category.category_name === 'top'
+    );
+    let subCategoryNameShirt = categoryNameTop[0].sub_category.filter(
+        (subCategory) => subCategory.sub_category_name === 'shirt'
+    );
+    let products = subCategoryNameShirt[0].product.slice(0, 6);
+    console.log('product', products);
     return (
         <div>
             <Head>
@@ -124,6 +135,20 @@ export default function Index() {
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
+                            {products &&
+                                products.map((product) => (
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={6}
+                                        md={4}
+                                        lg={3}
+                                        xl={2}
+                                    >
+                                        <ProductCard product={product} />
+                                    </Grid>
+                                ))}
+                            {/*                             
                             <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                                 <ProductCard />
                             </Grid>
@@ -138,10 +163,7 @@ export default function Index() {
                             </Grid>
                             <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                                 <ProductCard />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </Box>
                 </Box>
@@ -204,4 +226,26 @@ export default function Index() {
             </Box>
         </div>
     );
+}
+
+const fetchData = async () =>
+    await axios
+        .get('http://localhost:8000/categories/')
+        .then((res) => ({
+            categories: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
+export async function getStaticProps() {
+    const data = await fetchData();
+
+    return {
+        props: data,
+        // Next.js will attempt to re-generate the page:
+        // - When a request comes in
+        // - At most once every second
+        revalidate: 1, // In seconds
+    };
 }

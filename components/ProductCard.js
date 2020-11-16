@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '../src/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -22,11 +22,11 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ProductCard() {
+export default function ProductCard({ product }) {
     const classes = useStyles();
-
+    console.log('prop object', product);
     return (
-        <Link href='/product'>
+        <Link href={`/${product && product.slug}`}>
             <Card className={classes.root}>
                 <CardActionArea>
                     <Box className={classes.imgHover} p={2}>
@@ -41,11 +41,13 @@ export default function ProductCard() {
                     </Box>
                     <CardContent>
                         <Typography gutterBottom>
-                            <Box textAlign='center'>Narrow Ti-Shirt</Box>
+                            <Box textAlign='center'>
+                                {product && product.name}
+                            </Box>
                         </Typography>
                         <Typography gutterBottom variant='h6' component='h6'>
                             <Box textAlign='center' color='secondary.main'>
-                                Tk. 220
+                                Tk. {product && product.price}
                             </Box>
                         </Typography>
                     </CardContent>

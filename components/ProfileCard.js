@@ -14,7 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import AccountOptionList from '../components/AccountOptionList';
 
 import Divider from '@material-ui/core/Divider';
-export default function OrderCard() {
+export default function ProfileCard({ user }) {
     return (
         <Box>
             <Grid
@@ -34,7 +34,7 @@ export default function OrderCard() {
                 <Grid item>
                     <Box px={3} py={1}>
                         {' '}
-                        <Typography>Mahadi</Typography>
+                        <Typography>{user && user.first_name}</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -58,7 +58,7 @@ export default function OrderCard() {
                 <Grid item>
                     <Box px={3} py={1}>
                         {' '}
-                        <Typography>Biplob Hasan</Typography>
+                        <Typography>{user && user.last_name}</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -81,7 +81,7 @@ export default function OrderCard() {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>01742598234</Typography>
+                        <Typography>{user && user.phone}</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -104,7 +104,7 @@ export default function OrderCard() {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>biplob@example.com</Typography>
+                        <Typography>{user && user.email}</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -127,7 +127,7 @@ export default function OrderCard() {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>Dhaka</Typography>
+                        <Typography>{user && user.division}</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -150,7 +150,7 @@ export default function OrderCard() {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>Narsingdi</Typography>
+                        <Typography>{user && user.city}</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -173,7 +173,7 @@ export default function OrderCard() {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>Belabo</Typography>
+                        <Typography>{user && user.area}</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -196,7 +196,7 @@ export default function OrderCard() {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>Harishangan</Typography>
+                        <Typography>{user && user.address}</Typography>
                     </Box>
                 </Grid>
             </Grid>

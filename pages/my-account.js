@@ -33,22 +33,22 @@ const useStyles = makeStyles({
     },
 });
 
-export default function MyAccount(props) {
+export default function MyAccount({ user, error }) {
     const router = useRouter();
 
     useEffect(() => {
         if (!Cookies.get('haha_ecom_bangla_token')) {
             router.push('/login');
         }
-     }, []);
+    }, []);
 
     const classes = useStyles();
     const [value, setValue] = React.useState('0');
-    console.log(props);
+    console.log({ user, error });
     console.log('cook', Cookies.get('haha_ecom_bangla_token'));
     let output;
     if (value === '0') {
-        output = <ProfileCard />;
+        output = <ProfileCard user={user && user} />;
     } else if (value === '1') {
         output = <UpdateAccount />;
     } else if (value === '2') {
@@ -95,7 +95,9 @@ export default function MyAccount(props) {
                             style={{ borderRadius: '50%' }}
                         />
                         <Typography variant='h5'>
-                            <strong>BIPLOB MAHADI</strong>
+                            <strong>
+                                {user && user.first_name + ' ' + user.last_name}
+                            </strong>
                         </Typography>
                     </Box>
                     <Box mt={3}>
@@ -174,14 +176,12 @@ export default function MyAccount(props) {
 
 const fetchData = async (config) =>
     await axios
-        .get('http://localhost:8000/rest-auth/user/')
+        .get('http://localhost:8000/rest-auth/user/', config)
         .then((res) => ({
-            error: false,
             user: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
-            user: null,
         }));
 
 export async function getServerSideProps({ req }) {
@@ -190,11 +190,7 @@ export async function getServerSideProps({ req }) {
         ? cookies.haha_ecom_bangla_token
         : null;
     // when there have no cookies in browser it will return undefined that is not serializable, thats why set it as null
- //   if (req && !haha_ecom_bangla_token) {
-//        console.log('server side');
- //       res.writeHead(302, { Location: `/login` });
- //       res.end();
- //   }
+
     const config = {
         headers: {
             Authorization: 'Token ' + haha_ecom_bangla_token,
@@ -202,6 +198,6 @@ export async function getServerSideProps({ req }) {
     };
     const data = await fetchData(config);
     return {
-        props: { data, config, cookies: haha_ecom_bangla_token },
+        props: data,
     };
 }
