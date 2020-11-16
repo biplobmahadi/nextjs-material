@@ -20,21 +20,170 @@ import RedeemIcon from '@material-ui/icons/Redeem';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 import ReactImageMagnify from 'react-image-magnify';
 import Zoom from 'react-medium-image-zoom';
+
+import Cookies from 'js-cookie';
+import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
 
 import ReactImageZoom from 'react-image-zoom';
 import { Button } from '@material-ui/core';
 
-export default function Product({ products, error }) {
+// const config = {
+//     headers: {
+//         Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
+//     },
+// };
+
+export default function Product({ dataProduct, myBag, config }) {
     const [value, setValue] = React.useState('/s1.jpg');
+    const [quantity, setQuantity] = React.useState(1);
+
     const handleImageClick = (value) => {
         setValue(value);
     };
-    console.log('here', { products, error });
+
+    let { product, error } = dataProduct;
+    console.log('here', { dataProduct, myBag, config });
+    console.log('here product', product);
+
+    const handleAddToBag = () => {
+        let addToBag = {
+            product: product.id,
+            quantity: quantity,
+            cost: product.price * quantity,
+        };
+
+        // if bag complete but order not complete then you can't create new bag
+        // that's why this filter
+        // if (!this.state.orderId){
+
+        let productExitsInBag;
+        if (myBag) {
+            productExitsInBag = myBag.product.filter(
+                (filterProduct) => filterProduct.product.id === product.id
+            );
+        }
+        console.log('productExitsInBag', productExitsInBag);
+        // I use productExitsInBag.length !== 0, because [] == true.. if [] then loop will continue
+        if (productExitsInBag && productExitsInBag.length !== 0) {
+            axios
+                .patch(
+                    `http://localhost:8000/product-with-quantity/${productExitsInBag[0].id}/`,
+                    {
+                        quantity: productExitsInBag[0].quantity + 1,
+                        cost: productExitsInBag[0].cost + product.price,
+                    },
+                    config
+                )
+                .then((res) => {
+                    console.log(res.data);
+                    let pk = [];
+                    myBag.product.map(
+                        (product) => (pk = pk.concat(product.id))
+                    );
+                    console.log(pk);
+                    axios
+                        .patch(
+                            `http://localhost:8000/my-bag/${myBag.id}/`,
+                            {
+                                product: pk,
+                                sub_total: myBag.sub_total + product.price,
+                            },
+                            config
+                        )
+                        .then((res) => {
+                            console.log(res.data);
+                            axios
+                                .get(
+                                    `http://localhost:8000/my-bag/${res.data.id}/`,
+                                    config
+                                )
+                                .then((res) => {
+                                    // new myBag need to add to state
+                                    myBag = res.data;
+                                })
+                                .catch((err) => console.log(err.response));
+                        })
+                        .catch((err) => console.log(err.response));
+                })
+                .catch((err) => console.log(err.response));
+        } else {
+            axios
+                .post(
+                    'http://localhost:8000/product-with-quantity/',
+                    addToBag,
+                    config
+                )
+                .then((res) => {
+                    console.log('bag nai - pwq', res.data);
+                    if (myBag && myBag.length !== 0) {
+                        // console.log(res.data.id, myBag.product.id, myBag.product) .. middle is not correct
+                        let pk = [];
+                        myBag.product.map(
+                            (product) => (pk = pk.concat(product.id))
+                        );
+                        console.log('bag e onno product ase - pk', pk);
+                        axios
+                            .patch(
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                {
+                                    product: pk.concat(res.data.id),
+                                    sub_total: myBag.sub_total + res.data.cost,
+                                },
+                                config
+                            )
+                            .then((res) => {
+                                console.log(
+                                    'bag e product ase - patch bag',
+                                    res.data
+                                );
+                                axios
+                                    .get(
+                                        `http://localhost:8000/my-bag/${res.data.id}/`,
+                                        config
+                                    )
+                                    .then((res) => {
+                                        // new myBag need to add to state
+                                        myBag = res.data;
+                                    })
+                                    .catch((err) => console.log(err.response));
+                            })
+                            .catch((err) => console.log(err.response));
+                    } else {
+                        axios
+                            .post(
+                                'http://localhost:8000/my-bag/',
+                                {
+                                    product: [res.data.id],
+                                    sub_total: res.data.cost,
+                                },
+                                config
+                            )
+                            .then((res) => {
+                                console.log(res.data);
+                                axios
+                                    .get(
+                                        `http://localhost:8000/my-bag/${res.data.id}/`,
+                                        config
+                                    )
+                                    .then((res) => {
+                                        // new myBag need to add to state
+                                        myBag = res.data;
+                                    })
+                                    .catch((err) => console.log(err.response));
+                            })
+                            .catch((err) => console.log(err.response));
+                    }
+                })
+                .catch((err) => console.log(err.response));
+        }
+    };
+
     return (
         <div>
             <Head>
-                <title>Product Details - {products && products.name}</title>
+                <title>Product Details - {product && product.name}</title>
                 <link rel='icon' href='/a.ico' />
                 <link
                     rel='stylesheet'
@@ -124,7 +273,7 @@ export default function Product({ products, error }) {
                                 style={{ backgroundColor: 'white' }}
                             >
                                 <Typography variant='h5' component='h5'>
-                                    <strong>{products && products.name}</strong>
+                                    <strong>{product && product.name}</strong>
                                 </Typography>
                                 <Box pt={1}>
                                     <Grid container alignItems='center'>
@@ -151,18 +300,19 @@ export default function Product({ products, error }) {
                                 <Box py={3}>
                                     <Typography>
                                         <strong>Product Code:</strong>{' '}
-                                        {products && products.code}
+                                        {product && product.code}
                                     </Typography>
 
                                     <Typography>
-                                        <strong>Brand:</strong> {products && products.brand.brand_name}
+                                        <strong>Brand:</strong>{' '}
+                                        {product && product.brand.brand_name}
                                     </Typography>
                                 </Box>
 
                                 <Box>
                                     <Typography variant='h4' component='h4'>
                                         <strong>
-                                            Tk. {products && products.price}
+                                            Tk. {product && product.price}
                                         </strong>
                                     </Typography>
                                 </Box>
@@ -207,7 +357,11 @@ export default function Product({ products, error }) {
                                     </Grid>
                                 </Box>
                                 <Box pt={3}>
-                                    <Button variant='contained' color='primary'>
+                                    <Button
+                                        variant='contained'
+                                        color='primary'
+                                        onClick={handleAddToBag}
+                                    >
                                         <Box textAlign='center' px={4}>
                                             Add To Bag
                                         </Box>
@@ -337,37 +491,81 @@ export default function Product({ products, error }) {
     );
 }
 
-const fetchDataForPaths = async () =>
-    await axios
-        .get('http://localhost:8000/products/')
-        .then((res) => ({
-            products: res.data,
-        }))
-        .catch((err) => ({
-            error: err.response.data,
-        }));
-const fetchDataForProps = async (params) =>
+// const fetchDataForPaths = async () =>
+//     await axios
+//         .get('http://localhost:8000/products/')
+//         .then((res) => ({
+//             products: res.data,
+//         }))
+//         .catch((err) => ({
+//             error: err.response.data,
+//         }));
+// const fetchDataForProps = async (params) =>
+//     await axios
+//         .get(`http://localhost:8000/products/${params.slug}/`)
+//         .then((res) => ({
+//             products: res.data,
+//         }))
+//         .catch((err) => ({
+//             error: err.response.data,
+//         }));
+// res data products must be same name for paths and props
+
+const fetchDataForProducts = async (params) =>
     await axios
         .get(`http://localhost:8000/products/${params.slug}/`)
         .then((res) => ({
-            products: res.data,
+            product: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
         }));
-// res data products must be same name for paths and props
-export async function getStaticPaths() {
-    const data = await fetchDataForPaths();
 
-    const paths = data.products.map((product) => ({
-        params: { slug: product.slug },
-    }));
+const fetchDataForBag = async (config) =>
+    await axios
+        .get(`http://localhost:8000/my-bag/`, config)
+        .then((res) => ({
+            bag: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
 
-    return { paths, fallback: true };
-}
+// export async function getStaticPaths() {
+//     const data = await fetchDataForPaths();
 
-export async function getStaticProps({ params }) {
-    const data = await fetchDataForProps(params);
+//     const paths = data.products.map((product) => ({
+//         params: { slug: product.slug },
+//     }));
 
-    return { props: data, revalidate: 1 };
+//     return { paths, fallback: true };
+// }
+
+export async function getServerSideProps({ req, params }) {
+    const cookies = parseCookies(req);
+    const haha_ecom_bangla_token = cookies.haha_ecom_bangla_token
+        ? cookies.haha_ecom_bangla_token
+        : null;
+    // when there have no cookies in browser it will return undefined that is not serializable, thats why set it as null
+
+    const config = {
+        headers: {
+            Authorization: 'Token ' + haha_ecom_bangla_token,
+        },
+    };
+    const dataProduct = await fetchDataForProducts(params);
+    const dataBag = await fetchDataForBag(config);
+    let myBag = null;
+    if (dataBag.bag) {
+        let allMyBag = dataBag.bag;
+        let myBagNotSendToMyOrder = allMyBag.filter(
+            (myBag) => myBag.is_send_to_my_order === false
+        );
+        // console.log(myBagNotSendToMyOrder[0])
+        if (myBagNotSendToMyOrder[0]) {
+            myBag = myBagNotSendToMyOrder[0];
+        }
+    }
+
+    return { props: { dataProduct, myBag, config } };
 }

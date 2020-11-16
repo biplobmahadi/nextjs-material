@@ -6,7 +6,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import Link from 'next/link';
+import Link from '../src/Link';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -68,12 +68,14 @@ export default function MainFooter() {
                                     <Link href='/payment'>
                                         <Typography>Offers</Typography>
                                     </Link>
-                                    <Link href='/login'>
-                                        <Typography>Logo Melaa</Typography>
-                                    </Link>
-                                    <Link href='/register'>
-                                        <Typography>Music Show</Typography>
-                                    </Link>
+
+                                    <Typography>
+                                        <Link href='/login'>Logo Melaa</Link>
+                                    </Typography>
+
+                                    <Typography>
+                                        <Link href='/register'>Music Show</Link>
+                                    </Typography>
                                 </Box>
                             </Box>
                         </Grid>
