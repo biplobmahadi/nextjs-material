@@ -22,7 +22,8 @@ import Cookies from 'js-cookie';
 import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Hidden from '@material-ui/core/Hidden';
 
 const useStyles = makeStyles({
@@ -33,9 +34,18 @@ const useStyles = makeStyles({
 });
 
 export default function MyAccount(props) {
+    // const router = useRouter();
+
+    // useEffect(() => {
+    //     if (!Cookies.get('haha_ecom_bangla_token')) {
+    //         router.push('/login');
+    //     }
+    // }, []);
+
     const classes = useStyles();
     const [value, setValue] = React.useState('0');
     console.log(props);
+    console.log('cook', Cookies.get('haha_ecom_bangla_token'));
     let output;
     if (value === '0') {
         output = <ProfileCard />;
@@ -162,26 +172,6 @@ export default function MyAccount(props) {
     );
 }
 
-// const fetchData = async () => {
-//     const config = {
-//         headers: {
-//             Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
-//         },
-//     };
-//     await axios
-//         .get('http://localhost:8000/products/')
-//         .then((res) => ({
-//             users: res.data,
-//         }))
-//         .catch((err) => ({
-//             error: err.response,
-//         }));
-// };
-// const config = {
-//     headers: {
-//         Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
-//     },
-// };
 const fetchData = async (config) =>
     await axios
         .get('http://localhost:8000/rest-auth/user/')
@@ -194,21 +184,24 @@ const fetchData = async (config) =>
             user: null,
         }));
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, res }) {
     const cookies = parseCookies(req);
+    const haha_ecom_bangla_token = cookies.haha_ecom_bangla_token
+        ? cookies.haha_ecom_bangla_token
+        : null;
+    // when there have no cookies in browser it will return undefined that is not serializable, thats why set it as null
+    if (req && !haha_ecom_bangla_token) {
+        console.log('server side');
+        res.writeHead(302, { Location: `/login` });
+        res.end();
+    }
     const config = {
         headers: {
-            Authorization: 'Token ' + cookies.haha_ecom_bangla_token,
+            Authorization: 'Token ' + haha_ecom_bangla_token,
         },
     };
     const data = await fetchData(config);
     return {
-        props: { data, config, cookies: cookies.haha_ecom_bangla_token },
+        props: { data, config, cookies: haha_ecom_bangla_token },
     };
-    // return {
-    //     props: {
-    //         data: JSON.stringify(data),
-    //         // error: JSON.parse(JSON.stringify(error)),
-    //     },
-    // };
 }

@@ -20,6 +20,8 @@ import Alert from '@material-ui/lab/Alert';
 import Link from '../../src/Link';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 
 const useStyles = makeStyles((theme) => ({
@@ -47,13 +49,14 @@ const useLogin = () => {
 
     const dispatch = useDispatch();
     // need to show msg for user not register yet or some other msg
-    const login = (userInfo, setSubmitting) => {
+    const login = (userInfo, setSubmitting, router) => {
         axios
             .post('http://localhost:8000/rest-auth/login/', userInfo)
             .then((res) => {
                 console.log(res.data);
                 dispatch({ type: 'LOGIN', payload: res.data });
                 Cookies.set('haha_ecom_bangla_token', res.data.key);
+                router.push('/my-account');
                 setSubmitting(false);
             })
             .catch((err) => {
@@ -65,6 +68,15 @@ const useLogin = () => {
 };
 
 export default function SignupForm() {
+    const router = useRouter();
+    useEffect(() => {
+        if (Cookies.get('haha_ecom_bangla_token')) {
+            router.push('/my-account');
+        } else {
+            // Prefetch the dashboard page
+            router.prefetch('/my-account');
+        }
+    }, []);
     const classes = useStyles();
     const { token, login } = useLogin();
 
@@ -106,7 +118,7 @@ export default function SignupForm() {
                             password: Yup.string().required('Required'),
                         })}
                         onSubmit={(values, { setSubmitting }) => {
-                            login(values, setSubmitting);
+                            login(values, setSubmitting, router);
                         }}
                     >
                         {({ isSubmitting }) => (
