@@ -41,7 +41,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ProductDetails() {
+export default function ProductDetails({ product }) {
     const [value, setValue] = React.useState(2);
     const [hover, setHover] = React.useState(-1);
     const classes = useStyles();
@@ -78,7 +78,9 @@ export default function ProductDetails() {
                             borderRadius='borderRadius'
                             style={{ backgroundColor: 'white' }}
                         >
-                            <Typography variant='h4'>Video Details</Typography>
+                            <Typography variant='h4'>
+                                Video Details - {product && product.name}
+                            </Typography>
                             <Box mt={2}>
                                 <Divider variant='middle' />
                             </Box>
@@ -445,9 +447,9 @@ export default function ProductDetails() {
                                 borderRadius='borderRadius'
                             >
                                 <Box>
-                                    <Review />
+                                    <Review product={product && product} />
                                 </Box>
-                                <Box pt={8}>
+                                {/* <Box pt={8}>
                                     <Grid
                                         container
                                         direction='row'
@@ -497,80 +499,136 @@ export default function ProductDetails() {
                                             </Button>
                                         </Grid>
                                     </Grid>
-                                </Box>
+                                </Box> */}
                             </Box>
                         </Grid>
                     </Grid>
                 </Box>
-                <Box
-                    p={2}
-                    mt={2}
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
-                >
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={12} md={12} lg={3} xl={2}>
-                            <Box textAlign='center'>
-                                <img
-                                    src='/aa.jpg'
-                                    alt=''
-                                    srcset=''
-                                    height='50'
-                                    width='50'
-                                    style={{ borderRadius: '50%' }}
-                                />
-                                <Typography variant='h6' component='h6'>
-                                    BIPLOB MAHADI
-                                </Typography>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={7} xl={8}>
-                            <Box pr={2} pl={1}>
-                                <Box>
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                </Box>
-                                <Typography>
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipisicing elit. Nihil porro quaerat totam
-                                    nesciunt recusandae deserunt fugit corporis
-                                    esse. Architecto neque molestias excepturi a
-                                    accusamus labore.
-                                </Typography>
-                                <Box pt={3}>
-                                    <Typography variant='p'>
-                                        19 February, 2020.
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={2} xl={2}>
-                            <Box px={3}>
-                                <Box>
-                                    <Button
-                                        size='small'
-                                        startIcon={<ThumbUpIcon />}
-                                        fullWidth
-                                    >
-                                        Agreed (12)
-                                    </Button>
-                                </Box>
-                                <Box mt={1}>
-                                    <Button
-                                        fullWidth
-                                        size='small'
-                                        startIcon={<ThumbDownIcon />}
-                                    >
-                                        Disagreed (02)
-                                    </Button>
-                                </Box>
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </Box>
+
+                {product.review &&
+                    product.review.length !== 0 &&
+                    product.review.map((review) => (
+                        <Box
+                            p={2}
+                            mt={2}
+                            borderRadius='borderRadius'
+                            style={{ backgroundColor: 'white' }}
+                        >
+                            <Grid container spacing={2}>
+                                <Grid
+                                    item
+                                    xs={12}
+                                    sm={12}
+                                    md={12}
+                                    lg={3}
+                                    xl={2}
+                                >
+                                    <Box textAlign='center'>
+                                        <img
+                                            src='/aa.jpg'
+                                            alt=''
+                                            srcset=''
+                                            height='50'
+                                            width='50'
+                                            style={{ borderRadius: '50%' }}
+                                        />
+                                        <Typography variant='h6' component='h6'>
+                                            {review.user.first_name +
+                                                review.user.last_name}
+                                        </Typography>
+                                    </Box>
+                                </Grid>
+                                <Grid
+                                    item
+                                    xs={12}
+                                    sm={12}
+                                    md={12}
+                                    lg={7}
+                                    xl={8}
+                                >
+                                    <Box pr={2} pl={1}>
+                                        {review.rating_star === 1.0 && (
+                                            <Box>
+                                                <StarIcon color='secondary' />
+                                            </Box>
+                                        )}
+
+                                        {review.rating_star === 2.0 && (
+                                            <Box>
+                                                <StarIcon color='secondary' />
+                                                <StarIcon color='secondary' />
+                                            </Box>
+                                        )}
+                                        {review.rating_star === 3.0 && (
+                                            <Box>
+                                                <StarIcon color='secondary' />
+                                                <StarIcon color='secondary' />
+                                                <StarIcon color='secondary' />
+                                            </Box>
+                                        )}
+                                        {review.rating_star === 4.0 && (
+                                            <Box>
+                                                <StarIcon color='secondary' />
+                                                <StarIcon color='secondary' />
+                                                <StarIcon color='secondary' />
+                                                <StarIcon color='secondary' />
+                                            </Box>
+                                        )}
+                                        {review.rating_star === 5.0 && (
+                                            <Box>
+                                                <StarIcon color='secondary' />
+                                                <StarIcon color='secondary' />
+                                                <StarIcon color='secondary' />
+                                                <StarIcon color='secondary' />
+                                                <StarIcon color='secondary' />
+                                            </Box>
+                                        )}
+
+                                        <Typography>
+                                            {review.review_detail}
+                                        </Typography>
+                                        <Box pt={3}>
+                                            <Typography variant='p'>
+                                                19 February, 2020.
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                </Grid>
+                                <Grid
+                                    item
+                                    xs={12}
+                                    sm={12}
+                                    md={12}
+                                    lg={2}
+                                    xl={2}
+                                >
+                                    <Box px={3}>
+                                        <Box>
+                                            <Button
+                                                size='small'
+                                                startIcon={<ThumbUpIcon />}
+                                                fullWidth
+                                            >
+                                                Agreed (
+                                                {review.reviewcount.agreed})
+                                            </Button>
+                                        </Box>
+                                        <Box mt={1}>
+                                            <Button
+                                                fullWidth
+                                                size='small'
+                                                startIcon={<ThumbDownIcon />}
+                                            >
+                                                Disagreed (
+                                                {review.reviewcount.disagreed})
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    ))}
+
                 <Box
                     p={2}
                     mt={2}

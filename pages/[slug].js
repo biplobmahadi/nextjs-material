@@ -482,7 +482,7 @@ export default function Product({ dataProduct, myBag, config }) {
                     </Grid>
                 </Box>
 
-                <ProductDetails />
+                <ProductDetails product={product && product} />
             </Box>
             <Box mx={3} mt={6}>
                 <MainFooter />
