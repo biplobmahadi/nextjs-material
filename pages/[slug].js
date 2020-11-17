@@ -35,7 +35,7 @@ import { Button } from '@material-ui/core';
 //     },
 // };
 
-export default function Product({ dataProduct, myBag, config }) {
+export default function Product({ dataProduct, myBag, config, dataUser }) {
     const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
 
@@ -43,9 +43,12 @@ export default function Product({ dataProduct, myBag, config }) {
         setValue(value);
     };
 
-    let { product, error } = dataProduct;
+    let { product } = dataProduct;
+    let { user } = dataUser;
+
     console.log('here', { dataProduct, myBag, config });
     console.log('here product', product);
+    console.log('here user', user);
 
     const handleAddToBag = () => {
         let addToBag = {
@@ -482,7 +485,10 @@ export default function Product({ dataProduct, myBag, config }) {
                     </Grid>
                 </Box>
 
-                <ProductDetails product={product && product} />
+                <ProductDetails
+                    product={product && product}
+                    user={user && user}
+                />
             </Box>
             <Box mx={3} mt={6}>
                 <MainFooter />
@@ -531,6 +537,16 @@ const fetchDataForBag = async (config) =>
             error: err.response.data,
         }));
 
+const fetchDataForUser = async (config) =>
+    await axios
+        .get('http://localhost:8000/rest-auth/user/', config)
+        .then((res) => ({
+            user: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
 // export async function getStaticPaths() {
 //     const data = await fetchDataForPaths();
 
@@ -555,6 +571,8 @@ export async function getServerSideProps({ req, params }) {
     };
     const dataProduct = await fetchDataForProducts(params);
     const dataBag = await fetchDataForBag(config);
+    const dataUser = await fetchDataForUser(config);
+
     let myBag = null;
     if (dataBag.bag) {
         let allMyBag = dataBag.bag;
@@ -567,5 +585,5 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
-    return { props: { dataProduct, myBag, config } };
+    return { props: { dataProduct, myBag, config, dataUser } };
 }

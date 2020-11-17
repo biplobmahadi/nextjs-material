@@ -41,10 +41,91 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ProductDetails({ product }) {
+export default function ProductDetails({ product, user }) {
     const [value, setValue] = React.useState(2);
     const [hover, setHover] = React.useState(-1);
     const classes = useStyles();
+
+    const handleAgree = () => (event) => {
+        const review = JSON.parse(event.target.value);
+        console.log('kire', user, review);
+        // user who own this review, can't make agreed
+        if (
+            !review.reviewcount.user.includes(user.pk) &&
+            review.user.pk !== user.pk
+        ) {
+            const reviewCount = {
+                agreed: review.reviewcount.agreed + 1,
+                user: review.reviewcount.user.concat(user.pk),
+            };
+            axios
+                .patch(
+                    `http://localhost:8000/reviews-count-update/${review.reviewcount.id}/`,
+                    reviewCount,
+                    config
+                )
+                .then((res) => {
+                    axios
+                        .get('http://localhost:8000/reviews-list/')
+                        .then((res) => {
+                            let filteredReviews;
+                            filteredReviews = res.data.filter(
+                                (review) => review.product === product.id
+                            );
+                            // here I use == becuase one is int another is string
+                            // this.setState({ reviews: filteredReviews });
+                            console.log('review Now agreed:', filteredReviews);
+                        })
+                        .catch((err) => console.log(err.response));
+                })
+                .catch((err) => console.log(err.response));
+        } else {
+            console.log('you cant agree with your review');
+        }
+    };
+
+    const handleDisagree = () => (event) => {
+        const review = JSON.parse(event.target.value);
+
+        console.log('kire', user, review);
+        // user who own this review, can't make disagreed
+        if (
+            !review.reviewcount.user.includes(user.pk) &&
+            review.user.pk !== user.pk
+        ) {
+            const reviewCount = {
+                disagreed: review.reviewcount.disagreed + 1,
+                user: review.reviewcount.user.concat(user.pk),
+            };
+
+            axios
+                .patch(
+                    `http://localhost:8000/reviews-count-update/${review.reviewcount.id}/`,
+                    reviewCount,
+                    config
+                )
+                .then((res) => {
+                    axios
+                        .get('http://localhost:8000/reviews-list/')
+                        .then((res) => {
+                            let filteredReviews;
+                            filteredReviews = res.data.filter(
+                                (review) => review.product === product.id
+                            );
+                            // here I use == becuase one is int another is string
+                            // this.setState({ reviews: filteredReviews });
+                            console.log(
+                                'review Now disagreed:',
+                                filteredReviews
+                            );
+                        })
+                        .catch((err) => console.log(err.response));
+                })
+                .catch((err) => console.log(err.response));
+        } else {
+            console.log('you cant disagree with your review');
+        }
+    };
 
     return (
         <div>
@@ -78,9 +159,7 @@ export default function ProductDetails({ product }) {
                             borderRadius='borderRadius'
                             style={{ backgroundColor: 'white' }}
                         >
-                            <Typography variant='h4'>
-                                Video Details - {product && product.name}
-                            </Typography>
+                            <Typography variant='h4'>Video Details</Typography>
                             <Box mt={2}>
                                 <Divider variant='middle' />
                             </Box>
@@ -533,8 +612,9 @@ export default function ProductDetails({ product }) {
                                             style={{ borderRadius: '50%' }}
                                         />
                                         <Typography variant='h6' component='h6'>
-                                            {review.user.first_name +
-                                                review.user.last_name}
+                                            {review.user.first_name.toUpperCase() +
+                                                ' ' +
+                                                review.user.last_name.toUpperCase()}
                                         </Typography>
                                     </Box>
                                 </Grid>
@@ -550,6 +630,10 @@ export default function ProductDetails({ product }) {
                                         {review.rating_star === 1.0 && (
                                             <Box>
                                                 <StarIcon color='secondary' />
+                                                <StarBorderIcon color='secondary' />
+                                                <StarBorderIcon color='secondary' />
+                                                <StarBorderIcon color='secondary' />
+                                                <StarBorderIcon color='secondary' />
                                             </Box>
                                         )}
 
@@ -557,6 +641,9 @@ export default function ProductDetails({ product }) {
                                             <Box>
                                                 <StarIcon color='secondary' />
                                                 <StarIcon color='secondary' />
+                                                <StarBorderIcon color='secondary' />
+                                                <StarBorderIcon color='secondary' />
+                                                <StarBorderIcon color='secondary' />
                                             </Box>
                                         )}
                                         {review.rating_star === 3.0 && (
@@ -564,6 +651,8 @@ export default function ProductDetails({ product }) {
                                                 <StarIcon color='secondary' />
                                                 <StarIcon color='secondary' />
                                                 <StarIcon color='secondary' />
+                                                <StarBorderIcon color='secondary' />
+                                                <StarBorderIcon color='secondary' />
                                             </Box>
                                         )}
                                         {review.rating_star === 4.0 && (
@@ -572,6 +661,7 @@ export default function ProductDetails({ product }) {
                                                 <StarIcon color='secondary' />
                                                 <StarIcon color='secondary' />
                                                 <StarIcon color='secondary' />
+                                                <StarBorderIcon color='secondary' />
                                             </Box>
                                         )}
                                         {review.rating_star === 5.0 && (
@@ -603,101 +693,80 @@ export default function ProductDetails({ product }) {
                                     xl={2}
                                 >
                                     <Box px={3}>
-                                        <Box>
-                                            <Button
-                                                size='small'
-                                                startIcon={<ThumbUpIcon />}
-                                                fullWidth
-                                            >
-                                                Agreed (
-                                                {review.reviewcount.agreed})
-                                            </Button>
-                                        </Box>
-                                        <Box mt={1}>
-                                            <Button
-                                                fullWidth
-                                                size='small'
-                                                startIcon={<ThumbDownIcon />}
-                                            >
-                                                Disagreed (
-                                                {review.reviewcount.disagreed})
-                                            </Button>
-                                        </Box>
+                                        {review.user.pk !== user.pk ? (
+                                            <>
+                                                <Box>
+                                                    <Button
+                                                        size='small'
+                                                        startIcon={
+                                                            <ThumbUpIcon />
+                                                        }
+                                                        fullWidth
+                                                        onClick={handleAgree}
+                                                        value={JSON.stringify(
+                                                            review
+                                                        )}
+                                                    >
+                                                        Agreed (
+                                                        {
+                                                            review.reviewcount
+                                                                .agreed
+                                                        }
+                                                        )
+                                                    </Button>
+                                                </Box>
+                                                <Box mt={1}>
+                                                    <Button
+                                                        fullWidth
+                                                        size='small'
+                                                        startIcon={
+                                                            <ThumbDownIcon />
+                                                        }
+                                                        onClick={handleDisagree}
+                                                        value={JSON.stringify(
+                                                            review
+                                                        )}
+                                                    >
+                                                        Disagreed (
+                                                        {
+                                                            review.reviewcount
+                                                                .disagreed
+                                                        }
+                                                        )
+                                                    </Button>
+                                                </Box>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Box>
+                                                    <Button
+                                                        size='small'
+                                                        startIcon={
+                                                            <ThumbUpIcon />
+                                                        }
+                                                        fullWidth
+                                                    >
+                                                        Edit
+                                                    </Button>
+                                                </Box>
+                                                <Box mt={1}>
+                                                    <Button
+                                                        fullWidth
+                                                        size='small'
+                                                        startIcon={
+                                                            <ThumbDownIcon />
+                                                        }
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                </Box>
+                                            </>
+                                        )}
                                     </Box>
                                 </Grid>
                             </Grid>
                         </Box>
                     ))}
-
-                <Box
-                    p={2}
-                    mt={2}
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
-                >
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={12} md={12} lg={3} xl={2}>
-                            <Box textAlign='center'>
-                                <img
-                                    src='/aa.jpg'
-                                    alt=''
-                                    srcset=''
-                                    height='50'
-                                    width='50'
-                                    style={{ borderRadius: '50%' }}
-                                />
-                                <Typography variant='h6' component='h6'>
-                                    BIPLOB MAHADI
-                                </Typography>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={7} xl={8}>
-                            <Box pr={2} pl={1}>
-                                <Box>
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                </Box>
-                                <Typography>
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipisicing elit. Nihil porro quaerat totam
-                                    nesciunt recusandae deserunt fugit corporis
-                                    esse. Architecto neque molestias excepturi a
-                                    accusamus labore.
-                                </Typography>
-                                <Box pt={3}>
-                                    <Typography variant='p'>
-                                        19 February, 2020.
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={2} xl={2}>
-                            <Box px={3}>
-                                <Box>
-                                    <Button
-                                        size='small'
-                                        startIcon={<ThumbUpIcon />}
-                                        fullWidth
-                                    >
-                                        Agreed (12)
-                                    </Button>
-                                </Box>
-                                <Box mt={1}>
-                                    <Button
-                                        fullWidth
-                                        size='small'
-                                        startIcon={<ThumbDownIcon />}
-                                    >
-                                        Disagreed (02)
-                                    </Button>
-                                </Box>
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </Box>
             </Box>
         </div>
     );
