@@ -26,6 +26,21 @@ import ReactPlayer from 'react-player/youtube';
 
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+
+const useCounter = () => {
+    const getStateProduct = useSelector(
+        (state) => state.singleProductReducer.stateProduct
+    );
+    const dispatch = useDispatch();
+    const setStateProduct = (product) =>
+        dispatch({
+            type: 'GET_PRODUCT',
+            payload: product,
+        });
+
+    return { getStateProduct, setStateProduct };
+};
 
 const config = {
     headers: {
@@ -54,14 +69,19 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ProductDetails({ product, user }) {
+export default function ProductDetails({ user }) {
     const [value, setValue] = React.useState(2);
     const [hover, setHover] = React.useState(-1);
-    const [stateProduct, setStateProduct] = React.useState(product);
+
+    const { getStateProduct, setStateProduct } = useCounter();
+    let product = getStateProduct;
+
+    // const [stateProduct, setStateProduct] = React.useState(product);
+
     const classes = useStyles();
     console.log('got user', user);
-    console.log('got product', stateProduct);
-    
+    console.log('got product', product);
+
     const handleAgree = (stringifyReview) => {
         const review = JSON.parse(stringifyReview);
         console.log('kire', user);
@@ -82,7 +102,7 @@ export default function ProductDetails({ product, user }) {
                 )
                 .then((res) => {
                     axios
-                        .get(`http://localhost:8000/products/${stateProduct.slug}/`)
+                        .get(`http://localhost:8000/products/${product.slug}/`)
                         .then((res) => {
                             // let filteredReviews;
                             // filteredReviews = res.data.filter(
@@ -90,8 +110,8 @@ export default function ProductDetails({ product, user }) {
                             // );
                             // here I use == becuase one is int another is string
                             // this.setState({ reviews: filteredReviews });
-                            setStateProduct(res.data)
-                            console.log('review Now agreed - product', stateProduct);
+                            setStateProduct(res.data);
+                            console.log('review Now agreed - product', product);
                         })
                         .catch((err) => console.log(err.response));
                 })
@@ -125,17 +145,18 @@ export default function ProductDetails({ product, user }) {
                 )
                 .then((res) => {
                     axios
-                        .get('http://localhost:8000/reviews-list/')
+                        .get(`http://localhost:8000/products/${product.slug}/`)
                         .then((res) => {
-                            let filteredReviews;
-                            filteredReviews = res.data.filter(
-                                (review) => review.product === product.id
-                            );
+                            // let filteredReviews;
+                            // filteredReviews = res.data.filter(
+                            //     (review) => review.product === product.id
+                            // );
                             // here I use == becuase one is int another is string
                             // this.setState({ reviews: filteredReviews });
+                            setStateProduct(res.data);
                             console.log(
-                                'review Now disagreed:',
-                                filteredReviews
+                                'review Now disagreed - product',
+                                product
                             );
                         })
                         .catch((err) => console.log(err.response));
@@ -545,9 +566,7 @@ export default function ProductDetails({ product, user }) {
                                 borderRadius='borderRadius'
                             >
                                 <Box>
-                                    <Review
-                                        product={stateProduct && stateProduct}
-                                    />
+                                    <Review />
                                 </Box>
                                 {/* <Box pt={8}>
                                     <Grid
@@ -605,9 +624,9 @@ export default function ProductDetails({ product, user }) {
                     </Grid>
                 </Box>
 
-                {stateProduct.review &&
-                    stateProduct.review.length !== 0 &&
-                    stateProduct.review.map((review) => (
+                {product.review &&
+                    product.review.length !== 0 &&
+                    product.review.map((review) => (
                         <Box
                             p={2}
                             mt={2}

@@ -29,13 +29,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import ReactImageZoom from 'react-image-zoom';
 import { Button } from '@material-ui/core';
 
+import { initializeStore } from '../store/store';
+
 // const config = {
 //     headers: {
 //         Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
 //     },
 // };
 const useCounter = () => {
-    const stateProduct = useSelector(
+    const getStateProduct = useSelector(
         (state) => state.singleProductReducer.stateProduct
     );
     const dispatch = useDispatch();
@@ -45,29 +47,35 @@ const useCounter = () => {
             payload: product,
         });
 
-    return { stateProduct, setStateProduct };
+    return { getStateProduct, setStateProduct };
 };
 
-export default function Product({ dataProduct, myBag, config, dataUser }) {
+export default function Product({
+    initialReduxState,
+    myBag,
+    config,
+    dataUser,
+}) {
     const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
 
-    let { product } = dataProduct;
+    const { getStateProduct, setStateProduct } = useCounter();
+    let product = getStateProduct;
     let { user } = dataUser;
 
-    const { stateProduct, setStateProduct } = useCounter();
+    // React.useEffect(() => {
+    //     setStateProduct(product);
+    // }, []);
 
-    React.useEffect(() => {
-        setStateProduct(product);
-    }, []);
+    // need to avoid effect as can as possible
 
     const handleImageClick = (value) => {
         setValue(value);
     };
 
-    console.log('here', { dataProduct, myBag, config });
+    console.log('here', { initialReduxState, myBag, config });
     console.log('here product', product);
-    console.log('here product from state', stateProduct);
+    console.log('here product from state', product);
     console.log('here user', user);
 
     const handleAddToBag = () => {
@@ -505,10 +513,7 @@ export default function Product({ dataProduct, myBag, config, dataUser }) {
                     </Grid>
                 </Box>
 
-                <ProductDetails
-                    product={product && product}
-                    user={user && user}
-                />
+                <ProductDetails user={user && user} />
             </Box>
             <Box mx={3} mt={6}>
                 <MainFooter />
@@ -605,5 +610,20 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
-    return { props: { dataProduct, myBag, config, dataUser } };
+    const reduxStore = initializeStore();
+    const { dispatch } = reduxStore;
+
+    dispatch({
+        type: 'GET_PRODUCT',
+        payload: dataProduct.product,
+    });
+
+    return {
+        props: {
+            initialReduxState: reduxStore.getState(),
+            myBag,
+            config,
+            dataUser,
+        },
+    };
 }

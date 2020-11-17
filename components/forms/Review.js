@@ -27,6 +27,22 @@ import Rating from '@material-ui/lab/Rating';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
+import { useSelector, useDispatch } from 'react-redux';
+
+const useCounter = () => {
+    const getStateProduct = useSelector(
+        (state) => state.singleProductReducer.stateProduct
+    );
+    const dispatch = useDispatch();
+    const setStateProduct = (product) =>
+        dispatch({
+            type: 'GET_PRODUCT',
+            payload: product,
+        });
+
+    return { getStateProduct, setStateProduct };
+};
+
 const config = {
     headers: {
         Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
@@ -71,10 +87,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ReviewForm({ product }) {
+export default function ReviewForm() {
     const classes = useStyles();
     const [value, setValue] = React.useState(2);
     const [hover, setHover] = React.useState(-1);
+
+    const { getStateProduct, setStateProduct } = useCounter();
+    let product = getStateProduct;
 
     const handleSubmit = (values, setSubmitting) => {
         const review = {
@@ -89,15 +108,10 @@ export default function ReviewForm({ product }) {
                 console.log(res.data);
                 const productID = parseInt(product.id);
                 axios
-                    .get('http://localhost:8000/reviews-list/')
+                    .get(`http://localhost:8000/products/${product.slug}/`)
                     .then((res) => {
-                        let filteredReviews;
-                        filteredReviews = res.data.filter(
-                            (review) => review.product === productID
-                        );
-                        // here I use == becuase one is int another is string
-                        // this.setState({ reviews: filteredReviews });
-                        console.log('review :', filteredReviews);
+                        setStateProduct(res.data);
+                        console.log('review done', product);
                         setSubmitting(false);
                     })
                     .catch((err) => console.log(err.response));
