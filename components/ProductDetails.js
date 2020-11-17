@@ -17,9 +17,22 @@ import StarHalfIcon from '@material-ui/icons/StarHalf';
 import { Button } from '@material-ui/core';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import UpdateIcon from '@material-ui/icons/Update';
+import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core/styles';
 import Rating from '@material-ui/lab/Rating';
 import ReactPlayer from 'react-player/youtube';
+
+import Cookies from 'js-cookie';
+import axios from 'axios';
+
+const config = {
+    headers: {
+        Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
+    },
+};
+
 const labels = {
     0.5: 'Useless',
     1: 'Useless+',
@@ -44,11 +57,14 @@ const useStyles = makeStyles({
 export default function ProductDetails({ product, user }) {
     const [value, setValue] = React.useState(2);
     const [hover, setHover] = React.useState(-1);
+    const [stateProduct, setStateProduct] = React.useState(product);
     const classes = useStyles();
-
-    const handleAgree = () => (event) => {
-        const review = JSON.parse(event.target.value);
-        console.log('kire', user, review);
+    console.log('got user', user);
+    console.log('got product', stateProduct);
+    
+    const handleAgree = (stringifyReview) => {
+        const review = JSON.parse(stringifyReview);
+        console.log('kire', user);
         // user who own this review, can't make agreed
         if (
             !review.reviewcount.user.includes(user.pk) &&
@@ -66,15 +82,16 @@ export default function ProductDetails({ product, user }) {
                 )
                 .then((res) => {
                     axios
-                        .get('http://localhost:8000/reviews-list/')
+                        .get(`http://localhost:8000/products/${stateProduct.slug}/`)
                         .then((res) => {
-                            let filteredReviews;
-                            filteredReviews = res.data.filter(
-                                (review) => review.product === product.id
-                            );
+                            // let filteredReviews;
+                            // filteredReviews = res.data.filter(
+                            //     (review) => review.product === product.id
+                            // );
                             // here I use == becuase one is int another is string
                             // this.setState({ reviews: filteredReviews });
-                            console.log('review Now agreed:', filteredReviews);
+                            setStateProduct(res.data)
+                            console.log('review Now agreed - product', stateProduct);
                         })
                         .catch((err) => console.log(err.response));
                 })
@@ -84,10 +101,12 @@ export default function ProductDetails({ product, user }) {
         }
     };
 
-    const handleDisagree = () => (event) => {
-        const review = JSON.parse(event.target.value);
+    const handleDisagree = (stringifyReview) => {
+        // const review = JSON.parse(event.target.value);
 
-        console.log('kire', user, review);
+        const review = JSON.parse(stringifyReview);
+
+        console.log('kire dis', user);
         // user who own this review, can't make disagreed
         if (
             !review.reviewcount.user.includes(user.pk) &&
@@ -526,7 +545,9 @@ export default function ProductDetails({ product, user }) {
                                 borderRadius='borderRadius'
                             >
                                 <Box>
-                                    <Review product={product && product} />
+                                    <Review
+                                        product={stateProduct && stateProduct}
+                                    />
                                 </Box>
                                 {/* <Box pt={8}>
                                     <Grid
@@ -584,9 +605,9 @@ export default function ProductDetails({ product, user }) {
                     </Grid>
                 </Box>
 
-                {product.review &&
-                    product.review.length !== 0 &&
-                    product.review.map((review) => (
+                {stateProduct.review &&
+                    stateProduct.review.length !== 0 &&
+                    stateProduct.review.map((review) => (
                         <Box
                             p={2}
                             mt={2}
@@ -702,10 +723,16 @@ export default function ProductDetails({ product, user }) {
                                                             <ThumbUpIcon />
                                                         }
                                                         fullWidth
-                                                        onClick={handleAgree}
-                                                        value={JSON.stringify(
-                                                            review
-                                                        )}
+                                                        onClick={() =>
+                                                            handleAgree(
+                                                                JSON.stringify(
+                                                                    review
+                                                                )
+                                                            )
+                                                        }
+                                                        // value={JSON.stringify(
+                                                        //     review
+                                                        // )}
                                                     >
                                                         Agreed (
                                                         {
@@ -722,7 +749,13 @@ export default function ProductDetails({ product, user }) {
                                                         startIcon={
                                                             <ThumbDownIcon />
                                                         }
-                                                        onClick={handleDisagree}
+                                                        onClick={() =>
+                                                            handleDisagree(
+                                                                JSON.stringify(
+                                                                    review
+                                                                )
+                                                            )
+                                                        }
                                                         value={JSON.stringify(
                                                             review
                                                         )}
@@ -742,7 +775,7 @@ export default function ProductDetails({ product, user }) {
                                                     <Button
                                                         size='small'
                                                         startIcon={
-                                                            <ThumbUpIcon />
+                                                            <UpdateIcon />
                                                         }
                                                         fullWidth
                                                     >
@@ -754,7 +787,7 @@ export default function ProductDetails({ product, user }) {
                                                         fullWidth
                                                         size='small'
                                                         startIcon={
-                                                            <ThumbDownIcon />
+                                                            <DeleteForeverIcon />
                                                         }
                                                     >
                                                         Delete

@@ -96,7 +96,10 @@ export default function MyAccount({ user, error }) {
                         />
                         <Typography variant='h5'>
                             <strong>
-                                {user && user.first_name + ' ' + user.last_name}
+                                {user &&
+                                    user.first_name.toUpperCase() +
+                                        ' ' +
+                                        user.last_name.toUpperCase()}
                             </strong>
                         </Typography>
                     </Box>

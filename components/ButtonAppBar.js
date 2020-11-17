@@ -70,7 +70,7 @@ const useLogout = () => {
                 console.log(res.data);
                 dispatch({ type: 'LOGOUT', payload: res.data });
                 Cookies.remove('haha_ecom_bangla_token');
-router.push('/login');
+                router.push('/login');
             })
             .catch((err) => console.log(err.response));
     };
@@ -78,7 +78,7 @@ router.push('/login');
 };
 
 export default function ButtonAppBar() {
-const router = useRouter();
+    const router = useRouter();
     const classes = useStyles();
     const { token, logout } = useLogout();
     // for menu
@@ -807,7 +807,7 @@ const router = useRouter();
                         </Link>
                         <Divider variant='middle' />
                         <Link href='/'>
-                            <MenuItem onClick={(router)=>logout(router)}>
+                            <MenuItem onClick={handleClose}>
                                 <InboxIcon fontSize='small' />
                                 <Box ml={2}>Logout</Box>
                             </MenuItem>

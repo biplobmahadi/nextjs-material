@@ -34,20 +34,40 @@ import { Button } from '@material-ui/core';
 //         Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
 //     },
 // };
+const useCounter = () => {
+    const stateProduct = useSelector(
+        (state) => state.singleProductReducer.stateProduct
+    );
+    const dispatch = useDispatch();
+    const setStateProduct = (product) =>
+        dispatch({
+            type: 'GET_PRODUCT',
+            payload: product,
+        });
+
+    return { stateProduct, setStateProduct };
+};
 
 export default function Product({ dataProduct, myBag, config, dataUser }) {
     const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
 
+    let { product } = dataProduct;
+    let { user } = dataUser;
+
+    const { stateProduct, setStateProduct } = useCounter();
+
+    React.useEffect(() => {
+        setStateProduct(product);
+    }, []);
+
     const handleImageClick = (value) => {
         setValue(value);
     };
 
-    let { product } = dataProduct;
-    let { user } = dataUser;
-
     console.log('here', { dataProduct, myBag, config });
     console.log('here product', product);
+    console.log('here product from state', stateProduct);
     console.log('here user', user);
 
     const handleAddToBag = () => {
