@@ -3,6 +3,8 @@ import ProductDetailsTable from './ProductDetailsTable';
 import ProductCard from '../components/ProductCard';
 import Review from './forms/Review';
 import VideoReview from './forms/VideoReview';
+import UpdateReviewDialog from './UpdateReviewDialog';
+import DeleteReviewDialog from './DeleteReviewDialog';
 import MainFooter from '../components/MainFooter';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
@@ -862,26 +864,14 @@ export default function ProductDetails({ user }) {
                                         ) : (
                                             <>
                                                 <Box>
-                                                    <Button
-                                                        size='small'
-                                                        startIcon={
-                                                            <UpdateIcon />
-                                                        }
-                                                        fullWidth
-                                                    >
-                                                        Edit
-                                                    </Button>
+                                                    <UpdateReviewDialog
+                                                        review={review}
+                                                    />
                                                 </Box>
                                                 <Box mt={1}>
-                                                    <Button
-                                                        fullWidth
-                                                        size='small'
-                                                        startIcon={
-                                                            <DeleteForeverIcon />
-                                                        }
-                                                    >
-                                                        Delete
-                                                    </Button>
+                                                    <DeleteReviewDialog
+                                                        review={review}
+                                                    />
                                                 </Box>
                                             </>
                                         )}

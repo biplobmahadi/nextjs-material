@@ -329,10 +329,10 @@ export default function Product({
                                     </Grid>
                                 </Box>
                                 <Box py={3}>
-                                    <Typography>
+                                    {/* <Typography>
                                         <strong>Product Code:</strong>{' '}
                                         {product && product.code}
-                                    </Typography>
+                                    </Typography> */}
 
                                     <Typography>
                                         <strong>Brand:</strong>{' '}
