@@ -72,7 +72,7 @@ const useStyles = makeStyles({
 export default function ProductDetails({ user }) {
     const [value, setValue] = React.useState(2);
     const [hover, setHover] = React.useState(-1);
-
+    let contained = 'contained';
     const { getStateProduct, setStateProduct } = useCounter();
     let product = getStateProduct;
 
@@ -87,37 +87,75 @@ export default function ProductDetails({ user }) {
         console.log('kire', user);
         // user who own this review, can't make agreed
         if (
-            !review.reviewcount.user.includes(user.pk) &&
+            !review.reviewcountforagree.user.includes(user.pk) &&
             review.user.pk !== user.pk
         ) {
-            const reviewCount = {
-                agreed: review.reviewcount.agreed + 1,
-                user: review.reviewcount.user.concat(user.pk),
+            const reviewCountForAgree = {
+                agreed: review.reviewcountforagree.agreed + 1,
+                user: review.reviewcountforagree.user.concat(user.pk),
             };
+
             axios
                 .patch(
-                    `http://localhost:8000/reviews-count-update/${review.reviewcount.id}/`,
-                    reviewCount,
+                    `http://localhost:8000/reviews-count-for-agree-update/${review.reviewcountforagree.id}/`,
+                    reviewCountForAgree,
                     config
                 )
                 .then((res) => {
-                    axios
-                        .get(`http://localhost:8000/products/${product.slug}/`)
-                        .then((res) => {
-                            // let filteredReviews;
-                            // filteredReviews = res.data.filter(
-                            //     (review) => review.product === product.id
-                            // );
-                            // here I use == becuase one is int another is string
-                            // this.setState({ reviews: filteredReviews });
-                            setStateProduct(res.data);
-                            console.log('review Now agreed - product', product);
-                        })
-                        .catch((err) => console.log(err.response));
+                    if (review.reviewcountfordisagree.user.includes(user.pk)) {
+                        let arr = review.reviewcountfordisagree.user;
+                        for (let i = 0; i < arr.length; i++) {
+                            if (arr[i] === user.pk) {
+                                arr.splice(i, 1);
+                                i--;
+                            }
+                        }
+                        let finalArr = arr;
+                        const reviewCountForDisagree = {
+                            disagreed:
+                                review.reviewcountfordisagree.disagreed - 1,
+                            user: finalArr,
+                        };
+
+                        axios
+                            .patch(
+                                `http://localhost:8000/reviews-count-for-disagree-update/${review.reviewcountfordisagree.id}/`,
+                                reviewCountForDisagree,
+                                config
+                            )
+                            .then((res) => {
+                                axios
+                                    .get(
+                                        `http://localhost:8000/products/${product.slug}/`
+                                    )
+                                    .then((res) => {
+                                        setStateProduct(res.data);
+                                        console.log(
+                                            'review Now agreed - product',
+                                            product
+                                        );
+                                    })
+                                    .catch((err) => console.log(err.response));
+                            })
+                            .catch((err) => console.log(err.response));
+                    } else {
+                        axios
+                            .get(
+                                `http://localhost:8000/products/${product.slug}/`
+                            )
+                            .then((res) => {
+                                setStateProduct(res.data);
+                                console.log(
+                                    'review Now agreed - product',
+                                    product
+                                );
+                            })
+                            .catch((err) => console.log(err.response));
+                    }
                 })
                 .catch((err) => console.log(err.response));
         } else {
-            console.log('you cant agree with your review');
+            console.log('you cant agree with your review or already done');
         }
     };
 
@@ -129,41 +167,74 @@ export default function ProductDetails({ user }) {
         console.log('kire dis', user);
         // user who own this review, can't make disagreed
         if (
-            !review.reviewcount.user.includes(user.pk) &&
+            !review.reviewcountfordisagree.user.includes(user.pk) &&
             review.user.pk !== user.pk
         ) {
-            const reviewCount = {
-                disagreed: review.reviewcount.disagreed + 1,
-                user: review.reviewcount.user.concat(user.pk),
+            const reviewCountForDisagree = {
+                disagreed: review.reviewcountfordisagree.disagreed + 1,
+                user: review.reviewcountfordisagree.user.concat(user.pk),
             };
 
             axios
                 .patch(
-                    `http://localhost:8000/reviews-count-update/${review.reviewcount.id}/`,
-                    reviewCount,
+                    `http://localhost:8000/reviews-count-for-disagree-update/${review.reviewcountfordisagree.id}/`,
+                    reviewCountForDisagree,
                     config
                 )
                 .then((res) => {
-                    axios
-                        .get(`http://localhost:8000/products/${product.slug}/`)
-                        .then((res) => {
-                            // let filteredReviews;
-                            // filteredReviews = res.data.filter(
-                            //     (review) => review.product === product.id
-                            // );
-                            // here I use == becuase one is int another is string
-                            // this.setState({ reviews: filteredReviews });
-                            setStateProduct(res.data);
-                            console.log(
-                                'review Now disagreed - product',
-                                product
-                            );
-                        })
-                        .catch((err) => console.log(err.response));
+                    if (review.reviewcountforagree.user.includes(user.pk)) {
+                        let arr = review.reviewcountforagree.user;
+                        for (let i = 0; i < arr.length; i++) {
+                            if (arr[i] === user.pk) {
+                                arr.splice(i, 1);
+                                i--;
+                            }
+                        }
+                        let finalArr = arr;
+                        const reviewCountForAgree = {
+                            agreed: review.reviewcountforagree.agreed - 1,
+                            user: finalArr,
+                        };
+
+                        axios
+                            .patch(
+                                `http://localhost:8000/reviews-count-for-agree-update/${review.reviewcountforagree.id}/`,
+                                reviewCountForAgree,
+                                config
+                            )
+                            .then((res) => {
+                                axios
+                                    .get(
+                                        `http://localhost:8000/products/${product.slug}/`
+                                    )
+                                    .then((res) => {
+                                        setStateProduct(res.data);
+                                        console.log(
+                                            'review Now disagreed - product',
+                                            product
+                                        );
+                                    })
+                                    .catch((err) => console.log(err.response));
+                            })
+                            .catch((err) => console.log(err.response));
+                    } else {
+                        axios
+                            .get(
+                                `http://localhost:8000/products/${product.slug}/`
+                            )
+                            .then((res) => {
+                                setStateProduct(res.data);
+                                console.log(
+                                    'review Now disagreed - product',
+                                    product
+                                );
+                            })
+                            .catch((err) => console.log(err.response));
+                    }
                 })
                 .catch((err) => console.log(err.response));
         } else {
-            console.log('you cant disagree with your review');
+            console.log('you cant disagree with your review or already done');
         }
     };
 
@@ -754,10 +825,10 @@ export default function ProductDetails({ user }) {
                                                         // )}
                                                     >
                                                         Agreed (
-                                                        {
-                                                            review.reviewcount
-                                                                .agreed
-                                                        }
+                                                        {review.reviewcountforagree &&
+                                                            review
+                                                                .reviewcountforagree
+                                                                .agreed}
                                                         )
                                                     </Button>
                                                 </Box>
@@ -780,10 +851,10 @@ export default function ProductDetails({ user }) {
                                                         )}
                                                     >
                                                         Disagreed (
-                                                        {
-                                                            review.reviewcount
-                                                                .disagreed
-                                                        }
+                                                        {review.reviewcountfordisagree &&
+                                                            review
+                                                                .reviewcountfordisagree
+                                                                .disagreed}
                                                         )
                                                     </Button>
                                                 </Box>
