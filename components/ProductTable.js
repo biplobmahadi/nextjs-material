@@ -10,11 +10,17 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
+import AddBox from '@material-ui/icons/AddBox';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 
+import axios from 'axios';
 import TableHead from '@material-ui/core/TableHead';
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -105,29 +111,14 @@ function createData(name, calories, fat) {
     return { name, calories, fat };
 }
 
-const rows = [
-    createData('Cupcake', 305, 3.7),
-    createData('Donut', 452, 25.0),
-    createData('Eclair', 262, 16.0),
-    createData('Frozen yoghurt', 159, 6.0),
-    createData('Gingerbread', 356, 16.0),
-    createData('Honeycomb', 408, 3.2),
-    createData('Ice cream sandwich', 237, 9.0),
-    createData('Jelly Bean', 375, 0.0),
-    createData('KitKat', 518, 26.0),
-    createData('Lollipop', 392, 0.2),
-    createData('Marshmallow', 318, 0),
-    createData('Nougat', 360, 19.0),
-    createData('Oreo', 437, 18.0),
-].sort((a, b) => (a.calories < b.calories ? -1 : 1));
-
 const useStyles2 = makeStyles({
     table: {
         minWidth: 500,
     },
 });
 
-export default function CustomPaginationActionsTable() {
+export default function ProductTable({ myBag, config }) {
+    const rows = myBag.product;
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -144,6 +135,193 @@ export default function CustomPaginationActionsTable() {
         setPage(0);
     };
 
+    const handleAdd = (value) => {
+        let product = JSON.parse(value);
+        console.log(product);
+        axios
+            .patch(
+                `http://localhost:8000/product-with-quantity/${product.id}/`,
+                {
+                    quantity: product.quantity + 1,
+                    cost: product.cost + product.product.price,
+                },
+                config
+            )
+            .then((res) => {
+                console.log(res.data);
+                let pk = [];
+                myBag.product.map((product) => (pk = pk.concat(product.id)));
+                console.log(pk);
+                axios
+                    .patch(
+                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                        {
+                            product: pk,
+                            sub_total: myBag.sub_total + product.product.price,
+                        },
+                        config
+                    )
+                    .then((res) => {
+                        console.log(res.data);
+                        axios
+                            .get(
+                                `http://localhost:8000/my-bag/${res.data.id}/`,
+                                config
+                            )
+                            .then((res) => {
+                                // this.setState({ myBag: res.data });
+                                console.log('final after add', res.data);
+                                // just jeta show hbe oita state e rakha jay, jmn ekahane just quantity
+                                // no, price change kora jabe eta dekhale
+                                // but price show amra direct na kore calculate kore dite pari
+                                // always update the state, because I work everything using state
+                            })
+                            .catch((err) => console.log(err.response));
+                    })
+                    .catch((err) => console.log(err.response));
+            })
+            .catch((err) => console.log(err.response));
+    };
+
+    const handleRemove = (value) => {
+        let product = JSON.parse(value);
+        console.log(product);
+        axios
+            .patch(
+                `http://localhost:8000/product-with-quantity/${product.id}/`,
+                {
+                    quantity: product.quantity - 1,
+                    cost: product.cost - product.product.price,
+                },
+                config
+            )
+            .then((res) => {
+                console.log(res.data);
+                let pk = [];
+                myBag.product.map((product) => (pk = pk.concat(product.id)));
+                console.log(pk);
+                axios
+                    .patch(
+                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                        {
+                            product: pk,
+                            sub_total: myBag.sub_total - product.product.price,
+                        },
+                        config
+                    )
+                    .then((res) => {
+                        console.log(res.data);
+                        axios
+                            .get(
+                                `http://localhost:8000/my-bag/${res.data.id}/`,
+                                config
+                            )
+                            .then((res) => {
+                                // this.setState({ myBag: res.data });
+
+                                console.log('final after remove', res.data);
+                                // always update the state, because I work everything using state
+                            })
+                            .catch((err) => console.log(err.response));
+                    })
+                    .catch((err) => console.log(err.response));
+            })
+            .catch((err) => console.log(err.response));
+    };
+
+    const handleDelete = (value) => {
+        let product = JSON.parse(value);
+        console.log(product);
+        axios
+            .delete(
+                `http://localhost:8000/product-with-quantity/${product.id}/`,
+                config
+            )
+            .then((res) => {
+                console.log(res.data);
+                let pk = [];
+                myBag.product.map((product) => (pk = pk.concat(product.id)));
+                console.log(pk);
+                let length = pk.length;
+                for (let i = 0; i < length; i++) {
+                    if (pk[i] === product.id) {
+                        pk.splice(i, 1);
+                        i--;
+                    }
+                }
+
+                // need to remove exact array element... that's why I splice this exact way
+                console.log(pk);
+                axios
+                    .patch(
+                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                        {
+                            product: pk,
+                            sub_total: myBag.sub_total - product.cost,
+                        },
+                        config
+                    )
+                    .then((res) => {
+                        console.log(res.data);
+                        axios
+                            .get(
+                                `http://localhost:8000/my-bag/${res.data.id}/`,
+                                config
+                            )
+                            .then((res) => {
+                                // this.setState({ myBag: res.data });
+
+                                console.log('final after delete', res.data);
+                                // always update the state, because I work everything using state
+                            })
+                            .catch((err) => console.log(err.response));
+                    })
+                    .catch((err) => console.log(err.response));
+            })
+            .catch((err) => console.log(err.response));
+    };
+
+    const handleCheckout = () => {
+        let myBag = this.state.myBag;
+        if (myBag) {
+            if (myBag.product.length !== 0) {
+                axios
+                    .post(
+                        'http://localhost:8000/my-order/',
+                        { my_bag: myBag.id },
+                        config
+                    )
+                    .then((res) => {
+                        console.log(res.data);
+                        this.setState({ orderId: res.data.id });
+                        axios
+                            .patch(
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                { is_send_to_my_order: true },
+                                config
+                            )
+                            .then((res) => {
+                                console.log(res.data);
+                                this.setState({ submitted: true });
+                            })
+                            .catch((err) => {
+                                console.log(err.response);
+                                this.setState({ submitted: false });
+                            });
+                    })
+                    .catch((err) => {
+                        console.log(err.response);
+                    });
+            } else {
+                this.setState({
+                    message: 'You must have one product in your bag!',
+                });
+            }
+        } else {
+            this.setState({ message: 'You must have product in your bag!' });
+        }
+    };
+
     return (
         <TableContainer component={Paper}>
             <Table
@@ -152,9 +330,11 @@ export default function CustomPaginationActionsTable() {
             >
                 <TableHead>
                     <TableRow>
-                        <TableCell>Dessert (100g serving)</TableCell>
-                        <TableCell align='right'>Carbs&nbsp;(g)</TableCell>
-                        <TableCell align='right'>Protein&nbsp;(g)</TableCell>
+                        <TableCell align='center'>Name</TableCell>
+                        <TableCell align='center'>Price</TableCell>
+                        <TableCell align='center'>Quantity</TableCell>
+                        <TableCell align='center'>Cost</TableCell>
+                        <TableCell align='center'>Option</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -166,14 +346,51 @@ export default function CustomPaginationActionsTable() {
                         : rows
                     ).map((row) => (
                         <TableRow key={row.name} hover>
-                            <TableCell component='th' scope='row'>
-                                {row.name}
+                            <TableCell
+                                component='th'
+                                scope='row'
+                                align='center'
+                            >
+                                {row.product.name}
                             </TableCell>
-                            <TableCell style={{ width: 160 }} align='right'>
-                                {row.calories}
+                            <TableCell style={{ width: 160 }} align='center'>
+                                {row.product.price}
                             </TableCell>
-                            <TableCell style={{ width: 160 }} align='right'>
-                                {row.fat}
+                            <TableCell style={{ width: 160 }} align='center'>
+                                {row.product.quantity !== 0 && (
+                                    <IconButton
+                                        color='error'
+                                        onClick={() =>
+                                            handleRemove(JSON.stringify(row))
+                                        }
+                                    >
+                                        <RemoveCircleIcon />
+                                    </IconButton>
+                                )}
+
+                                {row.quantity}
+                                <IconButton
+                                    color='error'
+                                    onClick={() =>
+                                        handleAdd(JSON.stringify(row))
+                                    }
+                                >
+                                    <AddCircleIcon />
+                                </IconButton>
+                            </TableCell>
+                            <TableCell style={{ width: 160 }} align='center'>
+                                {row.cost}
+                            </TableCell>
+
+                            <TableCell style={{ width: 160 }} align='center'>
+                                <IconButton
+                                    color='error'
+                                    onClick={() =>
+                                        handleDelete(JSON.stringify(row))
+                                    }
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -193,7 +410,7 @@ export default function CustomPaginationActionsTable() {
                                 25,
                                 { label: 'All', value: -1 },
                             ]}
-                            colSpan={3}
+                            colSpan={5}
                             count={rows.length}
                             rowsPerPage={rowsPerPage}
                             page={page}

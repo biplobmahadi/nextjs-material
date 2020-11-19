@@ -60,6 +60,9 @@ const useStyles = makeStyles((theme) => ({
 
 const useLogout = () => {
     const token = useSelector((state) => state.loginReducer.token);
+    const totalBagProduct = useSelector(
+        (state) => state.singleProductReducer.totalBagProduct
+    );
 
     const dispatch = useDispatch();
     // need to show msg for email already used and password error with payload
@@ -74,13 +77,13 @@ const useLogout = () => {
             })
             .catch((err) => console.log(err.response));
     };
-    return { token, logout };
+    return { token, totalBagProduct, logout };
 };
 
 export default function ButtonAppBar() {
     const router = useRouter();
     const classes = useStyles();
-    const { token, logout } = useLogout();
+    const { token, totalBagProduct, logout } = useLogout();
     // for menu
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -741,7 +744,12 @@ export default function ButtonAppBar() {
                     </Link>
                     <Link href='/bag'>
                         <IconButton color='inherit' aria-label='cart'>
-                            <Badge badgeContent={40000} color='secondary'>
+                            <Badge
+                                badgeContent={
+                                    totalBagProduct ? totalBagProduct : 0
+                                }
+                                color='secondary'
+                            >
                                 <ShoppingCartIcon />
                             </Badge>
                         </IconButton>

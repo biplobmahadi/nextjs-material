@@ -13,7 +13,40 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import FormikFormDemo from '../components/FormikFormDemo';
 import Divider from '@material-ui/core/Divider';
-export default function Bag() {
+
+import Cookies from 'js-cookie';
+import parseCookies from '../lib/parseCookies';
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { initializeStore } from '../store/store';
+
+const useCounter = () => {
+    const getStateProduct = useSelector(
+        (state) => state.singleProductReducer.stateProduct
+    );
+    const dispatch = useDispatch();
+    const setStateProduct = (product) =>
+        dispatch({
+            type: 'GET_PRODUCT',
+            payload: product,
+        });
+    const setTotalBagProduct = (total) =>
+        dispatch({
+            type: 'TOTAL_BAG_PRODUCT',
+            payload: total,
+        });
+
+    return { getStateProduct, setStateProduct, setTotalBagProduct };
+};
+
+export default function Bag({ myBag, config }) {
+    const {
+        getStateProduct,
+        setStateProduct,
+        setTotalBagProduct,
+    } = useCounter();
+
+    console.log('bag e', myBag);
     return (
         <div>
             <Head>
@@ -58,7 +91,11 @@ export default function Bag() {
                                         <Typography variant='h5' component='h5'>
                                             <strong>My Bag</strong>{' '}
                                             <Chip
-                                                label={`${12} items`}
+                                                label={`${
+                                                    myBag
+                                                        ? myBag.product.length
+                                                        : 0
+                                                } item`}
                                                 color='secondary'
                                                 size='small'
                                             />
@@ -67,13 +104,19 @@ export default function Bag() {
 
                                     <Grid item>
                                         <Button variant='contained'>
-                                            <Box px={3}>Total Tk. 5000</Box>
+                                            <Box px={3}>
+                                                Total Tk.{' '}
+                                                {myBag ? myBag.sub_total : 0}
+                                            </Box>
                                         </Button>
                                     </Grid>
                                 </Grid>
                             </Box>
                             <Box pt={2} borderRadius='borderRadius'>
-                                <ProductTable />
+                                <ProductTable
+                                    myBag={myBag && myBag}
+                                    config={config && config}
+                                />
                             </Box>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
@@ -260,4 +303,57 @@ export default function Bag() {
             </Box>
         </div>
     );
+}
+
+const fetchDataForBag = async (config) =>
+    await axios
+        .get(`http://localhost:8000/my-bag/`, config)
+        .then((res) => ({
+            bag: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
+export async function getServerSideProps({ req, params }) {
+    const cookies = parseCookies(req);
+    const haha_ecom_bangla_token = cookies.haha_ecom_bangla_token
+        ? cookies.haha_ecom_bangla_token
+        : null;
+    // when there have no cookies in browser it will return undefined that is not serializable, thats why set it as null
+
+    const config = {
+        headers: {
+            Authorization: 'Token ' + haha_ecom_bangla_token,
+        },
+    };
+    const dataBag = await fetchDataForBag(config);
+
+    let myBag = null;
+    if (dataBag.bag) {
+        let allMyBag = dataBag.bag;
+        let myBagNotSendToMyOrder = allMyBag.filter(
+            (myBag) => myBag.is_send_to_my_order === false
+        );
+        // console.log(myBagNotSendToMyOrder[0])
+        if (myBagNotSendToMyOrder[0]) {
+            myBag = myBagNotSendToMyOrder[0];
+        }
+    }
+
+    const reduxStore = initializeStore();
+    const { dispatch } = reduxStore;
+
+    // dispatch({
+    //     type: 'GET_PRODUCT',
+    //     payload: dataProduct.product,
+    // });
+
+    return {
+        props: {
+            // initialReduxState: reduxStore.getState(),
+            myBag,
+            config,
+        },
+    };
 }

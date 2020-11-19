@@ -46,8 +46,13 @@ const useCounter = () => {
             type: 'GET_PRODUCT',
             payload: product,
         });
+    const setTotalBagProduct = (total) =>
+        dispatch({
+            type: 'TOTAL_BAG_PRODUCT',
+            payload: total,
+        });
 
-    return { getStateProduct, setStateProduct };
+    return { getStateProduct, setStateProduct, setTotalBagProduct };
 };
 
 export default function Product({
@@ -59,7 +64,11 @@ export default function Product({
     const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
 
-    const { getStateProduct, setStateProduct } = useCounter();
+    const {
+        getStateProduct,
+        setStateProduct,
+        setTotalBagProduct,
+    } = useCounter();
     let product = getStateProduct;
     let { user } = dataUser;
 
@@ -77,6 +86,7 @@ export default function Product({
     console.log('here product', product);
     console.log('here product from state', product);
     console.log('here user', user);
+    console.log('updated bag', myBag);
 
     const handleAddToBag = () => {
         let addToBag = {
@@ -133,6 +143,7 @@ export default function Product({
                                 .then((res) => {
                                     // new myBag need to add to state
                                     myBag = res.data;
+                                    setTotalBagProduct(res.data.product.length);
                                 })
                                 .catch((err) => console.log(err.response));
                         })
@@ -177,6 +188,9 @@ export default function Product({
                                     .then((res) => {
                                         // new myBag need to add to state
                                         myBag = res.data;
+                                        setTotalBagProduct(
+                                            res.data.product.length
+                                        );
                                     })
                                     .catch((err) => console.log(err.response));
                             })
@@ -201,6 +215,9 @@ export default function Product({
                                     .then((res) => {
                                         // new myBag need to add to state
                                         myBag = res.data;
+                                        setTotalBagProduct(
+                                            res.data.product.length
+                                        );
                                     })
                                     .catch((err) => console.log(err.response));
                             })
