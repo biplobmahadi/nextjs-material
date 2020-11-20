@@ -21,7 +21,15 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/router';
+const config = {
+    headers: {
+        Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
+    },
+};
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(2),
@@ -42,25 +50,46 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SignupForm() {
+export default function PaymentForm({ paymentOrderId }) {
     const classes = useStyles();
-    const [values, setValues] = React.useState({
-        amount: '',
-        password: '',
-        weight: '',
-        weightRange: '',
-        showPassword: false,
-    });
-    const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
-    };
-    const handleClickShowPassword = () => {
-        setValues({ ...values, showPassword: !values.showPassword });
+    const router = useRouter();
+    const paymentNext = (values, setSubmitting) => {
+        // if (this.state.myOrder.is_confirm === true){
+        //     if (this.state.myOrder.is_payment_confirm === false){
+        axios
+            .patch(
+                `http://localhost:8000/my-order/${paymentOrderId}/`,
+                {
+                    payment: values.payment,
+                    is_payment_confirm: true,
+                    is_processing: true,
+                },
+                config
+            )
+            .then((res) => {
+                console.log(res.data);
+                setSubmitting(false);
+                router.push(`/my-order-details`);
+                //   this.setState({
+                //     loading: false,
+                //     submitted: true
+                //   });
+            })
+            .catch((err) => {
+                console.log(err.response);
+                setSubmitting(false);
+                // error response do not handling yet. it will be added when access of internet available
+                //   this.setState({
+                //     loading: false,
+                //     submitted: false
+                //   });
+            });
+        // }
+        //   } else {
+        //     this.setState({message: 'You need to complete the receiver address first...!!', loading: false})
+        //   }
     };
 
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
     return (
         <Container component='main' maxWidth='xs'>
             <CssBaseline />
@@ -71,16 +100,13 @@ export default function SignupForm() {
                 <div className={classes.form}>
                     <Formik
                         initialValues={{
-                            tags: '',
+                            payment: '',
                         }}
                         validationSchema={Yup.object({
-                            tags: Yup.string().required('Required'),
+                            payment: Yup.string().required('Required'),
                         })}
                         onSubmit={(values, { setSubmitting }) => {
-                            setTimeout(() => {
-                                alert(JSON.stringify(values, null, 2));
-                                setSubmitting(false);
-                            }, 400);
+                            paymentNext(values, setSubmitting);
                         }}
                     >
                         {({ isSubmitting }) => (
@@ -89,7 +115,7 @@ export default function SignupForm() {
                                     <Field
                                         component={TextField}
                                         type='text'
-                                        name='tags'
+                                        name='payment'
                                         select={true}
                                         label='Select Payment Method *'
                                         variant='outlined'
@@ -99,10 +125,20 @@ export default function SignupForm() {
                                         //     multiple: true,
                                         // }}
                                     >
-                                        <MenuItem value='dogs'>
+                                        <MenuItem value='Cash On Delivery'>
                                             Cash On Delivery
                                         </MenuItem>
                                     </Field>
+                                    <Button
+                                        type='submit'
+                                        fullWidth
+                                        variant='contained'
+                                        color='primary'
+                                        className={classes.submit}
+                                        disabled={isSubmitting}
+                                    >
+                                        Confirm Your Order
+                                    </Button>
                                 </Form>
                             </div>
                         )}

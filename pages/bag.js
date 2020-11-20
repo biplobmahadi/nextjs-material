@@ -14,6 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import FormikFormDemo from '../components/FormikFormDemo';
 import Divider from '@material-ui/core/Divider';
 
+import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
@@ -45,17 +46,58 @@ export default function Bag({ myBag, config }) {
         setStateProduct,
         setTotalBagProduct,
     } = useCounter();
-
+    const router = useRouter();
     console.log('bag e', myBag);
+
+    const handleCheckout = () => {
+        if (myBag) {
+            if (myBag.product.length !== 0) {
+                axios
+                    .post(
+                        'http://localhost:8000/my-order/',
+                        { my_bag: myBag.id },
+                        config
+                    )
+                    .then((res) => {
+                        console.log(res.data);
+                        // this.setState({ orderId: res.data.id });
+                        let orderId = res.data.id;
+                        axios
+                            .patch(
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                { is_send_to_my_order: true },
+                                config
+                            )
+                            .then((res) => {
+                                console.log(res.data);
+                                router.push(`/reciever/${orderId}`);
+                                // this.setState({ submitted: true });
+                            })
+                            .catch((err) => {
+                                console.log(err.response);
+                                // this.setState({ submitted: false });
+                            });
+                    })
+                    .catch((err) => {
+                        console.log(err.response);
+                    });
+            } else {
+                console.log('You must have one product in your bag!');
+            }
+        } else {
+            console.log('You must have product in your bag!');
+        }
+    };
+
     return (
         <div>
             <Head>
                 <title>My Bag</title>
                 <link rel='icon' href='/a.ico' />
-                <link
+                {/* <link
                     rel='stylesheet'
                     href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
+                /> */}
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
@@ -65,7 +107,7 @@ export default function Bag({ myBag, config }) {
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={6} pt={3} px={3}>
                     <Grid container spacing={3}>
-                        <Grid item xs={12} sm={12} md={12} lg={8} xl={8}>
+                        <Grid item xs={12} sm={12} md={12} lg={12} xl={8}>
                             <Box
                                 p={2}
                                 mt={2}
@@ -119,7 +161,7 @@ export default function Bag({ myBag, config }) {
                                 />
                             </Box>
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
+                        <Grid item xs={12} sm={12} md={12} lg={12} xl={4}>
                             <Box
                                 p={2}
                                 mt={2}
@@ -281,16 +323,15 @@ export default function Bag({ myBag, config }) {
                                     <Divider variant='inset' />
                                 </Box>
                                 <Box pt={5} textAlign='right'>
-                                    <Link href='/address'>
-                                        <Button
-                                            variant='contained'
-                                            color='primary'
-                                        >
-                                            <Box textAlign='center' px={4}>
-                                                Pay For You
-                                            </Box>
-                                        </Button>
-                                    </Link>
+                                    <Button
+                                        variant='contained'
+                                        color='primary'
+                                        onClick={handleCheckout}
+                                    >
+                                        <Box textAlign='center' px={4}>
+                                            Pay For You
+                                        </Box>
+                                    </Button>
                                 </Box>
                             </Box>
                         </Grid>

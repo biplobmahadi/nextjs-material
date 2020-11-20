@@ -22,7 +22,12 @@ import Alert from '@material-ui/lab/Alert';
 
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-
+import Cookies from 'js-cookie';
+const config = {
+    headers: {
+        Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
+    },
+};
 const useStyles = makeStyles((theme) => ({
     paper: {
         // marginTop: theme.spacing(2),
@@ -48,15 +53,6 @@ const useUpdateAccount = () => {
 
     const dispatch = useDispatch();
 
-    let haha_ecom_bangla_token;
-    if (typeof window !== 'undefined') {
-        haha_ecom_bangla_token = localStorage.getItem('haha_ecom_bangla_token');
-    }
-    const config = {
-        headers: {
-            Authorization: 'Token ' + haha_ecom_bangla_token,
-        },
-    };
     // need to show msg for user not register yet or some other msg
     const updateAccount = (values, setSubmitting) => {
         axios

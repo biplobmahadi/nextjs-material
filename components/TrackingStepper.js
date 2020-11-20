@@ -23,13 +23,36 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-    return ['Processing', 'Approved', 'On Shipping', 'Shipped', 'Completed'];
+    return [
+        'On Observation',
+        'Processing',
+        'Is Placed',
+        'In Road',
+        'Completed',
+    ];
 }
 
-export default function HorizontalLabelPositionBelowStepper() {
+export default function HorizontalLabelPositionBelowStepper({ order }) {
     const classes = useStyles();
-    const [activeStep, setActiveStep] = React.useState(2);
+    // const [activeStep, setActiveStep] = React.useState('');
     const steps = getSteps();
+    let activeStep;
+    if (!order.is_processing) {
+        activeStep = 0;
+    } else if (order.is_processing) {
+        activeStep = 1;
+    } else if (order.is_processing && order.is_placed) {
+        activeStep = 2;
+    } else if (order.is_processing && order.is_placed && order.is_on_road) {
+        activeStep = 3;
+    } else if (
+        order.is_processing &&
+        order.is_placed &&
+        order.is_on_road &&
+        order.is_completed
+    ) {
+        activeStep = 4;
+    }
 
     return (
         <div className={classes.root}>

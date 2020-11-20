@@ -117,11 +117,41 @@ const useStyles2 = makeStyles({
     },
 });
 
-export default function ProductTable({ myBag, config }) {
-    const rows = myBag.product;
+export default function ProductTable(props) {
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [reRender, setReRender] = React.useState(false);
+    let myBag = props.myBag;
+    let config = props.config;
+    let rows = myBag.product;
+    // let myBagRe = props.myBag;
+    const changeMyBag = React.useCallback(
+        (value) => {
+            myBag = value;
+            setReRender(!reRender);
+            console.log('my bag now', myBag);
+        },
+        [reRender]
+    );
+    // const changeMyBag = async (value) => {
+    //     myBagRe = value;
+    //     // rows = value.product;
+    //     console.log('my bag now', myBagRe);
+    //     // console.log('my rows now', rows);
+
+    //     setReRender(!reRender);
+    //     // return { myBag, rows };
+    //     // return myBagRe;
+    // };
+    React.useEffect(() => {
+        console.log('re render happend');
+        // changeMyBag;
+        // myBag = myBagRe;
+        // myBag = changeMyBag.myBag;
+        console.log('final my bag now', myBag);
+        // rows = myBag.product;
+    }, [reRender]);
 
     const emptyRows =
         rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -170,7 +200,10 @@ export default function ProductTable({ myBag, config }) {
                             )
                             .then((res) => {
                                 // this.setState({ myBag: res.data });
+
                                 console.log('final after add', res.data);
+                                changeMyBag(res.data);
+
                                 // just jeta show hbe oita state e rakha jay, jmn ekahane just quantity
                                 // no, price change kora jabe eta dekhale
                                 // but price show amra direct na kore calculate kore dite pari
@@ -279,47 +312,6 @@ export default function ProductTable({ myBag, config }) {
                     .catch((err) => console.log(err.response));
             })
             .catch((err) => console.log(err.response));
-    };
-
-    const handleCheckout = () => {
-        let myBag = this.state.myBag;
-        if (myBag) {
-            if (myBag.product.length !== 0) {
-                axios
-                    .post(
-                        'http://localhost:8000/my-order/',
-                        { my_bag: myBag.id },
-                        config
-                    )
-                    .then((res) => {
-                        console.log(res.data);
-                        this.setState({ orderId: res.data.id });
-                        axios
-                            .patch(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
-                                { is_send_to_my_order: true },
-                                config
-                            )
-                            .then((res) => {
-                                console.log(res.data);
-                                this.setState({ submitted: true });
-                            })
-                            .catch((err) => {
-                                console.log(err.response);
-                                this.setState({ submitted: false });
-                            });
-                    })
-                    .catch((err) => {
-                        console.log(err.response);
-                    });
-            } else {
-                this.setState({
-                    message: 'You must have one product in your bag!',
-                });
-            }
-        } else {
-            this.setState({ message: 'You must have product in your bag!' });
-        }
     };
 
     return (

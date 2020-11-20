@@ -182,7 +182,7 @@ export default function SignupForm() {
                                         className={classes.submit}
                                         disabled={isSubmitting}
                                     >
-                                        Register
+                                        Login
                                     </Button>
                                 </Form>
 

@@ -21,7 +21,15 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/router';
+const config = {
+    headers: {
+        Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
+    },
+};
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(2),
@@ -42,25 +50,27 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SignupForm() {
+export default function ReceiverForm({ receiverOrderId }) {
     const classes = useStyles();
-    const [values, setValues] = React.useState({
-        amount: '',
-        password: '',
-        weight: '',
-        weightRange: '',
-        showPassword: false,
-    });
-    const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
-    };
-    const handleClickShowPassword = () => {
-        setValues({ ...values, showPassword: !values.showPassword });
+    const router = useRouter();
+    const receiverNext = (values, setSubmitting) => {
+        axios
+            .patch(
+                `http://localhost:8000/my-order/${receiverOrderId}/`,
+                values,
+                config
+            )
+            .then((res) => {
+                console.log(res.data);
+                setSubmitting(false);
+                router.push(`/payment/${res.data.id}`);
+            })
+            .catch((err) => {
+                console.log(err.response);
+                setSubmitting(false);
+            });
     };
 
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
     return (
         <Container component='main' maxWidth='xs'>
             <CssBaseline />
@@ -71,18 +81,21 @@ export default function SignupForm() {
                 <div className={classes.form}>
                     <Formik
                         initialValues={{
-                            name: '',
-                            phone: '',
-                            otherPhone: '',
-                            division: '',
-                            city: '',
-                            area: '',
+                            receiver_name: '',
+                            receiver_phone: '',
+                            receiver_other_phone: '',
+                            receiver_division: '',
+                            receiver_city: '',
+                            receiver_area: '',
+                            receiver_address: '',
+                            is_confirm: true,
                         }}
                         validationSchema={Yup.object({
-                            name: Yup.string()
+                            receiver_name: Yup.string()
+                                .trim('Required')
                                 .max(15, 'Must be 15 characters or less')
                                 .required('Required'),
-                            phone: Yup.string()
+                            receiver_phone: Yup.string()
                                 .matches(
                                     /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/,
                                     'Not valid bd phone number'
@@ -90,26 +103,27 @@ export default function SignupForm() {
                                 // .max(11, 'It is not a valid phone number')
                                 // .min(11, 'It is not a valid phone number')
                                 .required('Required'),
-                            otherPhone: Yup.string().matches(
+                            receiver_other_phone: Yup.string().matches(
                                 /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/,
                                 'Not valid bd phone number'
                             ),
                             // .max(11, 'It is not a valid phone number')
                             // .min(11, 'It is not a valid phone number')
-                            division: Yup.string().required('Required'),
-                            city: Yup.string().required('Required'),
-                            area: Yup.string()
+                            receiver_division: Yup.string()
                                 .trim('Required')
                                 .required('Required'),
-
-                            password: Yup.string().required('Required'),
-                            confirmPassword: Yup.string().required('Required'),
+                            receiver_city: Yup.string()
+                                .trim('Required')
+                                .required('Required'),
+                            receiver_area: Yup.string()
+                                .trim('Required')
+                                .required('Required'),
+                            receiver_address: Yup.string()
+                                .trim('Required')
+                                .required('Required'),
                         })}
                         onSubmit={(values, { setSubmitting }) => {
-                            setTimeout(() => {
-                                alert(JSON.stringify(values, null, 2));
-                                setSubmitting(false);
-                            }, 400);
+                            receiverNext(values, setSubmitting);
                         }}
                     >
                         {({ isSubmitting }) => (
@@ -118,7 +132,7 @@ export default function SignupForm() {
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
                                             <Field
-                                                name='name'
+                                                name='receiver_name'
                                                 type='text'
                                                 component={TextField}
                                                 label='Full Name *'
@@ -129,7 +143,7 @@ export default function SignupForm() {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field
-                                                name='phone'
+                                                name='receiver_phone'
                                                 type='text'
                                                 component={TextField}
                                                 label='Phone Number *'
@@ -140,7 +154,7 @@ export default function SignupForm() {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field
-                                                name='otherPhone'
+                                                name='receiver_other_phone'
                                                 type='text'
                                                 component={TextField}
                                                 label='Other Phone Number'
@@ -151,7 +165,7 @@ export default function SignupForm() {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field
-                                                name='division'
+                                                name='receiver_division'
                                                 type='text'
                                                 component={TextField}
                                                 label='Division *'
@@ -162,7 +176,7 @@ export default function SignupForm() {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field
-                                                name='city'
+                                                name='receiver_city'
                                                 type='text'
                                                 component={TextField}
                                                 label='City *'
@@ -173,10 +187,8 @@ export default function SignupForm() {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field
-                                                name='area'
+                                                name='receiver_area'
                                                 type='text'
-                                                multiline={true}
-                                                rows={4}
                                                 component={TextField}
                                                 label='Area *'
                                                 variant='outlined'
@@ -184,7 +196,30 @@ export default function SignupForm() {
                                                 fullWidth
                                             />
                                         </Grid>
+                                        <Grid item xs={12}>
+                                            <Field
+                                                name='receiver_address'
+                                                type='text'
+                                                multiline={true}
+                                                rows={4}
+                                                component={TextField}
+                                                label='Address *'
+                                                variant='outlined'
+                                                size='small'
+                                                fullWidth
+                                            />
+                                        </Grid>
                                     </Grid>
+                                    <Button
+                                        type='submit'
+                                        fullWidth
+                                        variant='contained'
+                                        color='primary'
+                                        className={classes.submit}
+                                        disabled={isSubmitting}
+                                    >
+                                        Continue
+                                    </Button>
                                 </Form>
                             </div>
                         )}

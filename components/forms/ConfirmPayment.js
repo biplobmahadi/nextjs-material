@@ -21,7 +21,14 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+const config = {
+    headers: {
+        Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
+    },
+};
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(2),
@@ -44,23 +51,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignupForm() {
     const classes = useStyles();
-    const [values, setValues] = React.useState({
-        amount: '',
-        password: '',
-        weight: '',
-        weightRange: '',
-        showPassword: false,
-    });
-    const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
-    };
-    const handleClickShowPassword = () => {
-        setValues({ ...values, showPassword: !values.showPassword });
+    const receiverNext = (values, setSubmitting) => {
+        axios
+            .patch(
+                `http://localhost:8000/my-order/${this.props.match.params.orderId}/`,
+                values,
+                config
+            )
+            .then((res) => {
+                console.log(res.data);
+                setSubmitting(false);
+            })
+            .catch((err) => {
+                console.log(err.response);
+                setSubmitting(false);
+            });
     };
 
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
     return (
         <Container component='main' maxWidth='xs'>
             <CssBaseline />

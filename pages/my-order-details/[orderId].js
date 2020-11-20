@@ -1,40 +1,51 @@
-import Link from 'next/link';
 import Head from 'next/head';
-import ButtonAppBar from '../components/ButtonAppBar';
-import Card from '../components/Card';
-import ProductTable from '../components/ProductTable';
-import OrderCard from '../components/OrderCard';
-import Footer from '../components/Footer';
-import MainFooter from '../components/MainFooter';
+import ButtonAppBar from '../../components/ButtonAppBar';
+import MainFooter from '../../components/MainFooter';
+import OrderDetails from '../../components/OrderDetails';
+import ReceiverAddress from '../../components/ReceiverAddress';
+import OrderedProduct from '../../components/OrderedProduct';
 import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import AccountOptionList from '../components/AccountOptionList';
 import { makeStyles } from '@material-ui/core/styles';
-import Divider from '@material-ui/core/Divider';
-import Hidden from '@material-ui/core/Hidden';
-import parseCookies from '../lib/parseCookies';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import AccountOptionList from '../../components/AccountOptionList';
+import parseCookies from '../../lib/parseCookies';
 import axios from 'axios';
 
-const useStyles = makeStyles((theme) => ({
+import Hidden from '@material-ui/core/Hidden';
+import TrackingStepper from '../../components/TrackingStepper';
+const useStyles = makeStyles({
     root: {
-        [theme.breakpoints.only('xs')]: {
-            textAlign: 'center',
-        },
+        flexGrow: 1,
+        marginTop: '16px',
     },
-}));
-
-export default function MyOrders({ orders }) {
+});
+export default function MyOrderDetails({ order }) {
     const classes = useStyles();
-    let myOrders = orders;
-    console.log(myOrders);
+    const [value, setValue] = React.useState('0');
+    let output;
+    if (value === '0') {
+        output = <OrderDetails order={order && order} />;
+    } else if (value === '1') {
+        output = <ReceiverAddress order={order && order} />;
+    } else {
+        output = <OrderedProduct order={order && order} />;
+    }
+
+    console.log(order);
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
     return (
         <div>
             {' '}
             <Head>
-                <title>My Orders</title>
+                <title>My Order Details</title>
                 <link rel='icon' href='/a.ico' />
                 <link
                     rel='stylesheet'
@@ -94,7 +105,6 @@ export default function MyOrders({ orders }) {
                                     boxShadow={1}
                                     borderRadius='borderRadius'
                                     style={{ backgroundColor: 'white' }}
-                                    className={classes.root}
                                 >
                                     <Grid
                                         container
@@ -115,7 +125,9 @@ export default function MyOrders({ orders }) {
                                                 variant='h5'
                                                 component='h5'
                                             >
-                                                <strong>My Orders</strong>{' '}
+                                                <strong>
+                                                    My Orders Details
+                                                </strong>{' '}
                                             </Typography>
                                         </Grid>
 
@@ -125,31 +137,49 @@ export default function MyOrders({ orders }) {
                                                 size='small'
                                             >
                                                 <Box px={3}>
-                                                    Total: {myOrders.length}
+                                                    Order ID: {order.id}
                                                 </Box>
                                             </Button>
                                         </Grid>
                                     </Grid>
                                 </Box>
-
-                                <Box mt={2}>
-                                    <Grid container spacing={3}>
-                                        {myOrders.length !== 0 &&
-                                            myOrders.map((myOrder) => (
-                                                <Grid
-                                                    item
-                                                    xs={12}
-                                                    sm={12}
-                                                    md={6}
-                                                    lg={4}
-                                                    xl={4}
-                                                >
-                                                    <OrderCard
-                                                        myOrder={myOrder}
-                                                    />
-                                                </Grid>
-                                            ))}
-                                    </Grid>
+                                <Box
+                                    p={2}
+                                    mt={2}
+                                    boxShadow={1}
+                                    borderRadius='borderRadius'
+                                    style={{ backgroundColor: 'white' }}
+                                >
+                                    <TrackingStepper order={order && order} />
+                                </Box>
+                                <Paper className={classes.root}>
+                                    <Tabs
+                                        value={value}
+                                        onChange={handleChange}
+                                        indicatorColor='primary'
+                                        textColor='primary'
+                                        variant='fullWidth'
+                                        centered
+                                    >
+                                        <Tab label='Order Details' value='0' />
+                                        <Tab
+                                            label='Receiver Address'
+                                            value='1'
+                                        />
+                                        <Tab
+                                            label='Ordered Products'
+                                            value='2'
+                                        />
+                                    </Tabs>
+                                </Paper>
+                                <Box
+                                    mt={2}
+                                    p={2}
+                                    boxShadow={1}
+                                    borderRadius='borderRadius'
+                                    style={{ backgroundColor: 'white' }}
+                                >
+                                    {output}
                                 </Box>
                             </Grid>
                         </Grid>
@@ -163,11 +193,11 @@ export default function MyOrders({ orders }) {
     );
 }
 
-const fetchDataForOrder = async (config) =>
+const fetchDataForOrder = async (params, config) =>
     await axios
-        .get(`http://localhost:8000/my-order/`, config)
+        .get(`http://localhost:8000/my-order/${params.orderId}/`, config)
         .then((res) => ({
-            orders: res.data,
+            order: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
@@ -185,7 +215,7 @@ export async function getServerSideProps({ req, params }) {
             Authorization: 'Token ' + haha_ecom_bangla_token,
         },
     };
-    const dataOrder = await fetchDataForOrder(config);
+    const dataOrder = await fetchDataForOrder(params, config);
 
     // let myOrders = dataOrder.orders;
 
