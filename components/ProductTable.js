@@ -12,8 +12,6 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
-import AddBox from '@material-ui/icons/AddBox';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
@@ -116,34 +114,34 @@ const useStyles2 = makeStyles({
         minWidth: 500,
     },
 });
-
+let myBagRe;
 export default function ProductTable(props) {
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [reRender, setReRender] = React.useState(false);
-    let myBag = props.myBag;
+    let myBag = myBagRe ? myBagRe : props.myBag;
     let config = props.config;
     let rows = myBag.product;
     // let myBagRe = props.myBag;
-    const changeMyBag = React.useCallback(
-        (value) => {
-            myBag = value;
-            setReRender(!reRender);
-            console.log('my bag now', myBag);
-        },
-        [reRender]
-    );
-    // const changeMyBag = async (value) => {
-    //     myBagRe = value;
-    //     // rows = value.product;
-    //     console.log('my bag now', myBagRe);
-    //     // console.log('my rows now', rows);
+    // const changeMyBag = React.useCallback(
+    //     (value) => {
+    //         myBag = value;
+    //         setReRender(!reRender);
+    //         console.log('my bag now', myBag);
+    //     },
+    //     [reRender]
+    // );
+    const changeMyBag = (value) => {
+        myBagRe = value;
+        // rows = value.product;
+        console.log('my bag now', myBagRe);
+        // console.log('my rows now', rows);
 
-    //     setReRender(!reRender);
-    //     // return { myBag, rows };
-    //     // return myBagRe;
-    // };
+        setReRender(!reRender);
+        // return { myBag, rows };
+        // return myBagRe;
+    };
     React.useEffect(() => {
         console.log('re render happend');
         // changeMyBag;
@@ -251,7 +249,7 @@ export default function ProductTable(props) {
                             )
                             .then((res) => {
                                 // this.setState({ myBag: res.data });
-
+                                changeMyBag(res.data);
                                 console.log('final after remove', res.data);
                                 // always update the state, because I work everything using state
                             })
@@ -303,7 +301,7 @@ export default function ProductTable(props) {
                             )
                             .then((res) => {
                                 // this.setState({ myBag: res.data });
-
+                                changeMyBag(res.data);
                                 console.log('final after delete', res.data);
                                 // always update the state, because I work everything using state
                             })
