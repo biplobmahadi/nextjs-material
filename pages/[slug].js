@@ -24,52 +24,15 @@ import Zoom from 'react-medium-image-zoom';
 import Cookies from 'js-cookie';
 import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
 
 import ReactImageZoom from 'react-image-zoom';
 import { Button } from '@material-ui/core';
 
-import { initializeStore } from '../store/store';
-
-// const config = {
-//     headers: {
-//         Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
-//     },
-// };
-const useCounter = () => {
-    const getStateProduct = useSelector(
-        (state) => state.singleProductReducer.stateProduct
-    );
-    const dispatch = useDispatch();
-    const setStateProduct = (product) =>
-        dispatch({
-            type: 'GET_PRODUCT',
-            payload: product,
-        });
-    const setTotalBagProduct = (total) =>
-        dispatch({
-            type: 'TOTAL_BAG_PRODUCT',
-            payload: total,
-        });
-
-    return { getStateProduct, setStateProduct, setTotalBagProduct };
-};
-
-export default function Product({
-    initialReduxState,
-    myBag,
-    config,
-    dataUser,
-}) {
+export default function Product({ dataProduct, myBag, config, dataUser }) {
     const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
 
-    const {
-        getStateProduct,
-        setStateProduct,
-        setTotalBagProduct,
-    } = useCounter();
-    let product = getStateProduct;
+    let { product } = dataProduct;
     let { user } = dataUser;
 
     // React.useEffect(() => {
@@ -82,7 +45,7 @@ export default function Product({
         setValue(value);
     };
 
-    console.log('here', { initialReduxState, myBag, config });
+    console.log('here', { dataProduct, myBag, config, dataUser });
     console.log('here product', product);
     console.log('here product from state', product);
     console.log('here user', user);
@@ -530,7 +493,10 @@ export default function Product({
                     </Grid>
                 </Box>
 
-                <ProductDetails user={user && user} />
+                <ProductDetails
+                    product={product && product}
+                    user={user && user}
+                />
             </Box>
             <Box mx={3} mt={6}>
                 <MainFooter />
@@ -627,17 +593,9 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
-    const reduxStore = initializeStore();
-    const { dispatch } = reduxStore;
-
-    dispatch({
-        type: 'GET_PRODUCT',
-        payload: dataProduct.product,
-    });
-
     return {
         props: {
-            initialReduxState: reduxStore.getState(),
+            dataProduct,
             myBag,
             config,
             dataUser,

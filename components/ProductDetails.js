@@ -1,4 +1,7 @@
 import Head from 'next/head';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { TextField } from 'formik-material-ui';
 import ProductDetailsTable from './ProductDetailsTable';
 import ProductCard from '../components/ProductCard';
 import Review from './forms/Review';
@@ -16,7 +19,7 @@ import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 import StarHalfIcon from '@material-ui/icons/StarHalf';
-import { Button } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
@@ -28,21 +31,6 @@ import ReactPlayer from 'react-player/youtube';
 
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
-
-const useCounter = () => {
-    const getStateProduct = useSelector(
-        (state) => state.singleProductReducer.stateProduct
-    );
-    const dispatch = useDispatch();
-    const setStateProduct = (product) =>
-        dispatch({
-            type: 'GET_PRODUCT',
-            payload: product,
-        });
-
-    return { getStateProduct, setStateProduct };
-};
 
 const config = {
     headers: {
@@ -71,18 +59,55 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ProductDetails({ user }) {
+let productRe;
+
+export default function ProductDetails(props) {
     const [value, setValue] = React.useState(2);
     const [hover, setHover] = React.useState(-1);
     let contained = 'contained';
-    const { getStateProduct, setStateProduct } = useCounter();
-    let product = getStateProduct;
-
-    // const [stateProduct, setStateProduct] = React.useState(product);
 
     const classes = useStyles();
+
+    const [reRender, setReRender] = React.useState(false);
+    let product = productRe ? productRe : props.product;
+    let user = props.user;
+
     console.log('got user', user);
     console.log('got product', product);
+
+    const changeProduct = (value) => {
+        productRe = value;
+        console.log('product now', productRe);
+
+        setReRender(!reRender);
+    };
+    React.useEffect(() => {
+        console.log('re render happend');
+        console.log('final product now', product);
+    }, [reRender]);
+
+    const handleSubmit = (values, setSubmitting) => {
+        const review = {
+            review_detail: values.review,
+            rating_star: value,
+            product: product.id,
+        };
+
+        axios
+            .post('http://localhost:8000/reviews-create/', review, config)
+            .then((res) => {
+                console.log(res.data);
+                axios
+                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .then((res) => {
+                        changeProduct(res.data);
+                        console.log('review done', res.data);
+                        setSubmitting(false);
+                    })
+                    .catch((err) => console.log(err.response));
+            })
+            .catch((err) => console.log(err.response));
+    };
 
     const handleAgree = (stringifyReview) => {
         const review = JSON.parse(stringifyReview);
@@ -131,10 +156,11 @@ export default function ProductDetails({ user }) {
                                         `http://localhost:8000/products/${product.slug}/`
                                     )
                                     .then((res) => {
-                                        setStateProduct(res.data);
+                                        // setStateProduct(res.data);
+                                        changeProduct(res.data);
                                         console.log(
                                             'review Now agreed - product',
-                                            product
+                                            res.data
                                         );
                                     })
                                     .catch((err) => console.log(err.response));
@@ -146,10 +172,11 @@ export default function ProductDetails({ user }) {
                                 `http://localhost:8000/products/${product.slug}/`
                             )
                             .then((res) => {
-                                setStateProduct(res.data);
+                                // setStateProduct(res.data);
+                                changeProduct(res.data);
                                 console.log(
                                     'review Now agreed - product',
-                                    product
+                                    res.data
                                 );
                             })
                             .catch((err) => console.log(err.response));
@@ -210,10 +237,11 @@ export default function ProductDetails({ user }) {
                                         `http://localhost:8000/products/${product.slug}/`
                                     )
                                     .then((res) => {
-                                        setStateProduct(res.data);
+                                        // setStateProduct(res.data);
+                                        changeProduct(res.data);
                                         console.log(
                                             'review Now disagreed - product',
-                                            product
+                                            res.data
                                         );
                                     })
                                     .catch((err) => console.log(err.response));
@@ -225,10 +253,11 @@ export default function ProductDetails({ user }) {
                                 `http://localhost:8000/products/${product.slug}/`
                             )
                             .then((res) => {
-                                setStateProduct(res.data);
+                                // setStateProduct(res.data);
+                                changeProduct(res.data);
                                 console.log(
                                     'review Now disagreed - product',
-                                    product
+                                    res.data
                                 );
                             })
                             .catch((err) => console.log(err.response));
@@ -639,59 +668,118 @@ export default function ProductDetails({ user }) {
                                 borderRadius='borderRadius'
                             >
                                 <Box>
-                                    <Review />
-                                </Box>
-                                {/* <Box pt={8}>
-                                    <Grid
-                                        container
-                                        direction='row'
-                                        justify='center'
-                                        alignItems='flex-end'
-                                        spacing={3}
+                                    <Formik
+                                        initialValues={{
+                                            review: '',
+                                        }}
+                                        validationSchema={Yup.object({
+                                            review: Yup.string()
+                                                .trim('Required')
+                                                .required('Required'),
+                                        })}
+                                        onSubmit={(
+                                            values,
+                                            { setSubmitting }
+                                        ) => {
+                                            handleSubmit(values, setSubmitting);
+                                        }}
+                                        // here I got some bugs, without submitting this component render again and again
+                                        // but by hovering to form and star
+                                        // need to fix it later..
                                     >
-                                        <Grid item>
-                                            <div className={classes.root}>
-                                                <Rating
-                                                    name='hover-feedback'
-                                                    value={value}
-                                                    precision={0.5}
-                                                    onChange={(
-                                                        event,
-                                                        newValue
-                                                    ) => {
-                                                        setValue(newValue);
-                                                    }}
-                                                    onChangeActive={(
-                                                        event,
-                                                        newHover
-                                                    ) => {
-                                                        setHover(newHover);
-                                                    }}
-                                                />
-                                                {value !== null && (
-                                                    <Box ml={2}>
-                                                        {
-                                                            labels[
-                                                                hover !== -1
-                                                                    ? hover
-                                                                    : value
-                                                            ]
-                                                        }
+                                        {({ isSubmitting }) => (
+                                            <div>
+                                                <Form>
+                                                    <Field
+                                                        name='review'
+                                                        type='text'
+                                                        multiline={true}
+                                                        rows={4}
+                                                        component={TextField}
+                                                        label='Give Review *'
+                                                        fullWidth
+                                                    />
+                                                    <Box pt={8}>
+                                                        <Grid
+                                                            container
+                                                            direction='row'
+                                                            justify='center'
+                                                            alignItems='flex-end'
+                                                            spacing={3}
+                                                        >
+                                                            <Grid item>
+                                                                <div
+                                                                    className={
+                                                                        classes.root
+                                                                    }
+                                                                >
+                                                                    <Rating
+                                                                        name='hover-feedback'
+                                                                        value={
+                                                                            value
+                                                                        }
+                                                                        precision={
+                                                                            0.5
+                                                                        }
+                                                                        onChange={(
+                                                                            event,
+                                                                            newValue
+                                                                        ) => {
+                                                                            setValue(
+                                                                                newValue
+                                                                            );
+                                                                        }}
+                                                                        onChangeActive={(
+                                                                            event,
+                                                                            newHover
+                                                                        ) => {
+                                                                            setHover(
+                                                                                newHover
+                                                                            );
+                                                                        }}
+                                                                    />
+                                                                    {value !==
+                                                                        null && (
+                                                                        <Box
+                                                                            ml={
+                                                                                2
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                labels[
+                                                                                    hover !==
+                                                                                    -1
+                                                                                        ? hover
+                                                                                        : value
+                                                                                ]
+                                                                            }
+                                                                        </Box>
+                                                                    )}
+                                                                </div>
+                                                            </Grid>
+                                                            <Grid item>
+                                                                <Button
+                                                                    type='submit'
+                                                                    size='small'
+                                                                    variant='contained'
+                                                                    color='secondary'
+                                                                    // className={classes.submit}
+                                                                    disabled={
+                                                                        isSubmitting
+                                                                    }
+                                                                >
+                                                                    <Box px={3}>
+                                                                        Submit
+                                                                    </Box>
+                                                                </Button>
+                                                            </Grid>
+                                                        </Grid>
                                                     </Box>
-                                                )}
+                                                </Form>
                                             </div>
-                                        </Grid>
-                                        <Grid item>
-                                            <Button
-                                                variant='contained'
-                                                size='small'
-                                                color='secondary'
-                                            >
-                                                <Box px={3}>Submit</Box>
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-                                </Box> */}
+                                        )}
+                                    </Formik>
+                                </Box>
                             </Box>
                         </Grid>
                     </Grid>
