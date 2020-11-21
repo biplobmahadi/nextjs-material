@@ -143,7 +143,7 @@ export default function Product({
                                 .then((res) => {
                                     // new myBag need to add to state
                                     myBag = res.data;
-                                    setTotalBagProduct(res.data.product.length);
+                                    // setTotalBagProduct(res.data.product.length);
                                 })
                                 .catch((err) => console.log(err.response));
                         })
@@ -188,9 +188,9 @@ export default function Product({
                                     .then((res) => {
                                         // new myBag need to add to state
                                         myBag = res.data;
-                                        setTotalBagProduct(
-                                            res.data.product.length
-                                        );
+                                        // setTotalBagProduct(
+                                        //     res.data.product.length
+                                        // );
                                     })
                                     .catch((err) => console.log(err.response));
                             })
@@ -215,9 +215,9 @@ export default function Product({
                                     .then((res) => {
                                         // new myBag need to add to state
                                         myBag = res.data;
-                                        setTotalBagProduct(
-                                            res.data.product.length
-                                        );
+                                        // setTotalBagProduct(
+                                        //     res.data.product.length
+                                        // );
                                     })
                                     .catch((err) => console.log(err.response));
                             })

@@ -20,17 +20,9 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
 
-export default function Index({ categories, error }) {
-    console.log({ categories, error });
-
-    let categoryNameTop = categories.filter(
-        (category) => category.category_name === 'top'
-    );
-    let subCategoryNameShirt = categoryNameTop[0].sub_category.filter(
-        (subCategory) => subCategory.sub_category_name === 'shirt'
-    );
-    let products = subCategoryNameShirt[0].product.slice(0, 6);
-    console.log('product', products);
+export default function Index({ topShirtProducts, bottomPantProducts }) {
+    console.log('top product', topShirtProducts);
+    console.log('bottom product', bottomPantProducts);
     return (
         <div>
             <Head>
@@ -135,8 +127,8 @@ export default function Index({ categories, error }) {
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
-                            {products &&
-                                products.map((product) => (
+                            {topShirtProducts &&
+                                topShirtProducts.map((product) => (
                                     <Grid
                                         item
                                         xs={12}
@@ -148,22 +140,6 @@ export default function Index({ categories, error }) {
                                         <ProductCard product={product} />
                                     </Grid>
                                 ))}
-                            {/*                             
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid> */}
                         </Grid>
                     </Box>
                 </Box>
@@ -199,24 +175,19 @@ export default function Index({ categories, error }) {
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard />
-                            </Grid>
+                            {bottomPantProducts &&
+                                bottomPantProducts.map((product) => (
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={6}
+                                        md={4}
+                                        lg={3}
+                                        xl={2}
+                                    >
+                                        <ProductCard product={product} />
+                                    </Grid>
+                                ))}
                         </Grid>
                     </Box>
                 </Box>
@@ -228,7 +199,7 @@ export default function Index({ categories, error }) {
     );
 }
 
-const fetchData = async () =>
+const fetchDataForCategories = async () =>
     await axios
         .get('http://localhost:8000/categories/')
         .then((res) => ({
@@ -239,10 +210,28 @@ const fetchData = async () =>
         }));
 
 export async function getStaticProps() {
-    const data = await fetchData();
+    const dataCategories = await fetchDataForCategories();
+
+    let categories = dataCategories.categories;
+
+    let categoryNameTop = categories.filter(
+        (category) => category.category_name === 'top'
+    );
+    let subCategoryNameShirt = categoryNameTop[0].sub_category.filter(
+        (subCategory) => subCategory.sub_category_name === 'shirt'
+    );
+    let topShirtProducts = subCategoryNameShirt[0].product.slice(0, 6);
+
+    let categoryNameBottom = categories.filter(
+        (category) => category.category_name === 'bottom'
+    );
+    let subCategoryNamePant = categoryNameBottom[0].sub_category.filter(
+        (subCategory) => subCategory.sub_category_name === 'pant'
+    );
+    let bottomPantProducts = subCategoryNamePant[0].product.slice(0, 6);
 
     return {
-        props: data,
+        props: { topShirtProducts, bottomPantProducts },
         // Next.js will attempt to re-generate the page:
         // - When a request comes in
         // - At most once every second
