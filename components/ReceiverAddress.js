@@ -16,7 +16,13 @@ import AccountOptionList from '../components/AccountOptionList';
 import Divider from '@material-ui/core/Divider';
 export default function ProfileCard({ order }) {
     return (
-        <Box>
+        <Box
+            mt={2}
+            p={2}
+            boxShadow={1}
+            borderRadius='borderRadius'
+            style={{ backgroundColor: 'white' }}
+        >
             <Grid
                 container
                 direction='row'

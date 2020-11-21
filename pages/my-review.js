@@ -1,7 +1,8 @@
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
 import ProductCard from '../components/ProductCard';
-import ProductTable from '../components/ProductTable';
+import MyReviewedProduct from '../components/MyReviewedProduct';
+import NotReviewedProduct from '../components/NotReviewedProduct';
 import AccountOptionList from '../components/AccountOptionList';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';
@@ -16,19 +17,43 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
 import Hidden from '@material-ui/core/Hidden';
+import parseCookies from '../lib/parseCookies';
+import axios from 'axios';
+
 const useStyles = makeStyles({
     root: {
         flexGrow: 1,
         marginTop: '16px',
     },
 });
-export default function MyReview() {
+export default function MyReview({
+    mainProductReviewed,
+    allProductReviewed,
+    notReviewedProduct,
+}) {
     const classes = useStyles();
     const [value, setValue] = React.useState('0');
-
+    let output;
+    if (value === '0') {
+        output = (
+            <MyReviewedProduct
+                mainProductReviewed={mainProductReviewed && mainProductReviewed}
+            />
+        );
+    } else {
+        output = (
+            <NotReviewedProduct
+                notReviewedProduct={notReviewedProduct && notReviewedProduct}
+            />
+        );
+    }
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+    console.log(allProductReviewed);
+    console.log('main', mainProductReviewed);
+
+    console.log('not', notReviewedProduct);
     return (
         <div>
             {' '}
@@ -116,81 +141,8 @@ export default function MyReview() {
                                         />
                                     </Tabs>
                                 </Paper>
-                                <Box mt={2}>
-                                    {/* <Typography>{value}</Typography> */}
-                                    <Grid container spacing={2}>
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            sm={6}
-                                            md={4}
-                                            lg={3}
-                                            xl={3}
-                                        >
-                                            <ProductCard />
-                                        </Grid>
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            sm={6}
-                                            md={4}
-                                            lg={3}
-                                            xl={3}
-                                        >
-                                            <ProductCard />
-                                        </Grid>
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            sm={6}
-                                            md={4}
-                                            lg={3}
-                                            xl={3}
-                                        >
-                                            <ProductCard />
-                                        </Grid>
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            sm={6}
-                                            md={4}
-                                            lg={3}
-                                            xl={3}
-                                        >
-                                            <ProductCard />
-                                        </Grid>
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            sm={6}
-                                            md={4}
-                                            lg={3}
-                                            xl={3}
-                                        >
-                                            <ProductCard />
-                                        </Grid>
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            sm={6}
-                                            md={4}
-                                            lg={3}
-                                            xl={3}
-                                        >
-                                            <ProductCard />
-                                        </Grid>
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            sm={6}
-                                            md={4}
-                                            lg={3}
-                                            xl={3}
-                                        >
-                                            <ProductCard />
-                                        </Grid>
-                                    </Grid>
-                                </Box>
+
+                                {output}
                             </Grid>
                         </Grid>
                     </Box>
@@ -201,4 +153,96 @@ export default function MyReview() {
             </Box>
         </div>
     );
+}
+
+const fetchDataForReview = async (config) =>
+    await axios
+        .get(`http://localhost:8000/reviews-read/`, config)
+        .then((res) => ({
+            reviews: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
+const fetchDataForProducts = async () =>
+    await axios
+        .get(`http://localhost:8000/products/`)
+        .then((res) => ({
+            products: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
+export async function getServerSideProps({ req, params }) {
+    const cookies = parseCookies(req);
+    const haha_ecom_bangla_token = cookies.haha_ecom_bangla_token
+        ? cookies.haha_ecom_bangla_token
+        : null;
+    // when there have no cookies in browser it will return undefined that is not serializable, thats why set it as null
+
+    const config = {
+        headers: {
+            Authorization: 'Token ' + haha_ecom_bangla_token,
+        },
+    };
+    const dataReview = await fetchDataForReview(config);
+    const dataProduct = await fetchDataForProducts();
+
+    let reviews = dataReview.reviews;
+    let products = dataProduct.products;
+
+    let allProductReviewed = [];
+    let mainProductReviewed = [];
+
+    reviews &&
+        reviews.forEach((review) => {
+            allProductReviewed.push(review.product);
+        });
+    // console.log(allProductReviewed);
+
+    mainProductReviewed =
+        allProductReviewed.length !== 0
+            ? mainProductReviewed.concat(allProductReviewed[0])
+            : [];
+
+    allProductReviewed &&
+        allProductReviewed.forEach((product) => {
+            let mainProductReviewedId = [];
+            mainProductReviewed.forEach((product) => {
+                mainProductReviewedId = mainProductReviewedId.concat(
+                    product.id
+                );
+            });
+
+            if (!mainProductReviewedId.includes(product.id)) {
+                mainProductReviewed = mainProductReviewed.concat(product);
+            }
+        });
+
+    // console.log(mainProductReviewed);
+
+    let allProduct = [];
+    products &&
+        products.forEach((product) => {
+            allProduct.push(product);
+        });
+    let notReviewedProduct = [];
+    allProduct &&
+        allProduct.forEach((product) => {
+            let mainProductReviewedId = [];
+            mainProductReviewed.forEach((product) => {
+                mainProductReviewedId = mainProductReviewedId.concat(
+                    product.id
+                );
+            });
+            if (!mainProductReviewedId.includes(product.id)) {
+                notReviewedProduct = notReviewedProduct.concat(product);
+            }
+        });
+
+    return {
+        props: { mainProductReviewed, allProductReviewed, notReviewedProduct },
+    };
 }

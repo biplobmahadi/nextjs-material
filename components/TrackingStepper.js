@@ -37,21 +37,28 @@ export default function HorizontalLabelPositionBelowStepper({ order }) {
     // const [activeStep, setActiveStep] = React.useState('');
     const steps = getSteps();
     let activeStep;
-    if (!order.is_processing) {
-        activeStep = 0;
-    } else if (order.is_processing) {
+    if (!order.is_processing && !order.is_placed &&
+        !order.is_on_road &&
+        !order.is_completed) {
         activeStep = 1;
-    } else if (order.is_processing && order.is_placed) {
+    } else if (order.is_processing && !order.is_placed &&
+        !order.is_on_road &&
+        !order.is_completed) {
         activeStep = 2;
-    } else if (order.is_processing && order.is_placed && order.is_on_road) {
+    } else if (order.is_processing && order.is_placed &&
+        !order.is_on_road &&
+        !order.is_completed) {
         activeStep = 3;
+    } else if (order.is_processing && order.is_placed && order.is_on_road &&
+        !order.is_completed) {
+        activeStep = 4;
     } else if (
         order.is_processing &&
         order.is_placed &&
         order.is_on_road &&
         order.is_completed
     ) {
-        activeStep = 4;
+        activeStep = 5;
     }
 
     return (

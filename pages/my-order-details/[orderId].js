@@ -172,15 +172,7 @@ export default function MyOrderDetails({ order }) {
                                         />
                                     </Tabs>
                                 </Paper>
-                                <Box
-                                    mt={2}
-                                    p={2}
-                                    boxShadow={1}
-                                    borderRadius='borderRadius'
-                                    style={{ backgroundColor: 'white' }}
-                                >
-                                    {output}
-                                </Box>
+                                <Box>{output}</Box>
                             </Grid>
                         </Grid>
                     </Box>
