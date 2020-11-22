@@ -19,11 +19,8 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
 import Rating from '@material-ui/lab/Rating';
-import Cookies from 'js-cookie';
-import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
 
-const labels = {
+const label = {
     0.5: 'Useless',
     1: 'Useless+',
     1.5: 'Poor',
@@ -43,35 +40,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const useCounter = () => {
-    const getStateProduct = useSelector(
-        (state) => state.singleProductReducer.stateProduct
-    );
-    const dispatch = useDispatch();
-    const setStateProduct = (product) =>
-        dispatch({
-            type: 'GET_PRODUCT',
-            payload: product,
-        });
-
-    return { getStateProduct, setStateProduct };
-};
-
-const config = {
-    headers: {
-        Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
-    },
-};
-
-export default function ScrollDialog({ review }) {
+export default function ScrollDialog({ review, handleUpdate }) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
-    const [value, setValue] = React.useState(2);
+    const [valueAgain, setValueAgain] = React.useState(2);
     const [hover, setHover] = React.useState(-1);
-
-    const { getStateProduct, setStateProduct } = useCounter();
-    let product = getStateProduct;
 
     const handleClickOpen = (scrollType) => () => {
         setOpen(true);
@@ -82,30 +56,30 @@ export default function ScrollDialog({ review }) {
         setOpen(false);
     };
 
-    const handleUpdate = (values, setSubmitting) => {
-        const reviewUpdate = {
-            review_detail: values.review,
-            rating_star: value,
-        };
+    // const handleUpdate = (values, setSubmitting) => {
+    //     const reviewUpdate = {
+    //         review_detail: values.review,
+    //         rating_star: value,
+    //     };
 
-        axios
-            .patch(
-                `http://localhost:8000/reviews/${review.id}/`,
-                reviewUpdate,
-                config
-            )
-            .then((res) => {
-                axios
-                    .get(`http://localhost:8000/products/${product.slug}/`)
-                    .then((res) => {
-                        setStateProduct(res.data);
-                        setSubmitting(false);
-                        setOpen(false);
-                    })
-                    .catch((err) => console.log(err.response));
-            })
-            .catch((err) => console.log(err.response));
-    };
+    //     axios
+    //         .patch(
+    //             `http://localhost:8000/reviews/${review.id}/`,
+    //             reviewUpdate,
+    //             config
+    //         )
+    //         .then((res) => {
+    //             axios
+    //                 .get(`http://localhost:8000/products/${product.slug}/`)
+    //                 .then((res) => {
+    //                     setStateProduct(res.data);
+    //                     setSubmitting(false);
+    //                     setOpen(false);
+    //                 })
+    //                 .catch((err) => console.log(err.response));
+    //         })
+    //         .catch((err) => console.log(err.response));
+    // };
 
     const descriptionElementRef = useRef(null);
     useEffect(() => {
@@ -152,7 +126,13 @@ export default function ScrollDialog({ review }) {
                             .required('Required'),
                     })}
                     onSubmit={(values, { setSubmitting }) => {
-                        handleUpdate(values, setSubmitting);
+                        handleUpdate(
+                            values,
+                            setSubmitting,
+                            review,
+                            setOpen,
+                            valueAgain
+                        );
                     }}
                 >
                     {({ isSubmitting }) => (
@@ -180,13 +160,15 @@ export default function ScrollDialog({ review }) {
                                                 <div className={classes.root}>
                                                     <Rating
                                                         name='hover-feedback'
-                                                        value={value}
+                                                        value={valueAgain}
                                                         precision={0.5}
                                                         onChange={(
                                                             event,
                                                             newValue
                                                         ) => {
-                                                            setValue(newValue);
+                                                            setValueAgain(
+                                                                newValue
+                                                            );
                                                         }}
                                                         onChangeActive={(
                                                             event,
@@ -195,13 +177,13 @@ export default function ScrollDialog({ review }) {
                                                             setHover(newHover);
                                                         }}
                                                     />
-                                                    {value !== null && (
+                                                    {valueAgain !== null && (
                                                         <Box ml={2}>
                                                             {
-                                                                labels[
+                                                                label[
                                                                     hover !== -1
                                                                         ? hover
-                                                                        : value
+                                                                        : valueAgain
                                                                 ]
                                                             }
                                                         </Box>

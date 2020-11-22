@@ -38,35 +38,10 @@ const config = {
     },
 };
 
-const labels = {
-    0.5: 'Useless',
-    1: 'Useless+',
-    1.5: 'Poor',
-    2: 'Poor+',
-    2.5: 'Ok',
-    3: 'Ok+',
-    3.5: 'Good',
-    4: 'Good+',
-    4.5: 'Excellent',
-    5: 'Excellent+',
-};
-
-const useStyles = makeStyles({
-    root: {
-        width: 200,
-        display: 'flex',
-        alignItems: 'center',
-    },
-});
-
 let productRe;
 
 export default function ProductDetails(props) {
-    const [value, setValue] = React.useState(2);
-    const [hover, setHover] = React.useState(-1);
     let contained = 'contained';
-
-    const classes = useStyles();
 
     const [reRender, setReRender] = React.useState(false);
     let product = productRe ? productRe : props.product;
@@ -86,7 +61,7 @@ export default function ProductDetails(props) {
         console.log('final product now', product);
     }, [reRender]);
 
-    const handleSubmit = (values, setSubmitting) => {
+    const handleSubmit = (values, setSubmitting, value) => {
         const review = {
             review_detail: values.review,
             rating_star: value,
@@ -267,6 +242,46 @@ export default function ProductDetails(props) {
         } else {
             console.log('you cant disagree with your review or already done');
         }
+    };
+
+    const handleUpdate = (values, setSubmitting, review, setOpen, value) => {
+        const reviewUpdate = {
+            review_detail: values.review,
+            rating_star: value,
+        };
+
+        axios
+            .patch(
+                `http://localhost:8000/reviews/${review.id}/`,
+                reviewUpdate,
+                config
+            )
+            .then((res) => {
+                axios
+                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .then((res) => {
+                        changeProduct(res.data);
+                        setSubmitting(false);
+                        setOpen(false);
+                    })
+                    .catch((err) => console.log(err.response));
+            })
+            .catch((err) => console.log(err.response));
+    };
+
+    const handleDelete = (review, setOpen) => {
+        axios
+            .delete(`http://localhost:8000/reviews/${review.id}/`, config)
+            .then((res) => {
+                axios
+                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .then((res) => {
+                        changeProduct(res.data);
+                        setOpen(false);
+                    })
+                    .catch((err) => console.log(err.response));
+            })
+            .catch((err) => console.log(err.response));
     };
 
     return (
@@ -668,117 +683,7 @@ export default function ProductDetails(props) {
                                 borderRadius='borderRadius'
                             >
                                 <Box>
-                                    <Formik
-                                        initialValues={{
-                                            review: '',
-                                        }}
-                                        validationSchema={Yup.object({
-                                            review: Yup.string()
-                                                .trim('Required')
-                                                .required('Required'),
-                                        })}
-                                        onSubmit={(
-                                            values,
-                                            { setSubmitting }
-                                        ) => {
-                                            handleSubmit(values, setSubmitting);
-                                        }}
-                                        // here I got some bugs, without submitting this component render again and again
-                                        // but by hovering to form and star
-                                        // need to fix it later..
-                                    >
-                                        {({ isSubmitting }) => (
-                                            <div>
-                                                <Form>
-                                                    <Field
-                                                        name='review'
-                                                        type='text'
-                                                        multiline={true}
-                                                        rows={4}
-                                                        component={TextField}
-                                                        label='Give Review *'
-                                                        fullWidth
-                                                    />
-                                                    <Box pt={8}>
-                                                        <Grid
-                                                            container
-                                                            direction='row'
-                                                            justify='center'
-                                                            alignItems='flex-end'
-                                                            spacing={3}
-                                                        >
-                                                            <Grid item>
-                                                                <div
-                                                                    className={
-                                                                        classes.root
-                                                                    }
-                                                                >
-                                                                    <Rating
-                                                                        name='hover-feedback'
-                                                                        value={
-                                                                            value
-                                                                        }
-                                                                        precision={
-                                                                            0.5
-                                                                        }
-                                                                        onChange={(
-                                                                            event,
-                                                                            newValue
-                                                                        ) => {
-                                                                            setValue(
-                                                                                newValue
-                                                                            );
-                                                                        }}
-                                                                        onChangeActive={(
-                                                                            event,
-                                                                            newHover
-                                                                        ) => {
-                                                                            setHover(
-                                                                                newHover
-                                                                            );
-                                                                        }}
-                                                                    />
-                                                                    {value !==
-                                                                        null && (
-                                                                        <Box
-                                                                            ml={
-                                                                                2
-                                                                            }
-                                                                        >
-                                                                            {
-                                                                                labels[
-                                                                                    hover !==
-                                                                                    -1
-                                                                                        ? hover
-                                                                                        : value
-                                                                                ]
-                                                                            }
-                                                                        </Box>
-                                                                    )}
-                                                                </div>
-                                                            </Grid>
-                                                            <Grid item>
-                                                                <Button
-                                                                    type='submit'
-                                                                    size='small'
-                                                                    variant='contained'
-                                                                    color='secondary'
-                                                                    // className={classes.submit}
-                                                                    disabled={
-                                                                        isSubmitting
-                                                                    }
-                                                                >
-                                                                    <Box px={3}>
-                                                                        Submit
-                                                                    </Box>
-                                                                </Button>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </Box>
-                                                </Form>
-                                            </div>
-                                        )}
-                                    </Formik>
+                                    <Review handleSubmit={handleSubmit} />
                                 </Box>
                             </Box>
                         </Grid>
@@ -954,11 +859,17 @@ export default function ProductDetails(props) {
                                                 <Box>
                                                     <UpdateReviewDialog
                                                         review={review}
+                                                        handleUpdate={
+                                                            handleUpdate
+                                                        }
                                                     />
                                                 </Box>
                                                 <Box mt={1}>
                                                     <DeleteReviewDialog
                                                         review={review}
+                                                        handleDelete={
+                                                            handleDelete
+                                                        }
                                                     />
                                                 </Box>
                                             </>

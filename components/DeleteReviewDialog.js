@@ -9,38 +9,10 @@ import FilterProduct from './FilterProduct';
 import Box from '@material-ui/core/Box';
 
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import UpdateIcon from '@material-ui/icons/Update';
-import EditIcon from '@material-ui/icons/Edit';
-import Cookies from 'js-cookie';
-import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
 
-const useCounter = () => {
-    const getStateProduct = useSelector(
-        (state) => state.singleProductReducer.stateProduct
-    );
-    const dispatch = useDispatch();
-    const setStateProduct = (product) =>
-        dispatch({
-            type: 'GET_PRODUCT',
-            payload: product,
-        });
-
-    return { getStateProduct, setStateProduct };
-};
-
-const config = {
-    headers: {
-        Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
-    },
-};
-
-export default function ScrollDialog({ review }) {
+export default function ScrollDialog({ review, handleDelete }) {
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
-
-    const { getStateProduct, setStateProduct } = useCounter();
-    let product = getStateProduct;
 
     const handleClickOpen = (scrollType) => () => {
         setOpen(true);
@@ -50,20 +22,20 @@ export default function ScrollDialog({ review }) {
     const handleClose = () => {
         setOpen(false);
     };
-    const handleDelete = () => {
-        axios
-            .delete(`http://localhost:8000/reviews/${review.id}/`, config)
-            .then((res) => {
-                axios
-                    .get(`http://localhost:8000/products/${product.slug}/`)
-                    .then((res) => {
-                        setStateProduct(res.data);
-                        setOpen(false);
-                    })
-                    .catch((err) => console.log(err.response));
-            })
-            .catch((err) => console.log(err.response));
-    };
+    // const handleDelete = () => {
+    //     axios
+    //         .delete(`http://localhost:8000/reviews/${review.id}/`, config)
+    //         .then((res) => {
+    //             axios
+    //                 .get(`http://localhost:8000/products/${product.slug}/`)
+    //                 .then((res) => {
+    //                     setStateProduct(res.data);
+    //                     setOpen(false);
+    //                 })
+    //                 .catch((err) => console.log(err.response));
+    //         })
+    //         .catch((err) => console.log(err.response));
+    // };
 
     const descriptionElementRef = useRef(null);
     useEffect(() => {
@@ -104,7 +76,10 @@ export default function ScrollDialog({ review }) {
                     <Button onClick={handleClose} color='primary'>
                         Cancel
                     </Button>
-                    <Button onClick={handleDelete} color='primary'>
+                    <Button
+                        onClick={() => handleDelete(review, setOpen)}
+                        color='primary'
+                    >
                         Delete
                     </Button>
                 </DialogActions>
