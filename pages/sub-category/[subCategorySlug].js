@@ -45,34 +45,56 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SubCategories({ subCategory }) {
     const classes = useStyles();
-    const [priceFilter, setPriceFilter] = React.useState(0);
+    const [priceFilter5TK, setPriceFilter5TK] = React.useState(0);
+    const [priceFilter10TK, setPriceFilter10TK] = React.useState(0);
     console.log('subCategory', subCategory);
 
-    const handlePriceFilter = (event) => {
-        setPriceFilter(event.target.checked ? event.target.value : 0);
+    const handlePriceFilter5TK = (event) => {
+        setPriceFilter5TK(event.target.checked ? event.target.value : 0);
+    };
+    const handlePriceFilter10TK = (event) => {
+        setPriceFilter10TK(event.target.checked ? event.target.value : 0);
     };
 
     let allProducts = subCategory.product;
     let products;
-    if (priceFilter > 0 && priceFilter <= 5) {
-        products = allProducts.filter((product) => product.price <= 5);
-    } else if (priceFilter > 5 && priceFilter <= 10) {
+
+    if (priceFilter5TK && !priceFilter10TK) {
+        products = allProducts.filter(
+            (product) => product.price > 0 && product.price <= 5
+        );
+    } else if (!priceFilter5TK && priceFilter10TK) {
         products = allProducts.filter(
             (product) => product.price > 5 && product.price <= 10
         );
-    } else if (priceFilter > 10 && priceFilter <= 15) {
+    } else if (priceFilter5TK && priceFilter10TK) {
         products = allProducts.filter(
-            (product) => product.price > 10 && product.price <= 15
-        );
-    } else if (priceFilter > 15 && priceFilter <= 20) {
-        products = allProducts.filter(
-            (product) => product.price > 15 && product.price <= 20
+            (product) => product.price > 0 && product.price <= 10
         );
     } else {
         products = allProducts;
     }
+
+    // if (priceFilter > 0 && priceFilter <= 5) {
+    //     products = allProducts.filter((product) => product.price <= 5);
+    // } else if (priceFilter > 5 && priceFilter <= 10) {
+    //     products = allProducts.filter(
+    //         (product) => product.price > 5 && product.price <= 10
+    //     );
+    // } else if (priceFilter > 10 && priceFilter <= 15) {
+    //     products = allProducts.filter(
+    //         (product) => product.price > 10 && product.price <= 15
+    //     );
+    // } else if (priceFilter > 15 && priceFilter <= 20) {
+    //     products = allProducts.filter(
+    //         (product) => product.price > 15 && product.price <= 20
+    //     );
+    // } else {
+    //     products = allProducts;
+    // }
     console.log('products', products);
-    console.log('priceFilter', priceFilter);
+    console.log('priceFilter5TK', priceFilter5TK);
+    console.log('priceFilter10TK', priceFilter10TK);
     return (
         <div>
             <Head>
@@ -217,7 +239,7 @@ export default function SubCategories({ subCategory }) {
                                                             value={5}
                                                             color='secondary'
                                                             onClick={(event) =>
-                                                                handlePriceFilter(
+                                                                handlePriceFilter5TK(
                                                                     event
                                                                 )
                                                             }
@@ -237,7 +259,7 @@ export default function SubCategories({ subCategory }) {
                                                             value={10}
                                                             color='secondary'
                                                             onClick={(event) =>
-                                                                handlePriceFilter(
+                                                                handlePriceFilter10TK(
                                                                     event
                                                                 )
                                                             }
