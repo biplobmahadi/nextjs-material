@@ -35,9 +35,44 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+// 1. when anything change on state the component will re render
+// 2. we use useEffect only if we need anything to do before component mount or willmount
+// 3. these two are most important about react component
+// 4. Don't depend on state for data, which related to backend. because state can be changed from devtools
+//    if state change then in server everything will be changed which is too harmful..
+// 5. we can't change component props. so this is secure
+// 6. formik to get form value, here also no need to use state.
+
 export default function SubCategories({ subCategory }) {
     const classes = useStyles();
+    const [priceFilter, setPriceFilter] = React.useState(0);
     console.log('subCategory', subCategory);
+
+    const handlePriceFilter = (event) => {
+        setPriceFilter(event.target.checked ? event.target.value : 0);
+    };
+
+    let allProducts = subCategory.product;
+    let products;
+    if (priceFilter > 0 && priceFilter <= 5) {
+        products = allProducts.filter((product) => product.price <= 5);
+    } else if (priceFilter > 5 && priceFilter <= 10) {
+        products = allProducts.filter(
+            (product) => product.price > 5 && product.price <= 10
+        );
+    } else if (priceFilter > 10 && priceFilter <= 15) {
+        products = allProducts.filter(
+            (product) => product.price > 10 && product.price <= 15
+        );
+    } else if (priceFilter > 15 && priceFilter <= 20) {
+        products = allProducts.filter(
+            (product) => product.price > 15 && product.price <= 20
+        );
+    } else {
+        products = allProducts;
+    }
+    console.log('products', products);
+    console.log('priceFilter', priceFilter);
     return (
         <div>
             <Head>
@@ -62,7 +97,7 @@ export default function SubCategories({ subCategory }) {
                         textAlign='center'
                     >
                         <Typography variant='h4' component='h4'>
-                            Men's Shirts
+                            {subCategory.sub_category_name}
                         </Typography>
                     </Box>
                     <Hidden lgUp>
@@ -177,9 +212,16 @@ export default function SubCategories({ subCategory }) {
                                                 row
                                             >
                                                 <FormControlLabel
-                                                    value='end'
                                                     control={
-                                                        <Checkbox color='secondary' />
+                                                        <Checkbox
+                                                            value={5}
+                                                            color='secondary'
+                                                            onClick={(event) =>
+                                                                handlePriceFilter(
+                                                                    event
+                                                                )
+                                                            }
+                                                        />
                                                     }
                                                     label='Tk. 100 - 500'
                                                     labelPlacement='end'
@@ -190,9 +232,16 @@ export default function SubCategories({ subCategory }) {
                                                 row
                                             >
                                                 <FormControlLabel
-                                                    value='end'
                                                     control={
-                                                        <Checkbox color='secondary' />
+                                                        <Checkbox
+                                                            value={10}
+                                                            color='secondary'
+                                                            onClick={(event) =>
+                                                                handlePriceFilter(
+                                                                    event
+                                                                )
+                                                            }
+                                                        />
                                                     }
                                                     label='Tk. 100 - 500'
                                                     labelPlacement='end'
@@ -203,7 +252,7 @@ export default function SubCategories({ subCategory }) {
                                                 row
                                             >
                                                 <FormControlLabel
-                                                    value='end'
+                                                    value={15}
                                                     control={
                                                         <Checkbox color='secondary' />
                                                     }
@@ -368,26 +417,23 @@ export default function SubCategories({ subCategory }) {
                             <Grid item xs={12} sm={12} md={12} lg={9} xl={9}>
                                 <Box className={classes.boot}>
                                     <Grid container spacing={2}>
-                                        {subCategory.product &&
-                                            subCategory.product.map(
-                                                (product) => (
-                                                    <Grid
-                                                        item
-                                                        xs={12}
-                                                        sm={6}
-                                                        md={4}
-                                                        lg={4}
-                                                        xl={3}
-                                                    >
-                                                        <ProductCard
-                                                            product={
-                                                                product &&
-                                                                product
-                                                            }
-                                                        />
-                                                    </Grid>
-                                                )
-                                            )}
+                                        {products &&
+                                            products.map((product) => (
+                                                <Grid
+                                                    item
+                                                    xs={12}
+                                                    sm={6}
+                                                    md={4}
+                                                    lg={4}
+                                                    xl={3}
+                                                >
+                                                    <ProductCard
+                                                        product={
+                                                            product && product
+                                                        }
+                                                    />
+                                                </Grid>
+                                            ))}
                                     </Grid>
                                 </Box>
                             </Grid>

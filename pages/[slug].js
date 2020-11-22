@@ -35,12 +35,6 @@ export default function Product({ dataProduct, myBag, config, dataUser }) {
     let { product } = dataProduct;
     let { user } = dataUser;
 
-    // React.useEffect(() => {
-    //     setStateProduct(product);
-    // }, []);
-
-    // need to avoid effect as can as possible
-
     const handleImageClick = (value) => {
         setValue(value);
     };

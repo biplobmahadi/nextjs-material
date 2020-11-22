@@ -45,7 +45,7 @@ export default function ScrollDialog({ review, handleUpdate }) {
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
     const [valueAgain, setValueAgain] = React.useState(2);
-    const [hover, setHover] = React.useState(-1);
+    const [hoverAgain, setHoverAgain] = React.useState(-1);
 
     const handleClickOpen = (scrollType) => () => {
         setOpen(true);
@@ -174,15 +174,18 @@ export default function ScrollDialog({ review, handleUpdate }) {
                                                             event,
                                                             newHover
                                                         ) => {
-                                                            setHover(newHover);
+                                                            setHoverAgain(
+                                                                newHover
+                                                            );
                                                         }}
                                                     />
                                                     {valueAgain !== null && (
                                                         <Box ml={2}>
                                                             {
                                                                 label[
-                                                                    hover !== -1
-                                                                        ? hover
+                                                                    hoverAgain !==
+                                                                    -1
+                                                                        ? hoverAgain
                                                                         : valueAgain
                                                                 ]
                                                             }

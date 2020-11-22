@@ -38,6 +38,14 @@ const config = {
     },
 };
 
+// 1. when anything change on state the component will re render
+// 2. we use useEffect only if we need anything to do before component mount or willmount
+// 3. these two are most important about react component
+// 4. Don't depend on state for data, which related to backend. because state can be changed from devtools
+//    if state change then in server everything will be changed which is too harmful..
+// 5. we can't change component props. so this is secure
+// 6. formik to get form value, here also no need to use state.
+
 let productRe;
 
 export default function ProductDetails(props) {
@@ -56,10 +64,11 @@ export default function ProductDetails(props) {
 
         setReRender(!reRender);
     };
-    React.useEffect(() => {
-        console.log('re render happend');
-        console.log('final product now', product);
-    }, [reRender]);
+
+    // React.useEffect(() => {
+    //     console.log('re render happend');
+    //     console.log('final product now', product);
+    // }, [reRender]);
 
     const handleSubmit = (values, setSubmitting, value) => {
         const review = {

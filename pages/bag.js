@@ -129,6 +129,15 @@ const useStyles2 = makeStyles({
         minWidth: 500,
     },
 });
+
+// 1. when anything change on state the component will re render
+// 2. we use useEffect only if we need anything to do before component mount or willmount
+// 3. these two are most important about react component
+// 4. Don't depend on state for data, which related to backend. because state can be changed from devtools
+//    if state change then in server everything will be changed which is too harmful..
+// 5. we can't change component props. so this is secure
+// 6. formik to get form value, here also no need to use state.
+
 let myBagRe;
 
 export default function Bag(props) {
@@ -138,6 +147,7 @@ export default function Bag(props) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [reRender, setReRender] = React.useState(false);
+
     let myBag = myBagRe ? myBagRe : props.myBag;
     let config = props.config;
     let rows = myBag.product;
@@ -148,10 +158,10 @@ export default function Bag(props) {
 
         setReRender(!reRender);
     };
-    React.useEffect(() => {
-        console.log('re render happend');
-        console.log('final my bag now', myBag);
-    }, [reRender]);
+    // React.useEffect(() => {
+    //     console.log('re render happend');
+    //     console.log('final my bag now', myBag);
+    // }, [reRender]);
 
     const emptyRows =
         rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
