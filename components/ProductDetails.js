@@ -31,6 +31,7 @@ import ReactPlayer from 'react-player/youtube';
 
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { useEffect } from 'react';
 
 const config = {
     headers: {
@@ -50,6 +51,11 @@ let productRe;
 
 export default function ProductDetails(props) {
     let contained = 'contained';
+    
+    let subCategoryProducts = props.subCategoryProducts
+    let myBag = props.myBag
+    let config = props.config
+    let changeMyBag = props.changeMyBag
 
     const [reRender, setReRender] = React.useState(false);
     let product = productRe ? productRe : props.product;
@@ -57,6 +63,7 @@ export default function ProductDetails(props) {
 
     console.log('got user', user);
     console.log('got product', product);
+    console.log('got product Re', productRe);
 
     const changeProduct = (value) => {
         productRe = value;
@@ -65,10 +72,14 @@ export default function ProductDetails(props) {
         setReRender(!reRender);
     };
 
-    // React.useEffect(() => {
-    //     console.log('re render happend');
-    //     console.log('final product now', product);
-    // }, [reRender]);
+    // here useEffect -> when component mount and update productRe will undefined
+    // because, when we change route then productRe again remain previous one which is not 
+    // updated one, that's why we make it undefined and bag will server rendered
+
+    useEffect(() => {
+        productRe = undefined
+    });
+
 
     const handleSubmit = (values, setSubmitting, value) => {
         const review = {
@@ -299,17 +310,15 @@ export default function ProductDetails(props) {
                 <Grid container spacing={2} alignItems='stretch'>
                     <Grid item xs={12} sm={12} md={12} lg={7} xl={7}>
                         <Box
-                            p={2}
                             height='100%'
-                            borderRadius='borderRadius'
-                            textAlign='center'
-                            style={{ backgroundColor: 'white' }}
                         >
-                            <Typography variant='h4' component='h4'>
-                                Product Details
-                            </Typography>
-                            <Box mt={2}>
-                                <Divider variant='middle' />
+                            <Box
+                                p={2}
+                                textAlign='center'
+                                borderRadius='borderRadius'
+                                style={{ backgroundColor: 'white' }}
+                            >
+                                <Typography variant='h4'>Product Details</Typography>
                             </Box>
 
                             <Box mt={2} borderRadius='borderRadius'>
@@ -319,15 +328,16 @@ export default function ProductDetails(props) {
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
                         <Box
-                            p={2}
                             height='100%'
-                            textAlign='center'
-                            borderRadius='borderRadius'
-                            style={{ backgroundColor: 'white' }}
+                            
                         >
-                            <Typography variant='h4'>Video Details</Typography>
-                            <Box mt={2}>
-                                <Divider variant='middle' />
+                            <Box
+                                p={2}
+                                textAlign='center'
+                                borderRadius='borderRadius'
+                                style={{ backgroundColor: 'white' }}
+                            >
+                                <Typography variant='h4'>Video Details</Typography>
                             </Box>
                             <Box mt={2}>
                                 <ReactPlayer
@@ -353,24 +363,17 @@ export default function ProductDetails(props) {
                 </Box>
                 <Box mt={2}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                            <ProductCard />
-                        </Grid>
+                        {subCategoryProducts && subCategoryProducts.map(product => 
+                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                <ProductCard
+                                    product={product} 
+                                    myBag={myBag} 
+                                    config={config}
+                                    changeMyBag={changeMyBag}
+                                />
+                            </Grid>
+                        )}
+                        
                     </Grid>
                 </Box>
             </Box>

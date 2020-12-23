@@ -42,7 +42,7 @@ export default function Logout() {
                 <Button
                     variant='contained'
                     color='primary'
-                    onClick={logout(router)}
+                    onClick={()=>logout(router)}
                 >
                     Logout
                 </Button>

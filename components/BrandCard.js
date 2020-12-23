@@ -22,11 +22,11 @@ const useStyles = makeStyles({
     },
 });
 
-export default function SubCataCard() {
+export default function BrandCard({brand}) {
     const classes = useStyles();
 
     return (
-        <Link href='/sub-categories'>
+        <Link href={`/brand/${brand.slug}`}>
             <Box textAlign='center'>
                 <Card className={classes.root}>
                     <CardActionArea>
@@ -46,7 +46,7 @@ export default function SubCataCard() {
                                 variant='h6'
                                 component='h6'
                             >
-                                <Box textAlign='center'>Brand Name</Box>
+                                <Box textAlign='center'>{brand.brand_name}</Box>
                             </Typography>
                         </CardContent>
                     </CardActionArea>

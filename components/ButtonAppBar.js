@@ -80,10 +80,11 @@ const useLogout = () => {
     return { token, totalBagProduct, logout };
 };
 
-export default function ButtonAppBar() {
+export default function ButtonAppBar({totalProductInBag}) {
     const router = useRouter();
     const classes = useStyles();
     const { token, totalBagProduct, logout } = useLogout();
+    console.log(token)
     // for menu
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -129,14 +130,44 @@ export default function ButtonAppBar() {
             onKeyDown={toggleDrawer(anchor, false)}
         >
             <List dense component='nav' aria-labelledby='nested-list-subheader'>
-                <Link href='/trending'>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <SendIcon fontSize='small' />
-                        </ListItemIcon>
-                        <ListItemText primary='Trending' />
-                    </ListItem>
-                </Link>
+                <ListItem button onClick={handleClickAgain}>
+                    <ListItemIcon>
+                        <SendIcon fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Trending' />
+                    {openAgain ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse
+                    in={openAgain}
+                    timeout='auto'
+                    unmountOnExit
+                >
+                    <List dense component='div' disablePadding>
+                        <Link href='/trending-season/summer'>
+                            <ListItem
+                                button
+                                className={classes.nested}
+                            >
+                                <ListItemIcon>
+                                    <StarBorder fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText primary='Summer' />
+                            </ListItem>
+                        </Link>
+                        <Link href='/trending-season/winter'>
+                            <ListItem
+                                button
+                                className={classes.nested}
+                            >
+                                <ListItemIcon>
+                                    <StarBorder fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText primary='Winter' />
+                            </ListItem>
+                        </Link>
+                    </List>
+                </Collapse>
+
                 <Divider variant='middle' />
                 {/* Men part starts */}
                 <ListItem button onClick={handleClickAgain}>
@@ -165,7 +196,7 @@ export default function ButtonAppBar() {
                             unmountOnExit
                         >
                             <List dense component='div' disablePadding>
-                                <Link href='/sub-categories'>
+                                <Link href='/sub-category/shirt'>
                                     <ListItem
                                         button
                                         className={classes.nestedAgain}
@@ -173,7 +204,7 @@ export default function ButtonAppBar() {
                                         <ListItemIcon>
                                             <StarBorder fontSize='small' />
                                         </ListItemIcon>
-                                        <ListItemText primary='Starred' />
+                                        <ListItemText primary='Shirt' />
                                     </ListItem>
                                 </Link>
                                 <ListItem
@@ -742,86 +773,87 @@ export default function ButtonAppBar() {
                             Logo.com
                         </Typography>
                     </Link>
-                    <Link href='/bag'>
-                        <IconButton color='inherit' aria-label='cart'>
-                            <Badge
-                                badgeContent={
-                                    totalBagProduct ? totalBagProduct : 0
-                                }
-                                color='secondary'
-                            >
-                                <ShoppingCartIcon />
-                            </Badge>
-                        </IconButton>
-                    </Link>
-
-                    <IconButton
-                        color='inherit'
-                        aria-label='account'
-                        aria-controls='simple-menu'
-                        aria-haspopup='true'
-                        onClick={handleClickMenu}
-                    >
-                        <AccountCircleIcon />
+                    {token ?
+                    <><Link href='/bag'>
+                    <IconButton color='inherit' aria-label='cart'>
+                        <Badge
+                            badgeContent={
+                                totalProductInBag ? totalProductInBag : '0'
+                            }
+                            color='secondary'
+                        >
+                            <ShoppingCartIcon />
+                        </Badge>
                     </IconButton>
-                    {/* menu create */}
-                    <Menu
-                        id='simple-menu'
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                    >
-                        <Link href='my-account'>
-                            <MenuItem onClick={handleClose}>
-                                <InboxIcon fontSize='small' />
-                                <Box ml={2}>My Account</Box>
-                            </MenuItem>
-                        </Link>
-                        <Divider variant='middle' />
-                        <Link href='my-orders'>
-                            <MenuItem onClick={handleClose}>
-                                <DraftsIcon fontSize='small' />
-                                <Box ml={2}>My Orders</Box>
-                            </MenuItem>
-                        </Link>
-                        <Divider variant='middle' />
-                        <Link href='my-lottery'>
-                            <MenuItem onClick={handleClose}>
-                                <InboxIcon fontSize='small' />
-                                <Box ml={2}>My Lottery</Box>
-                            </MenuItem>
-                        </Link>
-                        <Divider variant='middle' />
-                        <Link href='my-review'>
-                            <MenuItem onClick={handleClose}>
-                                <DraftsIcon fontSize='small' />
-                                <Box ml={2}>My Review</Box>
-                            </MenuItem>
-                        </Link>
-                        <Divider variant='middle' />
-                        <Link href='my-video-review'>
-                            <MenuItem onClick={handleClose}>
-                                <InboxIcon fontSize='small' />
-                                <Box ml={2}>My Video Review</Box>
-                            </MenuItem>
-                        </Link>
-                        <Divider variant='middle' />
-                        <Link href='my-gift'>
-                            <MenuItem onClick={handleClose}>
-                                <DraftsIcon fontSize='small' />
-                                <Box ml={2}>I Gift It</Box>
-                            </MenuItem>
-                        </Link>
-                        <Divider variant='middle' />
-                        <Link href='/'>
-                            <MenuItem onClick={handleClose}>
-                                <InboxIcon fontSize='small' />
-                                <Box ml={2}>Logout</Box>
-                            </MenuItem>
-                        </Link>
-                    </Menu>
-                    {/* menu end */}
+                </Link>
+
+                <IconButton
+                    color='inherit'
+                    aria-label='account'
+                    aria-controls='simple-menu'
+                    aria-haspopup='true'
+                    onClick={handleClickMenu}
+                >
+                    <AccountCircleIcon />
+                </IconButton>
+                {/* menu create */}
+                <Menu
+                    id='simple-menu'
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                >
+                    <Link href='/my-account'>
+                        <MenuItem onClick={handleClose}>
+                            <InboxIcon fontSize='small' />
+                            <Box ml={2}>My Account</Box>
+                        </MenuItem>
+                    </Link>
+                    <Divider variant='middle' />
+                    <Link href='/my-orders'>
+                        <MenuItem onClick={handleClose}>
+                            <DraftsIcon fontSize='small' />
+                            <Box ml={2}>My Orders</Box>
+                        </MenuItem>
+                    </Link>
+                    <Divider variant='middle' />
+                    <Link href='/my-lottery'>
+                        <MenuItem onClick={handleClose}>
+                            <InboxIcon fontSize='small' />
+                            <Box ml={2}>My Lottery</Box>
+                        </MenuItem>
+                    </Link>
+                    <Divider variant='middle' />
+                    <Link href='/my-review'>
+                        <MenuItem onClick={handleClose}>
+                            <DraftsIcon fontSize='small' />
+                            <Box ml={2}>My Review</Box>
+                        </MenuItem>
+                    </Link>
+                    <Divider variant='middle' />
+                    <Link href='/my-video-review'>
+                        <MenuItem onClick={handleClose}>
+                            <InboxIcon fontSize='small' />
+                            <Box ml={2}>My Video Review</Box>
+                        </MenuItem>
+                    </Link>
+                    <Divider variant='middle' />
+                    <Link href='/my-gift'>
+                        <MenuItem onClick={handleClose}>
+                            <DraftsIcon fontSize='small' />
+                            <Box ml={2}>I Gift It</Box>
+                        </MenuItem>
+                    </Link>
+                    <Divider variant='middle' />
+                        <MenuItem onClick={()=>logout(router)}>
+                            <InboxIcon fontSize='small' />
+                            <Box ml={2}>Logout</Box>
+                        </MenuItem>
+                </Menu>
+                {/* menu end */}</>
+                    : <Link href='/login'><Typography>Login</Typography></Link>}
+                    
                 </Toolbar>
             </AppBar>
         </div>

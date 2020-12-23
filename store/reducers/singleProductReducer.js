@@ -13,4 +13,5 @@ function singleProductReducer(state = initialState, action) {
     }
 }
 
+
 export default singleProductReducer;

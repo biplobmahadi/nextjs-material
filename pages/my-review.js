@@ -30,6 +30,7 @@ export default function MyReview({
     mainProductReviewed,
     allProductReviewed,
     notReviewedProduct,
+    myOrderedAllProducts
 }) {
     const classes = useStyles();
     const [value, setValue] = React.useState('0');
@@ -50,8 +51,10 @@ export default function MyReview({
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    console.log(allProductReviewed);
+    console.log('all reviewed',allProductReviewed);
     console.log('main', mainProductReviewed);
+
+    console.log('all ordered', myOrderedAllProducts);
 
     console.log('not', notReviewedProduct);
     return (
@@ -165,11 +168,11 @@ const fetchDataForReview = async (config) =>
             error: err.response.data,
         }));
 
-const fetchDataForProducts = async () =>
+const fetchDataForMyOrderProducts = async (config) =>
     await axios
-        .get(`http://localhost:8000/products/`)
+        .get(`http://localhost:8000/my-order/`, config)
         .then((res) => ({
-            products: res.data,
+            myOrders: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
@@ -188,10 +191,13 @@ export async function getServerSideProps({ req, params }) {
         },
     };
     const dataReview = await fetchDataForReview(config);
-    const dataProduct = await fetchDataForProducts();
+    const dataMyOrders = await fetchDataForMyOrderProducts(config);
 
     let reviews = dataReview.reviews;
-    let products = dataProduct.products;
+    let myOrders = dataMyOrders.myOrders;
+
+
+    // for reviewed products -> start here
 
     let allProductReviewed = [];
     let mainProductReviewed = [];
@@ -223,26 +229,44 @@ export async function getServerSideProps({ req, params }) {
 
     // console.log(mainProductReviewed);
 
-    let allProduct = [];
-    products &&
-        products.forEach((product) => {
-            allProduct.push(product);
-        });
+
+    // for not reviewed products -> start here
+
+    let myOrderedAllProducts = []
+    myOrders && myOrders.forEach(myOrder => {
+        myOrder.my_bag.product.forEach(product => {
+            myOrderedAllProducts = myOrderedAllProducts.concat(product.product)
+        })
+    })
+
+    // console.log('myOrderedAllProducts', myOrderedAllProducts)
+
+    // let allProduct = [];
+    // products &&
+    //     products.forEach((product) => {
+    //         allProduct.push(product);
+    //     });
     let notReviewedProduct = [];
-    allProduct &&
-        allProduct.forEach((product) => {
+    myOrderedAllProducts &&
+        myOrderedAllProducts.forEach((product) => {
             let mainProductReviewedId = [];
+            let notReviewedProductId = [];
             mainProductReviewed.forEach((product) => {
                 mainProductReviewedId = mainProductReviewedId.concat(
                     product.id
                 );
             });
-            if (!mainProductReviewedId.includes(product.id)) {
+            notReviewedProduct.length !== 0 && notReviewedProduct.forEach((product) => {
+                notReviewedProductId = notReviewedProductId.concat(
+                    product.id
+                );
+            });
+            if (!mainProductReviewedId.includes(product.id) && !notReviewedProductId.includes(product.id)) {
                 notReviewedProduct = notReviewedProduct.concat(product);
             }
         });
 
     return {
-        props: { mainProductReviewed, allProductReviewed, notReviewedProduct },
+        props: { mainProductReviewed, allProductReviewed, notReviewedProduct, myOrderedAllProducts },
     };
 }

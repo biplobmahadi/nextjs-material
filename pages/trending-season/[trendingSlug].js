@@ -1,23 +1,22 @@
 import Head from 'next/head';
-import ButtonAppBar from '../components/ButtonAppBar';
-import BrandCard from '../components/BrandCard';
-import ProductCard from '../components/ProductCard';
-import Footer from '../components/Footer';
-import MainFooter from '../components/MainFooter';
+import ButtonAppBar from '../../components/ButtonAppBar';
+import BrandCard from '../../components/BrandCard';
+import Card from '../../components/Card';
+import MainFooter from '../../components/MainFooter';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
 import axios from 'axios';
-import parseCookies from '../lib/parseCookies';
+import parseCookies from '../../lib/parseCookies';
 
 
-export default function Brands({ brands, myBag }) {
+export default function Trending({ trending, myBag }) {
     return (
         <div>
             <Head>
-                <title>Brands - Logo.com</title>
+                <title>Trending - Logo.com</title>
                 <link rel='icon' href='/a.ico' />
                 <link
                     rel='stylesheet'
@@ -32,23 +31,28 @@ export default function Brands({ brands, myBag }) {
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
                     <Box
+                        mb={2}
+                        borderRadius='borderRadius'
+                    >
+                        <img src='/aa.jpg' alt='' srcset='' height='250' width='100%' />
+                    </Box>
+                    <Box
                         py={2}
                         borderRadius='borderRadius'
                         style={{ backgroundColor: 'white' }}
                         textAlign='center'
                     >
                         <Typography variant='h4' component='h4'>
-                            Our Brands
+                            {trending.trend_name}
                         </Typography>
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
-                            {brands && brands.map(brand => 
+                            {trending && trending.trending_outfit && trending.trending_outfit.map(trending_outfit => 
                                 <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <BrandCard brand={brand}/>
-                            </Grid>
-                                )}
-                            
+                                    <Card trending_outfit={trending_outfit}/>
+                                </Grid>
+                            )}
                         </Grid>
                     </Box>
                 </Box>
@@ -72,18 +76,17 @@ const fetchDataForBag = async (config) =>
             error: err.response.data,
         }));
 
-const fetchDataForBrands = async () =>
+const fetchDataForTrending = async (params) =>
     await axios
-        .get('http://localhost:8000/brands/')
+        .get(`http://localhost:8000/trending/${params.trendingSlug}/`)
         .then((res) => ({
-            brands: res.data,
+            trending: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
         }));
 
 export async function getServerSideProps({ req, params }) {
-
     const cookies = parseCookies(req);
     const haha_ecom_bangla_token = cookies.haha_ecom_bangla_token
         ? cookies.haha_ecom_bangla_token
@@ -110,15 +113,12 @@ export async function getServerSideProps({ req, params }) {
     }
 
 
-    const dataBrands = await fetchDataForBrands();
-
-    const brands = dataBrands.brands;
+    const dataTrending = await fetchDataForTrending(params);
+    const trending = dataTrending.trending;
 
     return {
-        props: { brands, myBag },
-        // Next.js will attempt to re-generate the page:
-        // - When a request comes in
-        // - At most once every second
-        // revalidate: 1, // In seconds
+        props: {
+            trending, myBag
+        },
     };
 }

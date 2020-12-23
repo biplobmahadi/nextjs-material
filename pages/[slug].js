@@ -24,24 +24,47 @@ import Zoom from 'react-medium-image-zoom';
 import Cookies from 'js-cookie';
 import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
+import { useEffect } from 'react';
 
 import ReactImageZoom from 'react-image-zoom';
 import { Button } from '@material-ui/core';
 
-export default function Product({ dataProduct, myBag, config, dataUser }) {
+let myBagRe;
+
+export default function Product(props) {
     const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
+    const [reRender, setReRender] = React.useState(false);
 
-    let { product } = dataProduct;
-    let { user } = dataUser;
+    let { product } = props.dataProduct;
+    let { user } = props.dataUser;  
+    let config = props.config
+    let subCategoryProducts = props.subCategoryProducts
 
+    let myBag = myBagRe ? myBagRe : props.myBag;
+
+    const changeMyBag = (value) => {
+        myBagRe = value;
+        console.log('my bag now', myBagRe);
+
+        setReRender(!reRender);
+    };
+
+    // here useEffect -> when component mount and update myBagRe will undefined
+    // because, when we change route then myBagRe again remain previous one which is not 
+    // updated one, that's why we make it undefined and bag will server rendered
+
+    useEffect(() => {
+        myBagRe = undefined
+    });
+
+    
     const handleImageClick = (value) => {
         setValue(value);
     };
 
-    console.log('here', { dataProduct, myBag, config, dataUser });
+    // console.log('here', { props.dataProduct, props.myBag, props.config, props.dataUser });
     console.log('here product', product);
-    console.log('here product from state', product);
     console.log('here user', user);
     console.log('updated bag', myBag);
 
@@ -99,7 +122,7 @@ export default function Product({ dataProduct, myBag, config, dataUser }) {
                                 )
                                 .then((res) => {
                                     // new myBag need to add to state
-                                    myBag = res.data;
+                                    changeMyBag(res.data);
                                     // setTotalBagProduct(res.data.product.length);
                                 })
                                 .catch((err) => console.log(err.response));
@@ -144,7 +167,7 @@ export default function Product({ dataProduct, myBag, config, dataUser }) {
                                     )
                                     .then((res) => {
                                         // new myBag need to add to state
-                                        myBag = res.data;
+                                        changeMyBag(res.data);
                                         // setTotalBagProduct(
                                         //     res.data.product.length
                                         // );
@@ -171,7 +194,7 @@ export default function Product({ dataProduct, myBag, config, dataUser }) {
                                     )
                                     .then((res) => {
                                         // new myBag need to add to state
-                                        myBag = res.data;
+                                        changeMyBag(res.data);
                                         // setTotalBagProduct(
                                         //     res.data.product.length
                                         // );
@@ -199,7 +222,7 @@ export default function Product({ dataProduct, myBag, config, dataUser }) {
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar />
+            <ButtonAppBar totalProductInBag={ myBag && myBag.product.length}/>
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mx={3} mt={6} pt={4}>
                     <Grid container spacing={2}>
@@ -490,6 +513,10 @@ export default function Product({ dataProduct, myBag, config, dataUser }) {
                 <ProductDetails
                     product={product && product}
                     user={user && user}
+                    subCategoryProducts={subCategoryProducts}
+                    config={config}
+                    myBag={myBag}
+                    changeMyBag={changeMyBag}
                 />
             </Box>
             <Box mx={3} mt={6}>
@@ -519,7 +546,7 @@ export default function Product({ dataProduct, myBag, config, dataUser }) {
 //         }));
 // res data products must be same name for paths and props
 
-const fetchDataForProducts = async (params) =>
+const fetchDataForProduct = async (params) =>
     await axios
         .get(`http://localhost:8000/products/${params.slug}/`)
         .then((res) => ({
@@ -549,6 +576,17 @@ const fetchDataForUser = async (config) =>
             error: err.response.data,
         }));
 
+
+const fetchDataForSubCategory = async (sub_category_name) =>
+await axios
+    .get(`http://localhost:8000/sub-categories/${sub_category_name}/`)
+    .then((res) => ({
+        subCategory: res.data,
+    }))
+    .catch((err) => ({
+        error: err.response.data,
+    }));
+
 // export async function getStaticPaths() {
 //     const data = await fetchDataForPaths();
 
@@ -571,7 +609,7 @@ export async function getServerSideProps({ req, params }) {
             Authorization: 'Token ' + haha_ecom_bangla_token,
         },
     };
-    const dataProduct = await fetchDataForProducts(params);
+    const dataProduct = await fetchDataForProduct(params);
     const dataBag = await fetchDataForBag(config);
     const dataUser = await fetchDataForUser(config);
 
@@ -587,12 +625,21 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
+    const product = dataProduct.product
+    const sub_category_name = product.sub_category.sub_category_name
+    const dataSubCategory = await fetchDataForSubCategory(sub_category_name);
+    const subCategory = dataSubCategory.subCategory;
+    const allSubCategoryProducts = subCategory.product;
+    let subCategoryProducts = allSubCategoryProducts.filter(subProduct => subProduct.id !== product.id)
+
+
     return {
         props: {
             dataProduct,
             myBag,
             config,
             dataUser,
+            subCategoryProducts
         },
     };
 }

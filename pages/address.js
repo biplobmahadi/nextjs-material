@@ -12,12 +12,14 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
+
 export default function Address() {
     return (
         <div>
             {' '}
             <Head>
-                <title>My Address</title>
+                <title>My 
+                    Address</title>
                 <link rel='icon' href='/a.ico' />
                 <link
                     rel='stylesheet'

@@ -95,7 +95,7 @@ export default function ProfileCard({ order }) {
                             <Typography>{order && order.payment}</Typography>
                         ) : (
                             <>
-                                {!orders.is_confirm && (
+                                {!order.is_confirm && (
                                     <Link href={`/receiver/${order.id}`}>
                                         <Button
                                             color='primary'
@@ -107,7 +107,7 @@ export default function ProfileCard({ order }) {
                                         </Button>
                                     </Link>
                                 )}
-                                {orders.is_confirm && (
+                                {order.is_confirm && !order.is_payment_confirm && (
                                     <Link href={`/payment/${order.id}`}>
                                         <Button
                                             color='primary'

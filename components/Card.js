@@ -23,11 +23,11 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ImgMediaCard() {
+export default function ImgMediaCard({trending_outfit}) {
     const classes = useStyles();
 
     return (
-        <Link href='/trending-product'>
+        <Link href={`/trending-outfit/${trending_outfit.slug}`}>
             <Card className={classes.root}>
                 <CardActionArea>
                     <Box className={classes.imgHover} p={2}>
@@ -42,20 +42,20 @@ export default function ImgMediaCard() {
                     </Box>
                     <CardContent>
                         <Typography gutterBottom variant='h6' component='h6'>
-                            <Box textAlign='center'>Khula Mela</Box>
+                            <Box textAlign='center'>{trending_outfit.trend_outfit_name}</Box>
                         </Typography>
                     </CardContent>
                 </CardActionArea>
                 <Box pb={1}>
                     <CardActions style={{ justifyContent: 'center' }}>
-                        <Link href='/tranding-product'>
+                        <Link href={`/trending-outfit/${trending_outfit.slug}`}>
                             <Button
                                 variant='contained'
                                 size='small'
                                 color='primary'
                             >
                                 <Box textAlign='center' px={4}>
-                                    Buy Now
+                                    Products
                                 </Box>
                             </Button>
                         </Link>

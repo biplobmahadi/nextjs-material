@@ -35,6 +35,9 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 
 import TableHead from '@material-ui/core/TableHead';
 
+import Cookies from 'js-cookie';
+import { useEffect } from 'react';
+
 const useStyles1 = makeStyles((theme) => ({
     root: {
         flexShrink: 0,
@@ -142,7 +145,7 @@ let myBagRe;
 
 export default function Bag(props) {
     const router = useRouter();
-    console.log('bag e', props.myBag);
+
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -150,7 +153,7 @@ export default function Bag(props) {
 
     let myBag = myBagRe ? myBagRe : props.myBag;
     let config = props.config;
-    let rows = myBag.product;
+    let rows = myBag ? myBag.product : [];
 
     const changeMyBag = (value) => {
         myBagRe = value;
@@ -158,11 +161,22 @@ export default function Bag(props) {
 
         setReRender(!reRender);
     };
-    // React.useEffect(() => {
-    //     console.log('re render happend');
-    //     console.log('final my bag now', myBag);
-    // }, [reRender]);
+    
+    console.log('bag e', myBag);
+    console.log('bag e Re', myBagRe);
 
+    // here useEffect -> when component mount and update myBagRe will undefined
+    // because, when we change route then myBagRe again remain previous one which is not 
+    // updated one, that's why we make it undefined and bag will server rendered
+
+    useEffect(() => {
+        if (!Cookies.get('haha_ecom_bangla_token')) {
+            router.push('/login');
+        }
+        myBagRe = undefined
+    });
+
+    
     const emptyRows =
         rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -345,7 +359,7 @@ export default function Bag(props) {
                             )
                             .then((res) => {
                                 console.log(res.data);
-                                router.push(`/reciever/${orderId}`);
+                                router.push(`/receiver/${orderId}`);
                                 // this.setState({ submitted: true });
                             })
                             .catch((err) => {
@@ -378,7 +392,7 @@ export default function Bag(props) {
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar />
+            <ButtonAppBar totalProductInBag={ myBag && myBag.product.length} />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={6} pt={3} px={3}>
                     <Grid container spacing={3}>
@@ -656,7 +670,7 @@ export default function Bag(props) {
                                     <Grid item>
                                         <Box px={5}>
                                             <Typography>
-                                                {myBag.sub_total !== 0 ? 50 : 0}{' '}
+                                                {myBag && myBag.sub_total !== 0 ? 50 : 0}{' '}
                                                 TK.
                                             </Typography>
                                         </Box>

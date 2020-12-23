@@ -69,7 +69,7 @@ export default function PaymentForm({ paymentOrderId }) {
             .then((res) => {
                 console.log(res.data);
                 setSubmitting(false);
-                router.push(`/my-order-details`);
+                router.push(`/my-order-details/${res.data.id}`);
                 //   this.setState({
                 //     loading: false,
                 //     submitted: true

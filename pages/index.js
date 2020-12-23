@@ -19,10 +19,38 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
+import parseCookies from '../lib/parseCookies';
+import { useEffect } from 'react';
 
-export default function Index({ topShirtProducts, bottomPantProducts }) {
-    console.log('top product', topShirtProducts);
-    console.log('bottom product', bottomPantProducts);
+
+let myBagRe;
+
+export default function Index(props) {
+    const [reRender, setReRender] = React.useState(false);
+    
+    const { topShirtProducts, bottomPantProducts, config, trending } = props
+    let myBag = myBagRe ? myBagRe : props.myBag;
+
+    const changeMyBag = (value) => {
+        myBagRe = value;
+        console.log('my bag now', myBagRe);
+
+        setReRender(!reRender);
+    };
+    
+
+    // here useEffect -> when component mount and update myBagRe will undefined
+    // because, when we change route then myBagRe again remain previous one which is not 
+    // updated one, that's why we make it undefined and bag will server rendered
+
+    useEffect(() => {
+        myBagRe = undefined
+    });
+
+    // console.log('top product', topShirtProducts);
+    // console.log('bottom product', bottomPantProducts);
+    console.log('my bag 1st ', myBag);
+    console.log('my bag Re ', myBagRe);
     return (
         <div>
             <Head>
@@ -37,7 +65,7 @@ export default function Index({ topShirtProducts, bottomPantProducts }) {
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar />
+            <ButtonAppBar totalProductInBag={ myBag && myBag.product.length}/>
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
                     <Carousel />
@@ -74,24 +102,11 @@ export default function Index({ topShirtProducts, bottomPantProducts }) {
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <Card />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <Card />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <Card />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <Card />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <Card />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <Card />
-                            </Grid>
+                            {trending && trending.trending_outfit && trending.trending_outfit.map(trending_outfit => 
+                                <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                    <Card trending_outfit={trending_outfit}/>
+                                </Grid>
+                            )}
                         </Grid>
                     </Box>
                 </Box>
@@ -137,7 +152,12 @@ export default function Index({ topShirtProducts, bottomPantProducts }) {
                                         lg={3}
                                         xl={2}
                                     >
-                                        <ProductCard product={product} />
+                                        <ProductCard
+                                        product={product} 
+                                        myBag={myBag} 
+                                        config={config}
+                                        changeMyBag={changeMyBag}
+                                        />
                                     </Grid>
                                 ))}
                         </Grid>
@@ -185,7 +205,12 @@ export default function Index({ topShirtProducts, bottomPantProducts }) {
                                         lg={3}
                                         xl={2}
                                     >
-                                        <ProductCard product={product} />
+                                        <ProductCard
+                                        product={product} 
+                                        myBag={myBag} 
+                                        config={config}
+                                        changeMyBag={changeMyBag} 
+                                        />
                                     </Grid>
                                 ))}
                         </Grid>
@@ -199,6 +224,16 @@ export default function Index({ topShirtProducts, bottomPantProducts }) {
     );
 }
 
+const fetchDataForBag = async (config) =>
+    await axios
+        .get(`http://localhost:8000/my-bag/`, config)
+        .then((res) => ({
+            bag: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
 const fetchDataForCategories = async () =>
     await axios
         .get('http://localhost:8000/categories/')
@@ -209,12 +244,49 @@ const fetchDataForCategories = async () =>
             error: err.response.data,
         }));
 
-export async function getStaticProps() {
+const fetchDataForTrending = async (params) =>
+    await axios
+        .get(`http://localhost:8000/trending/winter/`)
+        .then((res) => ({
+            trending: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
+export async function getServerSideProps({ req, params }) {
+
+    const cookies = parseCookies(req);
+    const haha_ecom_bangla_token = cookies.haha_ecom_bangla_token
+        ? cookies.haha_ecom_bangla_token
+        : null;
+    // when there have no cookies in browser it will return undefined that is not serializable, thats why set it as null
+
+    const config = {
+        headers: {
+            Authorization: 'Token ' + haha_ecom_bangla_token,
+        },
+    };
+    const dataBag = await fetchDataForBag(config);
+
+    let myBag = null;
+    if (dataBag.bag) {
+        let allMyBag = dataBag.bag;
+        let myBagNotSendToMyOrder = allMyBag.filter(
+            (myBag) => myBag.is_send_to_my_order === false
+        );
+        // console.log(myBagNotSendToMyOrder[0])
+        if (myBagNotSendToMyOrder[0]) {
+            myBag = myBagNotSendToMyOrder[0];
+        }
+    }
+
+
     const dataCategories = await fetchDataForCategories();
 
     let categories = dataCategories.categories;
 
-    let categoryNameTop = categories.filter(
+    let categoryNameTop = categories && categories.filter(
         (category) => category.category_name === 'top'
     );
     let subCategoryNameShirt = categoryNameTop[0].sub_category.filter(
@@ -222,7 +294,7 @@ export async function getStaticProps() {
     );
     let topShirtProducts = subCategoryNameShirt[0].product.slice(0, 6);
 
-    let categoryNameBottom = categories.filter(
+    let categoryNameBottom = categories && categories.filter(
         (category) => category.category_name === 'bottom'
     );
     let subCategoryNamePant = categoryNameBottom[0].sub_category.filter(
@@ -230,11 +302,17 @@ export async function getStaticProps() {
     );
     let bottomPantProducts = subCategoryNamePant[0].product.slice(0, 6);
 
+
+
+    const dataTrending = await fetchDataForTrending(params);
+    const trending = dataTrending.trending;
+
+
     return {
-        props: { topShirtProducts, bottomPantProducts },
+        props: { topShirtProducts, bottomPantProducts, myBag, config, trending },
         // Next.js will attempt to re-generate the page:
         // - When a request comes in
         // - At most once every second
-        revalidate: 1, // In seconds
+        // revalidate: 1, // In seconds
     };
 }
