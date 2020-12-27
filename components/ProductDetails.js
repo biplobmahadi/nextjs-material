@@ -31,7 +31,6 @@ import ReactPlayer from 'react-player/youtube';
 
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { useEffect } from 'react';
 
 const config = {
     headers: {
@@ -47,39 +46,21 @@ const config = {
 // 5. we can't change component props. so this is secure
 // 6. formik to get form value, here also no need to use state.
 
-let productRe;
 
 export default function ProductDetails(props) {
     let contained = 'contained';
     
-    let subCategoryProducts = props.subCategoryProducts
+    let categoryProducts = props.categoryProducts
     let myBag = props.myBag
     let config = props.config
+    let changeProduct = props.changeProduct
     let changeMyBag = props.changeMyBag
 
-    const [reRender, setReRender] = React.useState(false);
-    let product = productRe ? productRe : props.product;
+    let product = props.product;
     let user = props.user;
 
-    console.log('got user', user);
+    // console.log('got user', user);
     console.log('got product', product);
-    console.log('got product Re', productRe);
-
-    const changeProduct = (value) => {
-        productRe = value;
-        console.log('product now', productRe);
-
-        setReRender(!reRender);
-    };
-
-    // here useEffect -> when component mount and update productRe will undefined
-    // because, when we change route then productRe again remain previous one which is not 
-    // updated one, that's why we make it undefined and bag will server rendered
-
-    useEffect(() => {
-        productRe = undefined
-    });
-
 
     const handleSubmit = (values, setSubmitting, value) => {
         const review = {
@@ -92,12 +73,22 @@ export default function ProductDetails(props) {
             .post('http://localhost:8000/reviews-create/', review, config)
             .then((res) => {
                 console.log(res.data);
+                // final get will be after all post, patch done
                 axios
                     .get(`http://localhost:8000/products/${product.slug}/`)
                     .then((res) => {
                         changeProduct(res.data);
-                        console.log('review done', res.data);
-                        setSubmitting(false);
+                        axios
+                            .get(
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                config
+                            )
+                            .then((res) => {
+                                // new myBag need to add to state
+                                changeMyBag(res.data);
+                                // setTotalBagProduct(res.data.product.length);
+                            })
+                            .catch((err) => console.log(err.response));
                     })
                     .catch((err) => console.log(err.response));
             })
@@ -146,33 +137,43 @@ export default function ProductDetails(props) {
                                 config
                             )
                             .then((res) => {
+                                // final get will be after all post, patch done
                                 axios
-                                    .get(
-                                        `http://localhost:8000/products/${product.slug}/`
-                                    )
+                                    .get(`http://localhost:8000/products/${product.slug}/`)
                                     .then((res) => {
-                                        // setStateProduct(res.data);
                                         changeProduct(res.data);
-                                        console.log(
-                                            'review Now agreed - product',
-                                            res.data
-                                        );
+                                        axios
+                                            .get(
+                                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                config
+                                            )
+                                            .then((res) => {
+                                                // new myBag need to add to state
+                                                changeMyBag(res.data);
+                                                // setTotalBagProduct(res.data.product.length);
+                                            })
+                                            .catch((err) => console.log(err.response));
                                     })
                                     .catch((err) => console.log(err.response));
                             })
                             .catch((err) => console.log(err.response));
                     } else {
+                        // final get will be after all post, patch done
                         axios
-                            .get(
-                                `http://localhost:8000/products/${product.slug}/`
-                            )
+                            .get(`http://localhost:8000/products/${product.slug}/`)
                             .then((res) => {
-                                // setStateProduct(res.data);
                                 changeProduct(res.data);
-                                console.log(
-                                    'review Now agreed - product',
-                                    res.data
-                                );
+                                axios
+                                    .get(
+                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        config
+                                    )
+                                    .then((res) => {
+                                        // new myBag need to add to state
+                                        changeMyBag(res.data);
+                                        // setTotalBagProduct(res.data.product.length);
+                                    })
+                                    .catch((err) => console.log(err.response));
                             })
                             .catch((err) => console.log(err.response));
                     }
@@ -227,33 +228,43 @@ export default function ProductDetails(props) {
                                 config
                             )
                             .then((res) => {
+                                // final get will be after all post, patch done
                                 axios
-                                    .get(
-                                        `http://localhost:8000/products/${product.slug}/`
-                                    )
+                                    .get(`http://localhost:8000/products/${product.slug}/`)
                                     .then((res) => {
-                                        // setStateProduct(res.data);
                                         changeProduct(res.data);
-                                        console.log(
-                                            'review Now disagreed - product',
-                                            res.data
-                                        );
+                                        axios
+                                            .get(
+                                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                config
+                                            )
+                                            .then((res) => {
+                                                // new myBag need to add to state
+                                                changeMyBag(res.data);
+                                                // setTotalBagProduct(res.data.product.length);
+                                            })
+                                            .catch((err) => console.log(err.response));
                                     })
                                     .catch((err) => console.log(err.response));
                             })
                             .catch((err) => console.log(err.response));
                     } else {
+                        // final get will be after all post, patch done
                         axios
-                            .get(
-                                `http://localhost:8000/products/${product.slug}/`
-                            )
+                            .get(`http://localhost:8000/products/${product.slug}/`)
                             .then((res) => {
-                                // setStateProduct(res.data);
                                 changeProduct(res.data);
-                                console.log(
-                                    'review Now disagreed - product',
-                                    res.data
-                                );
+                                axios
+                                    .get(
+                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        config
+                                    )
+                                    .then((res) => {
+                                        // new myBag need to add to state
+                                        changeMyBag(res.data);
+                                        // setTotalBagProduct(res.data.product.length);
+                                    })
+                                    .catch((err) => console.log(err.response));
                             })
                             .catch((err) => console.log(err.response));
                     }
@@ -277,14 +288,27 @@ export default function ProductDetails(props) {
                 config
             )
             .then((res) => {
+                // final get will be after all post, patch done
                 axios
                     .get(`http://localhost:8000/products/${product.slug}/`)
                     .then((res) => {
                         changeProduct(res.data);
-                        setSubmitting(false);
-                        setOpen(false);
+                        axios
+                            .get(
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                config
+                            )
+                            .then((res) => {
+                                // new myBag need to add to state
+                                changeMyBag(res.data);
+                                setSubmitting(false);
+                                setOpen(false);
+                                // setTotalBagProduct(res.data.product.length);
+                            })
+                            .catch((err) => console.log(err.response));
                     })
                     .catch((err) => console.log(err.response));
+                
             })
             .catch((err) => console.log(err.response));
     };
@@ -293,11 +317,23 @@ export default function ProductDetails(props) {
         axios
             .delete(`http://localhost:8000/reviews/${review.id}/`, config)
             .then((res) => {
+                // final get will be after all post, patch done
                 axios
                     .get(`http://localhost:8000/products/${product.slug}/`)
                     .then((res) => {
                         changeProduct(res.data);
-                        setOpen(false);
+                        axios
+                            .get(
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                config
+                            )
+                            .then((res) => {
+                                // new myBag need to add to state
+                                changeMyBag(res.data);
+                                setOpen(false);
+                                // setTotalBagProduct(res.data.product.length);
+                            })
+                            .catch((err) => console.log(err.response));
                     })
                     .catch((err) => console.log(err.response));
             })
@@ -322,7 +358,7 @@ export default function ProductDetails(props) {
                             </Box>
 
                             <Box mt={2} borderRadius='borderRadius'>
-                                <ProductDetailsTable />
+                                <ProductDetailsTable product={product}/>
                             </Box>
                         </Box>
                     </Grid>
@@ -363,7 +399,7 @@ export default function ProductDetails(props) {
                 </Box>
                 <Box mt={2}>
                     <Grid container spacing={2}>
-                        {subCategoryProducts && subCategoryProducts.map(product => 
+                        {categoryProducts && categoryProducts.map(product => 
                             <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
                                 <ProductCard
                                     product={product} 
@@ -895,3 +931,16 @@ export default function ProductDetails(props) {
         </div>
     );
 }
+
+
+// {product.productavailable.available_quantity === 0 && 
+//     <Box textAlign='center'>
+//         <Chip 
+//             label='Not In Stock'
+//             color='secondary'
+//             size='small'
+//         />
+//     </Box>}
+
+// 
+// disabled={product.productavailable.available_quantity === 0}

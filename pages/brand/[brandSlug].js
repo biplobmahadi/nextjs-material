@@ -146,7 +146,7 @@ export default function SubCategories(props) {
                         textAlign='center'
                     >
                         <Typography variant='h4' component='h4'>
-                            {brand.brand_name.toUpperCase()}
+                            {brand.brand_name}
                         </Typography>
                     </Box>
                     <Hidden lgUp>

@@ -24,12 +24,21 @@ import { useEffect } from 'react';
 
 
 let myBagRe;
+let mensShirtProductsRe;
 
 export default function Index(props) {
     const [reRender, setReRender] = React.useState(false);
     
-    const { topShirtProducts, bottomPantProducts, config, trending } = props
+    const { womensPantProducts, config, trending } = props
     let myBag = myBagRe ? myBagRe : props.myBag;
+    let mensShirtProducts = mensShirtProductsRe ? mensShirtProductsRe : props.mensShirtProducts;
+
+
+    const changeMensShirtProducts = (value) => {
+        mensShirtProductsRe = value;
+
+        // setReRender(!reRender);
+    };
 
     const changeMyBag = (value) => {
         myBagRe = value;
@@ -45,6 +54,7 @@ export default function Index(props) {
 
     useEffect(() => {
         myBagRe = undefined
+        mensShirtProductsRe = undefined
     });
 
     // console.log('top product', topShirtProducts);
@@ -125,7 +135,7 @@ export default function Index(props) {
                         >
                             <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
                                 <Typography variant='h4' component='h4'>
-                                    Topwear Product
+                                    Men's Shirt
                                 </Typography>
                             </Grid>
 
@@ -142,8 +152,8 @@ export default function Index(props) {
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
-                            {topShirtProducts &&
-                                topShirtProducts.map((product) => (
+                            {mensShirtProducts &&
+                                mensShirtProducts.map((product) => (
                                     <Grid
                                         item
                                         xs={12}
@@ -157,6 +167,7 @@ export default function Index(props) {
                                         myBag={myBag} 
                                         config={config}
                                         changeMyBag={changeMyBag}
+                                        changeCardProducts={changeMensShirtProducts}
                                         />
                                     </Grid>
                                 ))}
@@ -178,7 +189,7 @@ export default function Index(props) {
                         >
                             <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
                                 <Typography variant='h4' component='h4'>
-                                    Footwear Product
+                                    Women's Pant
                                 </Typography>
                             </Grid>
 
@@ -195,8 +206,8 @@ export default function Index(props) {
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
-                            {bottomPantProducts &&
-                                bottomPantProducts.map((product) => (
+                            {womensPantProducts &&
+                                womensPantProducts.map((product) => (
                                     <Grid
                                         item
                                         xs={12}
@@ -234,15 +245,25 @@ const fetchDataForBag = async (config) =>
             error: err.response.data,
         }));
 
-const fetchDataForCategories = async () =>
+const fetchDataForMensShirt = async () =>
     await axios
-        .get('http://localhost:8000/categories/')
+        .get(`http://localhost:8000/category/mens-shirt/`)
         .then((res) => ({
-            categories: res.data,
+            mensShirt: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
         }));
+
+const fetchDataForWomensPant = async () =>
+await axios
+    .get(`http://localhost:8000/category/womens-pant/`)
+    .then((res) => ({
+        womensPant: res.data,
+    }))
+    .catch((err) => ({
+        error: err.response.data,
+    }));
 
 const fetchDataForTrending = async (params) =>
     await axios
@@ -282,25 +303,29 @@ export async function getServerSideProps({ req, params }) {
     }
 
 
-    const dataCategories = await fetchDataForCategories();
+    const dataMensShirt = await fetchDataForMensShirt();
+    let mensShirt = dataMensShirt.mensShirt
+    let mensShirtProducts = mensShirt.product.slice(0, 6);
 
-    let categories = dataCategories.categories;
+    const dataWomensPant = await fetchDataForWomensPant();
+    let womensPant = dataWomensPant.womensPant
+    let womensPantProducts = womensPant.product.slice(0, 6);
 
-    let categoryNameTop = categories && categories.filter(
-        (category) => category.category_name === 'top'
-    );
-    let subCategoryNameShirt = categoryNameTop[0].sub_category.filter(
-        (subCategory) => subCategory.sub_category_name === 'shirt'
-    );
-    let topShirtProducts = subCategoryNameShirt[0].product.slice(0, 6);
+    // let categoryNameTop = categories && categories.filter(
+    //     (category) => category.category_name === 'top'
+    // );
+    // let subCategoryNameShirt = categoryNameTop[0].sub_category.filter(
+    //     (subCategory) => subCategory.sub_category_name === 'shirt'
+    // );
+    // let topShirtProducts = subCategoryNameShirt[0].product.slice(0, 6);
 
-    let categoryNameBottom = categories && categories.filter(
-        (category) => category.category_name === 'bottom'
-    );
-    let subCategoryNamePant = categoryNameBottom[0].sub_category.filter(
-        (subCategory) => subCategory.sub_category_name === 'pant'
-    );
-    let bottomPantProducts = subCategoryNamePant[0].product.slice(0, 6);
+    // let categoryNameBottom = categories && categories.filter(
+    //     (category) => category.category_name === 'bottom'
+    // );
+    // let subCategoryNamePant = categoryNameBottom[0].sub_category.filter(
+    //     (subCategory) => subCategory.sub_category_name === 'pant'
+    // );
+    // let bottomPantProducts = subCategoryNamePant[0].product.slice(0, 6);
 
 
 
@@ -309,7 +334,7 @@ export async function getServerSideProps({ req, params }) {
 
 
     return {
-        props: { topShirtProducts, bottomPantProducts, myBag, config, trending },
+        props: { mensShirtProducts, womensPantProducts, myBag, config, trending },
         // Next.js will attempt to re-generate the page:
         // - When a request comes in
         // - At most once every second

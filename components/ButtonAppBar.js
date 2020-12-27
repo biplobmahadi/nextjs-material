@@ -99,18 +99,49 @@ export default function ButtonAppBar({totalProductInBag}) {
     const [state, setState] = React.useState({
         left: false,
     });
-    const [open, setOpen] = React.useState(false);
-    const handleClick = () => {
-        setOpen(!open);
+
+    // start for trending
+    const [openTrending, setOpenTrending] = React.useState(false);
+    const handleClickTrending = () => {
+        setOpenTrending(!openTrending);
     };
-    const [openAgain, setOpenAgain] = React.useState(false);
-    const handleClickAgain = () => {
-        setOpenAgain(!openAgain);
+    // end for trending
+
+    // start step by step
+
+    // men part start
+    const [openMen, setOpenMen] = React.useState(false);
+    const handleClickMen = () => {
+        setOpenMen(!openMen);
     };
+    const [openTopWearMen, setOpenTopWearMen] = React.useState(false);
+    const handleClickTopWearMen = () => {
+        setOpenTopWearMen(!openTopWearMen);
+    };
+
+    // men part end
+
+    // women part start
+    const [openWomen, setOpenWomen] = React.useState(false);
+    const handleClickWomen = () => {
+        setOpenWomen(!openWomen);
+    };
+    const [openTopWearWomen, setOpenTopWearWomen] = React.useState(false);
+    const handleClickTopWearWomen = () => {
+        setOpenTopWearWomen(!openTopWearWomen);
+    };
+
+    // women part end
+
+
+
+
     const [openAgainAgain, setOpenAgainAgain] = React.useState(false);
     const handleClickAgainAgain = () => {
-        setOpenAgainAgain(!openAgainAgain);
+        // setOpenAgainAgain(!openAgainAgain);
     };
+
+
     const toggleDrawer = (anchor, open) => (event) => {
         if (
             event.type === 'keydown' &&
@@ -130,15 +161,15 @@ export default function ButtonAppBar({totalProductInBag}) {
             onKeyDown={toggleDrawer(anchor, false)}
         >
             <List dense component='nav' aria-labelledby='nested-list-subheader'>
-                <ListItem button onClick={handleClickAgain}>
+                <ListItem button onClick={handleClickTrending}>
                     <ListItemIcon>
                         <SendIcon fontSize='small' />
                     </ListItemIcon>
                     <ListItemText primary='Trending' />
-                    {openAgain ? <ExpandLess /> : <ExpandMore />}
+                    {openTrending ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
                 <Collapse
-                    in={openAgain}
+                    in={openTrending}
                     timeout='auto'
                     unmountOnExit
                 >
@@ -170,33 +201,33 @@ export default function ButtonAppBar({totalProductInBag}) {
 
                 <Divider variant='middle' />
                 {/* Men part starts */}
-                <ListItem button onClick={handleClickAgain}>
+                <ListItem button onClick={handleClickMen}>
                     <ListItemIcon>
                         <InboxIcon fontSize='small' />
                     </ListItemIcon>
                     <ListItemText primary='Men' />
-                    {openAgain ? <ExpandLess /> : <ExpandMore />}
+                    {openMen ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
-                <Collapse in={openAgain} timeout='auto' unmountOnExit>
+                <Collapse in={openMen} timeout='auto' unmountOnExit>
                     <List dense component='div' disablePadding>
                         <ListItem
                             button
                             className={classes.nested}
-                            onClick={handleClickAgainAgain}
+                            onClick={handleClickTopWearMen}
                         >
                             <ListItemIcon>
                                 <InboxIcon fontSize='small' />
                             </ListItemIcon>
                             <ListItemText primary='Top Wear' />
-                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
+                            {openTopWearMen ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
                         <Collapse
-                            in={openAgainAgain}
+                            in={openTopWearMen}
                             timeout='auto'
                             unmountOnExit
                         >
                             <List dense component='div' disablePadding>
-                                <Link href='/sub-category/shirt'>
+                                <Link href='/mens-shirt'>
                                     <ListItem
                                         button
                                         className={classes.nestedAgain}
@@ -425,43 +456,46 @@ export default function ButtonAppBar({totalProductInBag}) {
                     </List>
                 </Collapse>
                 {/* Men part completed */}
-                {/* Women part starts */}
 
-                <ListItem button onClick={handleClickAgain}>
+
+                {/* Women part starts */}
+                <ListItem button onClick={handleClickWomen}>
                     <ListItemIcon>
                         <InboxIcon fontSize='small' />
                     </ListItemIcon>
                     <ListItemText primary='Women' />
-                    {openAgain ? <ExpandLess /> : <ExpandMore />}
+                    {openWomen ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
-                <Collapse in={openAgain} timeout='auto' unmountOnExit>
+                <Collapse in={openWomen} timeout='auto' unmountOnExit>
                     <List dense component='div' disablePadding>
                         <ListItem
                             button
                             className={classes.nested}
-                            onClick={handleClickAgainAgain}
+                            onClick={handleClickTopWearWomen}
                         >
                             <ListItemIcon>
                                 <InboxIcon fontSize='small' />
                             </ListItemIcon>
                             <ListItemText primary='Top Wear' />
-                            {openAgainAgain ? <ExpandLess /> : <ExpandMore />}
+                            {openTopWearWomen ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
                         <Collapse
-                            in={openAgainAgain}
+                            in={openTopWearWomen}
                             timeout='auto'
                             unmountOnExit
                         >
                             <List dense component='div' disablePadding>
-                                <ListItem
-                                    button
-                                    className={classes.nestedAgain}
-                                >
-                                    <ListItemIcon>
-                                        <StarBorder fontSize='small' />
-                                    </ListItemIcon>
-                                    <ListItemText primary='Starred' />
-                                </ListItem>
+                                <Link href='/womens-pant'>
+                                    <ListItem
+                                        button
+                                        className={classes.nestedAgain}
+                                    >
+                                        <ListItemIcon>
+                                            <StarBorder fontSize='small' />
+                                        </ListItemIcon>
+                                        <ListItemText primary='Pant' />
+                                    </ListItem>
+                                </Link>
                                 <ListItem
                                     button
                                     className={classes.nestedAgain}

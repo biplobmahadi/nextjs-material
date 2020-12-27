@@ -1,9 +1,9 @@
 import Head from 'next/head';
-import ButtonAppBar from '../../components/ButtonAppBar';
-import ProductCard from '../../components/ProductCard';
-import FilterProductDialog from '../../components/FilterProductDialog';
-import MainFooter from '../../components/MainFooter';
-import FilterProduct from '../../components/FilterProduct';
+import ButtonAppBar from '../components/ButtonAppBar';
+import ProductCard from '../components/ProductCard';
+import FilterProductDialog from '../components/FilterProductDialog';
+import MainFooter from '../components/MainFooter';
+import FilterProduct from '../components/FilterProduct';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -19,7 +19,7 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 
-import parseCookies from '../../lib/parseCookies';
+import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
 import { useEffect } from 'react';
 
@@ -49,13 +49,13 @@ const useStyles = makeStyles((theme) => ({
 let myBagRe;
 
 
-export default function SubCategories(props) {
+export default function Category(props) {
     const classes = useStyles();
     const [priceFilter5TK, setPriceFilter5TK] = React.useState(0);
     const [priceFilter10TK, setPriceFilter10TK] = React.useState(0);
     const [reRender, setReRender] = React.useState(false);
     
-    const { subCategory, config } = props
+    const { category, config } = props
     let myBag = myBagRe ? myBagRe : props.myBag;
 
     const changeMyBag = (value) => {
@@ -75,7 +75,7 @@ export default function SubCategories(props) {
 
     console.log('my bag 1st ', myBag);
     console.log('my bag Re ', myBagRe);
-    console.log('subCategory', subCategory);
+    console.log('category', category);
 
     const handlePriceFilter5TK = (event) => {
         setPriceFilter5TK(event.target.checked ? event.target.value : 0);
@@ -84,7 +84,7 @@ export default function SubCategories(props) {
         setPriceFilter10TK(event.target.checked ? event.target.value : 0);
     };
 
-    let allProducts = subCategory.product;
+    let allProducts = category ? category.product : [];
     let products;
 
     if (priceFilter5TK && !priceFilter10TK) {
@@ -126,7 +126,7 @@ export default function SubCategories(props) {
     return (
         <div>
             <Head>
-                <title>Sub Catergories - {subCategory.sub_category_name}</title>
+                <title>Catergories - {category && category.category_name}</title>
                 <link rel='icon' href='/a.ico' />
                 <link
                     rel='stylesheet'
@@ -147,7 +147,7 @@ export default function SubCategories(props) {
                         textAlign='center'
                     >
                         <Typography variant='h4' component='h4'>
-                            {subCategory.sub_category_name.toUpperCase()}
+                            {category && category.category_name}
                         </Typography>
                     </Box>
                     <Hidden lgUp>
@@ -162,89 +162,6 @@ export default function SubCategories(props) {
                                 <Grid item xs={12} sm={3} md={4} lg={3} xl={3}>
                                     <Box
                                         style={{ backgroundColor: 'white' }}
-                                        p={3}
-                                        className={classes.root}
-                                        borderRadius='borderRadius'
-                                    >
-                                        <Typography
-                                            gutterBottom
-                                            variant='h6'
-                                            component='h6'
-                                        >
-                                            Filter by Brands
-                                        </Typography>
-                                        <FormControl component='fieldset'>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value='end'
-                                                    control={
-                                                        <Checkbox color='secondary' />
-                                                    }
-                                                    label='Apple'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value='end'
-                                                    control={
-                                                        <Checkbox color='secondary' />
-                                                    }
-                                                    label='Google'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value='end'
-                                                    control={
-                                                        <Checkbox color='secondary' />
-                                                    }
-                                                    label='One Plus'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value='end'
-                                                    control={
-                                                        <Checkbox color='secondary' />
-                                                    }
-                                                    label='Samsung'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value='end'
-                                                    control={
-                                                        <Checkbox color='secondary' />
-                                                    }
-                                                    label='Nokia'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                        </FormControl>
-                                    </Box>
-
-                                    <Box
-                                        style={{ backgroundColor: 'white' }}
-                                        mt={3}
                                         p={3}
                                         className={classes.root}
                                         borderRadius='borderRadius'
@@ -510,11 +427,11 @@ const fetchDataForBag = async (config) =>
             error: err.response.data,
         }));
 
-const fetchDataForSubCategory = async (params) =>
+const fetchDataForCategory = async (params) =>
     await axios
-        .get(`http://localhost:8000/sub-categories/${params.subCategorySlug}/`)
+        .get(`http://localhost:8000/category/${params.categorySlug}/`)
         .then((res) => ({
-            subCategory: res.data,
+            category: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
@@ -546,13 +463,12 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
-
-    const dataSubCategory = await fetchDataForSubCategory(params);
-    const subCategory = dataSubCategory.subCategory;
+    const dataCategory = await fetchDataForCategory(params);
+    const category = dataCategory.category ? dataCategory.category: null;
 
     return {
         props: {
-            subCategory, myBag, config
+            category, myBag, config
         },
     };
 }
