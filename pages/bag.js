@@ -217,9 +217,20 @@ export default function Bag(props) {
                     )
                     .then((res) => {
                         console.log(res.data);
+                        // here product.product.productavailable.id used, because here product means product with quantity not single product
                         axios
+                        .patch(
+                            `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
+                            {
+                                available_quantity: product.product.productavailable.available_quantity - 1
+                            },
+                            config
+                        )
+                        .then((res) => {
+                            // final get will be after all post, patch done
+                            axios
                             .get(
-                                `http://localhost:8000/my-bag/${res.data.id}/`,
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
                                 config
                             )
                             .then((res) => {
@@ -234,6 +245,9 @@ export default function Bag(props) {
                                 // always update the state, because I work everything using state
                             })
                             .catch((err) => console.log(err.response));
+                        })
+                        .catch((err) => console.log(err.response));
+                        
                     })
                     .catch((err) => console.log(err.response));
             })
@@ -268,18 +282,31 @@ export default function Bag(props) {
                     )
                     .then((res) => {
                         console.log(res.data);
+                        // here product.product.productavailable.id used, because here product means product with quantity not single product
                         axios
+                        .patch(
+                            `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
+                            {
+                                available_quantity: product.product.productavailable.available_quantity + 1
+                            },
+                            config
+                        )
+                        .then((res) => {
+                            // final get will be after all post, patch done
+                            axios
                             .get(
-                                `http://localhost:8000/my-bag/${res.data.id}/`,
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
                                 config
                             )
                             .then((res) => {
                                 // this.setState({ myBag: res.data });
+                                console.log('final after add', res.data);
                                 changeMyBag(res.data);
-                                console.log('final after remove', res.data);
-                                // always update the state, because I work everything using state
                             })
                             .catch((err) => console.log(err.response));
+                        })
+                        .catch((err) => console.log(err.response));
+                        
                     })
                     .catch((err) => console.log(err.response));
             })
@@ -320,18 +347,31 @@ export default function Bag(props) {
                     )
                     .then((res) => {
                         console.log(res.data);
+                        // here product.product.productavailable.id used, because here product means product with quantity not single product
                         axios
+                        .patch(
+                            `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
+                            {
+                                available_quantity: product.product.productavailable.available_quantity + product.quantity
+                            },
+                            config
+                        )
+                        .then((res) => {
+                            // final get will be after all post, patch done
+                            axios
                             .get(
-                                `http://localhost:8000/my-bag/${res.data.id}/`,
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
                                 config
                             )
                             .then((res) => {
                                 // this.setState({ myBag: res.data });
+                                console.log('final after add', res.data);
                                 changeMyBag(res.data);
-                                console.log('final after delete', res.data);
-                                // always update the state, because I work everything using state
                             })
                             .catch((err) => console.log(err.response));
+                        })
+                        .catch((err) => console.log(err.response));
+                        
                     })
                     .catch((err) => console.log(err.response));
             })
@@ -511,6 +551,8 @@ export default function Bag(props) {
                                                         )}
 
                                                         {row.quantity}
+                                                        {row.product.productavailable.available_quantity !== 0
+                                                        ?
                                                         <IconButton
                                                             color='error'
                                                             onClick={() =>
@@ -523,6 +565,14 @@ export default function Bag(props) {
                                                         >
                                                             <AddCircleIcon />
                                                         </IconButton>
+                                                        :
+                                                        <Chip 
+                                                            label='Not In Stock'
+                                                            color='secondary'
+                                                            size='small'
+                                                        />
+                                                        }
+                                                        
                                                     </TableCell>
                                                     <TableCell
                                                         style={{ width: 160 }}
