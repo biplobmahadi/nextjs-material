@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
-import ProductCard from '../components/ProductCard';
+import ProductCardForMultiple from '../components/ProductCardForMultiple';
 import FilterProductDialog from '../components/FilterProductDialog';
 import MainFooter from '../components/MainFooter';
 import FilterProduct from '../components/FilterProduct';
@@ -22,6 +22,7 @@ import Hidden from '@material-ui/core/Hidden';
 import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -47,17 +48,28 @@ const useStyles = makeStyles((theme) => ({
 
 
 let myBagRe;
+let categoryProductsRe;
 
 
 export default function Category(props) {
     const classes = useStyles();
+    const router = useRouter();
     const [priceFilter5TK, setPriceFilter5TK] = React.useState(0);
     const [priceFilter10TK, setPriceFilter10TK] = React.useState(0);
     const [reRender, setReRender] = React.useState(false);
     
-    const { category, config } = props
+    const { categorySlug } = router.query;
+
+    const { config } = props
+    let category = categoryProductsRe ? categoryProductsRe : props.category;
+
     let myBag = myBagRe ? myBagRe : props.myBag;
 
+    const changeCategoryProducts = (value) => {
+        categoryProductsRe = value;
+
+        // setReRender(!reRender);
+    };
     const changeMyBag = (value) => {
         myBagRe = value;
         console.log('my bag now', myBagRe);
@@ -71,6 +83,7 @@ export default function Category(props) {
 
     useEffect(() => {
         myBagRe = undefined
+        categoryProductsRe = undefined
     });
 
     console.log('my bag 1st ', myBag);
@@ -394,11 +407,13 @@ export default function Category(props) {
                                                     lg={4}
                                                     xl={3}
                                                 >
-                                                    <ProductCard
+                                                    <ProductCardForMultiple
                                                     product={product && product} 
                                                     myBag={myBag} 
                                                     config={config}
                                                     changeMyBag={changeMyBag}
+                                                    urlForChangeCardProducts={`http://localhost:8000/category/${categorySlug}/`}
+                                                    changeCardProducts={changeCategoryProducts}
                                                     />
                                                 </Grid>
                                             ))}
