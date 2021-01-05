@@ -46,15 +46,14 @@ const config = {
 // 5. we can't change component props. so this is secure
 // 6. formik to get form value, here also no need to use state.
 
-
 export default function ProductDetails(props) {
     let contained = 'contained';
-    
-    let categoryProducts = props.categoryProducts
-    let myBag = props.myBag
-    let config = props.config
-    let changeProduct = props.changeProduct
-    let changeMyBag = props.changeMyBag
+
+    let categoryProducts = props.categoryProducts;
+    let myBag = props.myBag;
+    let config = props.config;
+    let changeProduct = props.changeProduct;
+    let changeMyBag = props.changeMyBag;
 
     let product = props.product;
     let user = props.user;
@@ -139,7 +138,9 @@ export default function ProductDetails(props) {
                             .then((res) => {
                                 // final get will be after all post, patch done
                                 axios
-                                    .get(`http://localhost:8000/products/${product.slug}/`)
+                                    .get(
+                                        `http://localhost:8000/products/${product.slug}/`
+                                    )
                                     .then((res) => {
                                         changeProduct(res.data);
                                         axios
@@ -152,7 +153,9 @@ export default function ProductDetails(props) {
                                                 changeMyBag(res.data);
                                                 // setTotalBagProduct(res.data.product.length);
                                             })
-                                            .catch((err) => console.log(err.response));
+                                            .catch((err) =>
+                                                console.log(err.response)
+                                            );
                                     })
                                     .catch((err) => console.log(err.response));
                             })
@@ -160,7 +163,9 @@ export default function ProductDetails(props) {
                     } else {
                         // final get will be after all post, patch done
                         axios
-                            .get(`http://localhost:8000/products/${product.slug}/`)
+                            .get(
+                                `http://localhost:8000/products/${product.slug}/`
+                            )
                             .then((res) => {
                                 changeProduct(res.data);
                                 axios
@@ -230,7 +235,9 @@ export default function ProductDetails(props) {
                             .then((res) => {
                                 // final get will be after all post, patch done
                                 axios
-                                    .get(`http://localhost:8000/products/${product.slug}/`)
+                                    .get(
+                                        `http://localhost:8000/products/${product.slug}/`
+                                    )
                                     .then((res) => {
                                         changeProduct(res.data);
                                         axios
@@ -243,7 +250,9 @@ export default function ProductDetails(props) {
                                                 changeMyBag(res.data);
                                                 // setTotalBagProduct(res.data.product.length);
                                             })
-                                            .catch((err) => console.log(err.response));
+                                            .catch((err) =>
+                                                console.log(err.response)
+                                            );
                                     })
                                     .catch((err) => console.log(err.response));
                             })
@@ -251,7 +260,9 @@ export default function ProductDetails(props) {
                     } else {
                         // final get will be after all post, patch done
                         axios
-                            .get(`http://localhost:8000/products/${product.slug}/`)
+                            .get(
+                                `http://localhost:8000/products/${product.slug}/`
+                            )
                             .then((res) => {
                                 changeProduct(res.data);
                                 axios
@@ -308,7 +319,6 @@ export default function ProductDetails(props) {
                             .catch((err) => console.log(err.response));
                     })
                     .catch((err) => console.log(err.response));
-                
             })
             .catch((err) => console.log(err.response));
     };
@@ -345,35 +355,34 @@ export default function ProductDetails(props) {
             <Box mx={3} mt={8}>
                 <Grid container spacing={2} alignItems='stretch'>
                     <Grid item xs={12} sm={12} md={12} lg={7} xl={7}>
-                        <Box
-                            height='100%'
-                        >
+                        <Box height='100%'>
                             <Box
                                 p={2}
                                 textAlign='center'
                                 borderRadius='borderRadius'
                                 style={{ backgroundColor: 'white' }}
                             >
-                                <Typography variant='h4'>Product Details</Typography>
+                                <Typography variant='h4'>
+                                    Product Details
+                                </Typography>
                             </Box>
 
                             <Box mt={2} borderRadius='borderRadius'>
-                                <ProductDetailsTable product={product}/>
+                                <ProductDetailsTable product={product} />
                             </Box>
                         </Box>
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
-                        <Box
-                            height='100%'
-                            
-                        >
+                        <Box height='100%'>
                             <Box
                                 p={2}
                                 textAlign='center'
                                 borderRadius='borderRadius'
                                 style={{ backgroundColor: 'white' }}
                             >
-                                <Typography variant='h4'>Video Details</Typography>
+                                <Typography variant='h4'>
+                                    Video Details
+                                </Typography>
                             </Box>
                             <Box mt={2}>
                                 <ReactPlayer
@@ -381,7 +390,7 @@ export default function ProductDetails(props) {
                                     height='324px'
                                     controls
                                     light
-                                    url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
+                                    url={product.video_details}
                                 />
                             </Box>
                         </Box>
@@ -399,17 +408,17 @@ export default function ProductDetails(props) {
                 </Box>
                 <Box mt={2}>
                     <Grid container spacing={2}>
-                        {categoryProducts && categoryProducts.map(product => 
-                            <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard
-                                    product={product} 
-                                    myBag={myBag} 
-                                    config={config}
-                                    changeMyBag={changeMyBag}
-                                />
-                            </Grid>
-                        )}
-                        
+                        {categoryProducts &&
+                            categoryProducts.map((product) => (
+                                <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                                    <ProductCard
+                                        product={product}
+                                        myBag={myBag}
+                                        config={config}
+                                        changeMyBag={changeMyBag}
+                                    />
+                                </Grid>
+                            ))}
                     </Grid>
                 </Box>
             </Box>
@@ -442,142 +451,46 @@ export default function ProductDetails(props) {
                 </Box>
                 <Box mt={2}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
-                            <Box
-                                borderRadius='borderRadius'
-                                style={{ backgroundColor: 'white' }}
-                            >
-                                <ReactPlayer
-                                    width='100%'
-                                    height='260px'
-                                    controls
-                                    light
-                                    url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
-                                />
-                                <Box px={3} py={1}>
-                                    <Box>
-                                        <Button
-                                            size='small'
-                                            startIcon={<ThumbUpIcon />}
-                                            fullWidth
-                                        >
-                                            Agreed (12)
-                                        </Button>
+                        {product.video_review &&
+                            product.video_review.length !== 0 &&
+                            product.video_review.map((video_review) => (
+                                <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                                    <Box
+                                        borderRadius='borderRadius'
+                                        style={{ backgroundColor: 'white' }}
+                                    >
+                                        <ReactPlayer
+                                            width='100%'
+                                            height='260px'
+                                            controls
+                                            light
+                                            url={video_review.link}
+                                        />
+                                        <Box px={3} py={1}>
+                                            <Box>
+                                                <Button
+                                                    size='small'
+                                                    startIcon={<ThumbUpIcon />}
+                                                    fullWidth
+                                                >
+                                                    Agreed (12)
+                                                </Button>
+                                            </Box>
+                                            <Box mt={1}>
+                                                <Button
+                                                    fullWidth
+                                                    size='small'
+                                                    startIcon={
+                                                        <ThumbDownIcon />
+                                                    }
+                                                >
+                                                    Disagreed (02)
+                                                </Button>
+                                            </Box>
+                                        </Box>
                                     </Box>
-                                    <Box mt={1}>
-                                        <Button
-                                            fullWidth
-                                            size='small'
-                                            startIcon={<ThumbDownIcon />}
-                                        >
-                                            Disagreed (02)
-                                        </Button>
-                                    </Box>
-                                </Box>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
-                            <Box
-                                borderRadius='borderRadius'
-                                style={{ backgroundColor: 'white' }}
-                            >
-                                <ReactPlayer
-                                    width='100%'
-                                    height='260px'
-                                    controls
-                                    light
-                                    url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
-                                />
-                                <Box px={3} py={1}>
-                                    <Box>
-                                        <Button
-                                            size='small'
-                                            startIcon={<ThumbUpIcon />}
-                                            fullWidth
-                                        >
-                                            Agreed (12)
-                                        </Button>
-                                    </Box>
-                                    <Box mt={1}>
-                                        <Button
-                                            fullWidth
-                                            size='small'
-                                            startIcon={<ThumbDownIcon />}
-                                        >
-                                            Disagreed (02)
-                                        </Button>
-                                    </Box>
-                                </Box>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
-                            <Box
-                                borderRadius='borderRadius'
-                                style={{ backgroundColor: 'white' }}
-                            >
-                                <ReactPlayer
-                                    width='100%'
-                                    height='260px'
-                                    controls
-                                    light
-                                    url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
-                                />
-                                <Box px={3} py={1}>
-                                    <Box>
-                                        <Button
-                                            size='small'
-                                            startIcon={<ThumbUpIcon />}
-                                            fullWidth
-                                        >
-                                            Agreed (12)
-                                        </Button>
-                                    </Box>
-                                    <Box mt={1}>
-                                        <Button
-                                            fullWidth
-                                            size='small'
-                                            startIcon={<ThumbDownIcon />}
-                                        >
-                                            Disagreed (02)
-                                        </Button>
-                                    </Box>
-                                </Box>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
-                            <Box
-                                borderRadius='borderRadius'
-                                style={{ backgroundColor: 'white' }}
-                            >
-                                <ReactPlayer
-                                    width='100%'
-                                    height='260px'
-                                    controls
-                                    light
-                                    url='https://www.youtube.com/watch?v=pAPQFqdFDdY'
-                                />
-                                <Box px={3} py={1}>
-                                    <Box>
-                                        <Button
-                                            size='small'
-                                            startIcon={<ThumbUpIcon />}
-                                            fullWidth
-                                        >
-                                            Agreed (12)
-                                        </Button>
-                                    </Box>
-                                    <Box mt={1}>
-                                        <Button
-                                            fullWidth
-                                            size='small'
-                                            startIcon={<ThumbDownIcon />}
-                                        >
-                                            Disagreed (02)
-                                        </Button>
-                                    </Box>
-                                </Box>
-                            </Box>
-                        </Grid>
+                                </Grid>
+                            ))}
                     </Grid>
                 </Box>
             </Box>
@@ -932,15 +845,14 @@ export default function ProductDetails(props) {
     );
 }
 
-
-// {product.productavailable.available_quantity === 0 && 
+// {product.productavailable.available_quantity === 0 &&
 //     <Box textAlign='center'>
-//         <Chip 
+//         <Chip
 //             label='Not In Stock'
 //             color='secondary'
 //             size='small'
 //         />
 //     </Box>}
 
-// 
+//
 // disabled={product.productavailable.available_quantity === 0}
