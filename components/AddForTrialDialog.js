@@ -26,7 +26,8 @@ export default function ScrollDialog({
     myBag,
     changeMyBag,
     config,
-    changeProduct,
+    changeCategoryProducts,
+    product,
 }) {
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
@@ -58,7 +59,7 @@ export default function ScrollDialog({
                 onClick={handleClickOpen('paper')}
             >
                 <Box textAlign='center' px={3}>
-                    Add For Trial
+                    Trial Similar
                 </Box>
             </Button>
             <Dialog
@@ -79,14 +80,17 @@ export default function ScrollDialog({
                 <DialogContent dividers={scroll === 'paper'}>
                     <Grid container spacing={5}>
                         {categoryProducts &&
-                            categoryProducts.map((product) => (
+                            categoryProducts.map((categoryProduct) => (
                                 <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
                                     <ProductCardForTrial
-                                        product={product}
+                                        product={categoryProduct}
                                         myBag={myBag}
                                         config={config}
                                         changeMyBag={changeMyBag}
-                                        changeProduct={changeProduct}
+                                        changeCategoryProducts={
+                                            changeCategoryProducts
+                                        }
+                                        mainProduct={product}
                                     />
                                 </Grid>
                             ))}

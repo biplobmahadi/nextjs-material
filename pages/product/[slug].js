@@ -32,6 +32,7 @@ import { Button } from '@material-ui/core';
 
 let productRe;
 let myBagRe;
+let categoryProductsRe;
 
 export default function Product(props) {
     const [value, setValue] = React.useState('/s1.jpg');
@@ -41,7 +42,9 @@ export default function Product(props) {
     let product = productRe ? productRe : props.dataProduct.product;
     let { user } = props.dataUser;
     let config = props.config;
-    let categoryProducts = props.categoryProducts;
+    let categoryProducts = categoryProductsRe
+        ? categoryProductsRe
+        : props.categoryProducts;
 
     let myBag = myBagRe ? myBagRe : props.myBag;
 
@@ -51,6 +54,12 @@ export default function Product(props) {
     const changeProduct = (value) => {
         productRe = value;
         console.log('product now', productRe);
+
+        // setReRender(!reRender);
+    };
+
+    const changeCategoryProducts = (value) => {
+        categoryProductsRe = value;
 
         // setReRender(!reRender);
     };
@@ -69,6 +78,7 @@ export default function Product(props) {
     useEffect(() => {
         myBagRe = undefined;
         productRe = undefined;
+        categoryProductsRe = undefined;
     });
 
     const handleImageClick = (value) => {
@@ -553,9 +563,10 @@ export default function Product(props) {
                                                         changeMyBag={
                                                             changeMyBag
                                                         }
-                                                        changeProduct={
-                                                            changeProduct
+                                                        changeCategoryProducts={
+                                                            changeCategoryProducts
                                                         }
+                                                        product={product}
                                                     />
                                                 )}
                                         </Grid>
@@ -689,6 +700,7 @@ export default function Product(props) {
                     config={config}
                     myBag={myBag}
                     changeMyBag={changeMyBag}
+                    changeCategoryProducts={changeCategoryProducts}
                 />
             </Box>
             <Box mx={3} mt={6}>

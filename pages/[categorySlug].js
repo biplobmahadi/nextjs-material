@@ -24,7 +24,6 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-
 const useStyles = makeStyles((theme) => ({
     root: {
         [theme.breakpoints.up('xl')]: {
@@ -46,10 +45,8 @@ const useStyles = makeStyles((theme) => ({
 // 5. we can't change component props. so this is secure
 // 6. formik to get form value, here also no need to use state.
 
-
 let myBagRe;
 let categoryProductsRe;
-
 
 export default function Category(props) {
     const classes = useStyles();
@@ -57,10 +54,10 @@ export default function Category(props) {
     const [priceFilter5TK, setPriceFilter5TK] = React.useState(0);
     const [priceFilter10TK, setPriceFilter10TK] = React.useState(0);
     const [reRender, setReRender] = React.useState(false);
-    
+
     const { categorySlug } = router.query;
 
-    const { config } = props
+    const { config } = props;
     let category = categoryProductsRe ? categoryProductsRe : props.category;
 
     let myBag = myBagRe ? myBagRe : props.myBag;
@@ -78,12 +75,12 @@ export default function Category(props) {
     };
 
     // here useEffect -> when component mount and update myBagRe will undefined
-    // because, when we change route then myBagRe again remain previous one which is not 
+    // because, when we change route then myBagRe again remain previous one which is not
     // updated one, that's why we make it undefined and bag will server rendered
 
     useEffect(() => {
-        myBagRe = undefined
-        categoryProductsRe = undefined
+        myBagRe = undefined;
+        categoryProductsRe = undefined;
     });
 
     console.log('my bag 1st ', myBag);
@@ -139,7 +136,9 @@ export default function Category(props) {
     return (
         <div>
             <Head>
-                <title>Catergories - {category && category.category_name}</title>
+                <title>
+                    Catergories - {category && category.category_name}
+                </title>
                 <link rel='icon' href='/a.ico' />
                 <link
                     rel='stylesheet'
@@ -150,7 +149,7 @@ export default function Category(props) {
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={ myBag && myBag.product.length} />
+            <ButtonAppBar totalProductInBag={myBag && myBag.product.length} />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
                     <Box
@@ -408,12 +407,18 @@ export default function Category(props) {
                                                     xl={3}
                                                 >
                                                     <ProductCardForMultiple
-                                                    product={product && product} 
-                                                    myBag={myBag} 
-                                                    config={config}
-                                                    changeMyBag={changeMyBag}
-                                                    urlForChangeCardProducts={`http://localhost:8000/category/${categorySlug}/`}
-                                                    changeCardProducts={changeCategoryProducts}
+                                                        product={
+                                                            product && product
+                                                        }
+                                                        myBag={myBag}
+                                                        config={config}
+                                                        changeMyBag={
+                                                            changeMyBag
+                                                        }
+                                                        urlForChangeCardProducts={`http://localhost:8000/category/${categorySlug}/`}
+                                                        changeCardProducts={
+                                                            changeCategoryProducts
+                                                        }
                                                     />
                                                 </Grid>
                                             ))}
@@ -479,11 +484,13 @@ export async function getServerSideProps({ req, params }) {
     }
 
     const dataCategory = await fetchDataForCategory(params);
-    const category = dataCategory.category ? dataCategory.category: null;
+    const category = dataCategory.category ? dataCategory.category : null;
 
     return {
         props: {
-            category, myBag, config
+            category,
+            myBag,
+            config,
         },
     };
 }

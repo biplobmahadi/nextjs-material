@@ -3,7 +3,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
 import ProductDetailsTable from './ProductDetailsTable';
-import ProductCard from '../components/ProductCard';
+import ProductCardForSimilarCategory from '../components/ProductCardForSimilarCategory';
 import Review from './forms/Review';
 import VideoReview from './forms/VideoReview';
 import UpdateReviewDialog from './UpdateReviewDialog';
@@ -57,6 +57,8 @@ export default function ProductDetails(props) {
 
     let product = props.product;
     let user = props.user;
+
+    let changeCategoryProducts = props.changeCategoryProducts;
 
     // console.log('got user', user);
     console.log('got product', product);
@@ -409,13 +411,17 @@ export default function ProductDetails(props) {
                 <Box mt={2}>
                     <Grid container spacing={2}>
                         {categoryProducts &&
-                            categoryProducts.map((product) => (
+                            categoryProducts.map((categoryProduct) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                    <ProductCard
-                                        product={product}
+                                    <ProductCardForSimilarCategory
+                                        product={categoryProduct}
                                         myBag={myBag}
                                         config={config}
                                         changeMyBag={changeMyBag}
+                                        changeCategoryProducts={
+                                            changeCategoryProducts
+                                        }
+                                        mainProduct={product}
                                     />
                                 </Grid>
                             ))}

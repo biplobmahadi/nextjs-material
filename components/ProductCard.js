@@ -24,10 +24,15 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ProductCard({ product, myBag, config, changeMyBag, changeCardProducts }) {
+export default function ProductCard({
+    product,
+    myBag,
+    config,
+    changeMyBag,
+    changeCardProducts,
+}) {
     const classes = useStyles();
     console.log('got product for card', product);
-
 
     const handleAddToBag = () => {
         let addToBag = {
@@ -35,7 +40,7 @@ export default function ProductCard({ product, myBag, config, changeMyBag, chang
             quantity: 1,
             cost: product.price,
         };
-        
+
         // if bag complete but order not complete then you can't create new bag
         // that's why this filter
         // if (!this.state.orderId){
@@ -75,12 +80,13 @@ export default function ProductCard({ product, myBag, config, changeMyBag, chang
                             config
                         )
                         .then((res) => {
-                            
                             axios
                                 .patch(
                                     `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
                                     {
-                                        available_quantity: product.productavailable.available_quantity - 1
+                                        available_quantity:
+                                            product.productavailable
+                                                .available_quantity - 1,
                                     },
                                     config
                                 )
@@ -88,9 +94,13 @@ export default function ProductCard({ product, myBag, config, changeMyBag, chang
                                     // console.log('updated quantity', res.data)
                                     // final get will be after all post, patch done
                                     axios
-                                        .get(`http://localhost:8000/category/mens-shirt/`)
+                                        .get(
+                                            `http://localhost:8000/category/mens-shirt/`
+                                        )
                                         .then((res) => {
-                                            changeCardProducts(res.data.product.slice(0, 6))
+                                            changeCardProducts(
+                                                res.data.product.slice(0, 6)
+                                            );
                                             axios
                                                 .get(
                                                     `http://localhost:8000/my-bag/${myBag.id}/`,
@@ -101,14 +111,15 @@ export default function ProductCard({ product, myBag, config, changeMyBag, chang
                                                     changeMyBag(res.data);
                                                     // setTotalBagProduct(res.data.product.length);
                                                 })
-                                                .catch((err) => console.log(err.response));
+                                                .catch((err) =>
+                                                    console.log(err.response)
+                                                );
                                         })
                                         .catch((err) => ({
                                             error: err.response.data,
                                         }));
                                 })
                                 .catch((err) => console.log(err.response));
-                            
                         })
                         .catch((err) => console.log(err.response));
                 })
@@ -143,12 +154,14 @@ export default function ProductCard({ product, myBag, config, changeMyBag, chang
                                     'bag e product ase - patch bag',
                                     res.data
                                 );
-                                
+
                                 axios
                                     .patch(
                                         `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
                                         {
-                                            available_quantity: product.productavailable.available_quantity - 1
+                                            available_quantity:
+                                                product.productavailable
+                                                    .available_quantity - 1,
                                         },
                                         config
                                     )
@@ -156,27 +169,34 @@ export default function ProductCard({ product, myBag, config, changeMyBag, chang
                                         // console.log('updated quantity', res.data)
                                         // final get will be after all post, patch done
                                         axios
-                                        .get(`http://localhost:8000/category/mens-shirt/`)
-                                        .then((res) => {
-                                            changeCardProducts(res.data.product.slice(0, 6))
-                                            axios
-                                                .get(
-                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
-                                                    config
-                                                )
-                                                .then((res) => {
-                                                    // new myBag need to add to state
-                                                    changeMyBag(res.data);
-                                                    // setTotalBagProduct(res.data.product.length);
-                                                })
-                                                .catch((err) => console.log(err.response));
-                                        })
-                                        .catch((err) => ({
-                                            error: err.response.data,
-                                        }));
+                                            .get(
+                                                `http://localhost:8000/category/mens-shirt/`
+                                            )
+                                            .then((res) => {
+                                                changeCardProducts(
+                                                    res.data.product.slice(0, 6)
+                                                );
+                                                axios
+                                                    .get(
+                                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                        config
+                                                    )
+                                                    .then((res) => {
+                                                        // new myBag need to add to state
+                                                        changeMyBag(res.data);
+                                                        // setTotalBagProduct(res.data.product.length);
+                                                    })
+                                                    .catch((err) =>
+                                                        console.log(
+                                                            err.response
+                                                        )
+                                                    );
+                                            })
+                                            .catch((err) => ({
+                                                error: err.response.data,
+                                            }));
                                     })
                                     .catch((err) => console.log(err.response));
-                                
                             })
                             .catch((err) => console.log(err.response));
                     } else {
@@ -195,7 +215,9 @@ export default function ProductCard({ product, myBag, config, changeMyBag, chang
                                     .patch(
                                         `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
                                         {
-                                            available_quantity: product.productavailable.available_quantity - 1
+                                            available_quantity:
+                                                product.productavailable
+                                                    .available_quantity - 1,
                                         },
                                         config
                                     )
@@ -203,27 +225,34 @@ export default function ProductCard({ product, myBag, config, changeMyBag, chang
                                         // console.log('updated quantity', res.data)
                                         // final get will be after all post, patch done
                                         axios
-                                        .get(`http://localhost:8000/category/mens-shirt/`)
-                                        .then((res) => {
-                                            changeCardProducts(res.data.product.slice(0, 6))
-                                            axios
-                                                .get(
-                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
-                                                    config
-                                                )
-                                                .then((res) => {
-                                                    // new myBag need to add to state
-                                                    changeMyBag(res.data);
-                                                    // setTotalBagProduct(res.data.product.length);
-                                                })
-                                                .catch((err) => console.log(err.response));
-                                        })
-                                        .catch((err) => ({
-                                            error: err.response.data,
-                                        }));
+                                            .get(
+                                                `http://localhost:8000/category/mens-shirt/`
+                                            )
+                                            .then((res) => {
+                                                changeCardProducts(
+                                                    res.data.product.slice(0, 6)
+                                                );
+                                                axios
+                                                    .get(
+                                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                        config
+                                                    )
+                                                    .then((res) => {
+                                                        // new myBag need to add to state
+                                                        changeMyBag(res.data);
+                                                        // setTotalBagProduct(res.data.product.length);
+                                                    })
+                                                    .catch((err) =>
+                                                        console.log(
+                                                            err.response
+                                                        )
+                                                    );
+                                            })
+                                            .catch((err) => ({
+                                                error: err.response.data,
+                                            }));
                                     })
                                     .catch((err) => console.log(err.response));
-                                
                             })
                             .catch((err) => console.log(err.response));
                     }
@@ -233,9 +262,8 @@ export default function ProductCard({ product, myBag, config, changeMyBag, chang
     };
 
     return (
-        
-            <Card className={classes.root}>
-                <Link href={`/product/${product && product.slug}`}>
+        <Card className={classes.root}>
+            <Link href={`/product/${product && product.slug}`}>
                 <CardActionArea>
                     <Box className={classes.imgHover} p={2}>
                         <CardMedia
@@ -259,31 +287,34 @@ export default function ProductCard({ product, myBag, config, changeMyBag, chang
                             </Box>
                         </Typography>
                     </CardContent>
-                    {product.productavailable.available_quantity === 0 && 
-                    <Box textAlign='center'>
-                        <Chip 
-                            label='Not In Stock'
-                            color='secondary'
-                            size='small'
-                        />
-                    </Box>}
+                    {product.productavailable.available_quantity === 0 && (
+                        <Box textAlign='center'>
+                            <Chip
+                                label='Not In Stock'
+                                color='secondary'
+                                size='small'
+                            />
+                        </Box>
+                    )}
                 </CardActionArea>
-                </Link>
-                <Box pb={1}>
-                    <CardActions style={{ justifyContent: 'center' }}>
-                        <Button
-                            variant='contained'
-                            size='small'
-                            color='primary'
-                            onClick={handleAddToBag}
-                            disabled={product.productavailable.available_quantity === 0}
-                        >
-                            <Box textAlign='center' px={4}>
-                                Add To Bag
-                            </Box>
-                        </Button>
-                    </CardActions>
-                </Box>
-            </Card>
+            </Link>
+            <Box pb={1}>
+                <CardActions style={{ justifyContent: 'center' }}>
+                    <Button
+                        variant='contained'
+                        size='small'
+                        color='primary'
+                        onClick={handleAddToBag}
+                        disabled={
+                            product.productavailable.available_quantity === 0
+                        }
+                    >
+                        <Box textAlign='center' px={4}>
+                            Add To Bag
+                        </Box>
+                    </Button>
+                </CardActions>
+            </Box>
+        </Card>
     );
 }
