@@ -19,6 +19,7 @@
     "formik-material-ui-pickers": "^0.0.11",
     "js-cookie": "^2.2.1",
     "next": "latest",
+    "nprogress": "^0.2.0",
     "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",

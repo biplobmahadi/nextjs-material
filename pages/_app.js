@@ -10,6 +10,33 @@ import 'react-medium-image-zoom/dist/styles.css';
 import { Provider } from 'react-redux';
 import { useStore } from '../store/store';
 
+import Router from 'next/router';
+import NProgress from 'nprogress'; //nprogress module
+import 'nprogress/nprogress.css'; //styles of nprogress
+
+NProgress.configure({
+    minimum: 0.3,
+    easing: 'ease',
+    speed: 800,
+});
+//Binding events.
+// Router.events.on('routeChangeStart', () => NProgress.start());
+// Router.events.on('routeChangeComplete', () => NProgress.done());
+// Router.events.on('routeChangeError', () => NProgress.done());
+Router.onRouteChangeStart = () => {
+    // console.log('onRouteChangeStart triggered');
+    NProgress.start();
+};
+
+Router.onRouteChangeComplete = () => {
+    // console.log('onRouteChangeComplete triggered');
+    NProgress.done();
+};
+
+Router.onRouteChangeError = () => {
+    // console.log('onRouteChangeError triggered');
+    NProgress.done();
+};
 export default function MyApp(props) {
     const { Component, pageProps } = props;
     const store = useStore(pageProps.initialReduxState);
