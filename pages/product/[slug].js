@@ -4,6 +4,7 @@ import ProductDetails from '../../components/ProductDetails';
 import Size from '../../components/forms/Size';
 import Quantity from '../../components/forms/Quantity';
 import MainFooter from '../../components/MainFooter';
+import AddForTrialDialog from '../../components/AddForTrialDialog';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
@@ -38,12 +39,11 @@ export default function Product(props) {
     const [reRender, setReRender] = React.useState(false);
 
     let product = productRe ? productRe : props.dataProduct.product;
-    let { user } = props.dataUser;  
-    let config = props.config
-    let categoryProducts = props.categoryProducts
+    let { user } = props.dataUser;
+    let config = props.config;
+    let categoryProducts = props.categoryProducts;
 
     let myBag = myBagRe ? myBagRe : props.myBag;
-
 
     // these changeProduct & changeMyBag will call at adding product in bag and also at a time
     // so use reRender will done one time here
@@ -63,14 +63,13 @@ export default function Product(props) {
     };
 
     // here useEffect -> when component mount and update myBagRe & productRe will undefined
-    // because, when we change route then myBagRe & productRe again remain previous one which is not 
+    // because, when we change route then myBagRe & productRe again remain previous one which is not
     // updated one, that's why we make it undefined and bag & product will server rendered
 
     useEffect(() => {
-        myBagRe = undefined
-        productRe = undefined
+        myBagRe = undefined;
+        productRe = undefined;
     });
-
 
     const handleImageClick = (value) => {
         setValue(value);
@@ -83,23 +82,21 @@ export default function Product(props) {
     console.log('bag Re', myBagRe);
     console.log('product Re', productRe);
 
+    // productExitsInBag made here, because if not exist then trial add not shown
+    let productExitsInBag;
+    if (myBag) {
+        productExitsInBag = myBag.product.filter(
+            (filterProduct) => filterProduct.product.id === product.id
+        );
+    }
+
     const handleAddToBag = () => {
         let addToBag = {
             product: product.id,
             quantity: quantity,
             cost: product.price * quantity,
         };
-        
-        // if bag complete but order not complete then you can't create new bag
-        // that's why this filter
-        // if (!this.state.orderId){
 
-        let productExitsInBag;
-        if (myBag) {
-            productExitsInBag = myBag.product.filter(
-                (filterProduct) => filterProduct.product.id === product.id
-            );
-        }
         console.log('productExitsInBag', productExitsInBag);
         // I use productExitsInBag.length !== 0, because [] == true.. if [] then loop will continue
         if (productExitsInBag && productExitsInBag.length !== 0) {
@@ -129,12 +126,13 @@ export default function Product(props) {
                             config
                         )
                         .then((res) => {
-                            
                             axios
                                 .patch(
                                     `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
                                     {
-                                        available_quantity: product.productavailable.available_quantity - quantity
+                                        available_quantity:
+                                            product.productavailable
+                                                .available_quantity - quantity,
                                     },
                                     config
                                 )
@@ -142,10 +140,15 @@ export default function Product(props) {
                                     // console.log('updated quantity', res.data)
                                     // final get will be after all post, patch done
                                     axios
-                                        .get(`http://localhost:8000/products/${product.slug}/`)
+                                        .get(
+                                            `http://localhost:8000/products/${product.slug}/`
+                                        )
                                         .then((res) => {
                                             changeProduct(res.data);
-                                            console.log('product after updated quantity', res.data)
+                                            console.log(
+                                                'product after updated quantity',
+                                                res.data
+                                            );
                                             axios
                                                 .get(
                                                     `http://localhost:8000/my-bag/${myBag.id}/`,
@@ -154,15 +157,21 @@ export default function Product(props) {
                                                 .then((res) => {
                                                     // new myBag need to add to state
                                                     changeMyBag(res.data);
-                                                    console.log('bag after updated quantity', res.data)
+                                                    console.log(
+                                                        'bag after updated quantity',
+                                                        res.data
+                                                    );
                                                     // setTotalBagProduct(res.data.product.length);
                                                 })
-                                                .catch((err) => console.log(err.response));
+                                                .catch((err) =>
+                                                    console.log(err.response)
+                                                );
                                         })
-                                        .catch((err) => console.log(err.response));
+                                        .catch((err) =>
+                                            console.log(err.response)
+                                        );
                                 })
                                 .catch((err) => console.log(err.response));
-                            
                         })
                         .catch((err) => console.log(err.response));
                 })
@@ -197,12 +206,15 @@ export default function Product(props) {
                                     'bag e product ase - patch bag',
                                     res.data
                                 );
-                                
+
                                 axios
                                     .patch(
                                         `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
                                         {
-                                            available_quantity: product.productavailable.available_quantity - quantity
+                                            available_quantity:
+                                                product.productavailable
+                                                    .available_quantity -
+                                                quantity,
                                         },
                                         config
                                     )
@@ -210,27 +222,40 @@ export default function Product(props) {
                                         // console.log('updated quantity', res.data)
                                         // final get will be after all post, patch done
                                         axios
-                                        .get(`http://localhost:8000/products/${product.slug}/`)
-                                        .then((res) => {
-                                            changeProduct(res.data);
-                                            console.log('product after updated quantity', res.data)
-                                            axios
-                                                .get(
-                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
-                                                    config
-                                                )
-                                                .then((res) => {
-                                                    // new myBag need to add to state
-                                                    changeMyBag(res.data);
-                                                    console.log('bag after updated quantity', res.data)
-                                                    // setTotalBagProduct(res.data.product.length);
-                                                })
-                                                .catch((err) => console.log(err.response));
-                                        })
-                                        .catch((err) => console.log(err.response));
+                                            .get(
+                                                `http://localhost:8000/products/${product.slug}/`
+                                            )
+                                            .then((res) => {
+                                                changeProduct(res.data);
+                                                console.log(
+                                                    'product after updated quantity',
+                                                    res.data
+                                                );
+                                                axios
+                                                    .get(
+                                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                        config
+                                                    )
+                                                    .then((res) => {
+                                                        // new myBag need to add to state
+                                                        changeMyBag(res.data);
+                                                        console.log(
+                                                            'bag after updated quantity',
+                                                            res.data
+                                                        );
+                                                        // setTotalBagProduct(res.data.product.length);
+                                                    })
+                                                    .catch((err) =>
+                                                        console.log(
+                                                            err.response
+                                                        )
+                                                    );
+                                            })
+                                            .catch((err) =>
+                                                console.log(err.response)
+                                            );
                                     })
                                     .catch((err) => console.log(err.response));
-                                
                             })
                             .catch((err) => console.log(err.response));
                     } else {
@@ -249,7 +274,10 @@ export default function Product(props) {
                                     .patch(
                                         `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
                                         {
-                                            available_quantity: product.productavailable.available_quantity - quantity
+                                            available_quantity:
+                                                product.productavailable
+                                                    .available_quantity -
+                                                quantity,
                                         },
                                         config
                                     )
@@ -257,27 +285,40 @@ export default function Product(props) {
                                         // console.log('updated quantity', res.data)
                                         // final get will be after all post, patch done
                                         axios
-                                        .get(`http://localhost:8000/products/${product.slug}/`)
-                                        .then((res) => {
-                                            changeProduct(res.data);
-                                            console.log('product after updated quantity', res.data)
-                                            axios
-                                                .get(
-                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
-                                                    config
-                                                )
-                                                .then((res) => {
-                                                    // new myBag need to add to state
-                                                    changeMyBag(res.data);
-                                                    console.log('bag after updated quantity', res.data)
-                                                    // setTotalBagProduct(res.data.product.length);
-                                                })
-                                                .catch((err) => console.log(err.response));
-                                        })
-                                        .catch((err) => console.log(err.response));
+                                            .get(
+                                                `http://localhost:8000/products/${product.slug}/`
+                                            )
+                                            .then((res) => {
+                                                changeProduct(res.data);
+                                                console.log(
+                                                    'product after updated quantity',
+                                                    res.data
+                                                );
+                                                axios
+                                                    .get(
+                                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                        config
+                                                    )
+                                                    .then((res) => {
+                                                        // new myBag need to add to state
+                                                        changeMyBag(res.data);
+                                                        console.log(
+                                                            'bag after updated quantity',
+                                                            res.data
+                                                        );
+                                                        // setTotalBagProduct(res.data.product.length);
+                                                    })
+                                                    .catch((err) =>
+                                                        console.log(
+                                                            err.response
+                                                        )
+                                                    );
+                                            })
+                                            .catch((err) =>
+                                                console.log(err.response)
+                                            );
                                     })
                                     .catch((err) => console.log(err.response));
-                                
                             })
                             .catch((err) => console.log(err.response));
                     }
@@ -300,7 +341,7 @@ export default function Product(props) {
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={ myBag && myBag.product.length}/>
+            <ButtonAppBar totalProductInBag={myBag && myBag.product.length} />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mx={3} mt={6} pt={4}>
                     <Grid container spacing={2}>
@@ -397,7 +438,8 @@ export default function Product(props) {
                                             <Box pl={1}>
                                                 <Typography>
                                                     {' '}
-                                                    {product.review.length} Rating & Review
+                                                    {product.review.length}{' '}
+                                                    Rating & Review
                                                 </Typography>
                                             </Box>
                                         </span>
@@ -423,28 +465,31 @@ export default function Product(props) {
                                     </Typography>
                                 </Box>
                                 <Box pt={3}>
-                                    {product.has_size && 
-                                    <Grid
-                                        container
-                                        spacing={2}
-                                        alignItems='center'
-                                    >
-                                        <Grid item xs={12} sm>
-                                            <Size />
+                                    {product.has_size && (
+                                        <Grid
+                                            container
+                                            spacing={2}
+                                            alignItems='center'
+                                        >
+                                            <Grid item xs={12} sm>
+                                                <Size />
+                                            </Grid>
+                                            <Grid item xs={12} sm>
+                                                <Button
+                                                    variant='contained'
+                                                    color='secondary'
+                                                    size='small'
+                                                >
+                                                    <Box
+                                                        textAlign='center'
+                                                        px={2}
+                                                    >
+                                                        Size Guide
+                                                    </Box>
+                                                </Button>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={12} sm>
-                                            <Button
-                                                variant='contained'
-                                                color='secondary'
-                                                size='small'
-                                            >
-                                                <Box textAlign='center' px={2}>
-                                                    Size Guide
-                                                </Box>
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-                                    }
+                                    )}
                                 </Box>
                                 <Box pt={2}>
                                     <Grid
@@ -453,35 +498,73 @@ export default function Product(props) {
                                         alignItems='center'
                                     >
                                         <Grid item xs={12} sm>
-                                            <Quantity setQuantity={setQuantity}/>
+                                            <Quantity
+                                                setQuantity={setQuantity}
+                                            />
                                         </Grid>
                                         <Grid item xs={12} sm>
                                             <Chip
-                                                label={product.productavailable.available_quantity !== 0 ? 'In Stock' : 'Not In Stock'}
+                                                label={
+                                                    product.productavailable
+                                                        .available_quantity !==
+                                                    0
+                                                        ? 'In Stock'
+                                                        : 'Not In Stock'
+                                                }
                                                 color='secondary'
                                                 size='small'
                                             />
                                         </Grid>
                                     </Grid>
                                 </Box>
-                                <Box pt={3}>
-                                    <Button
-                                        variant='contained'
-                                        color='primary'
-                                        onClick={handleAddToBag}
-                                        disabled={product.productavailable.available_quantity === 0}
+                                <Box pt={6}>
+                                    <Grid
+                                        container
+                                        spacing={2}
+                                        alignItems='center'
                                     >
-                                        <Box textAlign='center' px={4}>
-                                            Add To Bag
-                                        </Box>
-                                    </Button>
+                                        <Grid item xs={12} sm={6}>
+                                            <Button
+                                                variant='contained'
+                                                color='primary'
+                                                onClick={handleAddToBag}
+                                                disabled={
+                                                    product.productavailable
+                                                        .available_quantity ===
+                                                    0
+                                                }
+                                            >
+                                                <Box textAlign='center' px={4}>
+                                                    Add To Bag
+                                                </Box>
+                                            </Button>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            {product.has_trial &&
+                                                productExitsInBag &&
+                                                productExitsInBag.length !==
+                                                    0 && (
+                                                    <AddForTrialDialog
+                                                        categoryProducts={
+                                                            categoryProducts
+                                                        }
+                                                        config={config}
+                                                        myBag={myBag}
+                                                        changeMyBag={
+                                                            changeMyBag
+                                                        }
+                                                        changeProduct={
+                                                            changeProduct
+                                                        }
+                                                    />
+                                                )}
+                                        </Grid>
+                                    </Grid>
                                 </Box>
                             </Box>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={3} xl={3}>
-                            <Box
-                                height='100%'
-                            >
+                            <Box height='100%'>
                                 <Box
                                     p={2}
                                     mt={2}
@@ -493,20 +576,28 @@ export default function Product(props) {
                                             <strong>You Will Get</strong>
                                         </Typography>
                                     </Box>
-                                    {product && product.you_will_get.map(youWillGet => 
-                                        <Box pt={1}>
-                                            <Grid container alignItems='center'>
-                                                <RedeemIcon color='secondary' />
-                                                <span>
-                                                    <Box pl={2}>
-                                                        <Typography>
-                                                            {' '}
-                                                            {youWillGet.gift}
-                                                        </Typography>
-                                                    </Box>
-                                                </span>
-                                            </Grid>
-                                        </Box>
+                                    {product &&
+                                        product.you_will_get.map(
+                                            (youWillGet) => (
+                                                <Box pt={1}>
+                                                    <Grid
+                                                        container
+                                                        alignItems='center'
+                                                    >
+                                                        <RedeemIcon color='secondary' />
+                                                        <span>
+                                                            <Box pl={2}>
+                                                                <Typography>
+                                                                    {' '}
+                                                                    {
+                                                                        youWillGet.gift
+                                                                    }
+                                                                </Typography>
+                                                            </Box>
+                                                        </span>
+                                                    </Grid>
+                                                </Box>
+                                            )
                                         )}
                                 </Box>
 
@@ -521,22 +612,30 @@ export default function Product(props) {
                                             <strong>Information</strong>
                                         </Typography>
                                     </Box>
-                                    {product && product.product_info.map(productInfo => 
-                                        <Box pt={1}>
-                                            <Grid container alignItems='center'>
-                                                <InfoIcon color='secondary' />
-                                                <span>
-                                                    <Box pl={2}>
-                                                        <Typography>
-                                                            {' '}
-                                                            {productInfo.info}
-                                                        </Typography>
-                                                    </Box>
-                                                </span>
-                                            </Grid>
-                                        </Box>
+                                    {product &&
+                                        product.product_info.map(
+                                            (productInfo) => (
+                                                <Box pt={1}>
+                                                    <Grid
+                                                        container
+                                                        alignItems='center'
+                                                    >
+                                                        <InfoIcon color='secondary' />
+                                                        <span>
+                                                            <Box pl={2}>
+                                                                <Typography>
+                                                                    {' '}
+                                                                    {
+                                                                        productInfo.info
+                                                                    }
+                                                                </Typography>
+                                                            </Box>
+                                                        </span>
+                                                    </Grid>
+                                                </Box>
+                                            )
                                         )}
-                                    
+
                                     <Box pt={1}>
                                         <Grid container alignItems='center'>
                                             <PaymentIcon color='secondary' />
@@ -649,16 +748,15 @@ const fetchDataForUser = async (config) =>
             error: err.response.data,
         }));
 
-
 const fetchDataForCategory = async (category_slug) =>
-await axios
-    .get(`http://localhost:8000/category/${category_slug}/`)
-    .then((res) => ({
-        category: res.data,
-    }))
-    .catch((err) => ({
-        error: err.response.data,
-    }));
+    await axios
+        .get(`http://localhost:8000/category/${category_slug}/`)
+        .then((res) => ({
+            category: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
 
 // export async function getStaticPaths() {
 //     const data = await fetchDataForPaths();
@@ -698,12 +796,14 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
-    const product = dataProduct.product
-    const category_slug = product.category.slug
+    const product = dataProduct.product;
+    const category_slug = product.category.slug;
     const dataCategory = await fetchDataForCategory(category_slug);
     const category = dataCategory.category;
     const allCategoryProducts = category.product;
-    let filteredCategoryProducts = allCategoryProducts.filter(categoryProduct => categoryProduct.id !== product.id)
+    let filteredCategoryProducts = allCategoryProducts.filter(
+        (categoryProduct) => categoryProduct.id !== product.id
+    );
 
     let categoryProducts = filteredCategoryProducts.slice(0, 6);
 
@@ -713,7 +813,7 @@ export async function getServerSideProps({ req, params }) {
             myBag,
             config,
             dataUser,
-            categoryProducts
+            categoryProducts,
         },
     };
 }

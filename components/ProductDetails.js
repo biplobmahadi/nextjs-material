@@ -760,7 +760,8 @@ export default function ProductDetails(props) {
                                     xl={2}
                                 >
                                     <Box px={3}>
-                                        {review.user.pk !== user.pk ? (
+                                        {review.user.pk !==
+                                        (user && user.pk) ? (
                                             <>
                                                 <Box>
                                                     <Button

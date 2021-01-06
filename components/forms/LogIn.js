@@ -55,7 +55,9 @@ const useLogin = () => {
             .then((res) => {
                 console.log(res.data);
                 dispatch({ type: 'LOGIN', payload: res.data });
-                Cookies.set('haha_ecom_bangla_token', res.data.key);
+                Cookies.set('haha_ecom_bangla_token', res.data.key, {
+                    expires: 7,
+                });
                 router.push('/my-account');
                 setSubmitting(false);
             })

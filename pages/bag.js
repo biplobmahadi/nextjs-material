@@ -161,22 +161,21 @@ export default function Bag(props) {
 
         setReRender(!reRender);
     };
-    
+
     console.log('bag e', myBag);
     console.log('bag e Re', myBagRe);
 
     // here useEffect -> when component mount and update myBagRe will undefined
-    // because, when we change route then myBagRe again remain previous one which is not 
+    // because, when we change route then myBagRe again remain previous one which is not
     // updated one, that's why we make it undefined and bag will server rendered
 
     useEffect(() => {
         if (!Cookies.get('haha_ecom_bangla_token')) {
             router.push('/login');
         }
-        myBagRe = undefined
+        myBagRe = undefined;
     });
 
-    
     const emptyRows =
         rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -219,35 +218,39 @@ export default function Bag(props) {
                         console.log(res.data);
                         // here product.product.productavailable.id used, because here product means product with quantity not single product
                         axios
-                        .patch(
-                            `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
-                            {
-                                available_quantity: product.product.productavailable.available_quantity - 1
-                            },
-                            config
-                        )
-                        .then((res) => {
-                            // final get will be after all post, patch done
-                            axios
-                            .get(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                            .patch(
+                                `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
+                                {
+                                    available_quantity:
+                                        product.product.productavailable
+                                            .available_quantity - 1,
+                                },
                                 config
                             )
                             .then((res) => {
-                                // this.setState({ myBag: res.data });
+                                // final get will be after all post, patch done
+                                axios
+                                    .get(
+                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        config
+                                    )
+                                    .then((res) => {
+                                        // this.setState({ myBag: res.data });
 
-                                console.log('final after add', res.data);
-                                changeMyBag(res.data);
+                                        console.log(
+                                            'final after add',
+                                            res.data
+                                        );
+                                        changeMyBag(res.data);
 
-                                // just jeta show hbe oita state e rakha jay, jmn ekahane just quantity
-                                // no, price change kora jabe eta dekhale
-                                // but price show amra direct na kore calculate kore dite pari
-                                // always update the state, because I work everything using state
+                                        // just jeta show hbe oita state e rakha jay, jmn ekahane just quantity
+                                        // no, price change kora jabe eta dekhale
+                                        // but price show amra direct na kore calculate kore dite pari
+                                        // always update the state, because I work everything using state
+                                    })
+                                    .catch((err) => console.log(err.response));
                             })
                             .catch((err) => console.log(err.response));
-                        })
-                        .catch((err) => console.log(err.response));
-                        
                     })
                     .catch((err) => console.log(err.response));
             })
@@ -284,29 +287,33 @@ export default function Bag(props) {
                         console.log(res.data);
                         // here product.product.productavailable.id used, because here product means product with quantity not single product
                         axios
-                        .patch(
-                            `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
-                            {
-                                available_quantity: product.product.productavailable.available_quantity + 1
-                            },
-                            config
-                        )
-                        .then((res) => {
-                            // final get will be after all post, patch done
-                            axios
-                            .get(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                            .patch(
+                                `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
+                                {
+                                    available_quantity:
+                                        product.product.productavailable
+                                            .available_quantity + 1,
+                                },
                                 config
                             )
                             .then((res) => {
-                                // this.setState({ myBag: res.data });
-                                console.log('final after add', res.data);
-                                changeMyBag(res.data);
+                                // final get will be after all post, patch done
+                                axios
+                                    .get(
+                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        config
+                                    )
+                                    .then((res) => {
+                                        // this.setState({ myBag: res.data });
+                                        console.log(
+                                            'final after add',
+                                            res.data
+                                        );
+                                        changeMyBag(res.data);
+                                    })
+                                    .catch((err) => console.log(err.response));
                             })
                             .catch((err) => console.log(err.response));
-                        })
-                        .catch((err) => console.log(err.response));
-                        
                     })
                     .catch((err) => console.log(err.response));
             })
@@ -349,29 +356,34 @@ export default function Bag(props) {
                         console.log(res.data);
                         // here product.product.productavailable.id used, because here product means product with quantity not single product
                         axios
-                        .patch(
-                            `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
-                            {
-                                available_quantity: product.product.productavailable.available_quantity + product.quantity
-                            },
-                            config
-                        )
-                        .then((res) => {
-                            // final get will be after all post, patch done
-                            axios
-                            .get(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                            .patch(
+                                `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
+                                {
+                                    available_quantity:
+                                        product.product.productavailable
+                                            .available_quantity +
+                                        product.quantity,
+                                },
                                 config
                             )
                             .then((res) => {
-                                // this.setState({ myBag: res.data });
-                                console.log('final after add', res.data);
-                                changeMyBag(res.data);
+                                // final get will be after all post, patch done
+                                axios
+                                    .get(
+                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        config
+                                    )
+                                    .then((res) => {
+                                        // this.setState({ myBag: res.data });
+                                        console.log(
+                                            'final after add',
+                                            res.data
+                                        );
+                                        changeMyBag(res.data);
+                                    })
+                                    .catch((err) => console.log(err.response));
                             })
                             .catch((err) => console.log(err.response));
-                        })
-                        .catch((err) => console.log(err.response));
-                        
                     })
                     .catch((err) => console.log(err.response));
             })
@@ -432,7 +444,7 @@ export default function Bag(props) {
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={ myBag && myBag.product.length} />
+            <ButtonAppBar totalProductInBag={myBag && myBag.product.length} />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={6} pt={3} px={3}>
                     <Grid container spacing={3}>
@@ -535,50 +547,64 @@ export default function Bag(props) {
                                                         style={{ width: 160 }}
                                                         align='center'
                                                     >
-                                                        {row.quantity > 1 && (
-                                                            <IconButton
-                                                                color='error'
-                                                                onClick={() =>
-                                                                    handleRemove(
-                                                                        JSON.stringify(
-                                                                            row
+                                                        {row.quantity > 1 &&
+                                                            !row.add_as_trial && (
+                                                                <IconButton
+                                                                    color='error'
+                                                                    onClick={() =>
+                                                                        handleRemove(
+                                                                            JSON.stringify(
+                                                                                row
+                                                                            )
                                                                         )
-                                                                    )
-                                                                }
-                                                            >
-                                                                <RemoveCircleIcon />
-                                                            </IconButton>
-                                                        )}
+                                                                    }
+                                                                >
+                                                                    <RemoveCircleIcon />
+                                                                </IconButton>
+                                                            )}
 
                                                         {row.quantity}
-                                                        {row.product.productavailable.available_quantity !== 0
-                                                        ?
-                                                        <IconButton
-                                                            color='error'
-                                                            onClick={() =>
-                                                                handleAdd(
-                                                                    JSON.stringify(
-                                                                        row
-                                                                    )
-                                                                )
-                                                            }
-                                                        >
-                                                            <AddCircleIcon />
-                                                        </IconButton>
-                                                        :
-                                                        <Chip 
-                                                            label='Not In Stock'
-                                                            color='secondary'
-                                                            size='small'
-                                                        />
-                                                        }
-                                                        
+                                                        {!row.add_as_trial ? (
+                                                            row.product
+                                                                .productavailable
+                                                                .available_quantity !==
+                                                            0 ? (
+                                                                <IconButton
+                                                                    color='error'
+                                                                    onClick={() =>
+                                                                        handleAdd(
+                                                                            JSON.stringify(
+                                                                                row
+                                                                            )
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <AddCircleIcon />
+                                                                </IconButton>
+                                                            ) : (
+                                                                <Chip
+                                                                    label='Not In Stock'
+                                                                    color='secondary'
+                                                                    size='small'
+                                                                />
+                                                            )
+                                                        ) : (
+                                                            <></>
+                                                        )}
                                                     </TableCell>
                                                     <TableCell
                                                         style={{ width: 160 }}
                                                         align='center'
                                                     >
-                                                        {row.cost}
+                                                        {!row.add_as_trial ? (
+                                                            row.cost
+                                                        ) : (
+                                                            <Chip
+                                                                label='Trial'
+                                                                color='secondary'
+                                                                size='small'
+                                                            />
+                                                        )}
                                                     </TableCell>
 
                                                     <TableCell
@@ -720,7 +746,9 @@ export default function Bag(props) {
                                     <Grid item>
                                         <Box px={5}>
                                             <Typography>
-                                                {myBag && myBag.sub_total !== 0 ? 50 : 0}{' '}
+                                                {myBag && myBag.sub_total !== 0
+                                                    ? 50
+                                                    : 0}{' '}
                                                 TK.
                                             </Typography>
                                         </Box>
