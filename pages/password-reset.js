@@ -3,16 +3,23 @@ import ButtonAppBar from '../components/ButtonAppBar';
 import PasswordResetForm from '../components/forms/PasswordResetForm';
 import Box from '@material-ui/core/Box';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
+
 export default function PasswordReset() {
+    const router = useRouter();
+    useEffect(() => {
+        if (Cookies.get('haha_ecom_bangla_token')) {
+            router.push('/my-account');
+        }
+    });
     return (
         <div>
             <Head>
                 <title>Password Reset</title>
                 <link rel='icon' href='/a.ico' />
-                <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
+
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'

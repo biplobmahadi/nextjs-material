@@ -20,10 +20,14 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-import { useRouter } from 'next/router';
+import Link from '../../../../src/Link';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import Alert from '@material-ui/lab/Alert';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -38,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
     form: {
         width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(3),
+        marginTop: theme.spacing(5),
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
@@ -48,34 +52,54 @@ const useStyles = makeStyles((theme) => ({
 export default function PasswordResetConfirm() {
     const classes = useStyles();
     const router = useRouter();
+    useEffect(() => {
+        if (Cookies.get('haha_ecom_bangla_token')) {
+            router.push('/my-account');
+        }
+    });
     const { uid, token } = router.query;
-    const [responseData, setResponseData] = React.useState('');
 
     const [showPassword, setShowPassword] = React.useState(false);
+    const [showPasswordAgain, setShowPasswordAgain] = React.useState(false);
+    const [errMessage, setErrMessage] = React.useState('');
+    const [successMessage, setSuccessMessage] = React.useState('');
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
-
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
+
+    const handleClickShowPasswordAgain = () => {
+        setShowPasswordAgain(!showPasswordAgain);
+    };
+    const handleMouseDownPasswordAgain = (event) => {
+        event.preventDefault();
+    };
+
     const handleSubmit = (values, setSubmitting) => {
         console.log(uid, token);
         axios
-            .post('http://localhost:8000/rest-auth/password/reset/confirm/', {
-                new_password1: values.new_password1,
-                new_password2: values.new_password2,
-                uid: uid,
-                token: token,
-            })
+            .post(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/password/reset/confirm/`,
+                {
+                    new_password1: values.new_password1,
+                    new_password2: values.new_password2,
+                    uid: uid,
+                    token: token,
+                }
+            )
             .then((res) => {
                 console.log(res.data);
-                setResponseData(res.data);
+                setSuccessMessage(res.data.detail);
+                setErrMessage('');
                 setSubmitting(false);
             })
             .catch((err) => {
                 console.log(err.response);
+                setErrMessage(err.response.data);
+                setSuccessMessage('');
                 setSubmitting(false);
             });
     };
@@ -84,10 +108,7 @@ export default function PasswordResetConfirm() {
             <Head>
                 <title>Password Reset Confirm</title>
                 <link rel='icon' href='/a.ico' />
-                <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
+
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
@@ -104,10 +125,41 @@ export default function PasswordResetConfirm() {
                         <Typography component='h1' variant='h5'>
                             Password Reset Confirm
                         </Typography>
-                        {responseData && (
-                            <Box mt={2}>
-                                <Alert severity='success'>Confirmed.</Alert>
-                            </Box>
+
+                        {errMessage ? (
+                            errMessage.new_password2 ? (
+                                errMessage.new_password2.map((password) => (
+                                    <Box mt={2}>
+                                        <Alert severity='error'>
+                                            {password}
+                                        </Alert>
+                                    </Box>
+                                ))
+                            ) : (
+                                <Box mt={2}>
+                                    <Alert severity='error'>
+                                        Password Reset Link is not Valid.
+                                    </Alert>
+                                </Box>
+                            )
+                        ) : (
+                            ''
+                        )}
+
+                        {successMessage && (
+                            <>
+                                <Box mt={2}>
+                                    <Alert severity='success'>
+                                        {successMessage}
+                                    </Alert>
+                                </Box>
+                                <Box mt={2}>
+                                    <Alert severity='success'>
+                                        <Link href='/login'>Please Login</Link>{' '}
+                                        Now with This New Password.
+                                    </Alert>
+                                </Box>
+                            </>
                         )}
                         <div className={classes.form}>
                             <Formik
@@ -178,7 +230,7 @@ export default function PasswordResetConfirm() {
                                                     <Field
                                                         name='new_password2'
                                                         type={
-                                                            showPassword
+                                                            showPasswordAgain
                                                                 ? 'text'
                                                                 : 'password'
                                                         }
@@ -193,14 +245,14 @@ export default function PasswordResetConfirm() {
                                                                     <IconButton
                                                                         aria-label='toggle password visibility'
                                                                         onClick={
-                                                                            handleClickShowPassword
+                                                                            handleClickShowPasswordAgain
                                                                         }
                                                                         onMouseDown={
-                                                                            handleMouseDownPassword
+                                                                            handleMouseDownPasswordAgain
                                                                         }
                                                                         edge='end'
                                                                     >
-                                                                        {showPassword ? (
+                                                                        {showPasswordAgain ? (
                                                                             <Visibility fontSize='small' />
                                                                         ) : (
                                                                             <VisibilityOff fontSize='small' />

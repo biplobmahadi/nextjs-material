@@ -1,72 +1,91 @@
 import Head from 'next/head';
 import ButtonAppBar from '../../components/ButtonAppBar';
 import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import Container from '@material-ui/core/Container';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
 import Alert from '@material-ui/lab/Alert';
 import Link from '../../src/Link';
 
+import { useEffect } from 'react';
+import Cookies from 'js-cookie';
+
 export default function VerifyEmail() {
     const router = useRouter();
+    useEffect(() => {
+        if (Cookies.get('haha_ecom_bangla_token')) {
+            router.push('/my-account');
+        }
+    });
     const { key } = router.query;
     const [responseData, setResponseData] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [errMessage, setErrMessage] = React.useState('');
 
     const handleSubmit = () => {
-        console.log(key);
+        setLoading(true);
         axios
             .post(
-                'http://localhost:8000/rest-auth/registration/verify-email/',
+                `${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/registration/verify-email/`,
                 {
                     key: key,
                 }
             )
             .then((res) => {
                 console.log(res.data);
+                setLoading(false);
                 setResponseData(res.data);
             })
             .catch((err) => {
+                setErrMessage(err.response.data.detail);
                 console.log(err.response);
             });
     };
     return (
-        <div>
+        <Container component='main' maxWidth='xs'>
             <Head>
                 <title>Verify Email</title>
                 <link rel='icon' href='/a.ico' />
-                <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
             <ButtonAppBar />
-            <Box mt={14} mb={10}>
+            <Box mt={20}>
                 <Box textAlign='center'>
                     {responseData && (
                         <Box mt={2}>
                             <Alert severity='success'>
-                                Please <Link href='/login'>Login Now</Link>
+                                Successfully Verified. Please{' '}
+                                <Link href='/login'>Login Now</Link>
                             </Alert>
                         </Box>
                     )}
-                    <Typography>Verify your Email</Typography>
+                    {errMessage && (
+                        <Box mt={2}>
+                            <Alert severity='error'>
+                                Your Verification Link is not Valid.
+                            </Alert>
+                        </Box>
+                    )}
+                    <Box mt={4} mb={3}>
+                        <Typography component='h5' variant='h5'>
+                            Please Verify Your Email
+                        </Typography>
+                    </Box>
                     <Button
                         variant='contained'
                         color='primary'
                         onClick={handleSubmit}
+                        disabled={loading}
                     >
-                        Verify
+                        Verify Now
                     </Button>
                 </Box>
             </Box>
-        </div>
+        </Container>
     );
 }

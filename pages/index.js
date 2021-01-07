@@ -72,7 +72,7 @@ export default function Index(props) {
             </Head>
             <ButtonAppBar totalProductInBag={myBag && myBag.product.length} />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                <Box mt={8} pt={3} px={3}>
+                <Box pt={11} px={3}>
                     <Carousel />
                 </Box>
 
@@ -315,11 +315,11 @@ export async function getServerSideProps({ req, params }) {
 
     const dataMensShirt = await fetchDataForMensShirt();
     let mensShirt = dataMensShirt.mensShirt;
-    let mensShirtProducts = mensShirt.product.slice(0, 6);
+    let mensShirtProducts = mensShirt ? mensShirt.product.slice(0, 6) : null;
 
     const dataWomensPant = await fetchDataForWomensPant();
     let womensPant = dataWomensPant.womensPant;
-    let womensPantProducts = womensPant.product.slice(0, 6);
+    let womensPantProducts = womensPant ? womensPant.product.slice(0, 6) : null;
 
     // let categoryNameTop = categories && categories.filter(
     //     (category) => category.category_name === 'top'
@@ -338,7 +338,7 @@ export async function getServerSideProps({ req, params }) {
     // let bottomPantProducts = subCategoryNamePant[0].product.slice(0, 6);
 
     const dataTrending = await fetchDataForTrending(params);
-    const trending = dataTrending.trending;
+    const trending = dataTrending.trending ? dataTrending.trending : null;
 
     return {
         props: {

@@ -1,16 +1,10 @@
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import IconButton from '@material-ui/core/IconButton';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -20,7 +14,6 @@ import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
 
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -35,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     },
     form: {
         width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(3),
+        marginTop: theme.spacing(5),
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
@@ -44,18 +37,25 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PasswordResetForm() {
     const classes = useStyles();
-    const [responseData, setResponseData] = React.useState('');
+    const [errMessage, setErrMessage] = React.useState('');
+    const [successMessage, setSuccessMessage] = React.useState('');
 
     const handleSubmit = (values, setSubmitting) => {
         axios
-            .post('http://localhost:8000/rest-auth/password/reset/', values)
+            .post(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/password/reset/`,
+                values
+            )
             .then((res) => {
                 console.log(res.data);
-                setResponseData(res.data);
+                setSuccessMessage(res.data.detail);
+                setErrMessage('');
                 setSubmitting(false);
             })
             .catch((err) => {
                 console.log(err.response);
+                setErrMessage(err.response.data.email);
+                setSuccessMessage('');
                 setSubmitting(false);
             });
     };
@@ -69,9 +69,17 @@ export default function PasswordResetForm() {
                 <Typography component='h1' variant='h5'>
                     Password Reset
                 </Typography>
-                {responseData && (
+
+                {errMessage &&
+                    errMessage.map((errMessage) => (
+                        <Box mt={2}>
+                            <Alert severity='error'>{errMessage}</Alert>
+                        </Box>
+                    ))}
+
+                {successMessage && (
                     <Box mt={2}>
-                        <Alert severity='success'>Check email for link.</Alert>
+                        <Alert severity='success'>{successMessage}</Alert>
                     </Box>
                 )}
                 <div className={classes.form}>
