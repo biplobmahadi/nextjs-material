@@ -22,17 +22,17 @@ import axios from 'axios';
 import parseCookies from '../lib/parseCookies';
 import { useEffect } from 'react';
 
-
 let myBagRe;
 let mensShirtProductsRe;
 
 export default function Index(props) {
     const [reRender, setReRender] = React.useState(false);
-    
-    const { womensPantProducts, config, trending } = props
-    let myBag = myBagRe ? myBagRe : props.myBag;
-    let mensShirtProducts = mensShirtProductsRe ? mensShirtProductsRe : props.mensShirtProducts;
 
+    const { womensPantProducts, config, trending } = props;
+    let myBag = myBagRe ? myBagRe : props.myBag;
+    let mensShirtProducts = mensShirtProductsRe
+        ? mensShirtProductsRe
+        : props.mensShirtProducts;
 
     const changeMensShirtProducts = (value) => {
         mensShirtProductsRe = value;
@@ -46,15 +46,14 @@ export default function Index(props) {
 
         setReRender(!reRender);
     };
-    
 
     // here useEffect -> when component mount and update myBagRe will undefined
-    // because, when we change route then myBagRe again remain previous one which is not 
+    // because, when we change route then myBagRe again remain previous one which is not
     // updated one, that's why we make it undefined and bag will server rendered
 
     useEffect(() => {
-        myBagRe = undefined
-        mensShirtProductsRe = undefined
+        myBagRe = undefined;
+        mensShirtProductsRe = undefined;
     });
 
     // console.log('top product', topShirtProducts);
@@ -66,16 +65,12 @@ export default function Index(props) {
             <Head>
                 <title>Next App with Material-Ui</title>
                 <link rel='icon' href='/a.ico' />
-                <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={ myBag && myBag.product.length}/>
+            <ButtonAppBar totalProductInBag={myBag && myBag.product.length} />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
                     <Carousel />
@@ -112,11 +107,26 @@ export default function Index(props) {
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
-                            {trending && trending.trending_outfit && trending.trending_outfit.map(trending_outfit => 
-                                <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                    <Card trending_outfit={trending_outfit}/>
-                                </Grid>
-                            )}
+                            {trending &&
+                                trending.trending_outfit &&
+                                trending.trending_outfit.map(
+                                    (trending_outfit) => (
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={3}
+                                            xl={2}
+                                        >
+                                            <Card
+                                                trending_outfit={
+                                                    trending_outfit
+                                                }
+                                            />
+                                        </Grid>
+                                    )
+                                )}
                         </Grid>
                     </Box>
                 </Box>
@@ -163,11 +173,13 @@ export default function Index(props) {
                                         xl={2}
                                     >
                                         <ProductCard
-                                        product={product} 
-                                        myBag={myBag} 
-                                        config={config}
-                                        changeMyBag={changeMyBag}
-                                        changeCardProducts={changeMensShirtProducts}
+                                            product={product}
+                                            myBag={myBag}
+                                            config={config}
+                                            changeMyBag={changeMyBag}
+                                            changeCardProducts={
+                                                changeMensShirtProducts
+                                            }
                                         />
                                     </Grid>
                                 ))}
@@ -217,10 +229,10 @@ export default function Index(props) {
                                         xl={2}
                                     >
                                         <ProductCard
-                                        product={product} 
-                                        myBag={myBag} 
-                                        config={config}
-                                        changeMyBag={changeMyBag} 
+                                            product={product}
+                                            myBag={myBag}
+                                            config={config}
+                                            changeMyBag={changeMyBag}
                                         />
                                     </Grid>
                                 ))}
@@ -237,7 +249,7 @@ export default function Index(props) {
 
 const fetchDataForBag = async (config) =>
     await axios
-        .get(`http://localhost:8000/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -247,7 +259,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForMensShirt = async () =>
     await axios
-        .get(`http://localhost:8000/category/mens-shirt/`)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/category/mens-shirt/`)
         .then((res) => ({
             mensShirt: res.data,
         }))
@@ -256,18 +268,18 @@ const fetchDataForMensShirt = async () =>
         }));
 
 const fetchDataForWomensPant = async () =>
-await axios
-    .get(`http://localhost:8000/category/womens-pant/`)
-    .then((res) => ({
-        womensPant: res.data,
-    }))
-    .catch((err) => ({
-        error: err.response.data,
-    }));
+    await axios
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/category/womens-pant/`)
+        .then((res) => ({
+            womensPant: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
 
 const fetchDataForTrending = async (params) =>
     await axios
-        .get(`http://localhost:8000/trending/winter/`)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/trending/winter/`)
         .then((res) => ({
             trending: res.data,
         }))
@@ -276,7 +288,6 @@ const fetchDataForTrending = async (params) =>
         }));
 
 export async function getServerSideProps({ req, params }) {
-
     const cookies = parseCookies(req);
     const haha_ecom_bangla_token = cookies.haha_ecom_bangla_token
         ? cookies.haha_ecom_bangla_token
@@ -302,13 +313,12 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
-
     const dataMensShirt = await fetchDataForMensShirt();
-    let mensShirt = dataMensShirt.mensShirt
+    let mensShirt = dataMensShirt.mensShirt;
     let mensShirtProducts = mensShirt.product.slice(0, 6);
 
     const dataWomensPant = await fetchDataForWomensPant();
-    let womensPant = dataWomensPant.womensPant
+    let womensPant = dataWomensPant.womensPant;
     let womensPantProducts = womensPant.product.slice(0, 6);
 
     // let categoryNameTop = categories && categories.filter(
@@ -327,14 +337,17 @@ export async function getServerSideProps({ req, params }) {
     // );
     // let bottomPantProducts = subCategoryNamePant[0].product.slice(0, 6);
 
-
-
     const dataTrending = await fetchDataForTrending(params);
     const trending = dataTrending.trending;
 
-
     return {
-        props: { mensShirtProducts, womensPantProducts, myBag, config, trending },
+        props: {
+            mensShirtProducts,
+            womensPantProducts,
+            myBag,
+            config,
+            trending,
+        },
         // Next.js will attempt to re-generate the page:
         // - When a request comes in
         // - At most once every second
