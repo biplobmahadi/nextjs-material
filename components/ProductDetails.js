@@ -370,7 +370,9 @@ export default function ProductDetails(props) {
                             </Box>
 
                             <Box mt={2} borderRadius='borderRadius'>
-                                <ProductDetailsTable product={product} />
+                                <ProductDetailsTable
+                                    product={product && product}
+                                />
                             </Box>
                         </Box>
                     </Grid>
@@ -392,7 +394,7 @@ export default function ProductDetails(props) {
                                     height='324px'
                                     controls
                                     light
-                                    url={product.video_details}
+                                    url={product && product.video_details}
                                 />
                             </Box>
                         </Box>
@@ -457,7 +459,8 @@ export default function ProductDetails(props) {
                 </Box>
                 <Box mt={2}>
                     <Grid container spacing={2}>
-                        {product.video_review &&
+                        {product &&
+                            product.video_review &&
                             product.video_review.length !== 0 &&
                             product.video_review.map((video_review) => (
                                 <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
@@ -657,7 +660,8 @@ export default function ProductDetails(props) {
                     </Grid>
                 </Box>
 
-                {product.review &&
+                {product &&
+                    product.review &&
                     product.review.length !== 0 &&
                     product.review.map((review) => (
                         <Box

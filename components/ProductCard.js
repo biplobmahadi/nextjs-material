@@ -111,7 +111,7 @@ export default function ProductCard({
                                                 // final get will be after all post, patch done
                                                 axios
                                                     .get(
-                                                        `http://localhost:8000/category/mens-shirt/`
+                                                        `http://localhost:8000/category/${product.category.slug}/`
                                                     )
                                                     .then((res) => {
                                                         changeCardProducts(
@@ -204,7 +204,7 @@ export default function ProductCard({
                                                     // final get will be after all post, patch done
                                                     axios
                                                         .get(
-                                                            `http://localhost:8000/category/mens-shirt/`
+                                                            `http://localhost:8000/category/${product.category.slug}/`
                                                         )
                                                         .then((res) => {
                                                             changeCardProducts(
@@ -273,7 +273,7 @@ export default function ProductCard({
                                                     // final get will be after all post, patch done
                                                     axios
                                                         .get(
-                                                            `http://localhost:8000/category/mens-shirt/`
+                                                            `http://localhost:8000/category/${product.category.slug}/`
                                                         )
                                                         .then((res) => {
                                                             changeCardProducts(

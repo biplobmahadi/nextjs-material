@@ -15,27 +15,42 @@ import MainFooter from '../components/MainFooter';
 import FormikFormDemo from '../components/FormikFormDemo';
 import Receiver from '../components/forms/Receiver';
 import Box from '@material-ui/core/Box';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
 import parseCookies from '../lib/parseCookies';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 let myBagRe;
 let mensShirtProductsRe;
+let womensPantProductsRe;
 
 export default function Index(props) {
+    const router = useRouter();
     const [reRender, setReRender] = React.useState(false);
 
-    const { womensPantProducts, config, trending } = props;
+    const { config, trending } = props;
+
     let myBag = myBagRe ? myBagRe : props.myBag;
     let mensShirtProducts = mensShirtProductsRe
         ? mensShirtProductsRe
         : props.mensShirtProducts;
 
+    let womensPantProducts = womensPantProductsRe
+        ? womensPantProductsRe
+        : props.womensPantProducts;
+
     const changeMensShirtProducts = (value) => {
         mensShirtProductsRe = value;
+
+        // setReRender(!reRender);
+    };
+    const changeWomensPantProducts = (value) => {
+        womensPantProductsRe = value;
 
         // setReRender(!reRender);
     };
@@ -47,13 +62,14 @@ export default function Index(props) {
         setReRender(!reRender);
     };
 
-    // here useEffect -> when component mount and update myBagRe will undefined
-    // because, when we change route then myBagRe again remain previous one which is not
-    // updated one, that's why we make it undefined and bag will server rendered
+    // here useEffect -> when component mount and update myBagRe, mensShirtProductsRe will undefined
+    // because, when we change route then myBagRe, mensShirtProductsRe again remain previous one which is not
+    // updated one, that's why we make it undefined and bag, mensShirtProducts will server rendered
 
     useEffect(() => {
         myBagRe = undefined;
         mensShirtProductsRe = undefined;
+        womensPantProductsRe = undefined;
     });
 
     // console.log('top product', topShirtProducts);
@@ -63,7 +79,10 @@ export default function Index(props) {
     return (
         <div>
             <Head>
-                <title>Next App with Material-Ui</title>
+                <title>
+                    Logo - Experience Best (Only one premium e-commerce in
+                    Bangladesh)
+                </title>
                 <link rel='icon' href='/a.ico' />
                 <meta
                     name='viewport'
@@ -99,6 +118,9 @@ export default function Index(props) {
                                     variant='contained'
                                     size='small'
                                     color='secondary'
+                                    onClick={() =>
+                                        router.push('/trending-season/winter')
+                                    }
                                 >
                                     <Box px={3}>See All</Box>
                                 </Button>
@@ -129,6 +151,15 @@ export default function Index(props) {
                                 )}
                         </Grid>
                     </Box>
+                    {!trending && (
+                        <Box mt={2}>
+                            <Alert severity='error'>
+                                <AlertTitle>Sorry Dear</AlertTitle>
+                                We Have No Trending Outfit Now —{' '}
+                                <strong>Hope It Will Come Soon!</strong>
+                            </Alert>
+                        </Box>
+                    )}
                 </Box>
 
                 <Box mx={3} mt={8}>
@@ -154,6 +185,7 @@ export default function Index(props) {
                                     variant='contained'
                                     size='small'
                                     color='secondary'
+                                    onClick={() => router.push('/mens-shirt')}
                                 >
                                     <Box px={3}>See All</Box>
                                 </Button>
@@ -185,6 +217,15 @@ export default function Index(props) {
                                 ))}
                         </Grid>
                     </Box>
+                    {!mensShirtProducts && (
+                        <Box mt={2}>
+                            <Alert severity='error'>
+                                <AlertTitle>Sorry Dear</AlertTitle>
+                                We Have No Men's Shirt Now —{' '}
+                                <strong>Hope It Will Come Soon!</strong>
+                            </Alert>
+                        </Box>
+                    )}
                 </Box>
 
                 <Box mx={3} mt={8}>
@@ -210,6 +251,7 @@ export default function Index(props) {
                                     variant='contained'
                                     size='small'
                                     color='secondary'
+                                    onClick={() => router.push('/womens-pant')}
                                 >
                                     <Box px={3}>See All</Box>
                                 </Button>
@@ -233,11 +275,23 @@ export default function Index(props) {
                                             myBag={myBag}
                                             config={config}
                                             changeMyBag={changeMyBag}
+                                            changeCardProducts={
+                                                changeWomensPantProducts
+                                            }
                                         />
                                     </Grid>
                                 ))}
                         </Grid>
                     </Box>
+                    {!womensPantProducts && (
+                        <Box mt={2}>
+                            <Alert severity='error'>
+                                <AlertTitle>Sorry Dear</AlertTitle>
+                                We Have No Women's Pant Now —{' '}
+                                <strong>Hope It Will Come Soon!</strong>
+                            </Alert>
+                        </Box>
+                    )}
                 </Box>
             </Box>
             <Box mx={3} mt={6}>
@@ -293,12 +347,14 @@ export async function getServerSideProps({ req, params }) {
         ? cookies.haha_ecom_bangla_token
         : null;
     // when there have no cookies in browser it will return undefined that is not serializable, thats why set it as null
+    // very import comment
 
     const config = {
         headers: {
             Authorization: 'Token ' + haha_ecom_bangla_token,
         },
     };
+
     const dataBag = await fetchDataForBag(config);
 
     let myBag = null;
@@ -310,6 +366,10 @@ export async function getServerSideProps({ req, params }) {
         // console.log(myBagNotSendToMyOrder[0])
         if (myBagNotSendToMyOrder[0]) {
             myBag = myBagNotSendToMyOrder[0];
+            // We got exact bag for user
+            // 1st we filter out the bags whose not send to my order
+            // then there have many bags for that user because of backend, hacker can do anything!!
+            // the 1st created one is selected as myBag
         }
     }
 
@@ -321,24 +381,10 @@ export async function getServerSideProps({ req, params }) {
     let womensPant = dataWomensPant.womensPant;
     let womensPantProducts = womensPant ? womensPant.product.slice(0, 6) : null;
 
-    // let categoryNameTop = categories && categories.filter(
-    //     (category) => category.category_name === 'top'
-    // );
-    // let subCategoryNameShirt = categoryNameTop[0].sub_category.filter(
-    //     (subCategory) => subCategory.sub_category_name === 'shirt'
-    // );
-    // let topShirtProducts = subCategoryNameShirt[0].product.slice(0, 6);
-
-    // let categoryNameBottom = categories && categories.filter(
-    //     (category) => category.category_name === 'bottom'
-    // );
-    // let subCategoryNamePant = categoryNameBottom[0].sub_category.filter(
-    //     (subCategory) => subCategory.sub_category_name === 'pant'
-    // );
-    // let bottomPantProducts = subCategoryNamePant[0].product.slice(0, 6);
-
     const dataTrending = await fetchDataForTrending(params);
-    const trending = dataTrending.trending ? dataTrending.trending : null;
+    const trending = dataTrending.trending
+        ? dataTrending.trending.slice(0, 6)
+        : null;
 
     return {
         props: {
@@ -348,9 +394,5 @@ export async function getServerSideProps({ req, params }) {
             config,
             trending,
         },
-        // Next.js will attempt to re-generate the page:
-        // - When a request comes in
-        // - At most once every second
-        // revalidate: 1, // In seconds
     };
 }

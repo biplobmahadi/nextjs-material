@@ -39,8 +39,8 @@ export default function Product(props) {
     const [quantity, setQuantity] = React.useState(1);
     const [reRender, setReRender] = React.useState(false);
 
-    let product = productRe ? productRe : props.dataProduct.product;
-    let { user } = props.dataUser;
+    let product = productRe ? productRe : props.product;
+    let user = props.user;
     let config = props.config;
     let categoryProducts = categoryProductsRe
         ? categoryProductsRe
@@ -448,7 +448,9 @@ export default function Product(props) {
                                             <Box pl={1}>
                                                 <Typography>
                                                     {' '}
-                                                    {product.review.length}{' '}
+                                                    {product &&
+                                                        product.review
+                                                            .length}{' '}
                                                     Rating & Review
                                                 </Typography>
                                             </Box>
@@ -475,7 +477,7 @@ export default function Product(props) {
                                     </Typography>
                                 </Box>
                                 <Box pt={3}>
-                                    {product.has_size && (
+                                    {product && product.has_size && (
                                         <Grid
                                             container
                                             spacing={2}
@@ -515,9 +517,10 @@ export default function Product(props) {
                                         <Grid item xs={12} sm>
                                             <Chip
                                                 label={
+                                                    product &&
                                                     product.productavailable
                                                         .available_quantity !==
-                                                    0
+                                                        0
                                                         ? 'In Stock'
                                                         : 'Not In Stock'
                                                 }
@@ -539,9 +542,10 @@ export default function Product(props) {
                                                 color='primary'
                                                 onClick={handleAddToBag}
                                                 disabled={
+                                                    product &&
                                                     product.productavailable
                                                         .available_quantity ===
-                                                    0
+                                                        0
                                                 }
                                             >
                                                 <Box textAlign='center' px={4}>
@@ -550,7 +554,8 @@ export default function Product(props) {
                                             </Button>
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
-                                            {product.has_trial &&
+                                            {product &&
+                                                product.has_trial &&
                                                 productExitsInBag &&
                                                 productExitsInBag.length !==
                                                     0 && (
@@ -796,6 +801,8 @@ export async function getServerSideProps({ req, params }) {
     const dataBag = await fetchDataForBag(config);
     const dataUser = await fetchDataForUser(config);
 
+    const user = dataUser.user ? dataUser.user : null;
+
     let myBag = null;
     if (dataBag.bag) {
         let allMyBag = dataBag.bag;
@@ -808,23 +815,27 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
-    const product = dataProduct.product;
-    const category_slug = product.category.slug;
+    const product = dataProduct.product ? dataProduct.product : null;
+    const category_slug = product && product.category.slug;
     const dataCategory = await fetchDataForCategory(category_slug);
     const category = dataCategory.category;
-    const allCategoryProducts = category.product;
-    let filteredCategoryProducts = allCategoryProducts.filter(
-        (categoryProduct) => categoryProduct.id !== product.id
-    );
+    const allCategoryProducts = category && category.product;
+    let filteredCategoryProducts =
+        allCategoryProducts &&
+        allCategoryProducts.filter(
+            (categoryProduct) => categoryProduct.id !== product.id
+        );
 
-    let categoryProducts = filteredCategoryProducts.slice(0, 6);
+    let categoryProducts = filteredCategoryProducts
+        ? filteredCategoryProducts.slice(0, 6)
+        : null;
 
     return {
         props: {
-            dataProduct,
+            product,
             myBag,
             config,
-            dataUser,
+            user,
             categoryProducts,
         },
     };

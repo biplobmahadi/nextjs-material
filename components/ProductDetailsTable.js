@@ -14,23 +14,28 @@ const useStyles = makeStyles({
     },
 });
 
-
-export default function BasicTable({product}) {
+export default function BasicTable({ product }) {
     const classes = useStyles();
 
     return (
         <TableContainer component={Paper}>
             <Table className={classes.table} aria-label='simple table'>
-                
                 <TableBody>
-                    {product.product_detail.map((productDetail) => (
-                        <TableRow hover key={productDetail.id}>
-                            <TableCell align='center' component='th' scope='row'>
-                                {productDetail.title}
-                            </TableCell>
-                            <TableCell align='center'>{productDetail.value}</TableCell>
-                        </TableRow>
-                    ))}
+                    {product &&
+                        product.product_detail.map((productDetail) => (
+                            <TableRow hover key={productDetail.id}>
+                                <TableCell
+                                    align='center'
+                                    component='th'
+                                    scope='row'
+                                >
+                                    {productDetail.title}
+                                </TableCell>
+                                <TableCell align='center'>
+                                    {productDetail.value}
+                                </TableCell>
+                            </TableRow>
+                        ))}
                 </TableBody>
             </Table>
         </TableContainer>
