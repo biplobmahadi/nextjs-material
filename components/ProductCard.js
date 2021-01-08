@@ -41,29 +41,24 @@ export default function ProductCard({
             cost: product.price,
         };
 
-        // product quantity available or not
-
         let productExitsInBag;
         if (myBag) {
-            productExitsInBag = myBag.product.filter(
+            productExitsInBag = myBag.product_with_quantity.filter(
                 (filterProduct) => filterProduct.product.id === product.id
             );
         }
         console.log('productExitsInBag', productExitsInBag);
 
-        let totalAvailableProduct;
+        // 1st we need to get the available quantity for this product
         axios
             .get(
                 `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
                 config
             )
             .then((res) => {
-                totalAvailableProduct = res.data.available_quantity;
-                console.log('totalAvailableProduct', totalAvailableProduct);
-
                 // if product available then this will run from below
-
-                if (totalAvailableProduct > 0) {
+                // add to bag process will start from here
+                if (res.data.available_quantity > 0) {
                     // I use productExitsInBag.length !== 0, because [] == true.. if [] then loop will continue
                     if (productExitsInBag && productExitsInBag.length !== 0) {
                         axios
@@ -78,17 +73,19 @@ export default function ProductCard({
                                 config
                             )
                             .then((res) => {
-                                // console.log(res.data);
                                 let pk = [];
-                                myBag.product.map(
-                                    (product) => (pk = pk.concat(product.id))
+                                myBag.product_with_quantity.map(
+                                    (product_with_quantity) =>
+                                        (pk = pk.concat(
+                                            product_with_quantity.id
+                                        ))
                                 );
                                 console.log(pk);
                                 axios
                                     .patch(
                                         `http://localhost:8000/my-bag/${myBag.id}/`,
                                         {
-                                            product: pk,
+                                            product_with_quantity: pk,
                                             sub_total:
                                                 myBag.sub_total + product.price,
                                         },
@@ -107,8 +104,8 @@ export default function ProductCard({
                                                 config
                                             )
                                             .then((res) => {
-                                                // console.log('updated quantity', res.data)
                                                 // final get will be after all post, patch done
+                                                // everything will update here for user
                                                 axios
                                                     .get(
                                                         `http://localhost:8000/category/${product.category.slug}/`
@@ -126,11 +123,10 @@ export default function ProductCard({
                                                                 config
                                                             )
                                                             .then((res) => {
-                                                                // new myBag need to add to state
+                                                                // new myBag need to update
                                                                 changeMyBag(
                                                                     res.data
                                                                 );
-                                                                // setTotalBagProduct(res.data.product.length);
                                                             })
                                                             .catch((err) =>
                                                                 console.log(
@@ -158,13 +154,13 @@ export default function ProductCard({
                                 config
                             )
                             .then((res) => {
-                                // console.log('bag nai - pwq', res.data);
                                 if (myBag && myBag.length !== 0) {
-                                    // console.log(res.data.id, myBag.product.id, myBag.product) .. middle is not correct
                                     let pk = [];
-                                    myBag.product.map(
-                                        (product) =>
-                                            (pk = pk.concat(product.id))
+                                    myBag.product_with_quantity.map(
+                                        (product_with_quantity) =>
+                                            (pk = pk.concat(
+                                                product_with_quantity.id
+                                            ))
                                     );
                                     console.log(
                                         'bag e onno product ase - pk',
@@ -174,7 +170,9 @@ export default function ProductCard({
                                         .patch(
                                             `http://localhost:8000/my-bag/${myBag.id}/`,
                                             {
-                                                product: pk.concat(res.data.id),
+                                                product_with_quantity: pk.concat(
+                                                    res.data.id
+                                                ),
                                                 sub_total:
                                                     myBag.sub_total +
                                                     res.data.cost,
@@ -200,7 +198,6 @@ export default function ProductCard({
                                                     config
                                                 )
                                                 .then((res) => {
-                                                    // console.log('updated quantity', res.data)
                                                     // final get will be after all post, patch done
                                                     axios
                                                         .get(
@@ -219,11 +216,10 @@ export default function ProductCard({
                                                                     config
                                                                 )
                                                                 .then((res) => {
-                                                                    // new myBag need to add to state
+                                                                    // new myBag need to update
                                                                     changeMyBag(
                                                                         res.data
                                                                     );
-                                                                    // setTotalBagProduct(res.data.product.length);
                                                                 })
                                                                 .catch((err) =>
                                                                     console.log(
@@ -249,13 +245,14 @@ export default function ProductCard({
                                         .post(
                                             'http://localhost:8000/my-bag/',
                                             {
-                                                product: [res.data.id],
+                                                product_with_quantity: [
+                                                    res.data.id,
+                                                ],
                                                 sub_total: res.data.cost,
                                             },
                                             config
                                         )
                                         .then((res) => {
-                                            // console.log(res.data);
                                             axios
                                                 .patch(
                                                     `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
@@ -269,7 +266,6 @@ export default function ProductCard({
                                                     config
                                                 )
                                                 .then((res) => {
-                                                    // console.log('updated quantity', res.data)
                                                     // final get will be after all post, patch done
                                                     axios
                                                         .get(
@@ -288,11 +284,10 @@ export default function ProductCard({
                                                                     config
                                                                 )
                                                                 .then((res) => {
-                                                                    // new myBag need to add to state
+                                                                    // new myBag need to update
                                                                     changeMyBag(
                                                                         res.data
                                                                     );
-                                                                    // setTotalBagProduct(res.data.product.length);
                                                                 })
                                                                 .catch((err) =>
                                                                     console.log(
@@ -350,15 +345,16 @@ export default function ProductCard({
                             </Box>
                         </Typography>
                     </CardContent>
-                    {product.productavailable.available_quantity === 0 && (
-                        <Box textAlign='center'>
-                            <Chip
-                                label='Not In Stock'
-                                color='secondary'
-                                size='small'
-                            />
-                        </Box>
-                    )}
+                    {product &&
+                        product.productavailable.available_quantity === 0 && (
+                            <Box textAlign='center'>
+                                <Chip
+                                    label='Not In Stock'
+                                    color='secondary'
+                                    size='small'
+                                />
+                            </Box>
+                        )}
                 </CardActionArea>
             </Link>
             <Box pb={1}>

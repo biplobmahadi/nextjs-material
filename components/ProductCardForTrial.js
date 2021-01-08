@@ -49,173 +49,228 @@ export default function ProductCard({
 
         let productExitsInBag;
         if (myBag) {
-            productExitsInBag = myBag.product.filter(
+            productExitsInBag = myBag.product_with_quantity.filter(
                 (filterProduct) => filterProduct.product.id === product.id
             );
         }
         console.log('productExitsInBag', productExitsInBag);
-        // I use productExitsInBag.length !== 0, because [] == true.. if [] then loop will continue
-        if (productExitsInBag && productExitsInBag.length !== 0) {
-            console.log('already product add in bag or add as trial');
-            // here in bag, user can't add more quantity to trial, only one product can trial
-            // when user add this for buy then it can't be add as trial
-        } else {
-            axios
-                .post(
-                    'http://localhost:8000/product-with-quantity/',
-                    addToBag,
-                    config
-                )
-                .then((res) => {
-                    // console.log('bag nai - pwq', res.data);
-                    if (myBag && myBag.length !== 0) {
-                        // console.log(res.data.id, myBag.product.id, myBag.product) .. middle is not correct
-                        let pk = [];
-                        myBag.product.map(
-                            (product) => (pk = pk.concat(product.id))
+        // 1st we need to get the available quantity for this product
+        axios
+            .get(
+                `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
+                config
+            )
+            .then((res) => {
+                // if product available then this will run from below
+                // add to bag process will start from here
+                if (res.data.available_quantity > 0) {
+                    // I use productExitsInBag.length !== 0, because [] == true.. if [] then loop will continue
+                    if (productExitsInBag && productExitsInBag.length !== 0) {
+                        console.log(
+                            'already product add in bag or add as trial'
                         );
-                        console.log('bag e onno product ase - pk', pk);
-                        axios
-                            .patch(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
-                                {
-                                    product: pk.concat(res.data.id),
-                                    sub_total: myBag.sub_total + res.data.cost,
-                                },
-                                config
-                            )
-                            .then((res) => {
-                                console.log(
-                                    'bag e product ase - patch bag',
-                                    res.data
-                                );
-
-                                axios
-                                    .patch(
-                                        `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
-                                        {
-                                            available_quantity:
-                                                product.productavailable
-                                                    .available_quantity - 1,
-                                        },
-                                        config
-                                    )
-                                    .then((res) => {
-                                        // console.log('updated quantity', res.data)
-                                        // final get will be after all post, patch done
-                                        axios
-                                            .get(
-                                                `http://localhost:8000/category/${mainProduct.category.slug}/`
-                                            )
-                                            .then((res) => {
-                                                let allCategoryProducts =
-                                                    res.data.product;
-                                                let filteredCategoryProducts = allCategoryProducts.filter(
-                                                    (categoryProduct) =>
-                                                        categoryProduct.id !==
-                                                        mainProduct.id
-                                                );
-                                                changeCategoryProducts(
-                                                    filteredCategoryProducts
-                                                );
-                                                axios
-                                                    .get(
-                                                        `http://localhost:8000/my-bag/${myBag.id}/`,
-                                                        config
-                                                    )
-                                                    .then((res) => {
-                                                        // new myBag need to add to state
-                                                        changeMyBag(res.data);
-                                                        console.log(
-                                                            'bag after updated quantity',
-                                                            res.data
-                                                        );
-                                                        // setTotalBagProduct(res.data.product.length);
-                                                    })
-                                                    .catch((err) =>
-                                                        console.log(
-                                                            err.response
-                                                        )
-                                                    );
-                                            })
-                                            .catch((err) =>
-                                                console.log(err.response)
-                                            );
-                                    })
-                                    .catch((err) => console.log(err.response));
-                            })
-                            .catch((err) => console.log(err.response));
+                        // here in bag, user can't add more quantity to trial, only one product can trial
+                        // when user add this for buy then it can't be add as trial
                     } else {
                         axios
                             .post(
-                                'http://localhost:8000/my-bag/',
-                                {
-                                    product: [res.data.id],
-                                    sub_total: res.data.cost,
-                                },
+                                'http://localhost:8000/product-with-quantity/',
+                                addToBag,
                                 config
                             )
                             .then((res) => {
-                                // console.log(res.data);
-                                axios
-                                    .patch(
-                                        `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
-                                        {
-                                            available_quantity:
-                                                product.productavailable
-                                                    .available_quantity - 1,
-                                        },
-                                        config
-                                    )
-                                    .then((res) => {
-                                        // console.log('updated quantity', res.data)
-                                        // final get will be after all post, patch done
-                                        axios
-                                            .get(
-                                                `http://localhost:8000/category/${mainProduct.category.slug}/`
-                                            )
-                                            .then((res) => {
-                                                let allCategoryProducts =
-                                                    res.data.product;
-                                                let filteredCategoryProducts = allCategoryProducts.filter(
-                                                    (categoryProduct) =>
-                                                        categoryProduct.id !==
-                                                        mainProduct.id
-                                                );
-                                                changeCategoryProducts(
-                                                    filteredCategoryProducts
-                                                );
-                                                axios
-                                                    .get(
-                                                        `http://localhost:8000/my-bag/${myBag.id}/`,
-                                                        config
-                                                    )
-                                                    .then((res) => {
-                                                        // new myBag need to add to state
-                                                        changeMyBag(res.data);
-                                                        console.log(
-                                                            'bag after updated quantity',
-                                                            res.data
-                                                        );
-                                                        // setTotalBagProduct(res.data.product.length);
-                                                    })
-                                                    .catch((err) =>
-                                                        console.log(
-                                                            err.response
-                                                        )
-                                                    );
-                                            })
-                                            .catch((err) =>
-                                                console.log(err.response)
+                                // console.log('bag nai - pwq', res.data);
+                                if (myBag && myBag.length !== 0) {
+                                    // console.log(res.data.id, myBag.product.id, myBag.product) .. middle is not correct
+                                    let pk = [];
+                                    myBag.product_with_quantity.map(
+                                        (product_with_quantity) =>
+                                            (pk = pk.concat(
+                                                product_with_quantity.id
+                                            ))
+                                    );
+                                    console.log(
+                                        'bag e onno product ase - pk',
+                                        pk
+                                    );
+                                    axios
+                                        .patch(
+                                            `http://localhost:8000/my-bag/${myBag.id}/`,
+                                            {
+                                                product_with_quantity: pk.concat(
+                                                    res.data.id
+                                                ),
+                                                sub_total:
+                                                    myBag.sub_total +
+                                                    res.data.cost,
+                                            },
+                                            config
+                                        )
+                                        .then((res) => {
+                                            console.log(
+                                                'bag e product ase - patch bag',
+                                                res.data
                                             );
-                                    })
-                                    .catch((err) => console.log(err.response));
+
+                                            axios
+                                                .patch(
+                                                    `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
+                                                    {
+                                                        available_quantity:
+                                                            product
+                                                                .productavailable
+                                                                .available_quantity -
+                                                            1,
+                                                    },
+                                                    config
+                                                )
+                                                .then((res) => {
+                                                    // console.log('updated quantity', res.data)
+                                                    // final get will be after all post, patch done
+                                                    axios
+                                                        .get(
+                                                            `http://localhost:8000/category/${mainProduct.category.slug}/`
+                                                        )
+                                                        .then((res) => {
+                                                            let allCategoryProducts =
+                                                                res.data
+                                                                    .product;
+                                                            let filteredCategoryProducts = allCategoryProducts.filter(
+                                                                (
+                                                                    categoryProduct
+                                                                ) =>
+                                                                    categoryProduct.id !==
+                                                                    mainProduct.id
+                                                            );
+                                                            changeCategoryProducts(
+                                                                filteredCategoryProducts
+                                                            );
+                                                            axios
+                                                                .get(
+                                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                                    config
+                                                                )
+                                                                .then((res) => {
+                                                                    // new myBag need to add to state
+                                                                    changeMyBag(
+                                                                        res.data
+                                                                    );
+                                                                    console.log(
+                                                                        'bag after updated quantity',
+                                                                        res.data
+                                                                    );
+                                                                    // setTotalBagProduct(res.data.product.length);
+                                                                })
+                                                                .catch((err) =>
+                                                                    console.log(
+                                                                        err.response
+                                                                    )
+                                                                );
+                                                        })
+                                                        .catch((err) =>
+                                                            console.log(
+                                                                err.response
+                                                            )
+                                                        );
+                                                })
+                                                .catch((err) =>
+                                                    console.log(err.response)
+                                                );
+                                        })
+                                        .catch((err) =>
+                                            console.log(err.response)
+                                        );
+                                } else {
+                                    axios
+                                        .post(
+                                            'http://localhost:8000/my-bag/',
+                                            {
+                                                product_with_quantity: [
+                                                    res.data.id,
+                                                ],
+                                                sub_total: res.data.cost,
+                                            },
+                                            config
+                                        )
+                                        .then((res) => {
+                                            // console.log(res.data);
+                                            axios
+                                                .patch(
+                                                    `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
+                                                    {
+                                                        available_quantity:
+                                                            product
+                                                                .productavailable
+                                                                .available_quantity -
+                                                            1,
+                                                    },
+                                                    config
+                                                )
+                                                .then((res) => {
+                                                    // console.log('updated quantity', res.data)
+                                                    // final get will be after all post, patch done
+                                                    axios
+                                                        .get(
+                                                            `http://localhost:8000/category/${mainProduct.category.slug}/`
+                                                        )
+                                                        .then((res) => {
+                                                            let allCategoryProducts =
+                                                                res.data
+                                                                    .product;
+                                                            let filteredCategoryProducts = allCategoryProducts.filter(
+                                                                (
+                                                                    categoryProduct
+                                                                ) =>
+                                                                    categoryProduct.id !==
+                                                                    mainProduct.id
+                                                            );
+                                                            changeCategoryProducts(
+                                                                filteredCategoryProducts
+                                                            );
+                                                            axios
+                                                                .get(
+                                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                                    config
+                                                                )
+                                                                .then((res) => {
+                                                                    // new myBag need to add to state
+                                                                    changeMyBag(
+                                                                        res.data
+                                                                    );
+                                                                    console.log(
+                                                                        'bag after updated quantity',
+                                                                        res.data
+                                                                    );
+                                                                    // setTotalBagProduct(res.data.product.length);
+                                                                })
+                                                                .catch((err) =>
+                                                                    console.log(
+                                                                        err.response
+                                                                    )
+                                                                );
+                                                        })
+                                                        .catch((err) =>
+                                                            console.log(
+                                                                err.response
+                                                            )
+                                                        );
+                                                })
+                                                .catch((err) =>
+                                                    console.log(err.response)
+                                                );
+                                        })
+                                        .catch((err) =>
+                                            console.log(err.response)
+                                        );
+                                }
                             })
                             .catch((err) => console.log(err.response));
                     }
-                })
-                .catch((err) => console.log(err.response));
-        }
+                } else {
+                    console.log('product not available');
+                }
+            })
+            .catch((err) => console.log(err.response));
     };
 
     return (

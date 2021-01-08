@@ -89,7 +89,7 @@ export default function Index(props) {
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={myBag && myBag.product.length} />
+            <ButtonAppBar totalProductInBag={myBag && myBag.product_with_quantity.length} />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box pt={11} px={3}>
                     <Carousel />
@@ -131,8 +131,9 @@ export default function Index(props) {
                         <Grid container spacing={2}>
                             {trending &&
                                 trending.trending_outfit &&
-                                trending.trending_outfit.map(
-                                    (trending_outfit) => (
+                                trending.trending_outfit
+                                    .slice(0, 6)
+                                    .map((trending_outfit) => (
                                         <Grid
                                             item
                                             xs={12}
@@ -147,8 +148,7 @@ export default function Index(props) {
                                                 }
                                             />
                                         </Grid>
-                                    )
-                                )}
+                                    ))}
                         </Grid>
                     </Box>
                     {!trending && (
@@ -382,9 +382,7 @@ export async function getServerSideProps({ req, params }) {
     let womensPantProducts = womensPant ? womensPant.product.slice(0, 6) : null;
 
     const dataTrending = await fetchDataForTrending(params);
-    const trending = dataTrending.trending
-        ? dataTrending.trending.slice(0, 6)
-        : null;
+    const trending = dataTrending.trending ? dataTrending.trending : null;
 
     return {
         props: {

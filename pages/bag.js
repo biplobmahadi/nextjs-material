@@ -153,7 +153,7 @@ export default function Bag(props) {
 
     let myBag = myBagRe ? myBagRe : props.myBag;
     let config = props.config;
-    let rows = myBag ? myBag.product : [];
+    let rows = myBag ? myBag.product_with_quantity : [];
 
     const changeMyBag = (value) => {
         myBagRe = value;
@@ -189,97 +189,121 @@ export default function Bag(props) {
     };
 
     const handleAdd = (value) => {
-        let product = JSON.parse(value);
-        console.log(product);
+        let productWithQuantity = JSON.parse(value);
+        console.log(productWithQuantity);
+
+        // 1st we need to get the available quantity for this product
         axios
-            .patch(
-                `http://localhost:8000/product-with-quantity/${product.id}/`,
-                {
-                    quantity: product.quantity + 1,
-                    cost: product.cost + product.product.price,
-                },
+            .get(
+                `http://localhost:8000/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
                 config
             )
             .then((res) => {
-                console.log(res.data);
-                let pk = [];
-                myBag.product.map((product) => (pk = pk.concat(product.id)));
-                console.log(pk);
-                axios
-                    .patch(
-                        `http://localhost:8000/my-bag/${myBag.id}/`,
-                        {
-                            product: pk,
-                            sub_total: myBag.sub_total + product.product.price,
-                        },
-                        config
-                    )
-                    .then((res) => {
-                        console.log(res.data);
-                        // here product.product.productavailable.id used, because here product means product with quantity not single product
-                        axios
-                            .patch(
-                                `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
-                                {
-                                    available_quantity:
-                                        product.product.productavailable
-                                            .available_quantity - 1,
-                                },
-                                config
-                            )
-                            .then((res) => {
-                                // final get will be after all post, patch done
-                                axios
-                                    .get(
-                                        `http://localhost:8000/my-bag/${myBag.id}/`,
-                                        config
-                                    )
-                                    .then((res) => {
-                                        // this.setState({ myBag: res.data });
-
-                                        console.log(
-                                            'final after add',
-                                            res.data
+                // if product available then this will run from below
+                // add to bag process will start from here
+                if (res.data.available_quantity > 0) {
+                    axios
+                        .patch(
+                            `http://localhost:8000/product-with-quantity/${productWithQuantity.id}/`,
+                            {
+                                quantity: productWithQuantity.quantity + 1,
+                                cost:
+                                    productWithQuantity.cost +
+                                    productWithQuantity.product.price,
+                            },
+                            config
+                        )
+                        .then((res) => {
+                            console.log(res.data);
+                            let pk = [];
+                            myBag.product_with_quantity.map(
+                                (product_with_quantity) =>
+                                    (pk = pk.concat(product_with_quantity.id))
+                            );
+                            console.log(pk);
+                            axios
+                                .patch(
+                                    `http://localhost:8000/my-bag/${myBag.id}/`,
+                                    {
+                                        product_with_quantity: pk,
+                                        sub_total:
+                                            myBag.sub_total +
+                                            productWithQuantity.product.price,
+                                    },
+                                    config
+                                )
+                                .then((res) => {
+                                    console.log(res.data);
+                                    // here productWithQuantity.product.productavailable.id used, because here product means product with quantity not single product
+                                    axios
+                                        .patch(
+                                            `http://localhost:8000/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
+                                            {
+                                                available_quantity:
+                                                    productWithQuantity.product
+                                                        .productavailable
+                                                        .available_quantity - 1,
+                                            },
+                                            config
+                                        )
+                                        .then((res) => {
+                                            // final get will be after all post, patch done
+                                            axios
+                                                .get(
+                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                    config
+                                                )
+                                                .then((res) => {
+                                                    changeMyBag(res.data);
+                                                })
+                                                .catch((err) =>
+                                                    console.log(err.response)
+                                                );
+                                        })
+                                        .catch((err) =>
+                                            console.log(err.response)
                                         );
-                                        changeMyBag(res.data);
-
-                                        // just jeta show hbe oita state e rakha jay, jmn ekahane just quantity
-                                        // no, price change kora jabe eta dekhale
-                                        // but price show amra direct na kore calculate kore dite pari
-                                        // always update the state, because I work everything using state
-                                    })
-                                    .catch((err) => console.log(err.response));
-                            })
-                            .catch((err) => console.log(err.response));
-                    })
-                    .catch((err) => console.log(err.response));
+                                })
+                                .catch((err) => console.log(err.response));
+                        })
+                        .catch((err) => console.log(err.response));
+                } else {
+                    console.log('product not available');
+                }
             })
             .catch((err) => console.log(err.response));
     };
 
     const handleRemove = (value) => {
-        let product = JSON.parse(value);
-        console.log(product);
+        let productWithQuantity = JSON.parse(value);
+        console.log(productWithQuantity);
         axios
             .patch(
-                `http://localhost:8000/product-with-quantity/${product.id}/`,
+                `http://localhost:8000/product-with-quantity/${productWithQuantity.id}/`,
                 {
-                    quantity: product.quantity - 1,
-                    cost: product.cost - product.product.price,
+                    quantity: productWithQuantity.quantity - 1,
+                    cost:
+                        productWithQuantity.cost -
+                        productWithQuantity.product.price,
                 },
                 config
             )
             .then((res) => {
                 console.log(res.data);
                 let pk = [];
-                myBag.product.map((product) => (pk = pk.concat(product.id)));
+                myBag.product_with_quantity.map(
+                    (product_with_quantity) =>
+                        (pk = pk.concat(product_with_quantity.id))
+                );
                 console.log(pk);
                 axios
                     .patch(
                         `http://localhost:8000/my-bag/${myBag.id}/`,
                         {
-                            product: pk,
-                            sub_total: myBag.sub_total - product.product.price,
+                            product_with_quantity: pk,
+                            sub_total:
+                                myBag.sub_total -
+                                productWithQuantity.product.price,
                         },
                         config
                     )
@@ -288,10 +312,11 @@ export default function Bag(props) {
                         // here product.product.productavailable.id used, because here product means product with quantity not single product
                         axios
                             .patch(
-                                `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
+                                `http://localhost:8000/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
                                 {
                                     available_quantity:
-                                        product.product.productavailable
+                                        productWithQuantity.product
+                                            .productavailable
                                             .available_quantity + 1,
                                 },
                                 config
@@ -304,11 +329,6 @@ export default function Bag(props) {
                                         config
                                     )
                                     .then((res) => {
-                                        // this.setState({ myBag: res.data });
-                                        console.log(
-                                            'final after add',
-                                            res.data
-                                        );
                                         changeMyBag(res.data);
                                     })
                                     .catch((err) => console.log(err.response));
@@ -321,21 +341,24 @@ export default function Bag(props) {
     };
 
     const handleDelete = (value) => {
-        let product = JSON.parse(value);
-        console.log(product);
+        let productWithQuantity = JSON.parse(value);
+        console.log(productWithQuantity);
         axios
             .delete(
-                `http://localhost:8000/product-with-quantity/${product.id}/`,
+                `http://localhost:8000/product-with-quantity/${productWithQuantity.id}/`,
                 config
             )
             .then((res) => {
                 console.log(res.data);
                 let pk = [];
-                myBag.product.map((product) => (pk = pk.concat(product.id)));
+                myBag.product_with_quantity.map(
+                    (product_with_quantity) =>
+                        (pk = pk.concat(product_with_quantity.id))
+                );
                 console.log(pk);
                 let length = pk.length;
                 for (let i = 0; i < length; i++) {
-                    if (pk[i] === product.id) {
+                    if (pk[i] === productWithQuantity.id) {
                         pk.splice(i, 1);
                         i--;
                     }
@@ -347,8 +370,9 @@ export default function Bag(props) {
                     .patch(
                         `http://localhost:8000/my-bag/${myBag.id}/`,
                         {
-                            product: pk,
-                            sub_total: myBag.sub_total - product.cost,
+                            product_with_quantity: pk,
+                            sub_total:
+                                myBag.sub_total - productWithQuantity.cost,
                         },
                         config
                     )
@@ -357,12 +381,13 @@ export default function Bag(props) {
                         // here product.product.productavailable.id used, because here product means product with quantity not single product
                         axios
                             .patch(
-                                `http://localhost:8000/product-update-only-quantity/${product.product.productavailable.id}/`,
+                                `http://localhost:8000/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
                                 {
                                     available_quantity:
-                                        product.product.productavailable
+                                        productWithQuantity.product
+                                            .productavailable
                                             .available_quantity +
-                                        product.quantity,
+                                        productWithQuantity.quantity,
                                 },
                                 config
                             )
@@ -374,11 +399,6 @@ export default function Bag(props) {
                                         config
                                     )
                                     .then((res) => {
-                                        // this.setState({ myBag: res.data });
-                                        console.log(
-                                            'final after add',
-                                            res.data
-                                        );
                                         changeMyBag(res.data);
                                     })
                                     .catch((err) => console.log(err.response));
@@ -435,16 +455,13 @@ export default function Bag(props) {
             <Head>
                 <title>My Bag</title>
                 <link rel='icon' href='/a.ico' />
-                {/* <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                /> */}
+                
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={myBag && myBag.product.length} />
+            <ButtonAppBar totalProductInBag={myBag && myBag.product_with_quantity.length} />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={6} pt={3} px={3}>
                     <Grid container spacing={3}>
@@ -476,7 +493,7 @@ export default function Bag(props) {
                                             <Chip
                                                 label={`${
                                                     myBag
-                                                        ? myBag.product.length
+                                                        ? myBag.product_with_quantity.length
                                                         : 0
                                                 } item`}
                                                 color='secondary'
@@ -886,7 +903,6 @@ export async function getServerSideProps({ req, params }) {
         let myBagNotSendToMyOrder = allMyBag.filter(
             (myBag) => myBag.is_send_to_my_order === false
         );
-        // console.log(myBagNotSendToMyOrder[0])
         if (myBagNotSendToMyOrder[0]) {
             myBag = myBagNotSendToMyOrder[0];
         }

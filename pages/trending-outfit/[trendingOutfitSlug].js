@@ -55,7 +55,7 @@ export default function Trending(props) {
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={ myBag && myBag.product.length} />
+            <ButtonAppBar totalProductInBag={ myBag && myBag.product_with_quantity.length} />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
                     <Box
