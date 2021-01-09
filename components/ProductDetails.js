@@ -3,7 +3,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
 import ProductDetailsTable from './ProductDetailsTable';
-import ProductCardForSimilarCategory from '../components/ProductCardForSimilarCategory';
+import ProductCard from '../components/ProductCard';
 import Review from './forms/Review';
 import VideoReview from './forms/VideoReview';
 import UpdateReviewDialog from './UpdateReviewDialog';
@@ -60,8 +60,34 @@ export default function ProductDetails(props) {
 
     let changeCategoryProducts = props.changeCategoryProducts;
 
+    let avgRating = props.avgRating;
+
     // console.log('got user', user);
     console.log('got product', product);
+
+    // ###### total number of 1 or 2 or ..... rating added for this product is calculate here
+    let totalOneRating = [];
+    let totalTwoRating = [];
+    let totalThreeRating = [];
+    let totalFourRating = [];
+    let totalFiveRating = [];
+    if (product && product.review && product.review.length !== 0) {
+        totalOneRating = product.review.filter(
+            (review) => review.rating_star === 1
+        );
+        totalTwoRating = product.review.filter(
+            (review) => review.rating_star === 2
+        );
+        totalThreeRating = product.review.filter(
+            (review) => review.rating_star === 3
+        );
+        totalFourRating = product.review.filter(
+            (review) => review.rating_star === 4
+        );
+        totalFiveRating = product.review.filter(
+            (review) => review.rating_star === 5
+        );
+    }
 
     const handleSubmit = (values, setSubmitting, value) => {
         const review = {
@@ -391,7 +417,8 @@ export default function ProductDetails(props) {
                             <Box mt={2}>
                                 <ReactPlayer
                                     width='100%'
-                                    height='324px'
+                                    height='240px'
+                                    // height='324px'
                                     controls
                                     light
                                     url={product && product.video_details}
@@ -415,15 +442,14 @@ export default function ProductDetails(props) {
                         {categoryProducts &&
                             categoryProducts.map((categoryProduct) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                    <ProductCardForSimilarCategory
+                                    <ProductCard
                                         product={categoryProduct}
                                         myBag={myBag}
                                         config={config}
                                         changeMyBag={changeMyBag}
-                                        changeCategoryProducts={
+                                        changeCardProducts={
                                             changeCategoryProducts
                                         }
-                                        mainProduct={product}
                                     />
                                 </Grid>
                             ))}
@@ -526,14 +552,21 @@ export default function ProductDetails(props) {
                             >
                                 <Box>
                                     <Typography variant='h4' component='h4'>
-                                        4.5
+                                        {avgRating}
+                                        {'.0'}
                                     </Typography>
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <StarIcon color='secondary' />
-                                    <Typography>45 Rating & Review</Typography>
+                                    <Rating
+                                        name='read-only'
+                                        value={
+                                            avgRating !== 0 ? avgRating : null
+                                        }
+                                        readOnly
+                                    />
+
+                                    <Typography>
+                                        {product && product.review.length}{' '}
+                                        Rating & Review
+                                    </Typography>
                                 </Box>
                                 <Box mt={3}>
                                     <Box>
@@ -542,16 +575,18 @@ export default function ProductDetails(props) {
                                             justify='center'
                                             alignItems='center'
                                         >
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />{' '}
+                                            <Rating
+                                                name='read-only'
+                                                value={5}
+                                                readOnly
+                                            />{' '}
                                             <span>
                                                 <Box pl={2}>
                                                     <Typography>
                                                         {' '}
-                                                        [10]
+                                                        [
+                                                        {totalFiveRating.length}
+                                                        ]
                                                     </Typography>
                                                 </Box>
                                             </span>
@@ -563,16 +598,18 @@ export default function ProductDetails(props) {
                                             justify='center'
                                             alignItems='center'
                                         >
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />{' '}
+                                            <Rating
+                                                name='read-only'
+                                                value={4}
+                                                readOnly
+                                            />{' '}
                                             <span>
                                                 <Box pl={2}>
                                                     <Typography>
                                                         {' '}
-                                                        [10]
+                                                        [
+                                                        {totalFourRating.length}
+                                                        ]
                                                     </Typography>
                                                 </Box>
                                             </span>
@@ -584,16 +621,20 @@ export default function ProductDetails(props) {
                                             justify='center'
                                             alignItems='center'
                                         >
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />{' '}
+                                            <Rating
+                                                name='read-only'
+                                                value={3}
+                                                readOnly
+                                            />{' '}
                                             <span>
                                                 <Box pl={2}>
                                                     <Typography>
                                                         {' '}
-                                                        [10]
+                                                        [
+                                                        {
+                                                            totalThreeRating.length
+                                                        }
+                                                        ]
                                                     </Typography>
                                                 </Box>
                                             </span>
@@ -605,16 +646,17 @@ export default function ProductDetails(props) {
                                             justify='center'
                                             alignItems='center'
                                         >
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />{' '}
+                                            <Rating
+                                                name='read-only'
+                                                value={2}
+                                                readOnly
+                                            />{' '}
                                             <span>
                                                 <Box pl={2}>
                                                     <Typography>
                                                         {' '}
-                                                        [10]
+                                                        [{totalTwoRating.length}
+                                                        ]
                                                     </Typography>
                                                 </Box>
                                             </span>
@@ -626,16 +668,17 @@ export default function ProductDetails(props) {
                                             justify='center'
                                             alignItems='center'
                                         >
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />
-                                            <StarIcon color='secondary' />{' '}
+                                            <Rating
+                                                name='read-only'
+                                                value={1}
+                                                readOnly
+                                            />{' '}
                                             <span>
                                                 <Box pl={2}>
                                                     <Typography>
                                                         {' '}
-                                                        [10]
+                                                        [{totalOneRating.length}
+                                                        ]
                                                     </Typography>
                                                 </Box>
                                             </span>
@@ -704,59 +747,18 @@ export default function ProductDetails(props) {
                                     xl={8}
                                 >
                                     <Box pr={2} pl={1}>
-                                        {review.rating_star === 1.0 && (
-                                            <Box>
-                                                <StarIcon color='secondary' />
-                                                <StarBorderIcon color='secondary' />
-                                                <StarBorderIcon color='secondary' />
-                                                <StarBorderIcon color='secondary' />
-                                                <StarBorderIcon color='secondary' />
-                                            </Box>
-                                        )}
-
-                                        {review.rating_star === 2.0 && (
-                                            <Box>
-                                                <StarIcon color='secondary' />
-                                                <StarIcon color='secondary' />
-                                                <StarBorderIcon color='secondary' />
-                                                <StarBorderIcon color='secondary' />
-                                                <StarBorderIcon color='secondary' />
-                                            </Box>
-                                        )}
-                                        {review.rating_star === 3.0 && (
-                                            <Box>
-                                                <StarIcon color='secondary' />
-                                                <StarIcon color='secondary' />
-                                                <StarIcon color='secondary' />
-                                                <StarBorderIcon color='secondary' />
-                                                <StarBorderIcon color='secondary' />
-                                            </Box>
-                                        )}
-                                        {review.rating_star === 4.0 && (
-                                            <Box>
-                                                <StarIcon color='secondary' />
-                                                <StarIcon color='secondary' />
-                                                <StarIcon color='secondary' />
-                                                <StarIcon color='secondary' />
-                                                <StarBorderIcon color='secondary' />
-                                            </Box>
-                                        )}
-                                        {review.rating_star === 5.0 && (
-                                            <Box>
-                                                <StarIcon color='secondary' />
-                                                <StarIcon color='secondary' />
-                                                <StarIcon color='secondary' />
-                                                <StarIcon color='secondary' />
-                                                <StarIcon color='secondary' />
-                                            </Box>
-                                        )}
+                                        <Rating
+                                            name='read-only'
+                                            value={review.rating_star}
+                                            readOnly
+                                        />
 
                                         <Typography>
                                             {review.review_detail}
                                         </Typography>
                                         <Box pt={3}>
                                             <Typography variant='p'>
-                                                19 February, 2020.
+                                                {review.created_at}
                                             </Typography>
                                         </Box>
                                     </Box>

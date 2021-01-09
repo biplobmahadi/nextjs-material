@@ -25,8 +25,8 @@ const theme = createMuiTheme({
         background: {
             default: '#fff',
         },
-        blueGrey: {
-            main: '#455a64',
+        ratingColor: {
+            main: '#FDCC0D',
         },
     },
 });

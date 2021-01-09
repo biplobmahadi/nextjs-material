@@ -10,6 +10,7 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
+import Rating from '@material-ui/lab/Rating';
 import Chip from '@material-ui/core/Chip';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
@@ -85,6 +86,22 @@ export default function Product(props) {
         setValue(value);
     };
 
+    // ### Calculate product review rating
+    let avgRating = 0;
+    let totalRating = 0;
+
+    product &&
+        product.review &&
+        product.review.length !== 0 &&
+        product.review.forEach((review) => {
+            totalRating += review.rating_star;
+            let fractionalAvgRating = totalRating / product.review.length;
+            console.log('fractionalAvgRating', fractionalAvgRating);
+            avgRating = Math.floor(fractionalAvgRating);
+        });
+    console.log('totalRating', totalRating);
+    console.log('avgRating', avgRating);
+
     // console.log('here', { props.dataProduct, props.myBag, props.config, props.dataUser });
     console.log('here product', product);
     // console.log('here user', user);
@@ -92,10 +109,10 @@ export default function Product(props) {
     console.log('bag Re', myBagRe);
     console.log('product Re', productRe);
 
-    // productExistInBag made here, because if not exist then trial add not shown
-    let productExistInBag;
+    // productWithQuantityExistInBag made here, because if not exist then trial add not shown
+    let productWithQuantityExistInBag;
     if (myBag) {
-        productExistInBag = myBag.product_with_quantity.filter(
+        productWithQuantityExistInBag = myBag.product_with_quantity.filter(
             (filterProduct) => filterProduct.product.id === product.id
         );
     }
@@ -107,7 +124,10 @@ export default function Product(props) {
             cost: product.price * quantity,
         };
 
-        console.log('productExistInBag', productExistInBag);
+        console.log(
+            'productWithQuantityExistInBag',
+            productWithQuantityExistInBag
+        );
 
         // 1st we need to get the available quantity for this product
         axios
@@ -119,21 +139,25 @@ export default function Product(props) {
                 // if product available then this will run from below
                 // add to bag process will start from here
                 if (res.data.available_quantity > 0) {
-                    // I use productExistInBag.length !== 0, because [] == true.. if [] then loop will continue
+                    // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
                     // this is very important
-                    if (productExistInBag && productExistInBag.length !== 0) {
-                        if (productExistInBag[0].add_as_trial) {
+                    if (
+                        productWithQuantityExistInBag &&
+                        productWithQuantityExistInBag.length !== 0
+                    ) {
+                        if (productWithQuantityExistInBag[0].add_as_trial) {
                             console.log('this product already add as trial');
                         } else {
                             axios
                                 .patch(
-                                    `http://localhost:8000/product-with-quantity/${productExistInBag[0].id}/`,
+                                    `http://localhost:8000/product-with-quantity/${productWithQuantityExistInBag[0].id}/`,
                                     {
                                         quantity:
-                                            productExistInBag[0].quantity + 1,
+                                            productWithQuantityExistInBag[0]
+                                                .quantity + 1,
                                         cost:
-                                            productExistInBag[0].cost +
-                                            product.price,
+                                            productWithQuantityExistInBag[0]
+                                                .cost + product.price,
                                     },
                                     config
                                 )
@@ -425,7 +449,9 @@ export default function Product(props) {
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={myBag && myBag.product_with_quantity.length} />
+            <ButtonAppBar
+                totalProductInBag={myBag && myBag.product_with_quantity.length}
+            />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mx={3} mt={6} pt={4}>
                     <Grid container spacing={2}>
@@ -508,11 +534,15 @@ export default function Product(props) {
                                 </Typography>
                                 <Box pt={1}>
                                     <Grid container alignItems='center'>
-                                        <StarIcon color='secondary' />
-                                        <StarIcon color='secondary' />
-                                        <StarIcon color='secondary' />
-                                        <StarIcon color='secondary' />
-                                        <StarIcon color='secondary' />
+                                        <Rating
+                                            name='read-only'
+                                            value={
+                                                avgRating !== 0
+                                                    ? avgRating
+                                                    : null
+                                            }
+                                            readOnly
+                                        />
                                         <span>
                                             <Box pl={1}>
                                                 <Typography> |</Typography>
@@ -628,8 +658,8 @@ export default function Product(props) {
                                         <Grid item xs={12} sm={6}>
                                             {product &&
                                                 product.has_trial &&
-                                                productExistInBag &&
-                                                productExistInBag.length !==
+                                                productWithQuantityExistInBag &&
+                                                productWithQuantityExistInBag.length !==
                                                     0 && (
                                                     <AddForTrialDialog
                                                         categoryProducts={
@@ -778,6 +808,7 @@ export default function Product(props) {
                     myBag={myBag}
                     changeMyBag={changeMyBag}
                     changeCategoryProducts={changeCategoryProducts}
+                    avgRating={avgRating}
                 />
             </Box>
             <Box mx={3} mt={6}>
