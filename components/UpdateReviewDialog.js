@@ -3,17 +3,12 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FilterProduct from './FilterProduct';
 import Box from '@material-ui/core/Box';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import UpdateIcon from '@material-ui/icons/Update';
-import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -21,16 +16,11 @@ import { TextField } from 'formik-material-ui';
 import Rating from '@material-ui/lab/Rating';
 
 const label = {
-    0.5: 'Useless',
-    1: 'Useless+',
-    1.5: 'Poor',
-    2: 'Poor+',
-    2.5: 'Ok',
-    3: 'Ok+',
-    3.5: 'Good',
-    4: 'Good+',
-    4.5: 'Excellent',
-    5: 'Excellent+',
+    1: 'Useless',
+    2: 'Poor',
+    3: 'Ok',
+    4: 'Good',
+    5: 'Excellent',
 };
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ScrollDialog({ review, handleUpdate }) {
+export default function UpdateReviewDialog({ reviewId, handleUpdate }) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
@@ -56,31 +46,6 @@ export default function ScrollDialog({ review, handleUpdate }) {
         setOpen(false);
     };
 
-    // const handleUpdate = (values, setSubmitting) => {
-    //     const reviewUpdate = {
-    //         review_detail: values.review,
-    //         rating_star: value,
-    //     };
-
-    //     axios
-    //         .patch(
-    //             `http://localhost:8000/reviews/${review.id}/`,
-    //             reviewUpdate,
-    //             config
-    //         )
-    //         .then((res) => {
-    //             axios
-    //                 .get(`http://localhost:8000/products/${product.slug}/`)
-    //                 .then((res) => {
-    //                     setStateProduct(res.data);
-    //                     setSubmitting(false);
-    //                     setOpen(false);
-    //                 })
-    //                 .catch((err) => console.log(err.response));
-    //         })
-    //         .catch((err) => console.log(err.response));
-    // };
-
     const descriptionElementRef = useRef(null);
     useEffect(() => {
         if (open) {
@@ -92,16 +57,15 @@ export default function ScrollDialog({ review, handleUpdate }) {
     }, [open]);
 
     return (
-        <div>
+        <>
             <Button
                 variant='contained'
                 color='primary'
                 size='small'
                 startIcon={<UpdateIcon />}
-                fullWidth
                 onClick={handleClickOpen('paper')}
             >
-                <Box px={3}>Update</Box>
+                <Box px={1}>Update</Box>
             </Button>
             <Dialog
                 fullWidth
@@ -129,7 +93,7 @@ export default function ScrollDialog({ review, handleUpdate }) {
                         handleUpdate(
                             values,
                             setSubmitting,
-                            review,
+                            reviewId,
                             setOpen,
                             valueAgain
                         );
@@ -145,10 +109,11 @@ export default function ScrollDialog({ review, handleUpdate }) {
                                         multiline={true}
                                         rows={4}
                                         component={TextField}
+                                        variant='outlined'
                                         label='Give Review *'
                                         fullWidth
                                     />
-                                    <Box pt={8}>
+                                    <Box py={5}>
                                         <Grid
                                             container
                                             direction='row'
@@ -159,23 +124,27 @@ export default function ScrollDialog({ review, handleUpdate }) {
                                             <Grid item>
                                                 <div className={classes.root}>
                                                     <Rating
-                                                        name='hover-feedback'
+                                                        name='hover-feedback-for update'
+                                                        // name are changed here to get different value here
+                                                        // name not required when readOnly
+                                                        // but in one page if there have multiple Rating
+                                                        // then name must be different
                                                         value={valueAgain}
-                                                        precision={0.5}
+                                                        size='large'
                                                         onChange={(
                                                             event,
-                                                            newValue
+                                                            newValueAgain
                                                         ) => {
                                                             setValueAgain(
-                                                                newValue
+                                                                newValueAgain
                                                             );
                                                         }}
                                                         onChangeActive={(
                                                             event,
-                                                            newHover
+                                                            newHoverAgain
                                                         ) => {
                                                             setHoverAgain(
-                                                                newHover
+                                                                newHoverAgain
                                                             );
                                                         }}
                                                     />
@@ -207,8 +176,7 @@ export default function ScrollDialog({ review, handleUpdate }) {
                                         type='submit'
                                         size='small'
                                         variant='contained'
-                                        color='secondary'
-                                        // className={classes.submit}
+                                        color='primary'
                                         disabled={isSubmitting}
                                     >
                                         <Box px={3}>Update</Box>
@@ -232,6 +200,6 @@ export default function ScrollDialog({ review, handleUpdate }) {
                     </DialogContentText>
                 </DialogContent> */}
             </Dialog>
-        </div>
+        </>
     );
 }

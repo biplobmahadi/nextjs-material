@@ -118,6 +118,10 @@ export default function Product(props) {
     }
 
     const handleAddToBag = () => {
+        // ######## here always quantity can be selected by user
+        // if productWithQuantity already exist then also user can select quantity
+        // if user not select quantity then it will be 1 always
+
         let addToBag = {
             product: product.id,
             quantity: quantity,
@@ -154,7 +158,7 @@ export default function Product(props) {
                                     {
                                         quantity:
                                             productWithQuantityExistInBag[0]
-                                                .quantity + 1,
+                                                .quantity + quantity, // here state quantity used
                                         cost:
                                             productWithQuantityExistInBag[0]
                                                 .cost + product.price,
@@ -191,7 +195,7 @@ export default function Product(props) {
                                                             product
                                                                 .productavailable
                                                                 .available_quantity -
-                                                            quantity,
+                                                            quantity, // here state quantity used
                                                     },
                                                     config
                                                 )
@@ -297,7 +301,7 @@ export default function Product(props) {
                                                             product
                                                                 .productavailable
                                                                 .available_quantity -
-                                                            quantity,
+                                                            quantity, // here state quantity used
                                                     },
                                                     config
                                                 )
@@ -373,7 +377,7 @@ export default function Product(props) {
                                                             product
                                                                 .productavailable
                                                                 .available_quantity -
-                                                            quantity,
+                                                            quantity, // here state quantity used
                                                     },
                                                     config
                                                 )

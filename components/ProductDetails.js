@@ -89,7 +89,13 @@ export default function ProductDetails(props) {
         );
     }
 
-    const handleSubmit = (values, setSubmitting, value) => {
+    const handleSubmit = (
+        values,
+        setSubmitting,
+        value,
+        setValue,
+        resetForm
+    ) => {
         const review = {
             review_detail: values.review,
             rating_star: value,
@@ -111,9 +117,12 @@ export default function ProductDetails(props) {
                                 config
                             )
                             .then((res) => {
-                                // new myBag need to add to state
                                 changeMyBag(res.data);
-                                // setTotalBagProduct(res.data.product.length);
+                                setSubmitting(false);
+                                setValue(3);
+                                resetForm();
+                                // after submitting the rating value will default
+                                // and also need to clear form
                             })
                             .catch((err) => console.log(err.response));
                     })
@@ -124,8 +133,25 @@ export default function ProductDetails(props) {
 
     const handleAgree = (stringifyReview) => {
         const review = JSON.parse(stringifyReview);
-        console.log('kire', user);
-        // user who own this review, can't make agreed
+
+        // ####### Process of agreed
+        // 1st check this user is equal to the review made user or not
+        // if same user, then user can't add agreed
+        // if the user of this review is not same requested user
+        // then check, is this user already agreed or not
+        // if user already agreed than also show a msg, you cant agreed
+        // if user not same of creator and also not agreed yet then the process will start
+        // update the agreed backed with this user,
+        // ### if this user disagreed before then need to remove from disagreed
+        // so remove this user from disagreed and finally get updated product and bag for re render
+        // ## if user not disagreed before then just get updated product and bag for re render
+        // Done #######
+
+        // ######### All in all, User can not agreed and disagreed at a time
+
+        // check user who own this review,then user can't make agreed
+        // also check, user already agreed or not
+        // if already agreed then can not agreed now
         if (
             !review.reviewcountforagree.user.includes(user.pk) &&
             review.user.pk !== user.pk
@@ -142,6 +168,8 @@ export default function ProductDetails(props) {
                     config
                 )
                 .then((res) => {
+                    // here, if user disagreed before then need to remove from disagreed
+                    // because User can not agreed and disagreed at a time
                     if (review.reviewcountfordisagree.user.includes(user.pk)) {
                         let arr = review.reviewcountfordisagree.user;
                         for (let i = 0; i < arr.length; i++) {
@@ -150,11 +178,10 @@ export default function ProductDetails(props) {
                                 i--;
                             }
                         }
-                        let finalArr = arr;
                         const reviewCountForDisagree = {
                             disagreed:
                                 review.reviewcountfordisagree.disagreed - 1,
-                            user: finalArr,
+                            user: arr,
                         };
 
                         axios
@@ -177,9 +204,7 @@ export default function ProductDetails(props) {
                                                 config
                                             )
                                             .then((res) => {
-                                                // new myBag need to add to state
                                                 changeMyBag(res.data);
-                                                // setTotalBagProduct(res.data.product.length);
                                             })
                                             .catch((err) =>
                                                 console.log(err.response)
@@ -202,9 +227,7 @@ export default function ProductDetails(props) {
                                         config
                                     )
                                     .then((res) => {
-                                        // new myBag need to add to state
                                         changeMyBag(res.data);
-                                        // setTotalBagProduct(res.data.product.length);
                                     })
                                     .catch((err) => console.log(err.response));
                             })
@@ -213,17 +236,19 @@ export default function ProductDetails(props) {
                 })
                 .catch((err) => console.log(err.response));
         } else {
-            console.log('you cant agree with your review or already done');
+            console.log('you cant agree with your own review or already done');
         }
     };
 
     const handleDisagree = (stringifyReview) => {
-        // const review = JSON.parse(event.target.value);
-
         const review = JSON.parse(stringifyReview);
 
-        console.log('kire dis', user);
-        // user who own this review, can't make disagreed
+        // ###########  Same process like agreed
+        // ######### All in all, User can not agreed and disagreed at a time
+
+        // check user who own this review, then user can't make disagreed
+        // also check, user already disagreed or not
+        // if already disagreed then can not disagreed now
         if (
             !review.reviewcountfordisagree.user.includes(user.pk) &&
             review.user.pk !== user.pk
@@ -240,6 +265,9 @@ export default function ProductDetails(props) {
                     config
                 )
                 .then((res) => {
+                    // here, if user agreed before then need to remove from agreed
+                    // because User can not agreed and disagreed at a time
+
                     if (review.reviewcountforagree.user.includes(user.pk)) {
                         let arr = review.reviewcountforagree.user;
                         for (let i = 0; i < arr.length; i++) {
@@ -248,10 +276,9 @@ export default function ProductDetails(props) {
                                 i--;
                             }
                         }
-                        let finalArr = arr;
                         const reviewCountForAgree = {
                             agreed: review.reviewcountforagree.agreed - 1,
-                            user: finalArr,
+                            user: arr,
                         };
 
                         axios
@@ -274,9 +301,7 @@ export default function ProductDetails(props) {
                                                 config
                                             )
                                             .then((res) => {
-                                                // new myBag need to add to state
                                                 changeMyBag(res.data);
-                                                // setTotalBagProduct(res.data.product.length);
                                             })
                                             .catch((err) =>
                                                 console.log(err.response)
@@ -299,9 +324,7 @@ export default function ProductDetails(props) {
                                         config
                                     )
                                     .then((res) => {
-                                        // new myBag need to add to state
                                         changeMyBag(res.data);
-                                        // setTotalBagProduct(res.data.product.length);
                                     })
                                     .catch((err) => console.log(err.response));
                             })
@@ -314,7 +337,7 @@ export default function ProductDetails(props) {
         }
     };
 
-    const handleUpdate = (values, setSubmitting, review, setOpen, value) => {
+    const handleUpdate = (values, setSubmitting, reviewId, setOpen, value) => {
         const reviewUpdate = {
             review_detail: values.review,
             rating_star: value,
@@ -322,7 +345,7 @@ export default function ProductDetails(props) {
 
         axios
             .patch(
-                `http://localhost:8000/reviews/${review.id}/`,
+                `http://localhost:8000/reviews/${reviewId}/`,
                 reviewUpdate,
                 config
             )
@@ -338,11 +361,9 @@ export default function ProductDetails(props) {
                                 config
                             )
                             .then((res) => {
-                                // new myBag need to add to state
                                 changeMyBag(res.data);
                                 setSubmitting(false);
                                 setOpen(false);
-                                // setTotalBagProduct(res.data.product.length);
                             })
                             .catch((err) => console.log(err.response));
                     })
@@ -351,9 +372,9 @@ export default function ProductDetails(props) {
             .catch((err) => console.log(err.response));
     };
 
-    const handleDelete = (review, setOpen) => {
+    const handleDelete = (reviewId, setOpen) => {
         axios
-            .delete(`http://localhost:8000/reviews/${review.id}/`, config)
+            .delete(`http://localhost:8000/reviews/${reviewId}/`, config)
             .then((res) => {
                 // final get will be after all post, patch done
                 axios
@@ -366,10 +387,8 @@ export default function ProductDetails(props) {
                                 config
                             )
                             .then((res) => {
-                                // new myBag need to add to state
                                 changeMyBag(res.data);
                                 setOpen(false);
-                                // setTotalBagProduct(res.data.product.length);
                             })
                             .catch((err) => console.log(err.response));
                     })
@@ -756,11 +775,33 @@ export default function ProductDetails(props) {
                                         <Typography>
                                             {review.review_detail}
                                         </Typography>
+
                                         <Box pt={3}>
                                             <Typography variant='p'>
                                                 {review.created_at}
                                             </Typography>
                                         </Box>
+                                        {review.user.pk ===
+                                            (user && user.pk) && (
+                                            <Box pt={2}>
+                                                <UpdateReviewDialog
+                                                    reviewId={review.id}
+                                                    handleUpdate={handleUpdate}
+                                                />
+                                                <span
+                                                    style={{
+                                                        paddingLeft: '16px',
+                                                    }}
+                                                >
+                                                    <DeleteReviewDialog
+                                                        reviewId={review.id}
+                                                        handleDelete={
+                                                            handleDelete
+                                                        }
+                                                    />
+                                                </span>
+                                            </Box>
+                                        )}
                                     </Box>
                                 </Grid>
                                 <Grid
@@ -771,83 +812,68 @@ export default function ProductDetails(props) {
                                     lg={2}
                                     xl={2}
                                 >
-                                    <Box px={3}>
-                                        {review.user.pk !==
-                                        (user && user.pk) ? (
-                                            <>
-                                                <Box>
-                                                    <Button
-                                                        size='small'
-                                                        startIcon={
-                                                            <ThumbUpIcon />
-                                                        }
-                                                        fullWidth
-                                                        onClick={() =>
-                                                            handleAgree(
-                                                                JSON.stringify(
-                                                                    review
-                                                                )
-                                                            )
-                                                        }
-                                                        // value={JSON.stringify(
-                                                        //     review
-                                                        // )}
-                                                    >
-                                                        Agreed (
-                                                        {review.reviewcountforagree &&
-                                                            review
-                                                                .reviewcountforagree
-                                                                .agreed}
-                                                        )
-                                                    </Button>
-                                                </Box>
-                                                <Box mt={1}>
-                                                    <Button
-                                                        fullWidth
-                                                        size='small'
-                                                        startIcon={
-                                                            <ThumbDownIcon />
-                                                        }
-                                                        onClick={() =>
-                                                            handleDisagree(
-                                                                JSON.stringify(
-                                                                    review
-                                                                )
-                                                            )
-                                                        }
-                                                        value={JSON.stringify(
-                                                            review
-                                                        )}
-                                                    >
-                                                        Disagreed (
-                                                        {review.reviewcountfordisagree &&
-                                                            review
-                                                                .reviewcountfordisagree
-                                                                .disagreed}
-                                                        )
-                                                    </Button>
-                                                </Box>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Box>
-                                                    <UpdateReviewDialog
-                                                        review={review}
-                                                        handleUpdate={
-                                                            handleUpdate
-                                                        }
-                                                    />
-                                                </Box>
-                                                <Box mt={1}>
-                                                    <DeleteReviewDialog
-                                                        review={review}
-                                                        handleDelete={
-                                                            handleDelete
-                                                        }
-                                                    />
-                                                </Box>
-                                            </>
-                                        )}
+                                    <Box px={3} textAlign='center'>
+                                        <Box>
+                                            <Button
+                                                size='small'
+                                                variant='contained'
+                                                color={
+                                                    review.reviewcountforagree.user.includes(
+                                                        user && user.pk
+                                                    )
+                                                        ? 'secondary'
+                                                        : 'default'
+                                                }
+                                                startIcon={<ThumbUpIcon />}
+                                                onClick={() =>
+                                                    handleAgree(
+                                                        JSON.stringify(review)
+                                                    )
+                                                }
+                                                // use this type of value sending in bag page
+                                                disabled={
+                                                    review.user.pk ===
+                                                    (user && user.pk)
+                                                }
+                                            >
+                                                Agreed (
+                                                {review.reviewcountforagree &&
+                                                    review.reviewcountforagree
+                                                        .agreed}
+                                                )
+                                            </Button>
+                                        </Box>
+                                        <Box mt={1}>
+                                            <Button
+                                                size='small'
+                                                variant='contained'
+                                                color={
+                                                    review.reviewcountfordisagree.user.includes(
+                                                        user && user.pk
+                                                    )
+                                                        ? 'secondary'
+                                                        : 'default'
+                                                }
+                                                startIcon={<ThumbDownIcon />}
+                                                onClick={() =>
+                                                    handleDisagree(
+                                                        JSON.stringify(review)
+                                                    )
+                                                }
+                                                // use this type of value sending in bag page
+                                                disabled={
+                                                    review.user.pk ===
+                                                    (user && user.pk)
+                                                }
+                                            >
+                                                Disagreed (
+                                                {review.reviewcountfordisagree &&
+                                                    review
+                                                        .reviewcountfordisagree
+                                                        .disagreed}
+                                                )
+                                            </Button>
+                                        </Box>
                                     </Box>
                                 </Grid>
                             </Grid>

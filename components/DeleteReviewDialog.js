@@ -5,12 +5,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FilterProduct from './FilterProduct';
 import Box from '@material-ui/core/Box';
 
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
-export default function ScrollDialog({ review, handleDelete }) {
+export default function DeleteReviewDialog({ reviewId, handleDelete }) {
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
 
@@ -22,20 +21,6 @@ export default function ScrollDialog({ review, handleDelete }) {
     const handleClose = () => {
         setOpen(false);
     };
-    // const handleDelete = () => {
-    //     axios
-    //         .delete(`http://localhost:8000/reviews/${review.id}/`, config)
-    //         .then((res) => {
-    //             axios
-    //                 .get(`http://localhost:8000/products/${product.slug}/`)
-    //                 .then((res) => {
-    //                     setStateProduct(res.data);
-    //                     setOpen(false);
-    //                 })
-    //                 .catch((err) => console.log(err.response));
-    //         })
-    //         .catch((err) => console.log(err.response));
-    // };
 
     const descriptionElementRef = useRef(null);
     useEffect(() => {
@@ -48,16 +33,15 @@ export default function ScrollDialog({ review, handleDelete }) {
     }, [open]);
 
     return (
-        <div>
+        <>
             <Button
                 variant='contained'
                 color='primary'
                 size='small'
-                fullWidth
                 startIcon={<DeleteForeverIcon />}
                 onClick={handleClickOpen('paper')}
             >
-                <Box px={3}>Delete</Box>
+                <Box px={1}>Delete</Box>
             </Button>
             <Dialog
                 fullWidth
@@ -77,13 +61,13 @@ export default function ScrollDialog({ review, handleDelete }) {
                         Cancel
                     </Button>
                     <Button
-                        onClick={() => handleDelete(review, setOpen)}
+                        onClick={() => handleDelete(reviewId, setOpen)}
                         color='primary'
                     >
                         Delete
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </>
     );
 }
