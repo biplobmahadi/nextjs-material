@@ -1,184 +1,66 @@
-import Head from 'next/head';
-import ButtonAppBar from '../components/ButtonAppBar';
-import BrandCard from '../components/BrandCard';
-import ProductCard from '../components/ProductCard';
-import Footer from '../components/Footer';
-import MainFooter from '../components/MainFooter';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { green } from '@material-ui/core/colors';
+import Button from '@material-ui/core/Button';
 
-export default function Categories() {
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: green[500],
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));
+
+export default function CircularIntegration() {
+    const classes = useStyles();
+    const [loading, setLoading] = React.useState(false);
+    const timer = React.useRef();
+
+    React.useEffect(() => {
+        return () => {
+            clearTimeout(timer.current);
+        };
+    }, []);
+
+    const handleButtonClick = () => {
+        if (!loading) {
+            setLoading(true);
+            timer.current = window.setTimeout(() => {
+                setLoading(false);
+            }, 2000);
+        }
+    };
+
     return (
-        <div>
-            <Head>
-                <title>Catergories - Logo.com</title>
-                <link rel='icon' href='/a.ico' />
-                <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
-                <meta
-                    name='viewport'
-                    content='width=device-width, initial-scale=1.0'
-                ></meta>
-            </Head>
-            <ButtonAppBar />
-            <Box
-                mx={3}
-                mt={12}
-                p={2}
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
-                <Box
-                    p={2}
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
+        <div className={classes.root}>
+            <div className={classes.wrapper}>
+                <Button
+                    variant='contained'
+                    color='primary'
+                    disabled={loading}
+                    onClick={handleButtonClick}
                 >
-                    <Typography variant='h4'>Men Footwear</Typography>
-                </Box>
-                <Box
-                    style={{ backgroundColor: 'white' }}
-                    p={3}
-                    mt={2}
-                    borderRadius='borderRadius'
-                >
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <BrandCard />
-                        </Grid>
-                    </Grid>
-                </Box>
-            </Box>
-
-            <Box
-                mx={3}
-                my={4}
-                p={2}
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
-                <Box
-                    p={2}
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
-                >
-                    <Typography variant='h4'>Footwear Product</Typography>
-                </Box>
-                <Box
-                    style={{ backgroundColor: 'white' }}
-                    p={3}
-                    mt={2}
-                    borderRadius='borderRadius'
-                >
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} sm>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm>
-                            <ProductCard />
-                        </Grid>
-                    </Grid>
-                </Box>
-            </Box>
-
-            <Box
-                mx={3}
-                my={4}
-                p={2}
-                borderRadius='borderRadius'
-                style={{ backgroundColor: '#E6E6FA' }}
-            >
-                <Box
-                    p={2}
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
-                >
-                    <Typography variant='h4'>Topwear Product</Typography>
-                </Box>
-                <Box
-                    style={{ backgroundColor: 'white' }}
-                    p={3}
-                    mt={2}
-                    borderRadius='borderRadius'
-                >
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} sm>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm>
-                            <ProductCard />
-                        </Grid>
-                        <Grid item xs={12} sm>
-                            <ProductCard />
-                        </Grid>
-                    </Grid>
-                </Box>
-            </Box>
-
-            <Footer />
-            <Box style={{ backgroundColor: '#E6E6FA' }} mt={4}>
-                <MainFooter />
-            </Box>
+                    Accept terms
+                </Button>
+                {loading && (
+                    <CircularProgress
+                        size={24}
+                        className={classes.buttonProgress}
+                    />
+                )}
+            </div>
         </div>
     );
 }

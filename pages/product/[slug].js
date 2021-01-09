@@ -12,15 +12,11 @@ import Grid from '@material-ui/core/Grid';
 
 import Rating from '@material-ui/lab/Rating';
 import Chip from '@material-ui/core/Chip';
-import StarIcon from '@material-ui/icons/Star';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import PaymentIcon from '@material-ui/icons/Payment';
 import RestoreIcon from '@material-ui/icons/Restore';
 import InfoIcon from '@material-ui/icons/Info';
 import RedeemIcon from '@material-ui/icons/Redeem';
-import StarHalfIcon from '@material-ui/icons/StarHalf';
-import ReactImageMagnify from 'react-image-magnify';
 import Zoom from 'react-medium-image-zoom';
 
 import Cookies from 'js-cookie';
@@ -28,17 +24,39 @@ import parseCookies from '../../lib/parseCookies';
 import axios from 'axios';
 import { useEffect } from 'react';
 
-import ReactImageZoom from 'react-image-zoom';
-import { Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#3f50b5',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));
 
 let productRe;
 let myBagRe;
 let categoryProductsRe;
 
 export default function Product(props) {
+    const classes = useStyles();
+    const [loading, setLoading] = React.useState(false);
     const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
-    const [reRender, setReRender] = React.useState(false);
+    // const [reRender, setReRender] = React.useState(false);
 
     let product = productRe ? productRe : props.product;
     let user = props.user;
@@ -68,8 +86,10 @@ export default function Product(props) {
     const changeMyBag = (value) => {
         myBagRe = value;
         console.log('my bag now', myBagRe);
+        setLoading(false);
 
-        setReRender(!reRender);
+        // set loading state will make the re render process
+        // setReRender(!reRender);
     };
 
     // here useEffect -> when component mount and update myBagRe & productRe & categoryProductsRe will undefined
@@ -121,6 +141,9 @@ export default function Product(props) {
         // ######## here always quantity can be selected by user
         // if productWithQuantity already exist then also user can select quantity
         // if user not select quantity then it will be 1 always
+
+        // create a loading
+        setLoading(true);
 
         let addToBag = {
             product: product.id,
@@ -643,21 +666,40 @@ export default function Product(props) {
                                         alignItems='center'
                                     >
                                         <Grid item xs={12} sm={6}>
-                                            <Button
-                                                variant='contained'
-                                                color='primary'
-                                                onClick={handleAddToBag}
-                                                disabled={
-                                                    product &&
-                                                    product.productavailable
-                                                        .available_quantity ===
-                                                        0
-                                                }
-                                            >
-                                                <Box textAlign='center' px={4}>
-                                                    Add To Bag
-                                                </Box>
-                                            </Button>
+                                            <div className={classes.root}>
+                                                <div
+                                                    className={classes.wrapper}
+                                                >
+                                                    <Button
+                                                        variant='contained'
+                                                        color='primary'
+                                                        onClick={handleAddToBag}
+                                                        disabled={
+                                                            loading ||
+                                                            (product &&
+                                                                product
+                                                                    .productavailable
+                                                                    .available_quantity ===
+                                                                    0)
+                                                        }
+                                                    >
+                                                        <Box
+                                                            textAlign='center'
+                                                            px={4}
+                                                        >
+                                                            Add To Bag
+                                                        </Box>
+                                                    </Button>
+                                                    {loading && (
+                                                        <CircularProgress
+                                                            size={24}
+                                                            className={
+                                                                classes.buttonProgress
+                                                            }
+                                                        />
+                                                    )}
+                                                </div>
+                                            </div>
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             {product &&
