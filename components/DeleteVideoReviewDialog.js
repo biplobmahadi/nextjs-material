@@ -30,9 +30,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function DeleteReviewDialog({
-    reviewId,
-    handleDelete,
+export default function DeleteVideoReviewDialog({
+    videoReviewId,
+    handleDeleteForVideoReview,
+    product,
+    myBag,
+    changeProduct,
+    changeMyBag,
+    config,
     loading,
     setLoading,
 }) {
@@ -80,7 +85,7 @@ export default function DeleteReviewDialog({
                 aria-describedby='scroll-dialog-description'
             >
                 <DialogTitle id='scroll-dialog-title'>
-                    Delete Your Review?
+                    Delete Your Video Review?
                 </DialogTitle>
 
                 <DialogActions>
@@ -90,7 +95,18 @@ export default function DeleteReviewDialog({
                     <div className={classes.root}>
                         <div className={classes.wrapper}>
                             <Button
-                                onClick={() => handleDelete(reviewId, setOpen)}
+                                onClick={() =>
+                                    handleDeleteForVideoReview(
+                                        videoReviewId,
+                                        product,
+                                        myBag,
+                                        changeProduct,
+                                        changeMyBag,
+                                        config,
+                                        setOpen,
+                                        setLoading
+                                    )
+                                }
                                 color='primary'
                                 disabled={loading}
                             >

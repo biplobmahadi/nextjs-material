@@ -10,9 +10,10 @@ import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import Box from '@material-ui/core/Box';
 import axios from 'axios';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-const useStyles = makeStyles({
-    root: {
+const useStyles = makeStyles((theme) => ({
+    boot: {
         maxWidth: '100%',
     },
     imgHover: {
@@ -22,7 +23,24 @@ const useStyles = makeStyles({
         transition: 'transform .5s ease',
         '&:hover': { transform: 'scale(1.1)' },
     },
-});
+    root: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#3f50b5',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));
+
 
 export default function ProductCard({
     product,
@@ -30,6 +48,8 @@ export default function ProductCard({
     config,
     changeMyBag,
     changeCardProducts,
+    loading,
+    setLoading,
 }) {
     const classes = useStyles();
     console.log('got product for card', product);
@@ -59,6 +79,9 @@ export default function ProductCard({
     // Done #########
 
     const handleAddToBag = () => {
+        // start loading
+        setLoading(true);
+
         let addToBag = {
             product: product.id,
             quantity: 1,
@@ -365,7 +388,7 @@ export default function ProductCard({
     };
 
     return (
-        <Card className={classes.root}>
+        <Card className={classes.boot}>
             <Link href={`/product/${product && product.slug}`}>
                 <CardActionArea>
                     <Box className={classes.imgHover} p={2}>
@@ -404,19 +427,31 @@ export default function ProductCard({
             </Link>
             <Box pb={1}>
                 <CardActions style={{ justifyContent: 'center' }}>
-                    <Button
-                        variant='contained'
-                        size='small'
-                        color='primary'
-                        onClick={handleAddToBag}
-                        disabled={
-                            product.productavailable.available_quantity === 0
-                        }
-                    >
-                        <Box textAlign='center' px={4}>
-                            Add To Bag
-                        </Box>
-                    </Button>
+                    <div className={classes.root}>
+                        <div className={classes.wrapper}>
+                            <Button
+                                variant='contained'
+                                size='small'
+                                color='primary'
+                                onClick={handleAddToBag}
+                                disabled={
+                                    loading ||
+                                    product.productavailable
+                                        .available_quantity === 0
+                                }
+                            >
+                                <Box textAlign='center' px={4}>
+                                    Add To Bag
+                                </Box>
+                            </Button>
+                            {loading && (
+                                <CircularProgress
+                                    size={24}
+                                    className={classes.buttonProgress}
+                                />
+                            )}
+                        </div>
+                    </div>
                 </CardActions>
             </Box>
         </Card>

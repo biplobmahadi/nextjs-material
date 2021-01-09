@@ -14,6 +14,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
 import Rating from '@material-ui/lab/Rating';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const label = {
     1: 'Useless',
@@ -22,15 +23,37 @@ const label = {
     4: 'Good',
     5: 'Excellent',
 };
+
 const useStyles = makeStyles((theme) => ({
-    root: {
+    boot: {
         width: 200,
         display: 'flex',
         alignItems: 'center',
     },
+    root: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#3f50b5',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
 
-export default function UpdateReviewDialog({ reviewId, handleUpdate }) {
+export default function UpdateReviewDialog({
+    reviewId,
+    handleUpdate,
+    loading,
+    setLoading,
+}) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
@@ -122,7 +145,7 @@ export default function UpdateReviewDialog({ reviewId, handleUpdate }) {
                                             spacing={3}
                                         >
                                             <Grid item>
-                                                <div className={classes.root}>
+                                                <div className={classes.boot}>
                                                     <Rating
                                                         name='hover-feedback-for update'
                                                         // name are changed here to get different value here
@@ -172,33 +195,34 @@ export default function UpdateReviewDialog({ reviewId, handleUpdate }) {
                                     >
                                         Cancel
                                     </Button>
-                                    <Button
-                                        type='submit'
-                                        size='small'
-                                        variant='contained'
-                                        color='primary'
-                                        disabled={isSubmitting}
-                                    >
-                                        <Box px={3}>Update</Box>
-                                    </Button>
+                                    <div className={classes.root}>
+                                        <div className={classes.wrapper}>
+                                            <Button
+                                                type='submit'
+                                                size='small'
+                                                variant='contained'
+                                                color='primary'
+                                                disabled={
+                                                    loading || isSubmitting
+                                                }
+                                            >
+                                                <Box px={3}>Update</Box>
+                                            </Button>
+                                            {loading && (
+                                                <CircularProgress
+                                                    size={24}
+                                                    className={
+                                                        classes.buttonProgress
+                                                    }
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
                                 </DialogActions>
                             </Form>
                         </div>
                     )}
                 </Formik>
-
-                {/* <DialogTitle id='scroll-dialog-title'>
-                    Product Filter
-                </DialogTitle>
-                <DialogContent dividers={scroll === 'paper'}>
-                    <DialogContentText
-                        id='scroll-dialog-description'
-                        ref={descriptionElementRef}
-                        tabIndex={-1}
-                    >
-                        <FilterProduct />
-                    </DialogContentText>
-                </DialogContent> */}
             </Dialog>
         </>
     );

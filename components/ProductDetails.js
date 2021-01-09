@@ -8,15 +8,13 @@ import Review from './forms/Review';
 import VideoReview from './forms/VideoReview';
 import UpdateReviewDialog from './UpdateReviewDialog';
 import DeleteReviewDialog from './DeleteReviewDialog';
+import UpdateVideoReviewDialog from './UpdateVideoReviewDialog';
+import DeleteVideoReviewDialog from './DeleteVideoReviewDialog';
 import MainFooter from '../components/MainFooter';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-
-import Chip from '@material-ui/core/Chip';
-import StarIcon from '@material-ui/icons/Star';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 import Button from '@material-ui/core/Button';
@@ -25,12 +23,41 @@ import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import UpdateIcon from '@material-ui/icons/Update';
 import EditIcon from '@material-ui/icons/Edit';
-import { makeStyles } from '@material-ui/core/styles';
 import Rating from '@material-ui/lab/Rating';
 import ReactPlayer from 'react-player/youtube';
 
 import Cookies from 'js-cookie';
 import axios from 'axios';
+
+import {
+    handleSubmitForVideoReview,
+    handleAgreeForVideoReview,
+    handleDisagreeForVideoReview,
+    handleUpdateForVideoReview,
+    handleDeleteForVideoReview,
+} from './functions/functionsForVideoReview';
+
+import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: '#3f50b5',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));
 
 const config = {
     headers: {
@@ -47,7 +74,7 @@ const config = {
 // 6. formik to get form value, here also no need to use state.
 
 export default function ProductDetails(props) {
-    let contained = 'contained';
+    const classes = useStyles();
 
     let categoryProducts = props.categoryProducts;
     let myBag = props.myBag;
@@ -61,6 +88,8 @@ export default function ProductDetails(props) {
     let changeCategoryProducts = props.changeCategoryProducts;
 
     let avgRating = props.avgRating;
+    let loading = props.loading;
+    let setLoading = props.setLoading;
 
     // console.log('got user', user);
     console.log('got product', product);
@@ -96,6 +125,9 @@ export default function ProductDetails(props) {
         setValue,
         resetForm
     ) => {
+        // start loading
+        setLoading(true);
+
         const review = {
             review_detail: values.review,
             rating_star: value,
@@ -132,6 +164,8 @@ export default function ProductDetails(props) {
     };
 
     const handleAgree = (stringifyReview) => {
+        // start loading
+        setLoading(true);
         const review = JSON.parse(stringifyReview);
 
         // ####### Process of agreed
@@ -241,6 +275,8 @@ export default function ProductDetails(props) {
     };
 
     const handleDisagree = (stringifyReview) => {
+        // start loading
+        setLoading(true);
         const review = JSON.parse(stringifyReview);
 
         // ###########  Same process like agreed
@@ -338,6 +374,9 @@ export default function ProductDetails(props) {
     };
 
     const handleUpdate = (values, setSubmitting, reviewId, setOpen, value) => {
+        // start loading
+        setLoading(true);
+
         const reviewUpdate = {
             review_detail: values.review,
             rating_star: value,
@@ -373,6 +412,9 @@ export default function ProductDetails(props) {
     };
 
     const handleDelete = (reviewId, setOpen) => {
+        // start loading
+        setLoading(true);
+
         axios
             .delete(`http://localhost:8000/reviews/${reviewId}/`, config)
             .then((res) => {
@@ -469,6 +511,8 @@ export default function ProductDetails(props) {
                                         changeCardProducts={
                                             changeCategoryProducts
                                         }
+                                        loading={loading}
+                                        setLoading={setLoading}
                                     />
                                 </Grid>
                             ))}
@@ -497,7 +541,18 @@ export default function ProductDetails(props) {
 
                         <Grid item>
                             <Box>
-                                <VideoReview />
+                                <VideoReview
+                                    handleSubmitForVideoReview={
+                                        handleSubmitForVideoReview
+                                    }
+                                    product={product}
+                                    myBag={myBag}
+                                    changeProduct={changeProduct}
+                                    changeMyBag={changeMyBag}
+                                    config={config}
+                                    loading={loading}
+                                    setLoading={setLoading}
+                                />
                             </Box>
                         </Grid>
                     </Grid>
@@ -513,6 +568,49 @@ export default function ProductDetails(props) {
                                         borderRadius='borderRadius'
                                         style={{ backgroundColor: 'white' }}
                                     >
+                                        {video_review.user.pk ===
+                                            (user && user.pk) && (
+                                            <Box pt={1} textAlign='center'>
+                                                <UpdateVideoReviewDialog
+                                                    videoReviewId={
+                                                        video_review.id
+                                                    }
+                                                    handleUpdateForVideoReview={
+                                                        handleUpdateForVideoReview
+                                                    }
+                                                    product={product}
+                                                    myBag={myBag}
+                                                    changeProduct={
+                                                        changeProduct
+                                                    }
+                                                    changeMyBag={changeMyBag}
+                                                    config={config}
+                                                    loading={loading}
+                                                    setLoading={setLoading}
+                                                />
+                                                <Box py={1}>
+                                                    <DeleteVideoReviewDialog
+                                                        videoReviewId={
+                                                            video_review.id
+                                                        }
+                                                        handleDeleteForVideoReview={
+                                                            handleDeleteForVideoReview
+                                                        }
+                                                        product={product}
+                                                        myBag={myBag}
+                                                        changeProduct={
+                                                            changeProduct
+                                                        }
+                                                        changeMyBag={
+                                                            changeMyBag
+                                                        }
+                                                        config={config}
+                                                        loading={loading}
+                                                        setLoading={setLoading}
+                                                    />
+                                                </Box>
+                                            </Box>
+                                        )}
                                         <ReactPlayer
                                             width='100%'
                                             height='260px'
@@ -520,26 +618,133 @@ export default function ProductDetails(props) {
                                             light
                                             url={video_review.link}
                                         />
-                                        <Box px={3} py={1}>
+                                        <Box p={1}>
+                                            {video_review.created_at}
+                                        </Box>
+                                        <Box px={3} py={1} textAlign='center'>
                                             <Box>
-                                                <Button
-                                                    size='small'
-                                                    startIcon={<ThumbUpIcon />}
-                                                    fullWidth
-                                                >
-                                                    Agreed (12)
-                                                </Button>
+                                                <div className={classes.root}>
+                                                    <div
+                                                        className={
+                                                            classes.wrapper
+                                                        }
+                                                    >
+                                                        <Button
+                                                            size='small'
+                                                            variant='contained'
+                                                            color={
+                                                                video_review.videoreviewcountforagree.user.includes(
+                                                                    user &&
+                                                                        user.pk
+                                                                )
+                                                                    ? 'secondary'
+                                                                    : 'default'
+                                                            }
+                                                            startIcon={
+                                                                <ThumbUpIcon />
+                                                            }
+                                                            onClick={() =>
+                                                                handleAgreeForVideoReview(
+                                                                    JSON.stringify(
+                                                                        video_review
+                                                                    ),
+                                                                    product,
+                                                                    myBag,
+                                                                    changeProduct,
+                                                                    changeMyBag,
+                                                                    user,
+                                                                    config,
+                                                                    setLoading
+                                                                )
+                                                            }
+                                                            // use this type of value sending in bag page
+                                                            disabled={
+                                                                loading ||
+                                                                video_review
+                                                                    .user.pk ===
+                                                                    (user &&
+                                                                        user.pk)
+                                                            }
+                                                        >
+                                                            Agreed (
+                                                            {video_review.videoreviewcountforagree &&
+                                                                video_review
+                                                                    .videoreviewcountforagree
+                                                                    .agreed}
+                                                            )
+                                                        </Button>
+                                                        {loading && (
+                                                            <CircularProgress
+                                                                size={24}
+                                                                className={
+                                                                    classes.buttonProgress
+                                                                }
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </Box>
                                             <Box mt={1}>
-                                                <Button
-                                                    fullWidth
-                                                    size='small'
-                                                    startIcon={
-                                                        <ThumbDownIcon />
-                                                    }
-                                                >
-                                                    Disagreed (02)
-                                                </Button>
+                                                <div className={classes.root}>
+                                                    <div
+                                                        className={
+                                                            classes.wrapper
+                                                        }
+                                                    >
+                                                        <Button
+                                                            size='small'
+                                                            variant='contained'
+                                                            color={
+                                                                video_review.videoreviewcountfordisagree.user.includes(
+                                                                    user &&
+                                                                        user.pk
+                                                                )
+                                                                    ? 'secondary'
+                                                                    : 'default'
+                                                            }
+                                                            startIcon={
+                                                                <ThumbDownIcon />
+                                                            }
+                                                            onClick={() =>
+                                                                handleDisagreeForVideoReview(
+                                                                    JSON.stringify(
+                                                                        video_review
+                                                                    ),
+                                                                    product,
+                                                                    myBag,
+                                                                    changeProduct,
+                                                                    changeMyBag,
+                                                                    user,
+                                                                    config,
+                                                                    setLoading
+                                                                )
+                                                            }
+                                                            // use this type of value sending in bag page
+                                                            disabled={
+                                                                loading ||
+                                                                video_review
+                                                                    .user.pk ===
+                                                                    (user &&
+                                                                        user.pk)
+                                                            }
+                                                        >
+                                                            Disagreed (
+                                                            {video_review.videoreviewcountfordisagree &&
+                                                                video_review
+                                                                    .videoreviewcountfordisagree
+                                                                    .disagreed}
+                                                            )
+                                                        </Button>
+                                                        {loading && (
+                                                            <CircularProgress
+                                                                size={24}
+                                                                className={
+                                                                    classes.buttonProgress
+                                                                }
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </Box>
                                         </Box>
                                     </Box>
@@ -715,7 +920,11 @@ export default function ProductDetails(props) {
                                 borderRadius='borderRadius'
                             >
                                 <Box>
-                                    <Review handleSubmit={handleSubmit} />
+                                    <Review
+                                        handleSubmit={handleSubmit}
+                                        loading={loading}
+                                        setLoading={setLoading}
+                                    />
                                 </Box>
                             </Box>
                         </Grid>
@@ -787,6 +996,8 @@ export default function ProductDetails(props) {
                                                 <UpdateReviewDialog
                                                     reviewId={review.id}
                                                     handleUpdate={handleUpdate}
+                                                    loading={loading}
+                                                    setLoading={setLoading}
                                                 />
                                                 <span
                                                     style={{
@@ -798,6 +1009,8 @@ export default function ProductDetails(props) {
                                                         handleDelete={
                                                             handleDelete
                                                         }
+                                                        loading={loading}
+                                                        setLoading={setLoading}
                                                     />
                                                 </span>
                                             </Box>
@@ -814,65 +1027,106 @@ export default function ProductDetails(props) {
                                 >
                                     <Box px={3} textAlign='center'>
                                         <Box>
-                                            <Button
-                                                size='small'
-                                                variant='contained'
-                                                color={
-                                                    review.reviewcountforagree.user.includes(
-                                                        user && user.pk
-                                                    )
-                                                        ? 'secondary'
-                                                        : 'default'
-                                                }
-                                                startIcon={<ThumbUpIcon />}
-                                                onClick={() =>
-                                                    handleAgree(
-                                                        JSON.stringify(review)
-                                                    )
-                                                }
-                                                // use this type of value sending in bag page
-                                                disabled={
-                                                    review.user.pk ===
-                                                    (user && user.pk)
-                                                }
-                                            >
-                                                Agreed (
-                                                {review.reviewcountforagree &&
-                                                    review.reviewcountforagree
-                                                        .agreed}
-                                                )
-                                            </Button>
+                                            <div className={classes.root}>
+                                                <div
+                                                    className={classes.wrapper}
+                                                >
+                                                    <Button
+                                                        size='small'
+                                                        variant='contained'
+                                                        color={
+                                                            review.reviewcountforagree.user.includes(
+                                                                user && user.pk
+                                                            )
+                                                                ? 'secondary'
+                                                                : 'default'
+                                                        }
+                                                        startIcon={
+                                                            <ThumbUpIcon />
+                                                        }
+                                                        onClick={() =>
+                                                            handleAgree(
+                                                                JSON.stringify(
+                                                                    review
+                                                                )
+                                                            )
+                                                        }
+                                                        // use this type of value sending in bag page
+                                                        disabled={
+                                                            loading ||
+                                                            review.user.pk ===
+                                                                (user &&
+                                                                    user.pk)
+                                                        }
+                                                    >
+                                                        Agreed (
+                                                        {review.reviewcountforagree &&
+                                                            review
+                                                                .reviewcountforagree
+                                                                .agreed}
+                                                        )
+                                                    </Button>
+                                                    {loading && (
+                                                        <CircularProgress
+                                                            size={24}
+                                                            className={
+                                                                classes.buttonProgress
+                                                            }
+                                                        />
+                                                    )}
+                                                </div>
+                                            </div>
                                         </Box>
                                         <Box mt={1}>
-                                            <Button
-                                                size='small'
-                                                variant='contained'
-                                                color={
-                                                    review.reviewcountfordisagree.user.includes(
-                                                        user && user.pk
-                                                    )
-                                                        ? 'secondary'
-                                                        : 'default'
-                                                }
-                                                startIcon={<ThumbDownIcon />}
-                                                onClick={() =>
-                                                    handleDisagree(
-                                                        JSON.stringify(review)
-                                                    )
-                                                }
-                                                // use this type of value sending in bag page
-                                                disabled={
-                                                    review.user.pk ===
-                                                    (user && user.pk)
-                                                }
-                                            >
-                                                Disagreed (
-                                                {review.reviewcountfordisagree &&
-                                                    review
-                                                        .reviewcountfordisagree
-                                                        .disagreed}
-                                                )
-                                            </Button>
+                                            <div className={classes.root}>
+                                                <div
+                                                    className={classes.wrapper}
+                                                >
+                                                    <Button
+                                                        size='small'
+                                                        variant='contained'
+                                                        color={
+                                                            review.reviewcountfordisagree.user.includes(
+                                                                user && user.pk
+                                                            )
+                                                                ? 'secondary'
+                                                                : 'default'
+                                                        }
+                                                        startIcon={
+                                                            <ThumbDownIcon />
+                                                        }
+                                                        onClick={() =>
+                                                            handleDisagree(
+                                                                JSON.stringify(
+                                                                    review
+                                                                )
+                                                            )
+                                                        }
+                                                        // use this type of value sending in bag page
+                                                        disabled={
+                                                            loading ||
+                                                            review.user.pk ===
+                                                                (user &&
+                                                                    user.pk)
+                                                        }
+                                                    >
+                                                        Disagreed (
+                                                        {review.reviewcountfordisagree &&
+                                                            review
+                                                                .reviewcountfordisagree
+                                                                .disagreed}
+                                                        )
+                                                    </Button>
+                                                    {loading && (
+                                                        <CircularProgress
+                                                            size={24}
+                                                            className={
+                                                                classes.buttonProgress
+                                                            }
+                                                        />
+                                                    )}
+                                                </div>
+                                            </div>
                                         </Box>
                                     </Box>
                                 </Grid>

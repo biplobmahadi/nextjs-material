@@ -28,6 +28,8 @@ export default function ScrollDialog({
     config,
     changeCategoryProducts,
     product,
+    loading,
+    setLoading,
 }) {
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
@@ -90,7 +92,8 @@ export default function ScrollDialog({
                                         changeCategoryProducts={
                                             changeCategoryProducts
                                         }
-                                        mainProduct={product}
+                                        loading={loading}
+                                        setLoading={setLoading}
                                     />
                                 </Grid>
                             ))}

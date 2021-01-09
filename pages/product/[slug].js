@@ -720,6 +720,8 @@ export default function Product(props) {
                                                             changeCategoryProducts
                                                         }
                                                         product={product}
+                                                        loading={loading}
+                                                        setLoading={setLoading}
                                                     />
                                                 )}
                                         </Grid>
@@ -855,6 +857,8 @@ export default function Product(props) {
                     changeMyBag={changeMyBag}
                     changeCategoryProducts={changeCategoryProducts}
                     avgRating={avgRating}
+                    loading={loading}
+                    setLoading={setLoading}
                 />
             </Box>
             <Box mx={3} mt={6}>
