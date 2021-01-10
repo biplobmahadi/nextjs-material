@@ -10,11 +10,11 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1, 0, 1),
     },
     root: {
-        display: 'flex',
-        alignItems: 'center',
+        marginTop: theme.spacing(1),
+        // alignItems: 'center',
     },
     wrapper: {
-        margin: theme.spacing(1),
+        // margin: theme.spacing(1),
         position: 'relative',
     },
     buttonProgress: {

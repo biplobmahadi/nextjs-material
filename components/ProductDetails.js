@@ -15,6 +15,8 @@ import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
 
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 import Button from '@material-ui/core/Button';
@@ -783,8 +785,8 @@ export default function ProductDetails(props) {
                                 borderRadius='borderRadius'
                                 style={{ backgroundColor: 'white' }}
                             >
-                                <Typography variant='h4'>
-                                    Product Details
+                                <Typography variant='h5'>
+                                    <strong>Product Details</strong>
                                 </Typography>
                             </Box>
 
@@ -793,6 +795,13 @@ export default function ProductDetails(props) {
                                     product={product && product}
                                 />
                             </Box>
+                            {product && product.product_detail.length === 0 && (
+                                <Alert severity='error'>
+                                    <AlertTitle>Sorry Dear</AlertTitle>
+                                    Here Are No Product Details Included Yet —{' '}
+                                    <strong>Hope It Will Come Soon!</strong>
+                                </Alert>
+                            )}
                         </Box>
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
@@ -803,14 +812,14 @@ export default function ProductDetails(props) {
                                 borderRadius='borderRadius'
                                 style={{ backgroundColor: 'white' }}
                             >
-                                <Typography variant='h4'>
-                                    Video Details
+                                <Typography variant='h5'>
+                                    <strong>Video Details</strong>
                                 </Typography>
                             </Box>
                             <Box mt={2}>
                                 <ReactPlayer
                                     width='100%'
-                                    height='240px'
+                                    height='280px'
                                     // height='324px'
                                     controls
                                     light
@@ -822,13 +831,16 @@ export default function ProductDetails(props) {
                 </Grid>
             </Box>
 
-            <Box mx={3} mt={8} textAlign='center'>
+            <Box mx={3} mt={8}>
                 <Box
                     p={2}
+                    textAlign='center'
                     borderRadius='borderRadius'
                     style={{ backgroundColor: 'white' }}
                 >
-                    <Typography variant='h4'>You May Like</Typography>
+                    <Typography variant='h5'>
+                        <strong>You May Like</strong>
+                    </Typography>
                 </Box>
                 <Box mt={2}>
                     <Grid container spacing={2}>
@@ -848,6 +860,15 @@ export default function ProductDetails(props) {
                             ))}
                     </Grid>
                 </Box>
+                {categoryProducts.length === 0 && (
+                    <Box mt={2}>
+                        <Alert severity='error'>
+                            <AlertTitle>Sorry Dear</AlertTitle>
+                            Here Are No Similar Category Products Included Yet —{' '}
+                            <strong>Hope It Will Come Soon!</strong>
+                        </Alert>
+                    </Box>
+                )}
             </Box>
 
             <Box mx={3} mt={8}>
@@ -864,13 +885,13 @@ export default function ProductDetails(props) {
                         alignItems='center'
                     >
                         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-                            <Typography variant='h4' component='h4'>
-                                Customer Video Review
+                            <Typography variant='h5' component='h5'>
+                                <strong>Customer Video Review</strong>
                             </Typography>
                         </Grid>
 
                         <Grid item>
-                            <Box>
+                            <Box my={1}>
                                 <VideoReview
                                     handleSubmitForVideoReview={
                                         handleSubmitForVideoReview
@@ -910,6 +931,17 @@ export default function ProductDetails(props) {
                             ))}
                     </Grid>
                 </Box>
+                {product && product.video_review.length === 0 && (
+                    <Box mt={2}>
+                        <Alert severity='error'>
+                            <AlertTitle>Sorry Dear</AlertTitle>
+                            Here Are No Video Review Created By Customer Yet —{' '}
+                            <strong>
+                                Hope Customer Will Add Video Review Soon!
+                            </strong>
+                        </Alert>
+                    </Box>
+                )}
             </Box>
 
             <Box mx={3} mt={8}>
@@ -919,7 +951,9 @@ export default function ProductDetails(props) {
                     borderRadius='borderRadius'
                     style={{ backgroundColor: 'white' }}
                 >
-                    <Typography variant='h4'>Review & Ratings</Typography>
+                    <Typography variant='h5'>
+                        <strong>Review & Ratings</strong>
+                    </Typography>
                 </Box>
 
                 <Box mt={2}>
@@ -1098,6 +1132,15 @@ export default function ProductDetails(props) {
                             handleDisagree={handleDisagree}
                         />
                     ))}
+                {product && product.review.length === 0 && (
+                    <Box mt={2}>
+                        <Alert severity='error'>
+                            <AlertTitle>Sorry Dear</AlertTitle>
+                            Here Are No Review Created By Customer Yet —{' '}
+                            <strong>Hope Customer Will Add Review Soon!</strong>
+                        </Alert>
+                    </Box>
+                )}
             </Box>
         </div>
     );

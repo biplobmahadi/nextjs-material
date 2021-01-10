@@ -24,11 +24,10 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
     },
     root: {
-        display: 'flex',
+        // display: 'flex',
         alignItems: 'center',
     },
     wrapper: {
-        margin: theme.spacing(1),
         position: 'relative',
     },
     buttonProgress: {

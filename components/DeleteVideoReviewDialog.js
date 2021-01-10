@@ -39,6 +39,7 @@ export default function DeleteVideoReviewDialog({
         <>
             <Button
                 variant='contained'
+                fullWidth
                 color='primary'
                 size='small'
                 startIcon={<DeleteForeverIcon />}

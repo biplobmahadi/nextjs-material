@@ -78,6 +78,7 @@ export default function UpdateReviewDialog({ reviewId, handleUpdate }) {
         <>
             <Button
                 variant='contained'
+                fullWidth
                 color='primary'
                 size='small'
                 startIcon={<UpdateIcon />}
@@ -114,7 +115,6 @@ export default function UpdateReviewDialog({ reviewId, handleUpdate }) {
                             reviewId,
                             setOpen,
                             valueAgain
-                            
                         );
                     }}
                 >
@@ -198,8 +198,7 @@ export default function UpdateReviewDialog({ reviewId, handleUpdate }) {
                                                 size='small'
                                                 variant='contained'
                                                 color='primary'
-                                                disabled={ isSubmitting
-                                                }
+                                                disabled={isSubmitting}
                                             >
                                                 <Box px={3}>Update</Box>
                                             </Button>

@@ -33,11 +33,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex',
+        // display: 'flex',
         alignItems: 'center',
     },
     wrapper: {
-        margin: theme.spacing(1),
         position: 'relative',
     },
     buttonProgress: {
@@ -75,21 +74,29 @@ export default function SingleVideoReview({
                 style={{ backgroundColor: 'white' }}
             >
                 {video_review.user.pk === (user && user.pk) && (
-                    <Box pt={1} textAlign='center'>
-                        <UpdateVideoReviewDialog
-                            videoReviewId={video_review.id}
-                            handleUpdateForVideoReview={
-                                handleUpdateForVideoReview
-                            }
-                        />
-                        <Box py={1}>
-                            <DeleteVideoReviewDialog
-                                videoReviewId={video_review.id}
-                                handleDeleteForVideoReview={
-                                    handleDeleteForVideoReview
-                                }
-                            />
-                        </Box>
+                    <Box p={2}>
+                        <Grid container spacing={1} alignItems='center'>
+                            <Grid item xs={12} sm>
+                                <Box textAlign='center'>
+                                    <UpdateVideoReviewDialog
+                                        videoReviewId={video_review.id}
+                                        handleUpdateForVideoReview={
+                                            handleUpdateForVideoReview
+                                        }
+                                    />
+                                </Box>
+                            </Grid>
+                            <Grid item xs={12} sm>
+                                <Box textAlign='center'>
+                                    <DeleteVideoReviewDialog
+                                        videoReviewId={video_review.id}
+                                        handleDeleteForVideoReview={
+                                            handleDeleteForVideoReview
+                                        }
+                                    />
+                                </Box>
+                            </Grid>
+                        </Grid>
                     </Box>
                 )}
                 <ReactPlayer
@@ -99,92 +106,109 @@ export default function SingleVideoReview({
                     light
                     url={video_review.link}
                 />
-                <Box p={1}>{video_review.created_at}</Box>
-                <Box px={3} py={1} textAlign='center'>
-                    <Box>
-                        <div className={classes.root}>
-                            <div className={classes.wrapper}>
-                                <Button
-                                    size='small'
-                                    variant='contained'
-                                    color={
-                                        video_review.videoreviewcountforagree.user.includes(
-                                            user && user.pk
-                                        )
-                                            ? 'secondary'
-                                            : 'default'
-                                    }
-                                    startIcon={<ThumbUpIcon />}
-                                    onClick={() =>
-                                        handleAgreeForVideoReview(
-                                            JSON.stringify(video_review),
-                                            setVideoReviewAgreeLoading
-                                        )
-                                    }
-                                    // use this type of value sending in bag page
-                                    disabled={
-                                        videoReviewAgreeLoading ||
-                                        video_review.user.pk ===
-                                            (user && user.pk)
-                                    }
-                                >
-                                    Agreed (
-                                    {video_review.videoreviewcountforagree &&
-                                        video_review.videoreviewcountforagree
-                                            .agreed}
-                                    )
-                                </Button>
-                                {videoReviewAgreeLoading && (
-                                    <CircularProgress
-                                        size={24}
-                                        className={classes.buttonProgress}
-                                    />
-                                )}
-                            </div>
-                        </div>
-                    </Box>
-                    <Box mt={1}>
-                        <div className={classes.root}>
-                            <div className={classes.wrapper}>
-                                <Button
-                                    size='small'
-                                    variant='contained'
-                                    color={
-                                        video_review.videoreviewcountfordisagree.user.includes(
-                                            user && user.pk
-                                        )
-                                            ? 'secondary'
-                                            : 'default'
-                                    }
-                                    startIcon={<ThumbDownIcon />}
-                                    onClick={() =>
-                                        handleDisagreeForVideoReview(
-                                            JSON.stringify(video_review),
-                                            setVideoReviewDisagreeLoading
-                                        )
-                                    }
-                                    // use this type of value sending in bag page
-                                    disabled={
-                                        videoReviewDisagreeLoading ||
-                                        video_review.user.pk ===
-                                            (user && user.pk)
-                                    }
-                                >
-                                    Disagreed (
-                                    {video_review.videoreviewcountfordisagree &&
-                                        video_review.videoreviewcountfordisagree
-                                            .disagreed}
-                                    )
-                                </Button>
-                                {videoReviewDisagreeLoading && (
-                                    <CircularProgress
-                                        size={24}
-                                        className={classes.buttonProgress}
-                                    />
-                                )}
-                            </div>
-                        </div>
-                    </Box>
+                <Box p={2}>
+                    <Grid container spacing={1} alignItems='center'>
+                        <Grid item xs={12} sm>
+                            <Box textAlign='center'>
+                                <div className={classes.root}>
+                                    <div className={classes.wrapper}>
+                                        <Button
+                                            size='small'
+                                            fullWidth
+                                            variant='contained'
+                                            color={
+                                                video_review.videoreviewcountforagree.user.includes(
+                                                    user && user.pk
+                                                )
+                                                    ? 'secondary'
+                                                    : 'default'
+                                            }
+                                            startIcon={<ThumbUpIcon />}
+                                            onClick={() =>
+                                                handleAgreeForVideoReview(
+                                                    JSON.stringify(
+                                                        video_review
+                                                    ),
+                                                    setVideoReviewAgreeLoading
+                                                )
+                                            }
+                                            // use this type of value sending in bag page
+                                            disabled={
+                                                videoReviewAgreeLoading ||
+                                                video_review.user.pk ===
+                                                    (user && user.pk)
+                                            }
+                                        >
+                                            Agreed (
+                                            {video_review.videoreviewcountforagree &&
+                                                video_review
+                                                    .videoreviewcountforagree
+                                                    .agreed}
+                                            )
+                                        </Button>
+                                        {videoReviewAgreeLoading && (
+                                            <CircularProgress
+                                                size={24}
+                                                className={
+                                                    classes.buttonProgress
+                                                }
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            </Box>
+                        </Grid>
+                        <Grid item xs={12} sm>
+                            <Box textAlign='center'>
+                                <div className={classes.root}>
+                                    <div className={classes.wrapper}>
+                                        <Button
+                                            size='small'
+                                            fullWidth
+                                            variant='contained'
+                                            color={
+                                                video_review.videoreviewcountfordisagree.user.includes(
+                                                    user && user.pk
+                                                )
+                                                    ? 'secondary'
+                                                    : 'default'
+                                            }
+                                            startIcon={<ThumbDownIcon />}
+                                            onClick={() =>
+                                                handleDisagreeForVideoReview(
+                                                    JSON.stringify(
+                                                        video_review
+                                                    ),
+                                                    setVideoReviewDisagreeLoading
+                                                )
+                                            }
+                                            // use this type of value sending in bag page
+                                            disabled={
+                                                videoReviewDisagreeLoading ||
+                                                video_review.user.pk ===
+                                                    (user && user.pk)
+                                            }
+                                        >
+                                            Disagreed (
+                                            {video_review.videoreviewcountfordisagree &&
+                                                video_review
+                                                    .videoreviewcountfordisagree
+                                                    .disagreed}
+                                            )
+                                        </Button>
+                                        {videoReviewDisagreeLoading && (
+                                            <CircularProgress
+                                                size={24}
+                                                className={
+                                                    classes.buttonProgress
+                                                }
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            </Box>
+                        </Grid>
+                    </Grid>
                 </Box>
             </Box>
         </Grid>

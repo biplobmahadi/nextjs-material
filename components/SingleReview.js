@@ -33,11 +33,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex',
+        // display: 'flex',
         alignItems: 'center',
     },
     wrapper: {
-        margin: theme.spacing(1),
         position: 'relative',
     },
     buttonProgress: {
@@ -50,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SingleVideoReview({
+export default function SingleReview({
     review,
     user,
     handleUpdate,
@@ -89,7 +88,7 @@ export default function SingleVideoReview({
                         </Typography>
                     </Box>
                 </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={7} xl={8}>
+                <Grid item xs={12} sm={12} md={12} lg={6} xl={8}>
                     <Box pr={2} pl={1}>
                         <Rating
                             name='read-only'
@@ -106,71 +105,74 @@ export default function SingleVideoReview({
                         </Box>
                         {review.user.pk === (user && user.pk) && (
                             <Box pt={2}>
-                                <UpdateReviewDialog
-                                    reviewId={review.id}
-                                    handleUpdate={handleUpdate}
-                                />
-                                <span
-                                    style={{
-                                        paddingLeft: '16px',
-                                    }}
-                                >
-                                    <DeleteReviewDialog
-                                        reviewId={review.id}
-                                        handleDelete={handleDelete}
-                                    />
-                                </span>
+                                <Grid container spacing={1} alignItems='center'>
+                                    <Grid item xs={12} sm>
+                                        <UpdateReviewDialog
+                                            reviewId={review.id}
+                                            handleUpdate={handleUpdate}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm>
+                                        <DeleteReviewDialog
+                                            reviewId={review.id}
+                                            handleDelete={handleDelete}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm></Grid>
+                                    <Grid item xs={12} sm></Grid>
+                                    <Grid item xs={12} sm></Grid>
+                                </Grid>
                             </Box>
                         )}
                     </Box>
                 </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={2} xl={2}>
+                <Grid item xs={12} sm={12} md={12} lg={3} xl={2}>
                     <Box px={3} textAlign='center'>
-                        <Box>
-                            <div className={classes.root}>
-                                <div className={classes.wrapper}>
-                                    <Button
-                                        size='small'
-                                        variant='contained'
-                                        color={
-                                            review.reviewcountforagree.user.includes(
-                                                user && user.pk
-                                            )
-                                                ? 'secondary'
-                                                : 'default'
-                                        }
-                                        startIcon={<ThumbUpIcon />}
-                                        onClick={() =>
-                                            handleAgree(
-                                                JSON.stringify(review),
-                                                setReviewAgreeLoading
-                                            )
-                                        }
-                                        // use this type of value sending in bag page
-                                        disabled={
-                                            reviewAgreeLoading ||
-                                            review.user.pk === (user && user.pk)
-                                        }
-                                    >
-                                        Agreed (
-                                        {review.reviewcountforagree &&
-                                            review.reviewcountforagree.agreed}
+                        <div className={classes.root}>
+                            <div className={classes.wrapper}>
+                                <Button
+                                    size='small'
+                                    fullWidth
+                                    variant='contained'
+                                    color={
+                                        review.reviewcountforagree.user.includes(
+                                            user && user.pk
                                         )
-                                    </Button>
-                                    {reviewAgreeLoading && (
-                                        <CircularProgress
-                                            size={24}
-                                            className={classes.buttonProgress}
-                                        />
-                                    )}
-                                </div>
+                                            ? 'secondary'
+                                            : 'default'
+                                    }
+                                    startIcon={<ThumbUpIcon />}
+                                    onClick={() =>
+                                        handleAgree(
+                                            JSON.stringify(review),
+                                            setReviewAgreeLoading
+                                        )
+                                    }
+                                    // use this type of value sending in bag page
+                                    disabled={
+                                        reviewAgreeLoading ||
+                                        review.user.pk === (user && user.pk)
+                                    }
+                                >
+                                    Agreed (
+                                    {review.reviewcountforagree &&
+                                        review.reviewcountforagree.agreed}
+                                    )
+                                </Button>
+                                {reviewAgreeLoading && (
+                                    <CircularProgress
+                                        size={24}
+                                        className={classes.buttonProgress}
+                                    />
+                                )}
                             </div>
-                        </Box>
+                        </div>
                         <Box mt={1}>
                             <div className={classes.root}>
                                 <div className={classes.wrapper}>
                                     <Button
                                         size='small'
+                                        fullWidth
                                         variant='contained'
                                         color={
                                             review.reviewcountfordisagree.user.includes(

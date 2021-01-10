@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function BasicTable({ product }) {
+export default function ProductDetailsTable({ product }) {
     const classes = useStyles();
 
     return (

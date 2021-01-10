@@ -36,6 +36,7 @@ export default function DeleteReviewDialog({ reviewId, handleDelete }) {
         <>
             <Button
                 variant='contained'
+                fullWidth
                 color='primary'
                 size='small'
                 startIcon={<DeleteForeverIcon />}

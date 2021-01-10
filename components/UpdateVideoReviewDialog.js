@@ -64,6 +64,7 @@ export default function UpdateVideoReviewDialog({
         <>
             <Button
                 variant='contained'
+                fullWidth
                 color='primary'
                 size='small'
                 startIcon={<UpdateIcon />}

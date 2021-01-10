@@ -9,6 +9,8 @@ import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
 
 import Rating from '@material-ui/lab/Rating';
 import Chip from '@material-ui/core/Chip';
@@ -34,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
     },
     wrapper: {
-        margin: theme.spacing(1),
         position: 'relative',
     },
     buttonProgress: {
@@ -749,7 +750,7 @@ export default function Product(props) {
                                 >
                                     <Box pb={1}>
                                         <Typography variant='h5' component='h5'>
-                                            <strong>You Will Get</strong>
+                                            <strong>Gift With This</strong>
                                         </Typography>
                                     </Box>
                                     {product &&
@@ -774,6 +775,23 @@ export default function Product(props) {
                                                     </Grid>
                                                 </Box>
                                             )
+                                        )}
+
+                                    {product &&
+                                        product.you_will_get.length === 0 && (
+                                            <Box pt={1}>
+                                                <Alert severity='error'>
+                                                    <AlertTitle>
+                                                        Sorry Dear
+                                                    </AlertTitle>
+                                                    No Gift Included With This
+                                                    Product Yet —{' '}
+                                                    <strong>
+                                                        Hope Gift Will Include
+                                                        Soon!
+                                                    </strong>
+                                                </Alert>
+                                            </Box>
                                         )}
                                 </Box>
 
