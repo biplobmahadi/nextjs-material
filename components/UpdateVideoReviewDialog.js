@@ -36,13 +36,6 @@ const useStyles = makeStyles((theme) => ({
 export default function UpdateVideoReviewDialog({
     videoReviewId,
     handleUpdateForVideoReview,
-    product,
-    myBag,
-    changeProduct,
-    changeMyBag,
-    config,
-    loading,
-    setLoading,
 }) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
@@ -109,13 +102,7 @@ export default function UpdateVideoReviewDialog({
                             values,
                             setSubmitting,
                             videoReviewId,
-                            product,
-                            myBag,
-                            changeProduct,
-                            changeMyBag,
-                            config,
-                            setOpen,
-                            setLoading
+                            setOpen
                         );
                     }}
                 >
@@ -142,11 +129,11 @@ export default function UpdateVideoReviewDialog({
                                             size='small'
                                             variant='contained'
                                             color='primary'
-                                            disabled={loading || isSubmitting}
+                                            disabled={isSubmitting}
                                         >
                                             <Box px={3}>Update</Box>
                                         </Button>
-                                        {loading && (
+                                        {isSubmitting && (
                                             <CircularProgress
                                                 size={24}
                                                 className={

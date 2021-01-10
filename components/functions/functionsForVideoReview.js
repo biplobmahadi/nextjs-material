@@ -1,4 +1,11 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
+
+const config = {
+    headers: {
+        Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
+    },
+};
 
 export const handleSubmitForVideoReview = (
     values,
@@ -294,7 +301,6 @@ export const handleUpdateForVideoReview = (
     myBag,
     changeProduct,
     changeMyBag,
-    config,
     setLoading
 ) => {
     // start loading
@@ -340,11 +346,14 @@ export const handleDeleteForVideoReview = (
     myBag,
     changeProduct,
     changeMyBag,
-    config,
     setLoading
 ) => {
     // start loading
     setLoading(true);
+    console.log('config', config);
+    console.log('videoReviewId', videoReviewId);
+    console.log('product', product);
+    console.log('myBag', myBag);
 
     axios
         .delete(`http://localhost:8000/video-reviews/${videoReviewId}/`, config)

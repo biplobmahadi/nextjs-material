@@ -41,17 +41,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ProductCard({
+export default function ProductForTrialCard({
     product,
     myBag,
     config,
     changeMyBag,
     changeCategoryProducts,
-    loading,
-    setLoading,
 }) {
     const classes = useStyles();
     console.log('got product for card in trial', product);
+
+    const [loading, setLoading] = React.useState(false);
 
     const handleAddToBag = () => {
         // create a loading
@@ -118,6 +118,7 @@ export default function ProductCard({
                         console.log(
                             'you cant add more than 2 product of same category as trial'
                         );
+                        setLoading(false);
                     } else {
                         // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
                         if (
@@ -127,6 +128,7 @@ export default function ProductCard({
                             console.log(
                                 'already product add in bag or add as trial'
                             );
+                            setLoading(false);
                             // here in bag, user can't add more quantity to trial, only one product can trial
                             // when user add this for buy then it can't be add as trial
                         } else {
@@ -190,18 +192,9 @@ export default function ProductCard({
                                                                 `http://localhost:8000/category/${product.category.slug}/`
                                                             )
                                                             .then((res) => {
-                                                                let allCategoryProducts =
-                                                                    res.data
-                                                                        .product;
-                                                                let filteredCategoryProducts = allCategoryProducts.filter(
-                                                                    (
-                                                                        categoryProduct
-                                                                    ) =>
-                                                                        categoryProduct.id !==
-                                                                        product.id
-                                                                );
                                                                 changeCategoryProducts(
-                                                                    filteredCategoryProducts
+                                                                    res.data
+                                                                        .product
                                                                 );
                                                                 axios
                                                                     .get(
@@ -212,7 +205,9 @@ export default function ProductCard({
                                                                         (
                                                                             res
                                                                         ) => {
-                                                                            // new myBag need to add to state
+                                                                            setLoading(
+                                                                                false
+                                                                            );
                                                                             changeMyBag(
                                                                                 res.data
                                                                             );
@@ -279,18 +274,9 @@ export default function ProductCard({
                                                                 `http://localhost:8000/category/${product.category.slug}/`
                                                             )
                                                             .then((res) => {
-                                                                let allCategoryProducts =
-                                                                    res.data
-                                                                        .product;
-                                                                let filteredCategoryProducts = allCategoryProducts.filter(
-                                                                    (
-                                                                        categoryProduct
-                                                                    ) =>
-                                                                        categoryProduct.id !==
-                                                                        product.id
-                                                                );
                                                                 changeCategoryProducts(
-                                                                    filteredCategoryProducts
+                                                                    res.data
+                                                                        .product
                                                                 );
                                                                 axios
                                                                     .get(
@@ -301,7 +287,9 @@ export default function ProductCard({
                                                                         (
                                                                             res
                                                                         ) => {
-                                                                            // new myBag need to add to state
+                                                                            setLoading(
+                                                                                false
+                                                                            );
                                                                             changeMyBag(
                                                                                 res.data
                                                                             );
@@ -341,6 +329,7 @@ export default function ProductCard({
                     }
                 } else {
                     console.log('product not available');
+                    setLoading(false);
                 }
             })
             .catch((err) => console.log(err.response));

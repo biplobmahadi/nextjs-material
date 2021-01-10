@@ -34,8 +34,6 @@ export default function VideoReviewForm({
     changeProduct,
     changeMyBag,
     config,
-    loading,
-    setLoading,
 }) {
     const classes = useStyles();
     return (
@@ -61,8 +59,7 @@ export default function VideoReviewForm({
                     myBag,
                     changeProduct,
                     changeMyBag,
-                    config,
-                    setLoading
+                    config
                 );
             }}
         >
@@ -71,8 +68,9 @@ export default function VideoReviewForm({
                     <Field
                         name='link'
                         type='text'
-                        rows={4}
+                        size='small'
                         component={TextField}
+                        variant='outlined'
                         label='Youtube Video Link *'
                         fullWidth
                     />
@@ -85,11 +83,11 @@ export default function VideoReviewForm({
                                 variant='contained'
                                 color='primary'
                                 classeName={classes.submit}
-                                disabled={loading || isSubmitting}
+                                disabled={isSubmitting}
                             >
                                 Submit
                             </Button>
-                            {loading && (
+                            {isSubmitting && (
                                 <CircularProgress
                                     size={24}
                                     className={classes.buttonProgress}

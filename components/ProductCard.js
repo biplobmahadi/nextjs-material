@@ -41,18 +41,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 export default function ProductCard({
     product,
     myBag,
     config,
     changeMyBag,
     changeCardProducts,
-    loading,
-    setLoading,
 }) {
     const classes = useStyles();
     console.log('got product for card', product);
+
+    const [loading, setLoading] = React.useState(false);
 
     // ####### Full feature of add productWithQuantity to bag
     // 1st check is product quantity available or not
@@ -120,6 +119,7 @@ export default function ProductCard({
                         // if productWithQuantity is already exist in bag as trial than not add more
                         if (productWithQuantityExistInBag[0].add_as_trial) {
                             console.log('this product already add as trial');
+                            setLoading(false);
                         } else {
                             axios
                                 .patch(
@@ -187,6 +187,9 @@ export default function ProductCard({
                                                                     config
                                                                 )
                                                                 .then((res) => {
+                                                                    setLoading(
+                                                                        false
+                                                                    );
                                                                     // new myBag need to update
                                                                     changeMyBag(
                                                                         res.data
@@ -284,6 +287,9 @@ export default function ProductCard({
                                                                     config
                                                                 )
                                                                 .then((res) => {
+                                                                    setLoading(
+                                                                        false
+                                                                    );
                                                                     // new myBag need to update
                                                                     changeMyBag(
                                                                         res.data
@@ -352,6 +358,9 @@ export default function ProductCard({
                                                                     config
                                                                 )
                                                                 .then((res) => {
+                                                                    setLoading(
+                                                                        false
+                                                                    );
                                                                     // new myBag need to update
                                                                     changeMyBag(
                                                                         res.data
@@ -382,6 +391,7 @@ export default function ProductCard({
                     }
                 } else {
                     console.log('product not available');
+                    setLoading(false);
                 }
             })
             .catch((err) => console.log(err.response));

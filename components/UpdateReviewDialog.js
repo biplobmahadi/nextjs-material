@@ -48,12 +48,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function UpdateReviewDialog({
-    reviewId,
-    handleUpdate,
-    loading,
-    setLoading,
-}) {
+export default function UpdateReviewDialog({ reviewId, handleUpdate }) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
@@ -119,6 +114,7 @@ export default function UpdateReviewDialog({
                             reviewId,
                             setOpen,
                             valueAgain
+                            
                         );
                     }}
                 >
@@ -202,13 +198,12 @@ export default function UpdateReviewDialog({
                                                 size='small'
                                                 variant='contained'
                                                 color='primary'
-                                                disabled={
-                                                    loading || isSubmitting
+                                                disabled={ isSubmitting
                                                 }
                                             >
                                                 <Box px={3}>Update</Box>
                                             </Button>
-                                            {loading && (
+                                            {isSubmitting && (
                                                 <CircularProgress
                                                     size={24}
                                                     className={

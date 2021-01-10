@@ -21,15 +21,12 @@ import { TextField } from 'formik-material-ui';
 import Rating from '@material-ui/lab/Rating';
 import ProductCardForTrial from '../components/ProductCardForTrial';
 
-export default function ScrollDialog({
+export default function AddForTrialDialog({
     categoryProducts,
     myBag,
     changeMyBag,
     config,
     changeCategoryProducts,
-    product,
-    loading,
-    setLoading,
 }) {
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
@@ -92,8 +89,6 @@ export default function ScrollDialog({
                                         changeCategoryProducts={
                                             changeCategoryProducts
                                         }
-                                        loading={loading}
-                                        setLoading={setLoading}
                                     />
                                 </Grid>
                             ))}

@@ -56,7 +56,7 @@ export default function Product(props) {
     const [loading, setLoading] = React.useState(false);
     const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
-    // const [reRender, setReRender] = React.useState(false);
+    const [reRender, setReRender] = React.useState(false);
 
     let product = productRe ? productRe : props.product;
     let user = props.user;
@@ -77,13 +77,27 @@ export default function Product(props) {
     };
 
     const changeCategoryProducts = (value) => {
-        categoryProductsRe = value;
+        // here I got all the product because product card will use in everywhere
+        // so need to filter
+        let allCategoryProducts = value;
+        let filteredCategoryProducts = allCategoryProducts.filter(
+            (categoryProduct) => categoryProduct.id !== product.id
+        );
+        categoryProductsRe = filteredCategoryProducts;
 
         // setReRender(!reRender);
     };
 
     // changeMyBag is the last when get fetch req, so here reRender call
     const changeMyBag = (value) => {
+        myBagRe = value;
+        console.log('my bag now', myBagRe);
+
+        setReRender(!reRender);
+    };
+
+    // only for this when call handleAddToBag
+    const changeMyBagHere = (value) => {
         myBagRe = value;
         console.log('my bag now', myBagRe);
         setLoading(false);
@@ -116,13 +130,9 @@ export default function Product(props) {
         product.review.forEach((review) => {
             totalRating += review.rating_star;
             let fractionalAvgRating = totalRating / product.review.length;
-            console.log('fractionalAvgRating', fractionalAvgRating);
             avgRating = Math.floor(fractionalAvgRating);
         });
-    console.log('totalRating', totalRating);
-    console.log('avgRating', avgRating);
 
-    // console.log('here', { props.dataProduct, props.myBag, props.config, props.dataUser });
     console.log('here product', product);
     // console.log('here user', user);
     console.log('here bag', myBag);
@@ -174,6 +184,7 @@ export default function Product(props) {
                     ) {
                         if (productWithQuantityExistInBag[0].add_as_trial) {
                             console.log('this product already add as trial');
+                            setLoading(false);
                         } else {
                             axios
                                 .patch(
@@ -244,7 +255,7 @@ export default function Product(props) {
                                                                 )
                                                                 .then((res) => {
                                                                     // new myBag need to add to state
-                                                                    changeMyBag(
+                                                                    changeMyBagHere(
                                                                         res.data
                                                                     );
                                                                     console.log(
@@ -350,7 +361,7 @@ export default function Product(props) {
                                                                 )
                                                                 .then((res) => {
                                                                     // new myBag need to add to state
-                                                                    changeMyBag(
+                                                                    changeMyBagHere(
                                                                         res.data
                                                                     );
                                                                     console.log(
@@ -426,7 +437,7 @@ export default function Product(props) {
                                                                 )
                                                                 .then((res) => {
                                                                     // new myBag need to add to state
-                                                                    changeMyBag(
+                                                                    changeMyBagHere(
                                                                         res.data
                                                                     );
                                                                     console.log(
@@ -460,6 +471,7 @@ export default function Product(props) {
                     }
                 } else {
                     console.log('product not available');
+                    setLoading(false);
                 }
             })
             .catch((err) => console.log(err.response));
@@ -720,8 +732,6 @@ export default function Product(props) {
                                                             changeCategoryProducts
                                                         }
                                                         product={product}
-                                                        loading={loading}
-                                                        setLoading={setLoading}
                                                     />
                                                 )}
                                         </Grid>
@@ -857,8 +867,6 @@ export default function Product(props) {
                     changeMyBag={changeMyBag}
                     changeCategoryProducts={changeCategoryProducts}
                     avgRating={avgRating}
-                    loading={loading}
-                    setLoading={setLoading}
                 />
             </Box>
             <Box mx={3} mt={6}>

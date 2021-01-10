@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ReviewForm({ handleSubmit, loading, setLoading }) {
+export default function ReviewForm({ handleSubmit }) {
     const classes = useStyles();
     const [value, setValue] = React.useState(3);
     const [hover, setHover] = React.useState(-1);
@@ -123,13 +123,11 @@ export default function ReviewForm({ handleSubmit, loading, setLoading }) {
                                                     size='small'
                                                     variant='contained'
                                                     color='primary'
-                                                    disabled={
-                                                        loading || isSubmitting
-                                                    }
+                                                    disabled={isSubmitting}
                                                 >
                                                     <Box px={3}>Submit</Box>
                                                 </Button>
-                                                {loading && (
+                                                {isSubmitting && (
                                                     <CircularProgress
                                                         size={24}
                                                         className={

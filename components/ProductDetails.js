@@ -26,16 +26,10 @@ import EditIcon from '@material-ui/icons/Edit';
 import Rating from '@material-ui/lab/Rating';
 import ReactPlayer from 'react-player/youtube';
 
-import Cookies from 'js-cookie';
-import axios from 'axios';
+import SingleVideoReview from './SingleVideoReview';
+import SingleReview from './SingleReview';
 
-import {
-    handleSubmitForVideoReview,
-    handleAgreeForVideoReview,
-    handleDisagreeForVideoReview,
-    handleUpdateForVideoReview,
-    handleDeleteForVideoReview,
-} from './functions/functionsForVideoReview';
+import axios from 'axios';
 
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -59,12 +53,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const config = {
-    headers: {
-        Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
-    },
-};
-
 // 1. when anything change on state the component will re render
 // 2. we use useEffect only if we need anything to do before component mount or willmount
 // 3. these two are most important about react component
@@ -75,6 +63,10 @@ const config = {
 
 export default function ProductDetails(props) {
     const classes = useStyles();
+    const [reviewAgreeLoading, setReviewAgreeLoading] = React.useState(false);
+    const [reviewDisagreeLoading, setReviewDisagreeLoading] = React.useState(
+        false
+    );
 
     let categoryProducts = props.categoryProducts;
     let myBag = props.myBag;
@@ -88,8 +80,6 @@ export default function ProductDetails(props) {
     let changeCategoryProducts = props.changeCategoryProducts;
 
     let avgRating = props.avgRating;
-    let loading = props.loading;
-    let setLoading = props.setLoading;
 
     // console.log('got user', user);
     console.log('got product', product);
@@ -125,9 +115,6 @@ export default function ProductDetails(props) {
         setValue,
         resetForm
     ) => {
-        // start loading
-        setLoading(true);
-
         const review = {
             review_detail: values.review,
             rating_star: value,
@@ -163,9 +150,9 @@ export default function ProductDetails(props) {
             .catch((err) => console.log(err.response));
     };
 
-    const handleAgree = (stringifyReview) => {
+    const handleAgree = (stringifyReview, setReviewAgreeLoading) => {
         // start loading
-        setLoading(true);
+        setReviewAgreeLoading(true);
         const review = JSON.parse(stringifyReview);
 
         // ####### Process of agreed
@@ -238,6 +225,7 @@ export default function ProductDetails(props) {
                                                 config
                                             )
                                             .then((res) => {
+                                                setReviewAgreeLoading(false);
                                                 changeMyBag(res.data);
                                             })
                                             .catch((err) =>
@@ -261,6 +249,7 @@ export default function ProductDetails(props) {
                                         config
                                     )
                                     .then((res) => {
+                                        setReviewAgreeLoading(false);
                                         changeMyBag(res.data);
                                     })
                                     .catch((err) => console.log(err.response));
@@ -274,9 +263,9 @@ export default function ProductDetails(props) {
         }
     };
 
-    const handleDisagree = (stringifyReview) => {
+    const handleDisagree = (stringifyReview, setReviewDisagreeLoading) => {
         // start loading
-        setLoading(true);
+        setReviewDisagreeLoading(true);
         const review = JSON.parse(stringifyReview);
 
         // ###########  Same process like agreed
@@ -337,6 +326,7 @@ export default function ProductDetails(props) {
                                                 config
                                             )
                                             .then((res) => {
+                                                setReviewDisagreeLoading(false);
                                                 changeMyBag(res.data);
                                             })
                                             .catch((err) =>
@@ -360,6 +350,7 @@ export default function ProductDetails(props) {
                                         config
                                     )
                                     .then((res) => {
+                                        setReviewDisagreeLoading(false);
                                         changeMyBag(res.data);
                                     })
                                     .catch((err) => console.log(err.response));
@@ -374,9 +365,6 @@ export default function ProductDetails(props) {
     };
 
     const handleUpdate = (values, setSubmitting, reviewId, setOpen, value) => {
-        // start loading
-        setLoading(true);
-
         const reviewUpdate = {
             review_detail: values.review,
             rating_star: value,
@@ -412,11 +400,355 @@ export default function ProductDetails(props) {
     };
 
     const handleDelete = (reviewId, setOpen) => {
-        // start loading
-        setLoading(true);
-
         axios
             .delete(`http://localhost:8000/reviews/${reviewId}/`, config)
+            .then((res) => {
+                // final get will be after all post, patch done
+                axios
+                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .then((res) => {
+                        changeProduct(res.data);
+                        axios
+                            .get(
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                config
+                            )
+                            .then((res) => {
+                                changeMyBag(res.data);
+                                setOpen(false);
+                            })
+                            .catch((err) => console.log(err.response));
+                    })
+                    .catch((err) => console.log(err.response));
+            })
+            .catch((err) => console.log(err.response));
+    };
+
+    // ####### start for video review
+
+    const handleSubmitForVideoReview = (values, setSubmitting, resetForm) => {
+        const videoReview = {
+            link: values.link,
+            product: product.id,
+        };
+
+        console.log('clicked myBag', myBag);
+        console.log('clicked config', config);
+        axios
+            .post(
+                'http://localhost:8000/video-reviews-create/',
+                videoReview,
+                config
+            )
+            .then((res) => {
+                console.log(res.data);
+                // final get will be after all post, patch done
+                axios
+                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .then((res) => {
+                        changeProduct(res.data);
+                        axios
+                            .get(
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                config
+                            )
+                            .then((res) => {
+                                changeMyBag(res.data);
+                                setSubmitting(false);
+                                resetForm();
+                                // need to clear form
+                            })
+                            .catch((err) => console.log(err.response));
+                    })
+                    .catch((err) => console.log(err.response));
+            })
+            .catch((err) => console.log(err.response));
+    };
+
+    const handleAgreeForVideoReview = (
+        stringifyReview,
+        setVideoReviewAgreeLoading
+    ) => {
+        // start loading
+        setVideoReviewAgreeLoading(true);
+
+        const videoReview = JSON.parse(stringifyReview);
+
+        // ####### Process of agreed
+        // 1st check this user is equal to the videoReview made user or not
+        // if same user, then user can't add agreed
+        // if the user of this videoReview is not same requested user
+        // then check, is this user already agreed or not
+        // if user already agreed than also show a msg, you cant agreed
+        // if user not same of creator and also not agreed yet then the process will start
+        // update the agreed backed with this user,
+        // ### if this user disagreed before then need to remove from disagreed
+        // so remove this user from disagreed and finally get updated product and bag for re render
+        // ## if user not disagreed before then just get updated product and bag for re render
+        // Done #######
+
+        // ######### All in all, User can not agreed and disagreed at a time
+
+        // check user who own this videoReview,then user can't make agreed
+        // also check, user already agreed or not
+        // if already agreed then can not agreed now
+        if (
+            !videoReview.videoreviewcountforagree.user.includes(user.pk) &&
+            videoReview.user.pk !== user.pk
+        ) {
+            const videoReviewCountForAgree = {
+                agreed: videoReview.videoreviewcountforagree.agreed + 1,
+                user: videoReview.videoreviewcountforagree.user.concat(user.pk),
+            };
+
+            axios
+                .patch(
+                    `http://localhost:8000/video-reviews-count-for-agree-update/${videoReview.videoreviewcountforagree.id}/`,
+                    videoReviewCountForAgree,
+                    config
+                )
+                .then((res) => {
+                    // here, if user disagreed before then need to remove from disagreed
+                    // because User can not agreed and disagreed at a time
+                    if (
+                        videoReview.videoreviewcountfordisagree.user.includes(
+                            user.pk
+                        )
+                    ) {
+                        let arr = videoReview.videoreviewcountfordisagree.user;
+                        for (let i = 0; i < arr.length; i++) {
+                            if (arr[i] === user.pk) {
+                                arr.splice(i, 1);
+                                i--;
+                            }
+                        }
+                        const videoReviewCountForDisagree = {
+                            disagreed:
+                                videoReview.videoreviewcountfordisagree
+                                    .disagreed - 1,
+                            user: arr,
+                        };
+
+                        axios
+                            .patch(
+                                `http://localhost:8000/video-reviews-count-for-disagree-update/${videoReview.videoreviewcountfordisagree.id}/`,
+                                videoReviewCountForDisagree,
+                                config
+                            )
+                            .then((res) => {
+                                // final get will be after all post, patch done
+                                axios
+                                    .get(
+                                        `http://localhost:8000/products/${product.slug}/`
+                                    )
+                                    .then((res) => {
+                                        changeProduct(res.data);
+                                        axios
+                                            .get(
+                                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                config
+                                            )
+                                            .then((res) => {
+                                                setVideoReviewAgreeLoading(
+                                                    false
+                                                );
+                                                changeMyBag(res.data);
+                                            })
+                                            .catch((err) =>
+                                                console.log(err.response)
+                                            );
+                                    })
+                                    .catch((err) => console.log(err.response));
+                            })
+                            .catch((err) => console.log(err.response));
+                    } else {
+                        // final get will be after all post, patch done
+                        axios
+                            .get(
+                                `http://localhost:8000/products/${product.slug}/`
+                            )
+                            .then((res) => {
+                                changeProduct(res.data);
+                                axios
+                                    .get(
+                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        config
+                                    )
+                                    .then((res) => {
+                                        setVideoReviewAgreeLoading(false);
+                                        changeMyBag(res.data);
+                                    })
+                                    .catch((err) => console.log(err.response));
+                            })
+                            .catch((err) => console.log(err.response));
+                    }
+                })
+                .catch((err) => console.log(err.response));
+        } else {
+            console.log('you cant agree with your own review or already done');
+        }
+    };
+
+    const handleDisagreeForVideoReview = (
+        stringifyReview,
+        setVideoReviewDisagreeLoading
+    ) => {
+        // start loading
+        setVideoReviewDisagreeLoading(true);
+
+        const videoReview = JSON.parse(stringifyReview);
+
+        // ###########  Same process like agreed
+        // ######### All in all, User can not agreed and disagreed at a time
+
+        // check user who own this videoReview, then user can't make disagreed
+        // also check, user already disagreed or not
+        // if already disagreed then can not disagreed now
+        if (
+            !videoReview.videoreviewcountfordisagree.user.includes(user.pk) &&
+            videoReview.user.pk !== user.pk
+        ) {
+            const videoReviewCountForDisagree = {
+                disagreed:
+                    videoReview.videoreviewcountfordisagree.disagreed + 1,
+                user: videoReview.videoreviewcountfordisagree.user.concat(
+                    user.pk
+                ),
+            };
+
+            axios
+                .patch(
+                    `http://localhost:8000/video-reviews-count-for-disagree-update/${videoReview.videoreviewcountfordisagree.id}/`,
+                    videoReviewCountForDisagree,
+                    config
+                )
+                .then((res) => {
+                    // here, if user agreed before then need to remove from agreed
+                    // because User can not agreed and disagreed at a time
+
+                    if (
+                        videoReview.videoreviewcountforagree.user.includes(
+                            user.pk
+                        )
+                    ) {
+                        let arr = videoReview.videoreviewcountforagree.user;
+                        for (let i = 0; i < arr.length; i++) {
+                            if (arr[i] === user.pk) {
+                                arr.splice(i, 1);
+                                i--;
+                            }
+                        }
+                        const videoReviewCountForAgree = {
+                            agreed:
+                                videoReview.videoreviewcountforagree.agreed - 1,
+                            user: arr,
+                        };
+
+                        axios
+                            .patch(
+                                `http://localhost:8000/video-reviews-count-for-agree-update/${videoReview.videoreviewcountforagree.id}/`,
+                                videoReviewCountForAgree,
+                                config
+                            )
+                            .then((res) => {
+                                // final get will be after all post, patch done
+                                axios
+                                    .get(
+                                        `http://localhost:8000/products/${product.slug}/`
+                                    )
+                                    .then((res) => {
+                                        changeProduct(res.data);
+                                        axios
+                                            .get(
+                                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                config
+                                            )
+                                            .then((res) => {
+                                                setVideoReviewDisagreeLoading(
+                                                    false
+                                                );
+                                                changeMyBag(res.data);
+                                            })
+                                            .catch((err) =>
+                                                console.log(err.response)
+                                            );
+                                    })
+                                    .catch((err) => console.log(err.response));
+                            })
+                            .catch((err) => console.log(err.response));
+                    } else {
+                        // final get will be after all post, patch done
+                        axios
+                            .get(
+                                `http://localhost:8000/products/${product.slug}/`
+                            )
+                            .then((res) => {
+                                changeProduct(res.data);
+                                axios
+                                    .get(
+                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        config
+                                    )
+                                    .then((res) => {
+                                        setVideoReviewDisagreeLoading(false);
+                                        changeMyBag(res.data);
+                                    })
+                                    .catch((err) => console.log(err.response));
+                            })
+                            .catch((err) => console.log(err.response));
+                    }
+                })
+                .catch((err) => console.log(err.response));
+        } else {
+            console.log('you cant disagree with your review or already done');
+        }
+    };
+
+    const handleUpdateForVideoReview = (
+        values,
+        setSubmitting,
+        videoReviewId,
+        setOpen
+    ) => {
+        const videoReviewUpdate = {
+            link: values.link,
+        };
+
+        axios
+            .patch(
+                `http://localhost:8000/video-reviews/${videoReviewId}/`,
+                videoReviewUpdate,
+                config
+            )
+            .then((res) => {
+                // final get will be after all post, patch done
+                axios
+                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .then((res) => {
+                        changeProduct(res.data);
+                        axios
+                            .get(
+                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                config
+                            )
+                            .then((res) => {
+                                changeMyBag(res.data);
+                                setSubmitting(false);
+                                setOpen(false);
+                            })
+                            .catch((err) => console.log(err.response));
+                    })
+                    .catch((err) => console.log(err.response));
+            })
+            .catch((err) => console.log(err.response));
+    };
+
+    const handleDeleteForVideoReview = (videoReviewId, setOpen) => {
+        axios
+            .delete(
+                `http://localhost:8000/video-reviews/${videoReviewId}/`,
+                config
+            )
             .then((res) => {
                 // final get will be after all post, patch done
                 axios
@@ -511,8 +843,6 @@ export default function ProductDetails(props) {
                                         changeCardProducts={
                                             changeCategoryProducts
                                         }
-                                        loading={loading}
-                                        setLoading={setLoading}
                                     />
                                 </Grid>
                             ))}
@@ -550,8 +880,6 @@ export default function ProductDetails(props) {
                                     changeProduct={changeProduct}
                                     changeMyBag={changeMyBag}
                                     config={config}
-                                    loading={loading}
-                                    setLoading={setLoading}
                                 />
                             </Box>
                         </Grid>
@@ -563,192 +891,22 @@ export default function ProductDetails(props) {
                             product.video_review &&
                             product.video_review.length !== 0 &&
                             product.video_review.map((video_review) => (
-                                <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
-                                    <Box
-                                        borderRadius='borderRadius'
-                                        style={{ backgroundColor: 'white' }}
-                                    >
-                                        {video_review.user.pk ===
-                                            (user && user.pk) && (
-                                            <Box pt={1} textAlign='center'>
-                                                <UpdateVideoReviewDialog
-                                                    videoReviewId={
-                                                        video_review.id
-                                                    }
-                                                    handleUpdateForVideoReview={
-                                                        handleUpdateForVideoReview
-                                                    }
-                                                    product={product}
-                                                    myBag={myBag}
-                                                    changeProduct={
-                                                        changeProduct
-                                                    }
-                                                    changeMyBag={changeMyBag}
-                                                    config={config}
-                                                    loading={loading}
-                                                    setLoading={setLoading}
-                                                />
-                                                <Box py={1}>
-                                                    <DeleteVideoReviewDialog
-                                                        videoReviewId={
-                                                            video_review.id
-                                                        }
-                                                        handleDeleteForVideoReview={
-                                                            handleDeleteForVideoReview
-                                                        }
-                                                        product={product}
-                                                        myBag={myBag}
-                                                        changeProduct={
-                                                            changeProduct
-                                                        }
-                                                        changeMyBag={
-                                                            changeMyBag
-                                                        }
-                                                        config={config}
-                                                        loading={loading}
-                                                        setLoading={setLoading}
-                                                    />
-                                                </Box>
-                                            </Box>
-                                        )}
-                                        <ReactPlayer
-                                            width='100%'
-                                            height='260px'
-                                            controls
-                                            light
-                                            url={video_review.link}
-                                        />
-                                        <Box p={1}>
-                                            {video_review.created_at}
-                                        </Box>
-                                        <Box px={3} py={1} textAlign='center'>
-                                            <Box>
-                                                <div className={classes.root}>
-                                                    <div
-                                                        className={
-                                                            classes.wrapper
-                                                        }
-                                                    >
-                                                        <Button
-                                                            size='small'
-                                                            variant='contained'
-                                                            color={
-                                                                video_review.videoreviewcountforagree.user.includes(
-                                                                    user &&
-                                                                        user.pk
-                                                                )
-                                                                    ? 'secondary'
-                                                                    : 'default'
-                                                            }
-                                                            startIcon={
-                                                                <ThumbUpIcon />
-                                                            }
-                                                            onClick={() =>
-                                                                handleAgreeForVideoReview(
-                                                                    JSON.stringify(
-                                                                        video_review
-                                                                    ),
-                                                                    product,
-                                                                    myBag,
-                                                                    changeProduct,
-                                                                    changeMyBag,
-                                                                    user,
-                                                                    config,
-                                                                    setLoading
-                                                                )
-                                                            }
-                                                            // use this type of value sending in bag page
-                                                            disabled={
-                                                                loading ||
-                                                                video_review
-                                                                    .user.pk ===
-                                                                    (user &&
-                                                                        user.pk)
-                                                            }
-                                                        >
-                                                            Agreed (
-                                                            {video_review.videoreviewcountforagree &&
-                                                                video_review
-                                                                    .videoreviewcountforagree
-                                                                    .agreed}
-                                                            )
-                                                        </Button>
-                                                        {loading && (
-                                                            <CircularProgress
-                                                                size={24}
-                                                                className={
-                                                                    classes.buttonProgress
-                                                                }
-                                                            />
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </Box>
-                                            <Box mt={1}>
-                                                <div className={classes.root}>
-                                                    <div
-                                                        className={
-                                                            classes.wrapper
-                                                        }
-                                                    >
-                                                        <Button
-                                                            size='small'
-                                                            variant='contained'
-                                                            color={
-                                                                video_review.videoreviewcountfordisagree.user.includes(
-                                                                    user &&
-                                                                        user.pk
-                                                                )
-                                                                    ? 'secondary'
-                                                                    : 'default'
-                                                            }
-                                                            startIcon={
-                                                                <ThumbDownIcon />
-                                                            }
-                                                            onClick={() =>
-                                                                handleDisagreeForVideoReview(
-                                                                    JSON.stringify(
-                                                                        video_review
-                                                                    ),
-                                                                    product,
-                                                                    myBag,
-                                                                    changeProduct,
-                                                                    changeMyBag,
-                                                                    user,
-                                                                    config,
-                                                                    setLoading
-                                                                )
-                                                            }
-                                                            // use this type of value sending in bag page
-                                                            disabled={
-                                                                loading ||
-                                                                video_review
-                                                                    .user.pk ===
-                                                                    (user &&
-                                                                        user.pk)
-                                                            }
-                                                        >
-                                                            Disagreed (
-                                                            {video_review.videoreviewcountfordisagree &&
-                                                                video_review
-                                                                    .videoreviewcountfordisagree
-                                                                    .disagreed}
-                                                            )
-                                                        </Button>
-                                                        {loading && (
-                                                            <CircularProgress
-                                                                size={24}
-                                                                className={
-                                                                    classes.buttonProgress
-                                                                }
-                                                            />
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </Box>
-                                        </Box>
-                                    </Box>
-                                </Grid>
+                                <SingleVideoReview
+                                    video_review={video_review}
+                                    user={user}
+                                    handleUpdateForVideoReview={
+                                        handleUpdateForVideoReview
+                                    }
+                                    handleDeleteForVideoReview={
+                                        handleDeleteForVideoReview
+                                    }
+                                    handleAgreeForVideoReview={
+                                        handleAgreeForVideoReview
+                                    }
+                                    handleDisagreeForVideoReview={
+                                        handleDisagreeForVideoReview
+                                    }
+                                />
                             ))}
                     </Grid>
                 </Box>
@@ -920,11 +1078,7 @@ export default function ProductDetails(props) {
                                 borderRadius='borderRadius'
                             >
                                 <Box>
-                                    <Review
-                                        handleSubmit={handleSubmit}
-                                        loading={loading}
-                                        setLoading={setLoading}
-                                    />
+                                    <Review handleSubmit={handleSubmit} />
                                 </Box>
                             </Box>
                         </Grid>
@@ -935,217 +1089,16 @@ export default function ProductDetails(props) {
                     product.review &&
                     product.review.length !== 0 &&
                     product.review.map((review) => (
-                        <Box
-                            p={2}
-                            mt={2}
-                            borderRadius='borderRadius'
-                            style={{ backgroundColor: 'white' }}
-                        >
-                            <Grid container spacing={2}>
-                                <Grid
-                                    item
-                                    xs={12}
-                                    sm={12}
-                                    md={12}
-                                    lg={3}
-                                    xl={2}
-                                >
-                                    <Box textAlign='center'>
-                                        <img
-                                            src='/aa.jpg'
-                                            alt=''
-                                            srcset=''
-                                            height='50'
-                                            width='50'
-                                            style={{ borderRadius: '50%' }}
-                                        />
-                                        <Typography variant='h6' component='h6'>
-                                            {review.user.first_name.toUpperCase() +
-                                                ' ' +
-                                                review.user.last_name.toUpperCase()}
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid
-                                    item
-                                    xs={12}
-                                    sm={12}
-                                    md={12}
-                                    lg={7}
-                                    xl={8}
-                                >
-                                    <Box pr={2} pl={1}>
-                                        <Rating
-                                            name='read-only'
-                                            value={review.rating_star}
-                                            readOnly
-                                        />
-
-                                        <Typography>
-                                            {review.review_detail}
-                                        </Typography>
-
-                                        <Box pt={3}>
-                                            <Typography variant='p'>
-                                                {review.created_at}
-                                            </Typography>
-                                        </Box>
-                                        {review.user.pk ===
-                                            (user && user.pk) && (
-                                            <Box pt={2}>
-                                                <UpdateReviewDialog
-                                                    reviewId={review.id}
-                                                    handleUpdate={handleUpdate}
-                                                    loading={loading}
-                                                    setLoading={setLoading}
-                                                />
-                                                <span
-                                                    style={{
-                                                        paddingLeft: '16px',
-                                                    }}
-                                                >
-                                                    <DeleteReviewDialog
-                                                        reviewId={review.id}
-                                                        handleDelete={
-                                                            handleDelete
-                                                        }
-                                                        loading={loading}
-                                                        setLoading={setLoading}
-                                                    />
-                                                </span>
-                                            </Box>
-                                        )}
-                                    </Box>
-                                </Grid>
-                                <Grid
-                                    item
-                                    xs={12}
-                                    sm={12}
-                                    md={12}
-                                    lg={2}
-                                    xl={2}
-                                >
-                                    <Box px={3} textAlign='center'>
-                                        <Box>
-                                            <div className={classes.root}>
-                                                <div
-                                                    className={classes.wrapper}
-                                                >
-                                                    <Button
-                                                        size='small'
-                                                        variant='contained'
-                                                        color={
-                                                            review.reviewcountforagree.user.includes(
-                                                                user && user.pk
-                                                            )
-                                                                ? 'secondary'
-                                                                : 'default'
-                                                        }
-                                                        startIcon={
-                                                            <ThumbUpIcon />
-                                                        }
-                                                        onClick={() =>
-                                                            handleAgree(
-                                                                JSON.stringify(
-                                                                    review
-                                                                )
-                                                            )
-                                                        }
-                                                        // use this type of value sending in bag page
-                                                        disabled={
-                                                            loading ||
-                                                            review.user.pk ===
-                                                                (user &&
-                                                                    user.pk)
-                                                        }
-                                                    >
-                                                        Agreed (
-                                                        {review.reviewcountforagree &&
-                                                            review
-                                                                .reviewcountforagree
-                                                                .agreed}
-                                                        )
-                                                    </Button>
-                                                    {loading && (
-                                                        <CircularProgress
-                                                            size={24}
-                                                            className={
-                                                                classes.buttonProgress
-                                                            }
-                                                        />
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </Box>
-                                        <Box mt={1}>
-                                            <div className={classes.root}>
-                                                <div
-                                                    className={classes.wrapper}
-                                                >
-                                                    <Button
-                                                        size='small'
-                                                        variant='contained'
-                                                        color={
-                                                            review.reviewcountfordisagree.user.includes(
-                                                                user && user.pk
-                                                            )
-                                                                ? 'secondary'
-                                                                : 'default'
-                                                        }
-                                                        startIcon={
-                                                            <ThumbDownIcon />
-                                                        }
-                                                        onClick={() =>
-                                                            handleDisagree(
-                                                                JSON.stringify(
-                                                                    review
-                                                                )
-                                                            )
-                                                        }
-                                                        // use this type of value sending in bag page
-                                                        disabled={
-                                                            loading ||
-                                                            review.user.pk ===
-                                                                (user &&
-                                                                    user.pk)
-                                                        }
-                                                    >
-                                                        Disagreed (
-                                                        {review.reviewcountfordisagree &&
-                                                            review
-                                                                .reviewcountfordisagree
-                                                                .disagreed}
-                                                        )
-                                                    </Button>
-                                                    {loading && (
-                                                        <CircularProgress
-                                                            size={24}
-                                                            className={
-                                                                classes.buttonProgress
-                                                            }
-                                                        />
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </Box>
-                                    </Box>
-                                </Grid>
-                            </Grid>
-                        </Box>
+                        <SingleReview
+                            review={review}
+                            user={user}
+                            handleUpdate={handleUpdate}
+                            handleDelete={handleDelete}
+                            handleAgree={handleAgree}
+                            handleDisagree={handleDisagree}
+                        />
                     ))}
             </Box>
         </div>
     );
 }
-
-// {product.productavailable.available_quantity === 0 &&
-//     <Box textAlign='center'>
-//         <Chip
-//             label='Not In Stock'
-//             color='secondary'
-//             size='small'
-//         />
-//     </Box>}
-
-//
-// disabled={product.productavailable.available_quantity === 0}
