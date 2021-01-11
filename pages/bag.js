@@ -34,6 +34,9 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 
 import TableHead from '@material-ui/core/TableHead';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import Cookies from 'js-cookie';
 import { useEffect } from 'react';
@@ -150,6 +153,7 @@ export default function Bag(props) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [reRender, setReRender] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
 
     let myBag = myBagRe ? myBagRe : props.myBag;
     let config = props.config;
@@ -175,6 +179,15 @@ export default function Bag(props) {
         }
         myBagRe = undefined;
     });
+
+    // this is for alert close
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
 
     const emptyRows =
         rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -432,6 +445,19 @@ export default function Bag(props) {
 
         console.log('final pk not remove', pk);
 
+        // here only delete one productWithQuantity
+        // when we also delete all trial productWithQuantity with this productWithQuantity
+        // then only productWithQuantity delete, not trial productWithQuantity
+        // trial productWithQuantity will remain in database
+        // we can delete those in next loop section by filtering
+        // because productWithQuantity already delete, so id has gone
+        // so we filter trial productWithQuantity and delete them in loop section
+
+        let allTrialProductWithQuantityForSameCategoryProductsWithQuantity = sameCategoryProductsWithQuantity.filter(
+            (sameCategoryProductsWithQuantity) =>
+                sameCategoryProductsWithQuantity.id !== productWithQuantity.id
+        );
+
         axios
             .delete(
                 `http://localhost:8000/product-with-quantity/${productWithQuantity.id}/`,
@@ -486,6 +512,28 @@ export default function Bag(props) {
                                 })
                                 .catch((err) => console.log(err.response));
                         } else {
+                            // here delete all trial productWithQuantity where main productWithQuantity not includes
+                            // this is because when we have no similar productWithQuantity added but have that similar
+                            // productWithQuantity in trial
+                            // so need to delete these trial productWithQuantity form database
+                            allTrialProductWithQuantityForSameCategoryProductsWithQuantity.forEach(
+                                (
+                                    allTrialProductWithQuantityForSameCategoryProductsWithQuantity
+                                ) => {
+                                    axios
+                                        .delete(
+                                            `http://localhost:8000/product-with-quantity/${allTrialProductWithQuantityForSameCategoryProductsWithQuantity.id}/`,
+                                            config
+                                        )
+                                        .then((res) =>
+                                            console.log('trial deleted')
+                                        )
+                                        .catch((err) =>
+                                            console.log(err.response)
+                                        );
+                                }
+                            );
+
                             sameCategoryProductsWithQuantity.forEach(
                                 (
                                     sameCategoryProductsWithQuantityEach,
@@ -520,6 +568,7 @@ export default function Bag(props) {
                                                         config
                                                     )
                                                     .then((res) => {
+                                                        setOpen(true);
                                                         changeMyBag(res.data);
                                                     })
                                                     .catch((err) =>
@@ -650,187 +699,230 @@ export default function Bag(props) {
                                     </Grid>
                                 </Grid>
                             </Box>
-                            <Box pt={2} borderRadius='borderRadius'>
-                                <TableContainer component={Paper}>
-                                    <Table
-                                        className={classes.table}
-                                        aria-label='custom pagination table'
-                                    >
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell align='center'>
-                                                    Name
-                                                </TableCell>
-                                                <TableCell align='center'>
-                                                    Price
-                                                </TableCell>
-                                                <TableCell align='center'>
-                                                    Quantity
-                                                </TableCell>
-                                                <TableCell align='center'>
-                                                    Cost
-                                                </TableCell>
-                                                <TableCell align='center'>
-                                                    Option
-                                                </TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {(rowsPerPage > 0
-                                                ? rows.slice(
-                                                      page * rowsPerPage,
-                                                      page * rowsPerPage +
-                                                          rowsPerPage
-                                                  )
-                                                : rows
-                                            ).map((row) => (
-                                                <TableRow key={row.name} hover>
-                                                    <TableCell
-                                                        component='th'
-                                                        scope='row'
-                                                        align='center'
-                                                    >
-                                                        {row.product.name}
+                            {rows.length === 0 ? (
+                                <Box pt={2}>
+                                    <Alert severity='error'>
+                                        <AlertTitle>Sorry Dear</AlertTitle>
+                                        You Have No Product In Your Bag Yet —{' '}
+                                        <strong>
+                                            Hope You Will Add Product In Your
+                                            Bag Soon!
+                                        </strong>
+                                    </Alert>
+                                </Box>
+                            ) : (
+                                <Box pt={2} borderRadius='borderRadius'>
+                                    <TableContainer component={Paper}>
+                                        <Table
+                                            className={classes.table}
+                                            aria-label='custom pagination table'
+                                        >
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align='center'>
+                                                        Name
                                                     </TableCell>
-                                                    <TableCell
-                                                        style={{ width: 160 }}
-                                                        align='center'
-                                                    >
-                                                        {row.product.price}
+                                                    <TableCell align='center'>
+                                                        Price
                                                     </TableCell>
-                                                    <TableCell
-                                                        style={{ width: 160 }}
-                                                        align='center'
+                                                    <TableCell align='center'>
+                                                        Quantity
+                                                    </TableCell>
+                                                    <TableCell align='center'>
+                                                        Cost
+                                                    </TableCell>
+                                                    <TableCell align='center'>
+                                                        Option
+                                                    </TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {(rowsPerPage > 0
+                                                    ? rows.slice(
+                                                          page * rowsPerPage,
+                                                          page * rowsPerPage +
+                                                              rowsPerPage
+                                                      )
+                                                    : rows
+                                                ).map((row) => (
+                                                    <TableRow
+                                                        key={row.name}
+                                                        hover
                                                     >
-                                                        {row.quantity > 1 &&
-                                                            !row.add_as_trial && (
-                                                                <IconButton
-                                                                    color='error'
-                                                                    onClick={() =>
-                                                                        handleRemove(
-                                                                            JSON.stringify(
-                                                                                row
+                                                        <TableCell
+                                                            component='th'
+                                                            scope='row'
+                                                            align='center'
+                                                        >
+                                                            {row.product.name}
+                                                        </TableCell>
+                                                        <TableCell
+                                                            style={{
+                                                                width: 160,
+                                                            }}
+                                                            align='center'
+                                                        >
+                                                            {row.product.price}
+                                                        </TableCell>
+                                                        <TableCell
+                                                            style={{
+                                                                width: 160,
+                                                            }}
+                                                            align='center'
+                                                        >
+                                                            {row.quantity > 1 &&
+                                                                !row.add_as_trial && (
+                                                                    <IconButton
+                                                                        color='error'
+                                                                        onClick={() =>
+                                                                            handleRemove(
+                                                                                JSON.stringify(
+                                                                                    row
+                                                                                )
                                                                             )
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <RemoveCircleIcon />
-                                                                </IconButton>
-                                                            )}
+                                                                        }
+                                                                    >
+                                                                        <RemoveCircleIcon />
+                                                                    </IconButton>
+                                                                )}
 
-                                                        {row.quantity}
-                                                        {!row.add_as_trial ? (
-                                                            row.product
-                                                                .productavailable
-                                                                .available_quantity !==
-                                                            0 ? (
-                                                                <IconButton
-                                                                    color='error'
-                                                                    onClick={() =>
-                                                                        handleAdd(
-                                                                            JSON.stringify(
-                                                                                row
+                                                            {row.quantity}
+                                                            {!row.add_as_trial ? (
+                                                                row.product
+                                                                    .productavailable
+                                                                    .available_quantity !==
+                                                                0 ? (
+                                                                    <IconButton
+                                                                        color='error'
+                                                                        onClick={() =>
+                                                                            handleAdd(
+                                                                                JSON.stringify(
+                                                                                    row
+                                                                                )
                                                                             )
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <AddCircleIcon />
-                                                                </IconButton>
+                                                                        }
+                                                                    >
+                                                                        <AddCircleIcon />
+                                                                    </IconButton>
+                                                                ) : (
+                                                                    <Chip
+                                                                        label='Not In Stock'
+                                                                        color='secondary'
+                                                                        size='small'
+                                                                    />
+                                                                )
+                                                            ) : (
+                                                                <></>
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell
+                                                            style={{
+                                                                width: 160,
+                                                            }}
+                                                            align='center'
+                                                        >
+                                                            {!row.add_as_trial ? (
+                                                                row.cost
                                                             ) : (
                                                                 <Chip
-                                                                    label='Not In Stock'
+                                                                    label='Trial'
                                                                     color='secondary'
                                                                     size='small'
                                                                 />
-                                                            )
-                                                        ) : (
-                                                            <></>
-                                                        )}
-                                                    </TableCell>
-                                                    <TableCell
-                                                        style={{ width: 160 }}
-                                                        align='center'
-                                                    >
-                                                        {!row.add_as_trial ? (
-                                                            row.cost
-                                                        ) : (
-                                                            <Chip
-                                                                label='Trial'
-                                                                color='secondary'
-                                                                size='small'
-                                                            />
-                                                        )}
-                                                    </TableCell>
+                                                            )}
+                                                        </TableCell>
 
-                                                    <TableCell
-                                                        style={{ width: 160 }}
-                                                        align='center'
-                                                    >
-                                                        <IconButton
-                                                            color='error'
-                                                            onClick={() =>
-                                                                handleDelete(
-                                                                    JSON.stringify(
-                                                                        row
-                                                                    )
-                                                                )
-                                                            }
+                                                        <TableCell
+                                                            style={{
+                                                                width: 160,
+                                                            }}
+                                                            align='center'
                                                         >
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
+                                                            <IconButton
+                                                                color='error'
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        JSON.stringify(
+                                                                            row
+                                                                        )
+                                                                    )
+                                                                }
+                                                            >
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
 
-                                            {emptyRows > 0 && (
-                                                <TableRow
-                                                    style={{
-                                                        height: 53 * emptyRows,
-                                                    }}
-                                                >
-                                                    <TableCell colSpan={6} />
+                                                {emptyRows > 0 && (
+                                                    <TableRow
+                                                        style={{
+                                                            height:
+                                                                53 * emptyRows,
+                                                        }}
+                                                    >
+                                                        <TableCell
+                                                            colSpan={6}
+                                                        />
+                                                    </TableRow>
+                                                )}
+                                            </TableBody>
+                                            <TableFooter>
+                                                <TableRow>
+                                                    <TablePagination
+                                                        rowsPerPageOptions={[
+                                                            5,
+                                                            10,
+                                                            25,
+                                                            {
+                                                                label: 'All',
+                                                                value: -1,
+                                                            },
+                                                        ]}
+                                                        colSpan={5}
+                                                        count={rows.length}
+                                                        rowsPerPage={
+                                                            rowsPerPage
+                                                        }
+                                                        page={page}
+                                                        SelectProps={{
+                                                            inputProps: {
+                                                                'aria-label':
+                                                                    'rows per page',
+                                                            },
+                                                            native: true,
+                                                        }}
+                                                        onChangePage={
+                                                            handleChangePage
+                                                        }
+                                                        onChangeRowsPerPage={
+                                                            handleChangeRowsPerPage
+                                                        }
+                                                        ActionsComponent={
+                                                            TablePaginationActions
+                                                        }
+                                                    />
                                                 </TableRow>
-                                            )}
-                                        </TableBody>
-                                        <TableFooter>
-                                            <TableRow>
-                                                <TablePagination
-                                                    rowsPerPageOptions={[
-                                                        5,
-                                                        10,
-                                                        25,
-                                                        {
-                                                            label: 'All',
-                                                            value: -1,
-                                                        },
-                                                    ]}
-                                                    colSpan={5}
-                                                    count={rows.length}
-                                                    rowsPerPage={rowsPerPage}
-                                                    page={page}
-                                                    SelectProps={{
-                                                        inputProps: {
-                                                            'aria-label':
-                                                                'rows per page',
-                                                        },
-                                                        native: true,
-                                                    }}
-                                                    onChangePage={
-                                                        handleChangePage
-                                                    }
-                                                    onChangeRowsPerPage={
-                                                        handleChangeRowsPerPage
-                                                    }
-                                                    ActionsComponent={
-                                                        TablePaginationActions
-                                                    }
-                                                />
-                                            </TableRow>
-                                        </TableFooter>
-                                    </Table>
-                                </TableContainer>
-                            </Box>
+                                            </TableFooter>
+                                        </Table>
+                                    </TableContainer>
+                                </Box>
+                            )}
                         </Grid>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
+                            open={open}
+                            autoHideDuration={4000}
+                            onClose={handleClose}
+                        >
+                            <Alert severity='warning' variant='filled'>
+                                You Can't Trial Other Products Without Having
+                                Similar Product in Bag!
+                            </Alert>
+                        </Snackbar>
                         <Grid item xs={12} sm={12} md={12} lg={12} xl={4}>
                             <Box
                                 p={2}

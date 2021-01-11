@@ -11,6 +11,9 @@ import Chip from '@material-ui/core/Chip';
 import Box from '@material-ui/core/Box';
 import axios from 'axios';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const useStyles = makeStyles((theme) => ({
     boot: {
@@ -52,6 +55,42 @@ export default function ProductForTrialCard({
     console.log('got product for card in trial', product);
 
     const [loading, setLoading] = React.useState(false);
+    const [openForAdd, setOpenForAdd] = React.useState(false);
+    const [openForNotInStock, setOpenForNotInStock] = React.useState(false);
+    const [openForAddAsTrial, setOpenForAddAsTrial] = React.useState(false);
+    const [openForTwoAlreadyAdded, setOpenForTwoAlreadyAdded] = React.useState(
+        false
+    );
+
+    // this is for alert close
+    const handleCloseForAdd = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenForAdd(false);
+    };
+    const handleCloseForNotInStock = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenForNotInStock(false);
+    };
+    const handleCloseForAddAsTrial = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenForAddAsTrial(false);
+    };
+    const handleCloseForTwoAlreadyAdded = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenForTwoAlreadyAdded(false);
+    };
 
     const handleAddToBag = () => {
         // create a loading
@@ -119,6 +158,7 @@ export default function ProductForTrialCard({
                             'you cant add more than 2 product of same category as trial'
                         );
                         setLoading(false);
+                        setOpenForTwoAlreadyAdded(true);
                     } else {
                         // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
                         if (
@@ -129,6 +169,7 @@ export default function ProductForTrialCard({
                                 'already product add in bag or add as trial'
                             );
                             setLoading(false);
+                            setOpenForAddAsTrial(true);
                             // here in bag, user can't add more quantity to trial, only one product can trial
                             // when user add this for buy then it can't be add as trial
                         } else {
@@ -207,6 +248,9 @@ export default function ProductForTrialCard({
                                                                         ) => {
                                                                             setLoading(
                                                                                 false
+                                                                            );
+                                                                            setOpenForAdd(
+                                                                                true
                                                                             );
                                                                             changeMyBag(
                                                                                 res.data
@@ -290,6 +334,9 @@ export default function ProductForTrialCard({
                                                                             setLoading(
                                                                                 false
                                                                             );
+                                                                            setOpenForAdd(
+                                                                                true
+                                                                            );
                                                                             changeMyBag(
                                                                                 res.data
                                                                             );
@@ -330,6 +377,7 @@ export default function ProductForTrialCard({
                 } else {
                     console.log('product not available');
                     setLoading(false);
+                    setOpenForNotInStock(true);
                 }
             })
             .catch((err) => console.log(err.response));
@@ -399,6 +447,60 @@ export default function ProductForTrialCard({
                             )}
                         </div>
                     </div>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        open={openForAdd}
+                        autoHideDuration={4000}
+                        onClose={handleCloseForAdd}
+                    >
+                        <Alert severity='success' variant='filled'>
+                            Successfully Product Added To Bag As Trial!
+                        </Alert>
+                    </Snackbar>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        open={openForAddAsTrial}
+                        autoHideDuration={4000}
+                        onClose={handleCloseForAddAsTrial}
+                    >
+                        <Alert severity='info' variant='filled'>
+                            Already Add as Trial, Can't Add More!
+                        </Alert>
+                    </Snackbar>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        open={openForNotInStock}
+                        autoHideDuration={4000}
+                        onClose={handleCloseForNotInStock}
+                    >
+                        <Alert severity='info' variant='filled'>
+                            Sorry, Product Not In Stock Now!
+                        </Alert>
+                    </Snackbar>
+
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        open={openForTwoAlreadyAdded}
+                        autoHideDuration={4000}
+                        onClose={handleCloseForTwoAlreadyAdded}
+                    >
+                        <Alert severity='info' variant='filled'>
+                            Already Add 2 Similar Product as Trial, Can't Add
+                            More!
+                        </Alert>
+                    </Snackbar>
                 </CardActions>
             </Box>
         </Card>

@@ -11,6 +11,9 @@ import Chip from '@material-ui/core/Chip';
 import Box from '@material-ui/core/Box';
 import axios from 'axios';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const useStyles = makeStyles((theme) => ({
     boot: {
@@ -52,6 +55,32 @@ export default function ProductCard({
     console.log('got product for card', product);
 
     const [loading, setLoading] = React.useState(false);
+    const [openForAdd, setOpenForAdd] = React.useState(false);
+    const [openForNotInStock, setOpenForNotInStock] = React.useState(false);
+    const [openForAddAsTrial, setOpenForAddAsTrial] = React.useState(false);
+
+    // this is for alert close
+    const handleCloseForAdd = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenForAdd(false);
+    };
+    const handleCloseForNotInStock = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenForNotInStock(false);
+    };
+    const handleCloseForAddAsTrial = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenForAddAsTrial(false);
+    };
 
     // ####### Full feature of add productWithQuantity to bag
     // 1st check is product quantity available or not
@@ -120,6 +149,7 @@ export default function ProductCard({
                         if (productWithQuantityExistInBag[0].add_as_trial) {
                             console.log('this product already add as trial');
                             setLoading(false);
+                            setOpenForAddAsTrial(true);
                         } else {
                             axios
                                 .patch(
@@ -189,6 +219,9 @@ export default function ProductCard({
                                                                 .then((res) => {
                                                                     setLoading(
                                                                         false
+                                                                    );
+                                                                    setOpenForAdd(
+                                                                        true
                                                                     );
                                                                     // new myBag need to update
                                                                     changeMyBag(
@@ -290,6 +323,9 @@ export default function ProductCard({
                                                                     setLoading(
                                                                         false
                                                                     );
+                                                                    setOpenForAdd(
+                                                                        true
+                                                                    );
                                                                     // new myBag need to update
                                                                     changeMyBag(
                                                                         res.data
@@ -361,6 +397,9 @@ export default function ProductCard({
                                                                     setLoading(
                                                                         false
                                                                     );
+                                                                    setOpenForAdd(
+                                                                        true
+                                                                    );
                                                                     // new myBag need to update
                                                                     changeMyBag(
                                                                         res.data
@@ -390,6 +429,7 @@ export default function ProductCard({
                 } else {
                     console.log('product not available');
                     setLoading(false);
+                    setOpenForNotInStock(true);
                 }
             })
             .catch((err) => console.log(err.response));
@@ -460,6 +500,45 @@ export default function ProductCard({
                             )}
                         </div>
                     </div>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        open={openForAdd}
+                        autoHideDuration={4000}
+                        onClose={handleCloseForAdd}
+                    >
+                        <Alert severity='success' variant='filled'>
+                            Successfully Product Added To Bag!
+                        </Alert>
+                    </Snackbar>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        open={openForAddAsTrial}
+                        autoHideDuration={4000}
+                        onClose={handleCloseForAddAsTrial}
+                    >
+                        <Alert severity='info' variant='filled'>
+                            Already Add as Trial, Can't Add More!
+                        </Alert>
+                    </Snackbar>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        open={openForNotInStock}
+                        autoHideDuration={4000}
+                        onClose={handleCloseForNotInStock}
+                    >
+                        <Alert severity='info' variant='filled'>
+                            Sorry, Product Not In Stock Now!
+                        </Alert>
+                    </Snackbar>
                 </CardActions>
             </Box>
         </Card>
