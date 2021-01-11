@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function PaymentForm({ paymentOrderId }) {
+export default function PaymentForm({ paymentOrderCode }) {
     const classes = useStyles();
     const router = useRouter();
     const paymentNext = (values, setSubmitting) => {
@@ -58,7 +58,7 @@ export default function PaymentForm({ paymentOrderId }) {
         //     if (this.state.myOrder.is_payment_confirm === false){
         axios
             .patch(
-                `http://localhost:8000/my-order/${paymentOrderId}/`,
+                `http://localhost:8000/my-order/${paymentOrderCode}/`,
                 {
                     payment: values.payment,
                     is_payment_confirm: true,
@@ -69,7 +69,7 @@ export default function PaymentForm({ paymentOrderId }) {
             .then((res) => {
                 console.log(res.data);
                 setSubmitting(false);
-                router.push(`/my-order-details/${res.data.id}`);
+                router.push(`/my-order-details/${res.data.order_code}`);
                 //   this.setState({
                 //     loading: false,
                 //     submitted: true

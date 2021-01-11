@@ -36,6 +36,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import Cookies from 'js-cookie';
+import { Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,15 +59,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const useLogout = () => {
-    const token = useSelector((state) => state.loginReducer.token);
-    const totalBagProduct = useSelector(
-        (state) => state.singleProductReducer.totalBagProduct
-    );
+export default function ButtonAppBar({ totalProductInBag }) {
+    const router = useRouter();
+    const classes = useStyles();
+    const token = Cookies.get('haha_ecom_bangla_token');
 
     const dispatch = useDispatch();
     // need to show msg for email already used and password error with payload
-    const logout = (router) => {
+    const logout = () => {
         axios
             .post('http://localhost:8000/rest-auth/logout/')
             .then((res) => {
@@ -77,14 +77,7 @@ const useLogout = () => {
             })
             .catch((err) => console.log(err.response));
     };
-    return { token, totalBagProduct, logout };
-};
 
-export default function ButtonAppBar({ totalProductInBag }) {
-    const router = useRouter();
-    const classes = useStyles();
-    const { token, totalBagProduct, logout } = useLogout();
-    console.log(token);
     // for menu
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -840,7 +833,7 @@ export default function ButtonAppBar({ totalProductInBag }) {
                                     </MenuItem>
                                 </Link>
                                 <Divider variant='middle' />
-                                <Link href='/my-lottery'>
+                                <Link href='/my-account'>
                                     <MenuItem onClick={handleClose}>
                                         <InboxIcon fontSize='small' />
                                         <Box ml={2}>My Lottery</Box>
@@ -861,14 +854,14 @@ export default function ButtonAppBar({ totalProductInBag }) {
                                     </MenuItem>
                                 </Link>
                                 <Divider variant='middle' />
-                                <Link href='/my-gift'>
+                                <Link href='/my-account'>
                                     <MenuItem onClick={handleClose}>
                                         <DraftsIcon fontSize='small' />
                                         <Box ml={2}>I Gift It</Box>
                                     </MenuItem>
                                 </Link>
                                 <Divider variant='middle' />
-                                <MenuItem onClick={() => logout(router)}>
+                                <MenuItem onClick={() => logout()}>
                                     <InboxIcon fontSize='small' />
                                     <Box ml={2}>Logout</Box>
                                 </MenuItem>
@@ -876,9 +869,22 @@ export default function ButtonAppBar({ totalProductInBag }) {
                             {/* menu end */}
                         </>
                     ) : (
-                        <Link href='/login'>
-                            <Typography>Login</Typography>
-                        </Link>
+                        <>
+                            <Button
+                                size='small'
+                                color='inherit'
+                                onClick={() => router.push('/register')}
+                            >
+                                <Box px={1}>register</Box>
+                            </Button>
+                            <Button
+                                size='small'
+                                color='inherit'
+                                onClick={() => router.push('/login')}
+                            >
+                                <Box px={1}>login</Box>
+                            </Button>
+                        </>
                     )}
                 </Toolbar>
             </AppBar>

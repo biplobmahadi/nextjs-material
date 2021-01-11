@@ -84,7 +84,9 @@ export default function OrderCard({ myOrder }) {
 
                 <Grid item>
                     <Box>
-                        <Typography>{myOrder.my_bag.product.length}</Typography>
+                        <Typography>
+                            {myOrder.my_bag.product_with_quantity.length}
+                        </Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -208,7 +210,7 @@ export default function OrderCard({ myOrder }) {
                 <Divider />
             </Box>
             <Box pt={2} textAlign='center'>
-                <Link href={`/my-order-details/${myOrder.id}`}>
+                <Link href={`/my-order-details/${myOrder.order_code}`}>
                     <Button variant='contained' size='small' color='primary'>
                         <Box px={3}>See Details</Box>
                     </Button>

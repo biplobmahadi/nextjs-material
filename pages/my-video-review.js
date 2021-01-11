@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
-import Card from '../components/Card';
-import ProductTable from '../components/ProductTable';
-import OrderCard from '../components/OrderCard';
+import ProductCard from '../components/ProductCard';
+import MyReviewedProduct from '../components/MyReviewedProduct';
+import NotReviewedProduct from '../components/NotReviewedProduct';
+import AccountOptionList from '../components/AccountOptionList';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';
 import Box from '@material-ui/core/Box';
@@ -11,9 +11,11 @@ import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import AccountOptionList from '../components/AccountOptionList';
 import { makeStyles } from '@material-ui/core/styles';
-import Divider from '@material-ui/core/Divider';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+
 import Hidden from '@material-ui/core/Hidden';
 import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
@@ -21,15 +23,20 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
     root: {
-        [theme.breakpoints.only('xs')]: {
-            textAlign: 'center',
-        },
+        flexGrow: 1,
+        marginTop: '16px',
     },
-}));
-
-export default function MyOrders({ orders, myBag, user }) {
+});
+export default function MyReview({
+    mainProductReviewed,
+    allProductReviewed,
+    notReviewedProduct,
+    myOrderedAllProducts,
+    myBag,
+    user,
+}) {
     const classes = useStyles();
     const router = useRouter();
 
@@ -39,11 +46,35 @@ export default function MyOrders({ orders, myBag, user }) {
         }
     }, []);
 
-    console.log(orders);
+    const [value, setValue] = React.useState('0');
+    let output;
+    if (value === '0') {
+        output = (
+            <MyReviewedProduct
+                mainProductReviewed={mainProductReviewed && mainProductReviewed}
+            />
+        );
+    } else {
+        output = (
+            <NotReviewedProduct
+                notReviewedProduct={notReviewedProduct && notReviewedProduct}
+            />
+        );
+    }
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+    console.log('all reviewed', allProductReviewed);
+    console.log('main', mainProductReviewed);
+
+    console.log('all ordered', myOrderedAllProducts);
+
+    console.log('not', notReviewedProduct);
     return (
         <div>
+            {' '}
             <Head>
-                <title>My Orders</title>
+                <title>My Video Review</title>
                 <link rel='icon' href='/a.ico' />
                 <meta
                     name='viewport'
@@ -106,63 +137,33 @@ export default function MyOrders({ orders, myBag, user }) {
                                     boxShadow={1}
                                     borderRadius='borderRadius'
                                     style={{ backgroundColor: 'white' }}
-                                    className={classes.root}
                                 >
-                                    <Grid
-                                        container
-                                        direction='row'
-                                        justify='space-between'
-                                        alignItems='center'
-                                        spacing={2}
+                                    <Typography variant='h5'>
+                                        <strong>
+                                            My Video Reviews & Ratings
+                                        </strong>
+                                    </Typography>
+                                </Box>
+                                <Paper className={classes.root}>
+                                    <Tabs
+                                        value={value}
+                                        onChange={handleChange}
+                                        indicatorColor='primary'
+                                        textColor='primary'
+                                        variant='fullWidth'
                                     >
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            sm={6}
-                                            md={6}
-                                            lg={6}
-                                            xl={6}
-                                        >
-                                            <Typography
-                                                variant='h5'
-                                                component='h5'
-                                            >
-                                                <strong>My Orders</strong>{' '}
-                                            </Typography>
-                                        </Grid>
+                                        <Tab
+                                            label='Video Reviewed Product'
+                                            value='0'
+                                        />
+                                        <Tab
+                                            label='Not Video Reviewed Product You Buy'
+                                            value='1'
+                                        />
+                                    </Tabs>
+                                </Paper>
 
-                                        <Grid item>
-                                            <Button
-                                                variant='contained'
-                                                size='small'
-                                            >
-                                                <Box px={3}>
-                                                    Total: {orders.length}
-                                                </Box>
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-                                </Box>
-
-                                <Box mt={2}>
-                                    <Grid container spacing={3}>
-                                        {orders.length !== 0 &&
-                                            orders.map((myOrder) => (
-                                                <Grid
-                                                    item
-                                                    xs={12}
-                                                    sm={12}
-                                                    md={6}
-                                                    lg={4}
-                                                    xl={4}
-                                                >
-                                                    <OrderCard
-                                                        myOrder={myOrder}
-                                                    />
-                                                </Grid>
-                                            ))}
-                                    </Grid>
-                                </Box>
+                                {output}
                             </Grid>
                         </Grid>
                     </Box>
@@ -195,11 +196,21 @@ const fetchDataForUser = async (config) =>
             error: err.response.data,
         }));
 
-const fetchDataForOrder = async (config) =>
+const fetchDataForReview = async (config) =>
+    await axios
+        .get(`http://localhost:8000/video-reviews-read/`, config)
+        .then((res) => ({
+            reviews: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
+const fetchDataForMyOrderProducts = async (config) =>
     await axios
         .get(`http://localhost:8000/my-order/`, config)
         .then((res) => ({
-            orders: res.data,
+            myOrders: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
@@ -236,14 +247,100 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
-    const dataOrder = await fetchDataForOrder(config);
+    const dataReview = await fetchDataForReview(config);
+    const dataMyOrders = await fetchDataForMyOrderProducts(config);
 
-    const orders = dataOrder.orders ? dataOrder.orders : null;
+    let reviews = dataReview.reviews;
+    let myOrders = dataMyOrders.myOrders;
+
+    // for reviewed products -> start here
+
+    let allProductReviewed = [];
+    let mainProductReviewed = [];
+
+    reviews &&
+        reviews.forEach((review) => {
+            allProductReviewed.push(review.product);
+        });
+    // console.log(allProductReviewed);
+
+    mainProductReviewed =
+        allProductReviewed.length !== 0
+            ? mainProductReviewed.concat(allProductReviewed[0])
+            : [];
+
+    allProductReviewed &&
+        allProductReviewed.forEach((product) => {
+            let mainProductReviewedId = [];
+            mainProductReviewed.forEach((product) => {
+                mainProductReviewedId = mainProductReviewedId.concat(
+                    product.id
+                );
+            });
+
+            if (!mainProductReviewedId.includes(product.id)) {
+                mainProductReviewed = mainProductReviewed.concat(product);
+            }
+        });
+
+    // console.log(mainProductReviewed);
+
+    // for not reviewed products -> start here
+
+    let myOrderedAllProducts = [];
+    myOrders &&
+        myOrders.forEach((myOrder) => {
+            myOrder.my_bag.product_with_quantity.forEach(
+                (product_with_quantity) => {
+                    myOrderedAllProducts = myOrderedAllProducts.concat(
+                        product_with_quantity.product
+                    );
+                }
+            );
+        });
+
+    // console.log('myOrderedAllProducts', myOrderedAllProducts)
+
+    // let allProduct = [];
+    // products &&
+    //     products.forEach((product) => {
+    //         allProduct.push(product);
+    //     });
+    let notReviewedProduct = [];
+    myOrderedAllProducts &&
+        myOrderedAllProducts.forEach((product) => {
+            let mainProductReviewedId = [];
+            let notReviewedProductId = [];
+            mainProductReviewed.forEach((product) => {
+                mainProductReviewedId = mainProductReviewedId.concat(
+                    product.id
+                );
+            });
+            notReviewedProduct.length !== 0 &&
+                notReviewedProduct.forEach((product) => {
+                    notReviewedProductId = notReviewedProductId.concat(
+                        product.id
+                    );
+                });
+            if (
+                !mainProductReviewedId.includes(product.id) &&
+                !notReviewedProductId.includes(product.id)
+            ) {
+                notReviewedProduct = notReviewedProduct.concat(product);
+            }
+        });
 
     const dataUser = await fetchDataForUser(config);
     const user = dataUser.user ? dataUser.user : null;
 
     return {
-        props: { orders, myBag, user },
+        props: {
+            mainProductReviewed,
+            allProductReviewed,
+            notReviewedProduct,
+            myOrderedAllProducts,
+            myBag,
+            user,
+        },
     };
 }

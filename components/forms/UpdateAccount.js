@@ -35,30 +35,25 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
     },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
     form: {
         width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(3),
+        marginTop: theme.spacing(4),
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
 }));
 
-const useUpdateAccount = () => {
-    const token = useSelector((state) => state.loginReducer.token);
+export default function UpdateAccountForm({ changeUser }) {
+    const classes = useStyles();
+    const [successMessage, setSuccessMessage] = React.useState('');
 
-    const dispatch = useDispatch();
-
-    // need to show msg for user not register yet or some other msg
     const updateAccount = (values, setSubmitting) => {
         axios
             .patch('http://localhost:8000/rest-auth/user/', values, config)
             .then((res) => {
-                console.log(res.data);
+                changeUser(res.data);
+                setSuccessMessage('Successfully Updated Your Account!');
                 setSubmitting(false);
             })
             .catch((err) => {
@@ -66,28 +61,21 @@ const useUpdateAccount = () => {
                 setSubmitting(false);
             });
     };
-    return { token, updateAccount };
-};
-
-export default function SignupForm() {
-    const classes = useStyles();
-    const { token, updateAccount } = useUpdateAccount();
 
     return (
         <Container component='main' maxWidth='xs'>
             <CssBaseline />
             <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
                 <Typography component='h1' variant='h5'>
                     Account Update
                 </Typography>
-                <Box mt={2}>
-                    <Alert severity='success'>
-                        This is an error alert — check it out!
-                    </Alert>
-                </Box>
+
+                {successMessage && (
+                    <Box mt={2}>
+                        <Alert severity='success'>{successMessage}</Alert>
+                    </Box>
+                )}
+
                 <div className={classes.form}>
                     <Formik
                         initialValues={{
@@ -101,20 +89,29 @@ export default function SignupForm() {
                         }}
                         validationSchema={Yup.object({
                             first_name: Yup.string()
+                                .trim('Required')
                                 .max(15, 'Must be 15 characters or less')
                                 .required('Required'),
                             last_name: Yup.string()
+                                .trim('Required')
                                 .max(20, 'Must be 20 characters or less')
                                 .required('Required'),
                             phone: Yup.string()
+                                .trim('Required')
                                 .matches(
                                     /(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/,
                                     'Not valid bd phone number'
                                 )
                                 .required('Required'),
-                            division: Yup.string().required('Required'),
-                            city: Yup.string().required('Required'),
-                            area: Yup.string().required('Required'),
+                            division: Yup.string()
+                                .required('Required')
+                                .trim('Required'),
+                            city: Yup.string()
+                                .required('Required')
+                                .trim('Required'),
+                            area: Yup.string()
+                                .required('Required')
+                                .trim('Required'),
                             address: Yup.string()
                                 .trim('Required')
                                 .required('Required'),

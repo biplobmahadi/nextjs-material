@@ -14,7 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import AccountOptionList from '../components/AccountOptionList';
 
 import Divider from '@material-ui/core/Divider';
-export default function ProfileCard({ order }) {
+export default function OrderDetailsCard({ order }) {
     return (
         <Box
             mt={2}
@@ -43,7 +43,7 @@ export default function ProfileCard({ order }) {
                     <Box px={3} py={1}>
                         {' '}
                         <Typography>
-                            {order && order.my_bag.product.length}
+                            {order && order.my_bag.product_with_quantity.length}
                         </Typography>
                     </Box>
                 </Grid>
@@ -69,6 +69,32 @@ export default function ProfileCard({ order }) {
                     <Box px={3} py={1}>
                         {' '}
                         <Typography>{order && order.total}</Typography>
+                    </Box>
+                </Grid>
+            </Grid>
+            <Box py={1}>
+                <Divider />
+            </Box>
+            <Grid
+                container
+                direction='row'
+                justify='space-between'
+                alignItems='center'
+            >
+                <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
+                    <Box px={3} py={1}>
+                        <Typography>
+                            <Box fontWeight='fontWeightBold'>
+                                Total Cost With Delivery
+                            </Box>
+                        </Typography>
+                    </Box>
+                </Grid>
+
+                <Grid item>
+                    <Box px={3} py={1}>
+                        {' '}
+                        <Typography>{order && order.total_payable}</Typography>
                     </Box>
                 </Grid>
             </Grid>

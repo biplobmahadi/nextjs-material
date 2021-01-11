@@ -34,25 +34,49 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
     },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
     form: {
         width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(3),
+        marginTop: theme.spacing(4),
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
 }));
 
-const usePasswordChange = () => {
-    const token = useSelector((state) => state.loginReducer.token);
+export default function PassWordChangeForm() {
+    const classes = useStyles();
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPasswordAgain, setShowPasswordAgain] = React.useState(false);
+    const [showPasswordAgainAgain, setShowPasswordAgainAgain] = React.useState(
+        false
+    );
+    const [errMessage, setErrMessage] = React.useState('');
+    const [successMessage, setSuccessMessage] = React.useState('');
 
-    const dispatch = useDispatch();
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
 
-    // need to show msg for user not register yet or some other msg
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
+    const handleClickShowPasswordAgain = () => {
+        setShowPasswordAgain(!showPasswordAgain);
+    };
+
+    const handleMouseDownPasswordAgain = (event) => {
+        event.preventDefault();
+    };
+
+    const handleClickShowPasswordAgainAgain = () => {
+        setShowPasswordAgainAgain(!showPasswordAgainAgain);
+    };
+
+    const handleMouseDownPasswordAgainAgain = (event) => {
+        event.preventDefault();
+    };
+
     const passwordChange = (values, setSubmitting) => {
         axios
             .post(
@@ -62,44 +86,49 @@ const usePasswordChange = () => {
             )
             .then((res) => {
                 console.log(res.data);
+                setSuccessMessage(res.data.detail);
+                setErrMessage('');
                 setSubmitting(false);
             })
             .catch((err) => {
                 console.log(err.response);
+                setErrMessage(err.response.data);
+                setSuccessMessage('');
                 setSubmitting(false);
             });
     };
-    return { token, passwordChange };
-};
 
-export default function SignupForm() {
-    const classes = useStyles();
-    const { token, passwordChange } = usePasswordChange();
-
-    const [showPassword, setShowPassword] = React.useState(false);
-
-    const handleClickShowPassword = () => {
-        setShowPassword(!showPassword);
-    };
-
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
     return (
         <Container component='main' maxWidth='xs'>
             <CssBaseline />
             <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
                 <Typography component='h1' variant='h5'>
                     Change Password
                 </Typography>
-                <Box mt={2}>
-                    <Alert severity='error'>
-                        This is an error alert — check it out!
-                    </Alert>
-                </Box>
+
+                {errMessage &&
+                    errMessage.old_password &&
+                    errMessage.old_password.map((old_password) => (
+                        <Box mt={2}>
+                            <Alert severity='error'>
+                                {old_password + '. Old Password Not Valid!'}
+                            </Alert>
+                        </Box>
+                    ))}
+                {errMessage &&
+                    errMessage.new_password2 &&
+                    errMessage.new_password2.map((new_password2) => (
+                        <Box mt={2}>
+                            <Alert severity='error'>{new_password2}</Alert>
+                        </Box>
+                    ))}
+
+                {successMessage && (
+                    <Box mt={2}>
+                        <Alert severity='success'>{successMessage}</Alert>
+                    </Box>
+                )}
+
                 <div className={classes.form}>
                     <Formik
                         initialValues={{
@@ -144,7 +173,7 @@ export default function SignupForm() {
                                                         : 'password'
                                                 }
                                                 component={TextField}
-                                                label='Password *'
+                                                label='Old Password *'
                                                 variant='outlined'
                                                 size='small'
                                                 fullWidth
@@ -177,12 +206,12 @@ export default function SignupForm() {
                                             <Field
                                                 name='new_password1'
                                                 type={
-                                                    showPassword
+                                                    showPasswordAgain
                                                         ? 'text'
                                                         : 'password'
                                                 }
                                                 component={TextField}
-                                                label='Password *'
+                                                label='New Password *'
                                                 variant='outlined'
                                                 size='small'
                                                 fullWidth
@@ -192,14 +221,14 @@ export default function SignupForm() {
                                                             <IconButton
                                                                 aria-label='toggle password visibility'
                                                                 onClick={
-                                                                    handleClickShowPassword
+                                                                    handleClickShowPasswordAgain
                                                                 }
                                                                 onMouseDown={
-                                                                    handleMouseDownPassword
+                                                                    handleMouseDownPasswordAgain
                                                                 }
                                                                 edge='end'
                                                             >
-                                                                {showPassword ? (
+                                                                {showPasswordAgain ? (
                                                                     <Visibility fontSize='small' />
                                                                 ) : (
                                                                     <VisibilityOff fontSize='small' />
@@ -214,12 +243,12 @@ export default function SignupForm() {
                                             <Field
                                                 name='new_password2'
                                                 type={
-                                                    showPassword
+                                                    showPasswordAgainAgain
                                                         ? 'text'
                                                         : 'password'
                                                 }
                                                 component={TextField}
-                                                label='Password *'
+                                                label='Confirm Password *'
                                                 variant='outlined'
                                                 size='small'
                                                 fullWidth
@@ -229,14 +258,14 @@ export default function SignupForm() {
                                                             <IconButton
                                                                 aria-label='toggle password visibility'
                                                                 onClick={
-                                                                    handleClickShowPassword
+                                                                    handleClickShowPasswordAgainAgain
                                                                 }
                                                                 onMouseDown={
-                                                                    handleMouseDownPassword
+                                                                    handleMouseDownPasswordAgainAgain
                                                                 }
                                                                 edge='end'
                                                             >
-                                                                {showPassword ? (
+                                                                {showPasswordAgainAgain ? (
                                                                     <Visibility fontSize='small' />
                                                                 ) : (
                                                                     <VisibilityOff fontSize='small' />

@@ -14,7 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import AccountOptionList from '../components/AccountOptionList';
 
 import Divider from '@material-ui/core/Divider';
-export default function ProfileCard({ order }) {
+export default function ReceiverAddressCard({ order }) {
     return (
         <Box
             mt={2}
@@ -87,7 +87,9 @@ export default function ProfileCard({ order }) {
                 <Grid item>
                     <Box px={3} py={1}>
                         <Typography>
-                            {order && order.receiver_other_phone}
+                            {order && order.receiver_other_phone
+                                ? order.receiver_other_phone
+                                : 'N/A'}
                         </Typography>
                     </Box>
                 </Grid>

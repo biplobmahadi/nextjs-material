@@ -19,6 +19,9 @@ import Tab from '@material-ui/core/Tab';
 import Hidden from '@material-ui/core/Hidden';
 import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles({
     root: {
@@ -30,9 +33,19 @@ export default function MyReview({
     mainProductReviewed,
     allProductReviewed,
     notReviewedProduct,
-    myOrderedAllProducts
+    myOrderedAllProducts,
+    myBag,
+    user,
 }) {
     const classes = useStyles();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!Cookies.get('haha_ecom_bangla_token')) {
+            router.push('/login');
+        }
+    }, []);
+
     const [value, setValue] = React.useState('0');
     let output;
     if (value === '0') {
@@ -51,7 +64,7 @@ export default function MyReview({
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    console.log('all reviewed',allProductReviewed);
+    console.log('all reviewed', allProductReviewed);
     console.log('main', mainProductReviewed);
 
     console.log('all ordered', myOrderedAllProducts);
@@ -63,16 +76,14 @@ export default function MyReview({
             <Head>
                 <title>My Review</title>
                 <link rel='icon' href='/a.ico' />
-                <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar />
+            <ButtonAppBar
+                totalProductInBag={myBag && myBag.product_with_quantity.length}
+            />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
                     <Box
@@ -91,7 +102,12 @@ export default function MyReview({
                             style={{ borderRadius: '50%' }}
                         />
                         <Typography variant='h5'>
-                            <strong>BIPLOB MAHADI</strong>
+                            <strong>
+                                {user &&
+                                    user.first_name.toUpperCase() +
+                                        ' ' +
+                                        user.last_name.toUpperCase()}
+                            </strong>
                         </Typography>
                     </Box>
                     <Box mt={3}>
@@ -139,7 +155,7 @@ export default function MyReview({
                                             value='0'
                                         />
                                         <Tab
-                                            label='Not Reviewed Product'
+                                            label='Not Reviewed Product You Buy'
                                             value='1'
                                         />
                                     </Tabs>
@@ -157,6 +173,26 @@ export default function MyReview({
         </div>
     );
 }
+
+const fetchDataForBag = async (config) =>
+    await axios
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
+        .then((res) => ({
+            bag: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
+const fetchDataForUser = async (config) =>
+    await axios
+        .get('http://localhost:8000/rest-auth/user/', config)
+        .then((res) => ({
+            user: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
 
 const fetchDataForReview = async (config) =>
     await axios
@@ -190,12 +226,30 @@ export async function getServerSideProps({ req, params }) {
             Authorization: 'Token ' + haha_ecom_bangla_token,
         },
     };
+
+    const dataBag = await fetchDataForBag(config);
+
+    let myBag = null;
+    if (dataBag.bag) {
+        let allMyBag = dataBag.bag;
+        let myBagNotSendToMyOrder = allMyBag.filter(
+            (myBag) => myBag.is_send_to_my_order === false
+        );
+        // console.log(myBagNotSendToMyOrder[0])
+        if (myBagNotSendToMyOrder[0]) {
+            myBag = myBagNotSendToMyOrder[0];
+            // We got exact bag for user
+            // 1st we filter out the bags whose not send to my order
+            // then there have many bags for that user because of backend, hacker can do anything!!
+            // the 1st created one is selected as myBag
+        }
+    }
+
     const dataReview = await fetchDataForReview(config);
     const dataMyOrders = await fetchDataForMyOrderProducts(config);
 
     let reviews = dataReview.reviews;
     let myOrders = dataMyOrders.myOrders;
-
 
     // for reviewed products -> start here
 
@@ -229,15 +283,17 @@ export async function getServerSideProps({ req, params }) {
 
     // console.log(mainProductReviewed);
 
-
     // for not reviewed products -> start here
 
-    let myOrderedAllProducts = []
-    myOrders && myOrders.forEach(myOrder => {
-        myOrder.my_bag.product.forEach(product => {
-            myOrderedAllProducts = myOrderedAllProducts.concat(product.product)
-        })
-    })
+    let myOrderedAllProducts = [];
+    myOrders &&
+        myOrders.forEach((myOrder) => {
+            myOrder.my_bag.product_with_quantity.forEach((product_with_quantity) => {
+                myOrderedAllProducts = myOrderedAllProducts.concat(
+                    product_with_quantity.product
+                );
+            });
+        });
 
     // console.log('myOrderedAllProducts', myOrderedAllProducts)
 
@@ -256,17 +312,31 @@ export async function getServerSideProps({ req, params }) {
                     product.id
                 );
             });
-            notReviewedProduct.length !== 0 && notReviewedProduct.forEach((product) => {
-                notReviewedProductId = notReviewedProductId.concat(
-                    product.id
-                );
-            });
-            if (!mainProductReviewedId.includes(product.id) && !notReviewedProductId.includes(product.id)) {
+            notReviewedProduct.length !== 0 &&
+                notReviewedProduct.forEach((product) => {
+                    notReviewedProductId = notReviewedProductId.concat(
+                        product.id
+                    );
+                });
+            if (
+                !mainProductReviewedId.includes(product.id) &&
+                !notReviewedProductId.includes(product.id)
+            ) {
                 notReviewedProduct = notReviewedProduct.concat(product);
             }
         });
 
+    const dataUser = await fetchDataForUser(config);
+    const user = dataUser.user ? dataUser.user : null;
+
     return {
-        props: { mainProductReviewed, allProductReviewed, notReviewedProduct, myOrderedAllProducts },
+        props: {
+            mainProductReviewed,
+            allProductReviewed,
+            notReviewedProduct,
+            myOrderedAllProducts,
+            myBag,
+            user,
+        },
     };
 }

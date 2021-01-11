@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SimpleList() {
+export default function AccountOptionList() {
     const classes = useStyles();
 
     return (
@@ -40,7 +40,7 @@ export default function SimpleList() {
                     </ListItem>
                 </Link>
                 <Divider variant='middle' />
-                <Link href='/my-orders'>
+                <Link href='/my-account'>
                     <ListItem button>
                         <ListItemIcon>
                             <InboxIcon />
@@ -58,7 +58,7 @@ export default function SimpleList() {
                     </ListItem>
                 </Link>
                 <Divider variant='middle' />
-                <Link href='/my-review'>
+                <Link href='/my-video-review'>
                     <ListItem button>
                         <ListItemIcon>
                             <InboxIcon />
@@ -73,15 +73,6 @@ export default function SimpleList() {
                             <DraftsIcon />
                         </ListItemIcon>
                         <ListItemText primary='I Gift It' />
-                    </ListItem>
-                </Link>
-                <Divider variant='middle' />
-                <Link href='/my-account'>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary='Logout' />
                     </ListItem>
                 </Link>
             </List>

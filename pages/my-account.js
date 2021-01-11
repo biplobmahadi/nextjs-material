@@ -19,11 +19,11 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AccountOptionList from '../components/AccountOptionList';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import Hidden from '@material-ui/core/Hidden';
 
 const useStyles = makeStyles({
@@ -33,24 +33,40 @@ const useStyles = makeStyles({
     },
 });
 
-export default function MyAccount({ user, error }) {
-    const router = useRouter();
+let userRe;
 
+export default function MyAccount(props) {
+    const router = useRouter();
+    const classes = useStyles();
+    const [reRender, setReRender] = React.useState(false);
+
+    // need this type of upgrade
+    // because when user update account then need to show the result instant
+    let user = userRe ? userRe : props.user;
+    let myBag = props.myBag;
+
+    const changeUser = (value) => {
+        userRe = value;
+        console.log('user change', userRe);
+        setReRender(!reRender);
+    };
+
+    console.log('user Re', userRe);
+    // here no need to set userRe undefined
+    // because only one user can see any customer
     useEffect(() => {
         if (!Cookies.get('haha_ecom_bangla_token')) {
             router.push('/login');
         }
-    }, []);
+    });
 
-    const classes = useStyles();
     const [value, setValue] = React.useState('0');
-    console.log({ user, error });
-    console.log('cook', Cookies.get('haha_ecom_bangla_token'));
+
     let output;
     if (value === '0') {
         output = <ProfileCard user={user && user} />;
     } else if (value === '1') {
-        output = <UpdateAccount />;
+        output = <UpdateAccount changeUser={changeUser} />;
     } else if (value === '2') {
         output = <PasswordChange />;
     } else {
@@ -63,20 +79,17 @@ export default function MyAccount({ user, error }) {
 
     return (
         <div>
-            {' '}
             <Head>
                 <title>My Account</title>
                 <link rel='icon' href='/a.ico' />
-                <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar />
+            <ButtonAppBar
+                totalProductInBag={myBag && myBag.product_with_quantity.length}
+            />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
                     <Box
@@ -177,7 +190,17 @@ export default function MyAccount({ user, error }) {
     );
 }
 
-const fetchData = async (config) =>
+const fetchDataForBag = async (config) =>
+    await axios
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
+        .then((res) => ({
+            bag: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
+const fetchDataForUser = async (config) =>
     await axios
         .get('http://localhost:8000/rest-auth/user/', config)
         .then((res) => ({
@@ -199,8 +222,28 @@ export async function getServerSideProps({ req }) {
             Authorization: 'Token ' + haha_ecom_bangla_token,
         },
     };
-    const data = await fetchData(config);
+
+    const dataBag = await fetchDataForBag(config);
+
+    let myBag = null;
+    if (dataBag.bag) {
+        let allMyBag = dataBag.bag;
+        let myBagNotSendToMyOrder = allMyBag.filter(
+            (myBag) => myBag.is_send_to_my_order === false
+        );
+        // console.log(myBagNotSendToMyOrder[0])
+        if (myBagNotSendToMyOrder[0]) {
+            myBag = myBagNotSendToMyOrder[0];
+            // We got exact bag for user
+            // 1st we filter out the bags whose not send to my order
+            // then there have many bags for that user because of backend, hacker can do anything!!
+            // the 1st created one is selected as myBag
+        }
+    }
+
+    const dataUser = await fetchDataForUser(config);
+    const user = dataUser.user ? dataUser.user : null;
     return {
-        props: data,
+        props: { user, myBag },
     };
 }

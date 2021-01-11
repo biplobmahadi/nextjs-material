@@ -89,7 +89,9 @@ export default function Index(props) {
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={myBag && myBag.product_with_quantity.length} />
+            <ButtonAppBar
+                totalProductInBag={myBag && myBag.product_with_quantity.length}
+            />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box pt={11} px={3}>
                     <Carousel />

@@ -548,13 +548,17 @@ export default function Bag(props) {
                 axios
                     .post(
                         'http://localhost:8000/my-order/',
-                        { my_bag: myBag.id },
+                        {
+                            my_bag: myBag.id,
+                            total: myBag.sub_total,
+                            total_payable: myBag.sub_total + 50,
+                        },
                         config
                     )
                     .then((res) => {
                         console.log(res.data);
                         // this.setState({ orderId: res.data.id });
-                        let orderId = res.data.id;
+                        let orderCode = res.data.order_code;
                         axios
                             .patch(
                                 `http://localhost:8000/my-bag/${myBag.id}/`,
@@ -563,7 +567,7 @@ export default function Bag(props) {
                             )
                             .then((res) => {
                                 console.log(res.data);
-                                router.push(`/receiver/${orderId}`);
+                                router.push(`/receiver/${orderCode}`);
                             })
                             .catch((err) => {
                                 console.log(err.response);
@@ -989,9 +993,10 @@ export default function Bag(props) {
                                         color='primary'
                                         onClick={handleCheckout}
                                         disabled={
-                                            myBag &&
-                                            myBag.product_with_quantity
-                                                .length === 0
+                                            !myBag ||
+                                            (myBag &&
+                                                myBag.product_with_quantity
+                                                    .length === 0)
                                         }
                                     >
                                         <Box textAlign='center' px={4}>

@@ -373,9 +373,7 @@ export default function ProductCard({
                                                                 );
                                                         })
                                                         .catch((err) => ({
-                                                            error:
-                                                                err.response
-                                                                    .data,
+                                                            error: err.response,
                                                         }));
                                                 })
                                                 .catch((err) =>

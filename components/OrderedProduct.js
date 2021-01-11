@@ -118,12 +118,12 @@ const useStyles2 = makeStyles({
     },
 });
 
-export default function ProductTable({ order }) {
+export default function OrderedProductTable({ order }) {
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    let rows = order.my_bag.product;
+    let rows = order.my_bag.product_with_quantity;
 
     const emptyRows =
         rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);

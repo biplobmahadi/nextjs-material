@@ -50,20 +50,20 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ReceiverForm({ receiverOrderId }) {
+export default function ReceiverForm({ receiverOrderCode }) {
     const classes = useStyles();
     const router = useRouter();
     const receiverNext = (values, setSubmitting) => {
         axios
             .patch(
-                `http://localhost:8000/my-order/${receiverOrderId}/`,
+                `http://localhost:8000/my-order/${receiverOrderCode}/`,
                 values,
                 config
             )
             .then((res) => {
                 console.log(res.data);
                 setSubmitting(false);
-                router.push(`/payment/${res.data.id}`);
+                router.push(`/payment/${res.data.order_code}`);
             })
             .catch((err) => {
                 console.log(err.response);
