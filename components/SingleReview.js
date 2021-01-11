@@ -184,10 +184,8 @@ export default function SingleReview({
                                         startIcon={<ThumbDownIcon />}
                                         onClick={() =>
                                             handleDisagree(
-                                                JSON.stringify(
-                                                    review,
-                                                    setReviewDisagreeLoading
-                                                )
+                                                JSON.stringify(review),
+                                                setReviewDisagreeLoading
                                             )
                                         }
                                         // use this type of value sending in bag page

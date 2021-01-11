@@ -83,7 +83,7 @@ export default function ProductDetails(props) {
 
     let avgRating = props.avgRating;
 
-    console.log('got re render for details');
+    console.log('got re render for product details');
     console.log('got product', product);
 
     // ###### total number of 1 or 2 or ..... rating added for this product is calculate here
@@ -269,6 +269,8 @@ export default function ProductDetails(props) {
         // start loading
         setReviewDisagreeLoading(true);
         const review = JSON.parse(stringifyReview);
+
+        console.log('setReviewDisagreeLoading', setReviewDisagreeLoading);
 
         // ###########  Same process like agreed
         // ######### All in all, User can not agreed and disagreed at a time
