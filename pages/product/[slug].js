@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import Rating from '@material-ui/lab/Rating';
 import Chip from '@material-ui/core/Chip';
@@ -58,6 +59,8 @@ export default function Product(props) {
     const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
     const [reRender, setReRender] = React.useState(false);
+    const [notRender, setNotRender] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
 
     let product = productRe ? productRe : props.product;
     let user = props.user;
@@ -102,6 +105,7 @@ export default function Product(props) {
         myBagRe = value;
         console.log('my bag now', myBagRe);
         setLoading(false);
+        setOpen(true);
 
         // set loading state will make the re render process
         // setReRender(!reRender);
@@ -115,10 +119,19 @@ export default function Product(props) {
         myBagRe = undefined;
         productRe = undefined;
         categoryProductsRe = undefined;
-    });
+    }, [notRender]);
 
     const handleImageClick = (value) => {
         setValue(value);
+    };
+
+    // this is for alert close
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
     };
 
     // ### Calculate product review rating
@@ -135,7 +148,7 @@ export default function Product(props) {
         });
 
     console.log('here product', product);
-    // console.log('here user', user);
+    console.log('re render happend');
     console.log('here bag', myBag);
     console.log('bag Re', myBagRe);
     console.log('product Re', productRe);
@@ -713,6 +726,23 @@ export default function Product(props) {
                                                     )}
                                                 </div>
                                             </div>
+                                            <Snackbar
+                                                anchorOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'center',
+                                                }}
+                                                open={open}
+                                                autoHideDuration={6000}
+                                                onClose={handleClose}
+                                            >
+                                                <Alert
+                                                    severity='success'
+                                                    variant='filled'
+                                                >
+                                                    Successfully Product Added
+                                                    To Bag!
+                                                </Alert>
+                                            </Snackbar>
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             {product &&
