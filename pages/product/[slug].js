@@ -59,7 +59,6 @@ export default function Product(props) {
     const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
     const [reRender, setReRender] = React.useState(false);
-    const [notRender, setNotRender] = React.useState(false);
     const [open, setOpen] = React.useState(false);
 
     let product = productRe ? productRe : props.product;
@@ -119,7 +118,7 @@ export default function Product(props) {
         myBagRe = undefined;
         productRe = undefined;
         categoryProductsRe = undefined;
-    }, [notRender]);
+    });
 
     const handleImageClick = (value) => {
         setValue(value);
