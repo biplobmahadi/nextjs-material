@@ -470,7 +470,7 @@ export default function ProductForTrialCard({
                         onClose={handleCloseForAddAsTrial}
                     >
                         <Alert severity='info' variant='filled'>
-                            Already Add as Trial, Can't Add More!
+                            Already Add as Trial Or Add to Bag, Can't Add More!
                         </Alert>
                     </Snackbar>
                     <Snackbar

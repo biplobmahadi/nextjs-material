@@ -122,7 +122,10 @@ export default function ReviewForm({ handleSubmit }) {
                                                     size='small'
                                                     variant='contained'
                                                     color='primary'
-                                                    disabled={isSubmitting}
+                                                    disabled={
+                                                        isSubmitting ||
+                                                        value === null
+                                                    }
                                                 >
                                                     <Box px={3}>Submit</Box>
                                                 </Button>

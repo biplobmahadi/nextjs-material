@@ -52,7 +52,7 @@ export default function UpdateReviewDialog({ reviewId, handleUpdate }) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
-    const [valueAgain, setValueAgain] = React.useState(2);
+    const [valueAgain, setValueAgain] = React.useState(4);
     const [hoverAgain, setHoverAgain] = React.useState(-1);
 
     const handleClickOpen = (scrollType) => () => {
@@ -198,7 +198,10 @@ export default function UpdateReviewDialog({ reviewId, handleUpdate }) {
                                                 size='small'
                                                 variant='contained'
                                                 color='primary'
-                                                disabled={isSubmitting}
+                                                disabled={
+                                                    isSubmitting ||
+                                                    valueAgain === null
+                                                }
                                             >
                                                 <Box px={3}>Update</Box>
                                             </Button>
