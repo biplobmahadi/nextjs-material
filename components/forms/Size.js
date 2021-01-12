@@ -42,17 +42,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SignupForm() {
+export default function SizeForm() {
     const classes = useStyles();
-    const [values, setValues] = React.useState({
-        amount: '',
-        password: '',
-        weight: '',
-        weightRange: '',
-        showPassword: false,
-    });
-    const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
+
+    const handleChange = (event) => {
+        console.log(event.target.value);
     };
 
     return (
@@ -82,6 +76,7 @@ export default function SignupForm() {
                             variant='outlined'
                             size='small'
                             fullWidth
+                            // onChange={(event) => handleChange(event)}
                             // SelectProps={{
                             //     multiple: true,
                             // }}

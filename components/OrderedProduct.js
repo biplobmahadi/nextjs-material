@@ -20,6 +20,7 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import Chip from '@material-ui/core/Chip';
 
 import axios from 'axios';
 import TableHead from '@material-ui/core/TableHead';
@@ -184,7 +185,15 @@ export default function OrderedProductTable({ order }) {
                                     // style={{ width: 160 }}
                                     align='center'
                                 >
-                                    {row.cost}
+                                    {!row.add_as_trial ? (
+                                        row.cost
+                                    ) : (
+                                        <Chip
+                                            label='Free Trial'
+                                            color='secondary'
+                                            size='small'
+                                        />
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}

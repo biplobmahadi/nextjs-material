@@ -50,6 +50,8 @@ export default function ProductForTrialCard({
     config,
     changeMyBag,
     changeCategoryProducts,
+    needDisabled,
+    setNeedDisabled,
 }) {
     const classes = useStyles();
     console.log('got product for card in trial', product);
@@ -95,6 +97,8 @@ export default function ProductForTrialCard({
     const handleAddToBag = () => {
         // create a loading
         setLoading(true);
+        // others will disabled when add specific one
+        setNeedDisabled(true);
 
         let addToBag = {
             product: product.id,
@@ -158,6 +162,7 @@ export default function ProductForTrialCard({
                             'you cant add more than 2 product of same category as trial'
                         );
                         setLoading(false);
+                        setNeedDisabled(false);
                         setOpenForTwoAlreadyAdded(true);
                     } else {
                         // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
@@ -169,6 +174,7 @@ export default function ProductForTrialCard({
                                 'already product add in bag or add as trial'
                             );
                             setLoading(false);
+                            setNeedDisabled(false);
                             setOpenForAddAsTrial(true);
                             // here in bag, user can't add more quantity to trial, only one product can trial
                             // when user add this for buy then it can't be add as trial
@@ -247,6 +253,9 @@ export default function ProductForTrialCard({
                                                                             res
                                                                         ) => {
                                                                             setLoading(
+                                                                                false
+                                                                            );
+                                                                            setNeedDisabled(
                                                                                 false
                                                                             );
                                                                             setOpenForAdd(
@@ -334,6 +343,9 @@ export default function ProductForTrialCard({
                                                                             setLoading(
                                                                                 false
                                                                             );
+                                                                            setNeedDisabled(
+                                                                                false
+                                                                            );
                                                                             setOpenForAdd(
                                                                                 true
                                                                             );
@@ -377,6 +389,7 @@ export default function ProductForTrialCard({
                 } else {
                     console.log('product not available');
                     setLoading(false);
+                    setNeedDisabled(false);
                     setOpenForNotInStock(true);
                 }
             })
@@ -430,6 +443,7 @@ export default function ProductForTrialCard({
                                 color='primary'
                                 onClick={handleAddToBag}
                                 disabled={
+                                    needDisabled ||
                                     loading ||
                                     product.productavailable
                                         .available_quantity === 0

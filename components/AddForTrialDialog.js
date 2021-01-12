@@ -30,6 +30,7 @@ export default function AddForTrialDialog({
 }) {
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
+    const [needDisabled, setNeedDisabled] = useState(false);
 
     const handleClickOpen = (scrollType) => () => {
         setOpen(true);
@@ -89,6 +90,8 @@ export default function AddForTrialDialog({
                                         changeCategoryProducts={
                                             changeCategoryProducts
                                         }
+                                        needDisabled={needDisabled}
+                                        setNeedDisabled={setNeedDisabled}
                                     />
                                 </Grid>
                             ))}
