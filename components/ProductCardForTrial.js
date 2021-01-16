@@ -146,48 +146,52 @@ export default function ProductForTrialCard({
         // when not 2 product added, then check is this product already added as trial
         // if already added this product then actions will close here
         // if not added then it will added successfully
-        axios
-            .get(
-                `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
-                config
-            )
-            .then((res) => {
-                // if product available then this will run from below
-                // add to bag process will start from here
-                if (res.data.available_quantity > 0) {
-                    if (
-                        trialProductsWithQuantityOfSameCategoryInBag.length > 1
-                    ) {
-                        console.log(
-                            'you cant add more than 2 product of same category as trial'
-                        );
-                        setLoading(false);
-                        setNeedDisabled(false);
-                        setOpenForTwoAlreadyAdded(true);
-                    } else {
-                        // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
+
+        // ##### First of there have to have any product in bag
+        if (myBag && myBag.length !== 0) {
+            axios
+                .get(
+                    `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
+                    config
+                )
+                .then((res) => {
+                    // if product available then this will run from below
+                    // add to bag process will start from here
+                    if (res.data.available_quantity > 0) {
                         if (
-                            productWithQuantityExistInBag &&
-                            productWithQuantityExistInBag.length !== 0
+                            trialProductsWithQuantityOfSameCategoryInBag.length >
+                            1
                         ) {
                             console.log(
-                                'already product add in bag or add as trial'
+                                'you cant add more than 2 product of same category as trial'
                             );
                             setLoading(false);
                             setNeedDisabled(false);
-                            setOpenForAddAsTrial(true);
-                            // here in bag, user can't add more quantity to trial, only one product can trial
-                            // when user add this for buy then it can't be add as trial
+                            setOpenForTwoAlreadyAdded(true);
                         } else {
-                            axios
-                                .post(
-                                    'http://localhost:8000/product-with-quantity/',
-                                    addToBag,
-                                    config
-                                )
-                                .then((res) => {
-                                    // console.log('bag nai - pwq', res.data);
-                                    if (myBag && myBag.length !== 0) {
+                            // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
+                            if (
+                                productWithQuantityExistInBag &&
+                                productWithQuantityExistInBag.length !== 0
+                            ) {
+                                console.log(
+                                    'already product add in bag or add as trial'
+                                );
+                                setLoading(false);
+                                setNeedDisabled(false);
+                                setOpenForAddAsTrial(true);
+                                // here in bag, user can't add more quantity to trial, only one product can trial
+                                // when user add this for buy then it can't be add as trial
+                            } else {
+                                axios
+                                    .post(
+                                        'http://localhost:8000/product-with-quantity/',
+                                        addToBag,
+                                        config
+                                    )
+                                    .then((res) => {
+                                        // console.log('bag nai - pwq', res.data);
+
                                         // console.log(res.data.id, myBag.product.id, myBag.product) .. middle is not correct
                                         let pk = [];
                                         myBag.product_with_quantity.map(
@@ -293,107 +297,25 @@ export default function ProductForTrialCard({
                                             .catch((err) =>
                                                 console.log(err.response)
                                             );
-                                    } else {
-                                        axios
-                                            .post(
-                                                'http://localhost:8000/my-bag/',
-                                                {
-                                                    product_with_quantity: [
-                                                        res.data.id,
-                                                    ],
-                                                    sub_total: res.data.cost,
-                                                },
-                                                config
-                                            )
-                                            .then((res) => {
-                                                // console.log(res.data);
-                                                axios
-                                                    .patch(
-                                                        `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
-                                                        {
-                                                            available_quantity:
-                                                                product
-                                                                    .productavailable
-                                                                    .available_quantity -
-                                                                1,
-                                                        },
-                                                        config
-                                                    )
-                                                    .then((res) => {
-                                                        // console.log('updated quantity', res.data)
-                                                        // final get will be after all post, patch done
-                                                        axios
-                                                            .get(
-                                                                `http://localhost:8000/category/${product.category.slug}/`
-                                                            )
-                                                            .then((res) => {
-                                                                changeCategoryProducts(
-                                                                    res.data
-                                                                        .product
-                                                                );
-                                                                axios
-                                                                    .get(
-                                                                        `http://localhost:8000/my-bag/${myBag.id}/`,
-                                                                        config
-                                                                    )
-                                                                    .then(
-                                                                        (
-                                                                            res
-                                                                        ) => {
-                                                                            setLoading(
-                                                                                false
-                                                                            );
-                                                                            setNeedDisabled(
-                                                                                false
-                                                                            );
-                                                                            setOpenForAdd(
-                                                                                true
-                                                                            );
-                                                                            changeMyBag(
-                                                                                res.data
-                                                                            );
-                                                                            console.log(
-                                                                                'bag after updated quantity',
-                                                                                res.data
-                                                                            );
-                                                                            // setTotalBagProduct(res.data.product.length);
-                                                                        }
-                                                                    )
-                                                                    .catch(
-                                                                        (err) =>
-                                                                            console.log(
-                                                                                err.response
-                                                                            )
-                                                                    );
-                                                            })
-                                                            .catch((err) =>
-                                                                console.log(
-                                                                    err.response
-                                                                )
-                                                            );
-                                                    })
-                                                    .catch((err) =>
-                                                        console.log(
-                                                            err.response
-                                                        )
-                                                    );
-                                            })
-                                            .catch((err) =>
-                                                console.log(err.response)
-                                            );
-                                    }
-                                })
-                                .catch((err) => console.log(err.response));
+                                    })
+                                    .catch((err) => console.log(err.response));
+                            }
                         }
+                    } else {
+                        console.log('product not available');
+                        setLoading(false);
+                        setNeedDisabled(false);
+                        setOpenForNotInStock(true);
                     }
-                } else {
-                    console.log('product not available');
-                    setLoading(false);
-                    setNeedDisabled(false);
-                    setOpenForNotInStock(true);
-                }
-            })
-            .catch((err) => console.log(err.response));
+                })
+                .catch((err) => console.log(err.response));
+        } else {
+            console.log(
+                'there have no product in myBag, so can not add any product as trail'
+            );
+            setLoading(false);
+            setNeedDisabled(false);
+        }
     };
 
     return (

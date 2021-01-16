@@ -50,6 +50,9 @@ export default function ProductCard({
     config,
     changeMyBag,
     changeCardProducts,
+    urlForChangeCardProducts,
+    needDisabled,
+    setNeedDisabled,
 }) {
     const classes = useStyles();
     console.log('got product for card', product);
@@ -109,6 +112,8 @@ export default function ProductCard({
     const handleAddToBag = () => {
         // start loading
         setLoading(true);
+        // others will disabled when add specific one
+        setNeedDisabled(true);
 
         let addToBag = {
             product: product.id,
@@ -149,6 +154,7 @@ export default function ProductCard({
                         if (productWithQuantityExistInBag[0].add_as_trial) {
                             console.log('this product already add as trial');
                             setLoading(false);
+                            setNeedDisabled(false);
                             setOpenForAddAsTrial(true);
                         } else {
                             axios
@@ -202,14 +208,11 @@ export default function ProductCard({
                                                     // everything will update here for user
                                                     axios
                                                         .get(
-                                                            `http://localhost:8000/category/${product.category.slug}/`
+                                                            urlForChangeCardProducts
                                                         )
                                                         .then((res) => {
                                                             changeCardProducts(
-                                                                res.data.product.slice(
-                                                                    0,
-                                                                    6
-                                                                )
+                                                                res.data.product
                                                             );
                                                             axios
                                                                 .get(
@@ -218,6 +221,9 @@ export default function ProductCard({
                                                                 )
                                                                 .then((res) => {
                                                                     setLoading(
+                                                                        false
+                                                                    );
+                                                                    setNeedDisabled(
                                                                         false
                                                                     );
                                                                     setOpenForAdd(
@@ -305,14 +311,11 @@ export default function ProductCard({
                                                     // final get will be after all post, patch done
                                                     axios
                                                         .get(
-                                                            `http://localhost:8000/category/${product.category.slug}/`
+                                                            urlForChangeCardProducts
                                                         )
                                                         .then((res) => {
                                                             changeCardProducts(
-                                                                res.data.product.slice(
-                                                                    0,
-                                                                    6
-                                                                )
+                                                                res.data.product
                                                             );
                                                             axios
                                                                 .get(
@@ -321,6 +324,9 @@ export default function ProductCard({
                                                                 )
                                                                 .then((res) => {
                                                                     setLoading(
+                                                                        false
+                                                                    );
+                                                                    setNeedDisabled(
                                                                         false
                                                                     );
                                                                     setOpenForAdd(
@@ -363,6 +369,11 @@ export default function ProductCard({
                                             config
                                         )
                                         .then((res) => {
+                                            // when there is no bag available then this promise will done
+                                            // so here we don't have any myBag id
+                                            // need to assign it here
+                                            const myBagId = res.data.id;
+                                            // use this myBagId when we get requ in myBag
                                             axios
                                                 .patch(
                                                     `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
@@ -379,22 +390,22 @@ export default function ProductCard({
                                                     // final get will be after all post, patch done
                                                     axios
                                                         .get(
-                                                            `http://localhost:8000/category/${product.category.slug}/`
+                                                            urlForChangeCardProducts
                                                         )
                                                         .then((res) => {
                                                             changeCardProducts(
-                                                                res.data.product.slice(
-                                                                    0,
-                                                                    6
-                                                                )
+                                                                res.data.product
                                                             );
                                                             axios
                                                                 .get(
-                                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                                    `http://localhost:8000/my-bag/${myBagId}/`,
                                                                     config
                                                                 )
                                                                 .then((res) => {
                                                                     setLoading(
+                                                                        false
+                                                                    );
+                                                                    setNeedDisabled(
                                                                         false
                                                                     );
                                                                     setOpenForAdd(
@@ -429,6 +440,7 @@ export default function ProductCard({
                 } else {
                     console.log('product not available');
                     setLoading(false);
+                    setNeedDisabled(false);
                     setOpenForNotInStock(true);
                 }
             })
@@ -483,6 +495,7 @@ export default function ProductCard({
                                 color='primary'
                                 onClick={handleAddToBag}
                                 disabled={
+                                    needDisabled ||
                                     loading ||
                                     product.productavailable
                                         .available_quantity === 0

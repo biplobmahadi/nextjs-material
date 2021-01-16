@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Product({
+export default function ProductDetailsFirstPart({
     product,
     changeProduct,
     config,
@@ -357,7 +357,11 @@ export default function Product({
                                             config
                                         )
                                         .then((res) => {
-                                            // console.log(res.data);
+                                            // when there is no bag available then this promise will done
+                                            // so here we don't have any myBag id
+                                            // need to assign it here
+                                            const myBagId = res.data.id
+                                            // use this myBagId when we get requ in myBag 
                                             axios
                                                 .patch(
                                                     `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
@@ -387,7 +391,7 @@ export default function Product({
                                                             );
                                                             axios
                                                                 .get(
-                                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                                    `http://localhost:8000/my-bag/${myBagId}/`,
                                                                     config
                                                                 )
                                                                 .then((res) => {

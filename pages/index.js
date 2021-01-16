@@ -9,6 +9,8 @@ import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
 import Carousel from '../components/Carousel';
 import Card from '../components/Card';
+import MensShirt from '../components/MensShirt';
+import WomensPant from '../components/WomensPant';
 import ProductCard from '../components/ProductCard';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';
@@ -45,12 +47,12 @@ export default function Index(props) {
         : props.womensPantProducts;
 
     const changeMensShirtProducts = (value) => {
-        mensShirtProductsRe = value;
+        mensShirtProductsRe = value.slice(0, 6);
 
         // setReRender(!reRender);
     };
     const changeWomensPantProducts = (value) => {
-        womensPantProductsRe = value;
+        womensPantProductsRe = value.slice(0, 6);
 
         // setReRender(!reRender);
     };
@@ -164,137 +166,21 @@ export default function Index(props) {
                     )}
                 </Box>
 
-                <Box mx={3} mt={8}>
-                    <Box
-                        p={2}
-                        borderRadius='borderRadius'
-                        style={{ backgroundColor: 'white' }}
-                    >
-                        <Grid
-                            container
-                            direction='row'
-                            justify='space-between'
-                            alignItems='center'
-                        >
-                            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-                                <Typography variant='h4' component='h4'>
-                                    Men's Shirt
-                                </Typography>
-                            </Grid>
+                <MensShirt
+                    myBag={myBag}
+                    changeMyBag={changeMyBag}
+                    mensShirtProducts={mensShirtProducts}
+                    changeMensShirtProducts={changeMensShirtProducts}
+                    config={config}
+                />
 
-                            <Grid item>
-                                <Button
-                                    variant='contained'
-                                    size='small'
-                                    color='secondary'
-                                    onClick={() => router.push('/mens-shirt')}
-                                >
-                                    <Box px={3}>See All</Box>
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                    <Box mt={2}>
-                        <Grid container spacing={2}>
-                            {mensShirtProducts &&
-                                mensShirtProducts.map((product) => (
-                                    <Grid
-                                        item
-                                        xs={12}
-                                        sm={6}
-                                        md={4}
-                                        lg={3}
-                                        xl={2}
-                                    >
-                                        <ProductCard
-                                            product={product}
-                                            myBag={myBag}
-                                            config={config}
-                                            changeMyBag={changeMyBag}
-                                            changeCardProducts={
-                                                changeMensShirtProducts
-                                            }
-                                        />
-                                    </Grid>
-                                ))}
-                        </Grid>
-                    </Box>
-                    {!mensShirtProducts && (
-                        <Box mt={2}>
-                            <Alert severity='error'>
-                                <AlertTitle>Sorry Dear</AlertTitle>
-                                We Have No Men's Shirt Now —{' '}
-                                <strong>Hope It Will Come Soon!</strong>
-                            </Alert>
-                        </Box>
-                    )}
-                </Box>
-
-                <Box mx={3} mt={8}>
-                    <Box
-                        p={2}
-                        borderRadius='borderRadius'
-                        style={{ backgroundColor: 'white' }}
-                    >
-                        <Grid
-                            container
-                            direction='row'
-                            justify='space-between'
-                            alignItems='center'
-                        >
-                            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-                                <Typography variant='h4' component='h4'>
-                                    Women's Pant
-                                </Typography>
-                            </Grid>
-
-                            <Grid item>
-                                <Button
-                                    variant='contained'
-                                    size='small'
-                                    color='secondary'
-                                    onClick={() => router.push('/womens-pant')}
-                                >
-                                    <Box px={3}>See All</Box>
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                    <Box mt={2}>
-                        <Grid container spacing={2}>
-                            {womensPantProducts &&
-                                womensPantProducts.map((product) => (
-                                    <Grid
-                                        item
-                                        xs={12}
-                                        sm={6}
-                                        md={4}
-                                        lg={3}
-                                        xl={2}
-                                    >
-                                        <ProductCard
-                                            product={product}
-                                            myBag={myBag}
-                                            config={config}
-                                            changeMyBag={changeMyBag}
-                                            changeCardProducts={
-                                                changeWomensPantProducts
-                                            }
-                                        />
-                                    </Grid>
-                                ))}
-                        </Grid>
-                    </Box>
-                    {!womensPantProducts && (
-                        <Box mt={2}>
-                            <Alert severity='error'>
-                                <AlertTitle>Sorry Dear</AlertTitle>
-                                We Have No Women's Pant Now —{' '}
-                                <strong>Hope It Will Come Soon!</strong>
-                            </Alert>
-                        </Box>
-                    )}
-                </Box>
+                <WomensPant
+                    myBag={myBag}
+                    changeMyBag={changeMyBag}
+                    womensPantProducts={womensPantProducts}
+                    changeWomensPantProducts={changeWomensPantProducts}
+                    config={config}
+                />
             </Box>
             <Box mx={3} mt={6}>
                 <MainFooter />

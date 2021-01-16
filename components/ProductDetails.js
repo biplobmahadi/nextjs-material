@@ -36,25 +36,6 @@ import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-    wrapper: {
-        margin: theme.spacing(1),
-        position: 'relative',
-    },
-    buttonProgress: {
-        color: '#3f50b5',
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginTop: -12,
-        marginLeft: -12,
-    },
-}));
-
 // 1. when anything change on state the component will re render
 // 2. we use useEffect only if we need anything to do before component mount or willmount
 // 3. these two are most important about react component
@@ -64,11 +45,7 @@ const useStyles = makeStyles((theme) => ({
 // 6. formik to get form value, here also no need to use state.
 
 export default function ProductDetails(props) {
-    const classes = useStyles();
-    const [reviewAgreeLoading, setReviewAgreeLoading] = React.useState(false);
-    const [reviewDisagreeLoading, setReviewDisagreeLoading] = React.useState(
-        false
-    );
+    const [needDisabled, setNeedDisabled] = React.useState(false);
 
     let categoryProducts = props.categoryProducts;
     let myBag = props.myBag;
@@ -262,6 +239,7 @@ export default function ProductDetails(props) {
                 .catch((err) => console.log(err.response));
         } else {
             console.log('you cant agree with your own review or already done');
+            setReviewAgreeLoading(false);
         }
     };
 
@@ -365,6 +343,7 @@ export default function ProductDetails(props) {
                 .catch((err) => console.log(err.response));
         } else {
             console.log('you cant disagree with your review or already done');
+            setReviewDisagreeLoading(false);
         }
     };
 
@@ -590,6 +569,7 @@ export default function ProductDetails(props) {
                 .catch((err) => console.log(err.response));
         } else {
             console.log('you cant agree with your own review or already done');
+            setVideoReviewAgreeLoading(false);
         }
     };
 
@@ -705,6 +685,7 @@ export default function ProductDetails(props) {
                 .catch((err) => console.log(err.response));
         } else {
             console.log('you cant disagree with your review or already done');
+            setVideoReviewDisagreeLoading(false);
         }
     };
 
@@ -857,6 +838,9 @@ export default function ProductDetails(props) {
                                         changeCardProducts={
                                             changeCategoryProducts
                                         }
+                                        urlForChangeCardProducts={`${process.env.NEXT_PUBLIC_BASE_URL}/category/${categoryProduct.category.slug}/`}
+                                        needDisabled={needDisabled}
+                                        setNeedDisabled={setNeedDisabled}
                                     />
                                 </Grid>
                             ))}

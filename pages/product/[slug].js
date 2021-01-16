@@ -64,7 +64,7 @@ export default function Product(props) {
         let filteredCategoryProducts = allCategoryProducts.filter(
             (categoryProduct) => categoryProduct.id !== product.id
         );
-        categoryProductsRe = filteredCategoryProducts;
+        categoryProductsRe = filteredCategoryProducts.slice(0, 6);
 
         // setReRender(!reRender);
     };

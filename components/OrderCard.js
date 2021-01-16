@@ -178,7 +178,9 @@ export default function OrderCard({ myOrder }) {
                         ) : (
                             <>
                                 {!myOrder.is_confirm && (
-                                    <Link href={`/receiver/${myOrder.id}`}>
+                                    <Link
+                                        href={`/receiver/${myOrder.order_code}`}
+                                    >
                                         <Button
                                             color='secondary'
                                             variant='contained'
@@ -190,7 +192,9 @@ export default function OrderCard({ myOrder }) {
                                     </Link>
                                 )}
                                 {myOrder.is_confirm && (
-                                    <Link href={`/payment/${myOrder.id}`}>
+                                    <Link
+                                        href={`/payment/${myOrder.order_code}`}
+                                    >
                                         <Button
                                             color='secondary'
                                             variant='contained'

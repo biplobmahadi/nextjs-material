@@ -122,7 +122,7 @@ export default function OrderDetailsCard({ order }) {
                         ) : (
                             <>
                                 {!order.is_confirm && (
-                                    <Link href={`/receiver/${order.id}`}>
+                                    <Link href={`/receiver/${order.order_code}`}>
                                         <Button
                                             color='primary'
                                             size='small'
@@ -134,7 +134,7 @@ export default function OrderDetailsCard({ order }) {
                                     </Link>
                                 )}
                                 {order.is_confirm && !order.is_payment_confirm && (
-                                    <Link href={`/payment/${order.id}`}>
+                                    <Link href={`/payment/${order.order_code}`}>
                                         <Button
                                             color='primary'
                                             size='small'

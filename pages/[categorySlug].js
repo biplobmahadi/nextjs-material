@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
-import ProductCardForMultiple from '../components/ProductCardForMultiple';
+import ProductCard from '../components/ProductCard';
 import FilterProductDialog from '../components/FilterProductDialog';
 import MainFooter from '../components/MainFooter';
 import FilterProduct from '../components/FilterProduct';
@@ -18,6 +18,7 @@ import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
+import Rating from '@material-ui/lab/Rating';
 
 import parseCookies from '../lib/parseCookies';
 import axios from 'axios';
@@ -50,12 +51,12 @@ let categoryProductsRe;
 
 export default function Category(props) {
     const classes = useStyles();
-    const router = useRouter();
-    const [priceFilter5TK, setPriceFilter5TK] = React.useState(0);
-    const [priceFilter10TK, setPriceFilter10TK] = React.useState(0);
+    const [priceFilter100TK, setPriceFilter100TK] = React.useState(0);
+    const [priceFilter500TK, setPriceFilter500TK] = React.useState(0);
+    const [priceFilter1000TK, setPriceFilter1000TK] = React.useState(0);
+    const [priceFilter2000TK, setPriceFilter2000TK] = React.useState(0);
+    const [priceFilter5000TK, setPriceFilter5000TK] = React.useState(0);
     const [reRender, setReRender] = React.useState(false);
-
-    const { categorySlug } = router.query;
 
     const { config } = props;
     let category = categoryProductsRe ? categoryProductsRe : props.category;
@@ -87,52 +88,148 @@ export default function Category(props) {
     console.log('my bag Re ', myBagRe);
     console.log('category', category);
 
-    const handlePriceFilter5TK = (event) => {
-        setPriceFilter5TK(event.target.checked ? event.target.value : 0);
+    const handlePriceFilter100TK = (event) => {
+        setPriceFilter100TK(event.target.checked ? event.target.value : 0);
     };
-    const handlePriceFilter10TK = (event) => {
-        setPriceFilter10TK(event.target.checked ? event.target.value : 0);
+    const handlePriceFilter500TK = (event) => {
+        setPriceFilter500TK(event.target.checked ? event.target.value : 0);
+    };
+    const handlePriceFilter1000TK = (event) => {
+        setPriceFilter1000TK(event.target.checked ? event.target.value : 0);
+    };
+    const handlePriceFilter2000TK = (event) => {
+        setPriceFilter2000TK(event.target.checked ? event.target.value : 0);
+    };
+    const handlePriceFilter5000TK = (event) => {
+        setPriceFilter5000TK(event.target.checked ? event.target.value : 0);
     };
 
     let allProducts = category ? category.product : [];
     let products;
 
-    if (priceFilter5TK && !priceFilter10TK) {
+    if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
         products = allProducts.filter(
-            (product) => product.price > 0 && product.price <= 5
+            (product) => product.price > 0 && product.price <= 100
         );
-    } else if (!priceFilter5TK && priceFilter10TK) {
+    } else if (
+        !priceFilter100TK &&
+        priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
         products = allProducts.filter(
-            (product) => product.price > 5 && product.price <= 10
+            (product) => product.price >= 100 && product.price <= 500
         );
-    } else if (priceFilter5TK && priceFilter10TK) {
+    } else if (
+        !priceFilter100TK &&
+        !priceFilter500TK &&
+        priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
         products = allProducts.filter(
-            (product) => product.price > 0 && product.price <= 10
+            (product) => product.price >= 500 && product.price <= 1000
+        );
+    } else if (
+        !priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 1000 && product.price <= 2000
+        );
+    } else if (
+        !priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 2000 && product.price <= 5000
+        );
+    } else if (
+        priceFilter100TK &&
+        priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price > 0 && product.price <= 500
+        );
+    } else if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                product.price > 0 &&
+                product.price <= 100 &&
+                product.price >= 500 &&
+                product.price <= 1000
+        );
+    } else if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                product.price > 0 &&
+                product.price <= 100 &&
+                product.price >= 1000 &&
+                product.price <= 2000
+        );
+    } else if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                product.price > 0 &&
+                product.price <= 100 &&
+                product.price >= 2000 &&
+                product.price <= 5000
+        );
+    } else if (
+        priceFilter100TK &&
+        priceFilter500TK &&
+        priceFilter1000TK &&
+        !priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 2000 && product.price <= 5000
+        );
+    } else if (priceFilter100TK && priceFilter500TK) {
+        products = allProducts.filter(
+            (product) => product.price > 0 && product.price <= 500
         );
     } else {
         products = allProducts;
     }
 
-    // if (priceFilter > 0 && priceFilter <= 5) {
-    //     products = allProducts.filter((product) => product.price <= 5);
-    // } else if (priceFilter > 5 && priceFilter <= 10) {
-    //     products = allProducts.filter(
-    //         (product) => product.price > 5 && product.price <= 10
-    //     );
-    // } else if (priceFilter > 10 && priceFilter <= 15) {
-    //     products = allProducts.filter(
-    //         (product) => product.price > 10 && product.price <= 15
-    //     );
-    // } else if (priceFilter > 15 && priceFilter <= 20) {
-    //     products = allProducts.filter(
-    //         (product) => product.price > 15 && product.price <= 20
-    //     );
-    // } else {
-    //     products = allProducts;
-    // }
     console.log('products', products);
-    console.log('priceFilter5TK', priceFilter5TK);
-    console.log('priceFilter10TK', priceFilter10TK);
+    console.log('priceFilter100TK', priceFilter100TK);
+    console.log('priceFilter500TK', priceFilter500TK);
     return (
         <div>
             <Head>
@@ -149,7 +246,9 @@ export default function Category(props) {
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={myBag && myBag.product_with_quantity.length} />
+            <ButtonAppBar
+                totalProductInBag={myBag && myBag.product_with_quantity.length}
+            />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
                     <Box
@@ -193,16 +292,16 @@ export default function Category(props) {
                                                 <FormControlLabel
                                                     control={
                                                         <Checkbox
-                                                            value={5}
+                                                            value={100}
                                                             color='secondary'
                                                             onClick={(event) =>
-                                                                handlePriceFilter5TK(
+                                                                handlePriceFilter100TK(
                                                                     event
                                                                 )
                                                             }
                                                         />
                                                     }
-                                                    label='Tk. 100 - 500'
+                                                    label='Tk. 0 - 100'
                                                     labelPlacement='end'
                                                 />
                                             </FormGroup>
@@ -213,10 +312,10 @@ export default function Category(props) {
                                                 <FormControlLabel
                                                     control={
                                                         <Checkbox
-                                                            value={10}
+                                                            value={500}
                                                             color='secondary'
                                                             onClick={(event) =>
-                                                                handlePriceFilter10TK(
+                                                                handlePriceFilter500TK(
                                                                     event
                                                                 )
                                                             }
@@ -231,11 +330,11 @@ export default function Category(props) {
                                                 row
                                             >
                                                 <FormControlLabel
-                                                    value={15}
+                                                    value={1000}
                                                     control={
                                                         <Checkbox color='secondary' />
                                                     }
-                                                    label='Tk. 100 - 500'
+                                                    label='Tk. 500 - 1000'
                                                     labelPlacement='end'
                                                 />
                                             </FormGroup>
@@ -244,11 +343,11 @@ export default function Category(props) {
                                                 row
                                             >
                                                 <FormControlLabel
-                                                    value='end'
+                                                    value={2000}
                                                     control={
                                                         <Checkbox color='secondary' />
                                                     }
-                                                    label='Tk. 100 - 500'
+                                                    label='Tk. 1000 - 2000'
                                                     labelPlacement='end'
                                                 />
                                             </FormGroup>
@@ -257,11 +356,11 @@ export default function Category(props) {
                                                 row
                                             >
                                                 <FormControlLabel
-                                                    value='end'
+                                                    value={5000}
                                                     control={
                                                         <Checkbox color='secondary' />
                                                     }
-                                                    label='Tk. 100 - 500'
+                                                    label='Tk. 2000 - 5000'
                                                     labelPlacement='end'
                                                 />
                                             </FormGroup>
@@ -293,13 +392,11 @@ export default function Category(props) {
                                                         <Checkbox color='secondary' />
                                                     }
                                                     label={
-                                                        <span>
-                                                            <StarIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                        </span>
+                                                        <Rating
+                                                            name='read-only'
+                                                            value={5}
+                                                            readOnly
+                                                        />
                                                     }
                                                     labelPlacement='end'
                                                 />
@@ -314,13 +411,11 @@ export default function Category(props) {
                                                         <Checkbox color='secondary' />
                                                     }
                                                     label={
-                                                        <span>
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                        </span>
+                                                        <Rating
+                                                            name='read-only'
+                                                            value={4}
+                                                            readOnly
+                                                        />
                                                     }
                                                     labelPlacement='end'
                                                 />
@@ -335,13 +430,11 @@ export default function Category(props) {
                                                         <Checkbox color='secondary' />
                                                     }
                                                     label={
-                                                        <span>
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                        </span>
+                                                        <Rating
+                                                            name='read-only'
+                                                            value={3}
+                                                            readOnly
+                                                        />
                                                     }
                                                     labelPlacement='end'
                                                 />
@@ -356,13 +449,11 @@ export default function Category(props) {
                                                         <Checkbox color='secondary' />
                                                     }
                                                     label={
-                                                        <span>
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarBorderIcon />
-                                                        </span>
+                                                        <Rating
+                                                            name='read-only'
+                                                            value={2}
+                                                            readOnly
+                                                        />
                                                     }
                                                     labelPlacement='end'
                                                 />
@@ -377,13 +468,11 @@ export default function Category(props) {
                                                         <Checkbox color='secondary' />
                                                     }
                                                     label={
-                                                        <span>
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                        </span>
+                                                        <Rating
+                                                            name='read-only'
+                                                            value={1}
+                                                            readOnly
+                                                        />
                                                     }
                                                     labelPlacement='end'
                                                 />
@@ -393,38 +482,13 @@ export default function Category(props) {
                                 </Grid>
                             </Hidden>
 
-                            <Grid item xs={12} sm={12} md={12} lg={9} xl={9}>
-                                <Box className={classes.boot}>
-                                    <Grid container spacing={2}>
-                                        {products &&
-                                            products.map((product) => (
-                                                <Grid
-                                                    item
-                                                    xs={12}
-                                                    sm={6}
-                                                    md={4}
-                                                    lg={4}
-                                                    xl={3}
-                                                >
-                                                    <ProductCardForMultiple
-                                                        product={
-                                                            product && product
-                                                        }
-                                                        myBag={myBag}
-                                                        config={config}
-                                                        changeMyBag={
-                                                            changeMyBag
-                                                        }
-                                                        urlForChangeCardProducts={`http://localhost:8000/category/${categorySlug}/`}
-                                                        changeCardProducts={
-                                                            changeCategoryProducts
-                                                        }
-                                                    />
-                                                </Grid>
-                                            ))}
-                                    </Grid>
-                                </Box>
-                            </Grid>
+                            <AllProductsForCategorySlug
+                                products={products}
+                                myBag={myBag}
+                                changeMyBag={changeMyBag}
+                                changeCategoryProducts={changeCategoryProducts}
+                                config={config}
+                            />
                         </Grid>
                     </Box>
                 </Box>
