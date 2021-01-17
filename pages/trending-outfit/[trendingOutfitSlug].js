@@ -2,6 +2,7 @@ import Head from 'next/head';
 import ButtonAppBar from '../../components/ButtonAppBar';
 import BrandCard from '../../components/BrandCard';
 import Card from '../../components/Card';
+import AllProductsForTrendingOutfit from '../../components/AllProductsForTrendingOutfit';
 import ProductCard from '../../components/ProductCard';
 import MainFooter from '../../components/MainFooter';
 import Box from '@material-ui/core/Box';
@@ -12,31 +13,46 @@ import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
 import parseCookies from '../../lib/parseCookies';
 import { useEffect } from 'react';
-
+import { useRouter } from 'next/router';
 
 let myBagRe;
+let trendingOutfitRe;
 
 export default function Trending(props) {
+    const router = useRouter();
+
+    const { trendingOutfitSlug } = router.query;
+
     const [reRender, setReRender] = React.useState(false);
-    
-    const { trendingOutfit, config } = props
+
+    const { config } = props;
+    let trendingOutfit = trendingOutfitRe
+        ? trendingOutfitRe
+        : props.trendingOutfit;
     let myBag = myBagRe ? myBagRe : props.myBag;
 
+    const changeTrendingOutfit = (value) => {
+        trendingOutfitRe = value;
+
+        // setReRender(!reRender);
+    };
     const changeMyBag = (value) => {
         myBagRe = value;
         console.log('my bag now', myBagRe);
 
         setReRender(!reRender);
     };
-    
 
     // here useEffect -> when component mount and update myBagRe will undefined
-    // because, when we change route then myBagRe again remain previous one which is not 
+    // because, when we change route then myBagRe again remain previous one which is not
     // updated one, that's why we make it undefined and bag will server rendered
 
     useEffect(() => {
-        myBagRe = undefined
+        myBagRe = undefined;
+        trendingOutfitRe = undefined;
     });
+
+    let products = trendingOutfit.product ? trendingOutfit.product : [];
 
     console.log('my bag 1st ', myBag);
     console.log('my bag Re ', myBagRe);
@@ -46,23 +62,24 @@ export default function Trending(props) {
             <Head>
                 <title>Trending Outfit - Logo.com</title>
                 <link rel='icon' href='/a.ico' />
-                <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={ myBag && myBag.product_with_quantity.length} />
+            <ButtonAppBar
+                totalProductInBag={myBag && myBag.product_with_quantity.length}
+            />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
-                    <Box
-                        mb={2}
-                        borderRadius='borderRadius'
-                    >
-                        <img src='/aa.jpg' alt='' srcset='' height='250' width='100%' />
+                    <Box mb={2} borderRadius='borderRadius'>
+                        <img
+                            src='/aa.jpg'
+                            alt=''
+                            srcset=''
+                            height='250'
+                            width='100%'
+                        />
                     </Box>
                     <Box
                         py={2}
@@ -70,24 +87,19 @@ export default function Trending(props) {
                         style={{ backgroundColor: 'white' }}
                         textAlign='center'
                     >
-                        <Typography variant='h4' component='h4'>
-                            {trendingOutfit.trend_outfit_name}
+                        <Typography variant='h5' component='h5'>
+                            <strong>{trendingOutfit.trend_outfit_name}</strong>
                         </Typography>
                     </Box>
                     <Box mt={2}>
-                        <Grid container spacing={2}>
-                            {trendingOutfit && trendingOutfit.product && trendingOutfit.product.map(product => 
-                                <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <ProductCard 
-                                    product={product} 
-                                    myBag={myBag} 
-                                    config={config}
-                                    changeMyBag={changeMyBag}
-                                />
-                            </Grid>
-                                )}
-                            
-                        </Grid>
+                        <AllProductsForTrendingOutfit
+                            products={products}
+                            myBag={myBag}
+                            changeMyBag={changeMyBag}
+                            changeForMultiple={changeTrendingOutfit}
+                            urlForChangeCardForMultiple={`${process.env.NEXT_PUBLIC_BASE_URL}/trending-outfit/${trendingOutfitSlug}/`}
+                            config={config}
+                        />
                     </Box>
                 </Box>
             </Box>
@@ -98,7 +110,6 @@ export default function Trending(props) {
         </div>
     );
 }
-
 
 const fetchDataForBag = async (config) =>
     await axios
@@ -112,7 +123,9 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForTrendingOutfit = async (params) =>
     await axios
-        .get(`http://localhost:8000/trending-outfit/${params.trendingOutfitSlug}/`)
+        .get(
+            `http://localhost:8000/trending-outfit/${params.trendingOutfitSlug}/`
+        )
         .then((res) => ({
             trendingOutfit: res.data,
         }))
@@ -146,13 +159,14 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
-
     const dataTrendingOutfit = await fetchDataForTrendingOutfit(params);
     const trendingOutfit = dataTrendingOutfit.trendingOutfit;
 
     return {
         props: {
-            trendingOutfit, myBag, config
+            trendingOutfit,
+            myBag,
+            config,
         },
     };
 }

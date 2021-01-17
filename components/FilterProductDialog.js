@@ -7,7 +7,14 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FilterProduct from './FilterProduct';
 import Box from '@material-ui/core/Box';
-export default function ScrollDialog() {
+
+export default function FilterProductDialog({
+    handlePriceFilter100TK,
+    handlePriceFilter500TK,
+    handlePriceFilter1000TK,
+    handlePriceFilter2000TK,
+    handlePriceFilter5000TK,
+}) {
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState('paper');
 
@@ -38,7 +45,7 @@ export default function ScrollDialog() {
                 size='small'
                 onClick={handleClickOpen('paper')}
             >
-                <Box px={3}>Filter By</Box>
+                <Box px={3}>Filter By Price</Box>
             </Button>
             <Dialog
                 open={open}
@@ -48,7 +55,7 @@ export default function ScrollDialog() {
                 aria-describedby='scroll-dialog-description'
             >
                 <DialogTitle id='scroll-dialog-title'>
-                    Product Filter
+                    Product Filter By Price
                 </DialogTitle>
                 <DialogContent dividers={scroll === 'paper'}>
                     <DialogContentText
@@ -56,7 +63,13 @@ export default function ScrollDialog() {
                         ref={descriptionElementRef}
                         tabIndex={-1}
                     >
-                        <FilterProduct />
+                        <FilterProduct
+                            handlePriceFilter100TK={handlePriceFilter100TK}
+                            handlePriceFilter500TK={handlePriceFilter500TK}
+                            handlePriceFilter1000TK={handlePriceFilter1000TK}
+                            handlePriceFilter2000TK={handlePriceFilter2000TK}
+                            handlePriceFilter5000TK={handlePriceFilter5000TK}
+                        />
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

@@ -112,8 +112,8 @@ export default function Index(props) {
                             alignItems='center'
                         >
                             <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-                                <Typography variant='h4' component='h4'>
-                                    Trending Now
+                                <Typography variant='h5' component='h5'>
+                                    <strong>Trending Now</strong>
                                 </Typography>
                             </Grid>
 

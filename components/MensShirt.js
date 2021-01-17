@@ -49,8 +49,8 @@ export default function MensShirt({
                     alignItems='center'
                 >
                     <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-                        <Typography variant='h4' component='h4'>
-                            Men's Shirt
+                        <Typography variant='h5' component='h5'>
+                           <strong>Men's Shirt</strong> 
                         </Typography>
                     </Grid>
 

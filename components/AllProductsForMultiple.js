@@ -1,9 +1,9 @@
 import Head from 'next/head';
-import ButtonAppBar from '../components/ButtonAppBar';
-import ProductCard from '../components/ProductCard';
-import FilterProductDialog from '../components/FilterProductDialog';
-import MainFooter from '../components/MainFooter';
-import FilterProduct from '../components/FilterProduct';
+import ButtonAppBar from './ButtonAppBar';
+import ProductCardForMultiple from './ProductCardForMultiple';
+import FilterProductDialog from './FilterProductDialog';
+import MainFooter from './MainFooter';
+import FilterProduct from './FilterProduct';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -46,37 +46,36 @@ const useStyles = makeStyles((theme) => ({
 // 5. we can't change component props. so this is secure
 // 6. formik to get form value, here also no need to use state.
 
-export default function AllProductsForCategorySlug({
+export default function AllProductsForMultiple({
     products,
     myBag,
     changeMyBag,
-    changeCategoryProducts,
+    changeForMultiple,
+    urlForChangeCardForMultiple,
     config,
 }) {
     const classes = useStyles();
     const [needDisabled, setNeedDisabled] = React.useState(false);
 
     return (
-        <Grid item xs={12} sm={12} md={12} lg={9} xl={9}>
-            <Box className={classes.boot}>
-                <Grid container spacing={2}>
-                    {products &&
-                        products.map((product) => (
-                            <Grid item xs={12} sm={6} md={4} lg={4} xl={3}>
-                                <ProductCard
-                                    product={product && product}
-                                    myBag={myBag}
-                                    config={config}
-                                    changeMyBag={changeMyBag}
-                                    changeCardProducts={changeCategoryProducts}
-                                    urlForChangeCardProducts={`${process.env.NEXT_PUBLIC_BASE_URL}/category/${product.category.slug}/`}
-                                    needDisabled={needDisabled}
-                                    setNeedDisabled={setNeedDisabled}
-                                />
-                            </Grid>
-                        ))}
-                </Grid>
-            </Box>
+        <Grid container spacing={2}>
+            {products &&
+                products.map((product) => (
+                    <Grid item xs={12} sm={6} md={4} lg={4} xl={3}>
+                        <ProductCardForMultiple
+                            product={product && product}
+                            myBag={myBag}
+                            config={config}
+                            changeMyBag={changeMyBag}
+                            changeCardForMultiple={changeForMultiple}
+                            urlForChangeCardForMultiple={
+                                urlForChangeCardForMultiple
+                            }
+                            needDisabled={needDisabled}
+                            setNeedDisabled={setNeedDisabled}
+                        />
+                    </Grid>
+                ))}
         </Grid>
     );
 }

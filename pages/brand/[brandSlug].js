@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import ButtonAppBar from '../../components/ButtonAppBar';
-import ProductCard from '../../components/ProductCard';
+import AllProductsForMultiple from '../../components/AllProductsForMultiple';
 import FilterProductDialog from '../../components/FilterProductDialog';
 import MainFooter from '../../components/MainFooter';
 import FilterProduct from '../../components/FilterProduct';
@@ -22,7 +22,7 @@ import Hidden from '@material-ui/core/Hidden';
 import parseCookies from '../../lib/parseCookies';
 import axios from 'axios';
 import { useEffect } from 'react';
-
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -45,19 +45,31 @@ const useStyles = makeStyles((theme) => ({
 // 5. we can't change component props. so this is secure
 // 6. formik to get form value, here also no need to use state.
 
-
 let myBagRe;
-
+let brandRe;
 
 export default function SubCategories(props) {
     const classes = useStyles();
-    const [priceFilter5TK, setPriceFilter5TK] = React.useState(0);
-    const [priceFilter10TK, setPriceFilter10TK] = React.useState(0);
-    const [reRender, setReRender] = React.useState(false);
-    
-    const { brand, config } = props
-    let myBag = myBagRe ? myBagRe : props.myBag;
+    const router = useRouter();
 
+    const { brandSlug } = router.query;
+
+    const [priceFilter100TK, setPriceFilter100TK] = React.useState(0);
+    const [priceFilter500TK, setPriceFilter500TK] = React.useState(0);
+    const [priceFilter1000TK, setPriceFilter1000TK] = React.useState(0);
+    const [priceFilter2000TK, setPriceFilter2000TK] = React.useState(0);
+    const [priceFilter5000TK, setPriceFilter5000TK] = React.useState(0);
+    const [reRender, setReRender] = React.useState(false);
+
+    const { config } = props;
+    let myBag = myBagRe ? myBagRe : props.myBag;
+    let brand = brandRe ? brandRe : props.brand;
+
+    const changeBrand = (value) => {
+        brandRe = value;
+
+        // setReRender(!reRender);
+    };
     const changeMyBag = (value) => {
         myBagRe = value;
         console.log('my bag now', myBagRe);
@@ -66,59 +78,52 @@ export default function SubCategories(props) {
     };
 
     // here useEffect -> when component mount and update myBagRe will undefined
-    // because, when we change route then myBagRe again remain previous one which is not 
+    // because, when we change route then myBagRe again remain previous one which is not
     // updated one, that's why we make it undefined and bag will server rendered
 
     useEffect(() => {
-        myBagRe = undefined
+        myBagRe = undefined;
+        brandRe = undefined;
     });
 
     console.log('my bag 1st ', myBag);
     console.log('my bag Re ', myBagRe);
 
-    const handlePriceFilter5TK = (event) => {
-        setPriceFilter5TK(event.target.checked ? event.target.value : 0);
+    const handlePriceFilter100TK = (event) => {
+        setPriceFilter100TK(event.target.checked ? event.target.value : 0);
     };
-    const handlePriceFilter10TK = (event) => {
-        setPriceFilter10TK(event.target.checked ? event.target.value : 0);
+    const handlePriceFilter500TK = (event) => {
+        setPriceFilter500TK(event.target.checked ? event.target.value : 0);
+    };
+    const handlePriceFilter1000TK = (event) => {
+        setPriceFilter1000TK(event.target.checked ? event.target.value : 0);
+    };
+    const handlePriceFilter2000TK = (event) => {
+        setPriceFilter2000TK(event.target.checked ? event.target.value : 0);
+    };
+    const handlePriceFilter5000TK = (event) => {
+        setPriceFilter5000TK(event.target.checked ? event.target.value : 0);
     };
 
-    let allProducts = brand.product;
-    let products;
+    let allProducts = brand.product ? brand.product : [];
+    let products = allProducts;
 
-    if (priceFilter5TK && !priceFilter10TK) {
-        products = allProducts.filter(
-            (product) => product.price > 0 && product.price <= 5
-        );
-    } else if (!priceFilter5TK && priceFilter10TK) {
-        products = allProducts.filter(
-            (product) => product.price > 5 && product.price <= 10
-        );
-    } else if (priceFilter5TK && priceFilter10TK) {
-        products = allProducts.filter(
-            (product) => product.price > 0 && product.price <= 10
-        );
-    } else {
-        products = allProducts;
-    }
-
-    // if (priceFilter > 0 && priceFilter <= 5) {
-    //     products = allProducts.filter((product) => product.price <= 5);
-    // } else if (priceFilter > 5 && priceFilter <= 10) {
+    // if (priceFilter5TK && !priceFilter10TK) {
+    //     products = allProducts.filter(
+    //         (product) => product.price > 0 && product.price <= 5
+    //     );
+    // } else if (!priceFilter5TK && priceFilter10TK) {
     //     products = allProducts.filter(
     //         (product) => product.price > 5 && product.price <= 10
     //     );
-    // } else if (priceFilter > 10 && priceFilter <= 15) {
+    // } else if (priceFilter5TK && priceFilter10TK) {
     //     products = allProducts.filter(
-    //         (product) => product.price > 10 && product.price <= 15
-    //     );
-    // } else if (priceFilter > 15 && priceFilter <= 20) {
-    //     products = allProducts.filter(
-    //         (product) => product.price > 15 && product.price <= 20
+    //         (product) => product.price > 0 && product.price <= 10
     //     );
     // } else {
     //     products = allProducts;
     // }
+
     console.log('products', products);
     console.log('priceFilter5TK', priceFilter5TK);
     console.log('priceFilter10TK', priceFilter10TK);
@@ -127,16 +132,14 @@ export default function SubCategories(props) {
             <Head>
                 <title>Brands - {brand.brand_name}</title>
                 <link rel='icon' href='/a.ico' />
-                <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={ myBag && myBag.product_with_quantity.length} />
+            <ButtonAppBar
+                totalProductInBag={myBag && myBag.product_with_quantity.length}
+            />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
                     <Box
@@ -145,13 +148,25 @@ export default function SubCategories(props) {
                         style={{ backgroundColor: 'white' }}
                         textAlign='center'
                     >
-                        <Typography variant='h4' component='h4'>
-                            {brand.brand_name}
+                        <Typography variant='h5' component='h5'>
+                            <strong>{brand.brand_name}</strong>
                         </Typography>
                     </Box>
                     <Hidden lgUp>
                         <Box mt={2}>
-                            <FilterProductDialog />
+                            <FilterProductDialog
+                                handlePriceFilter100TK={handlePriceFilter100TK}
+                                handlePriceFilter500TK={handlePriceFilter500TK}
+                                handlePriceFilter1000TK={
+                                    handlePriceFilter1000TK
+                                }
+                                handlePriceFilter2000TK={
+                                    handlePriceFilter2000TK
+                                }
+                                handlePriceFilter5000TK={
+                                    handlePriceFilter5000TK
+                                }
+                            />
                         </Box>
                     </Hidden>
 
@@ -159,7 +174,6 @@ export default function SubCategories(props) {
                         <Grid container spacing={3}>
                             <Hidden mdDown>
                                 <Grid item xs={12} sm={3} md={4} lg={3} xl={3}>
-                                    
                                     <Box
                                         style={{ backgroundColor: 'white' }}
                                         p={3}
@@ -181,10 +195,30 @@ export default function SubCategories(props) {
                                                 <FormControlLabel
                                                     control={
                                                         <Checkbox
-                                                            value={5}
+                                                            value={100}
                                                             color='secondary'
                                                             onClick={(event) =>
-                                                                handlePriceFilter5TK(
+                                                                handlePriceFilter100TK(
+                                                                    event
+                                                                )
+                                                            }
+                                                        />
+                                                    }
+                                                    label='Tk. 0 - 100'
+                                                    labelPlacement='end'
+                                                />
+                                            </FormGroup>
+                                            <FormGroup
+                                                aria-label='position'
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            value={500}
+                                                            color='secondary'
+                                                            onClick={(event) =>
+                                                                handlePriceFilter500TK(
                                                                     event
                                                                 )
                                                             }
@@ -201,16 +235,16 @@ export default function SubCategories(props) {
                                                 <FormControlLabel
                                                     control={
                                                         <Checkbox
-                                                            value={10}
+                                                            value={1000}
                                                             color='secondary'
                                                             onClick={(event) =>
-                                                                handlePriceFilter10TK(
+                                                                handlePriceFilter1000TK(
                                                                     event
                                                                 )
                                                             }
                                                         />
                                                     }
-                                                    label='Tk. 100 - 500'
+                                                    label='Tk. 500 - 1000'
                                                     labelPlacement='end'
                                                 />
                                             </FormGroup>
@@ -219,11 +253,18 @@ export default function SubCategories(props) {
                                                 row
                                             >
                                                 <FormControlLabel
-                                                    value={15}
                                                     control={
-                                                        <Checkbox color='secondary' />
+                                                        <Checkbox
+                                                            value={2000}
+                                                            color='secondary'
+                                                            onClick={(event) =>
+                                                                handlePriceFilter2000TK(
+                                                                    event
+                                                                )
+                                                            }
+                                                        />
                                                     }
-                                                    label='Tk. 100 - 500'
+                                                    label='Tk. 1000 - 2000'
                                                     labelPlacement='end'
                                                 />
                                             </FormGroup>
@@ -232,147 +273,18 @@ export default function SubCategories(props) {
                                                 row
                                             >
                                                 <FormControlLabel
-                                                    value='end'
                                                     control={
-                                                        <Checkbox color='secondary' />
+                                                        <Checkbox
+                                                            value={5000}
+                                                            color='secondary'
+                                                            onClick={(event) =>
+                                                                handlePriceFilter5000TK(
+                                                                    event
+                                                                )
+                                                            }
+                                                        />
                                                     }
-                                                    label='Tk. 100 - 500'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value='end'
-                                                    control={
-                                                        <Checkbox color='secondary' />
-                                                    }
-                                                    label='Tk. 100 - 500'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                        </FormControl>
-                                    </Box>
-
-                                    <Box
-                                        style={{ backgroundColor: 'white' }}
-                                        mt={3}
-                                        p={3}
-                                        className={classes.root}
-                                        borderRadius='borderRadius'
-                                    >
-                                        <Typography
-                                            gutterBottom
-                                            variant='h6'
-                                            component='h6'
-                                        >
-                                            Filter by Ratings
-                                        </Typography>
-                                        <FormControl component='fieldset'>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value='end'
-                                                    control={
-                                                        <Checkbox color='secondary' />
-                                                    }
-                                                    label={
-                                                        <span>
-                                                            <StarIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                        </span>
-                                                    }
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value='end'
-                                                    control={
-                                                        <Checkbox color='secondary' />
-                                                    }
-                                                    label={
-                                                        <span>
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                        </span>
-                                                    }
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value='end'
-                                                    control={
-                                                        <Checkbox color='secondary' />
-                                                    }
-                                                    label={
-                                                        <span>
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarBorderIcon />
-                                                            <StarBorderIcon />
-                                                        </span>
-                                                    }
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value='end'
-                                                    control={
-                                                        <Checkbox color='secondary' />
-                                                    }
-                                                    label={
-                                                        <span>
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarBorderIcon />
-                                                        </span>
-                                                    }
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value='end'
-                                                    control={
-                                                        <Checkbox color='secondary' />
-                                                    }
-                                                    label={
-                                                        <span>
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                            <StarIcon />
-                                                        </span>
-                                                    }
+                                                    label='Tk. 2000 - 5000'
                                                     labelPlacement='end'
                                                 />
                                             </FormGroup>
@@ -383,26 +295,14 @@ export default function SubCategories(props) {
 
                             <Grid item xs={12} sm={12} md={12} lg={9} xl={9}>
                                 <Box className={classes.boot}>
-                                    <Grid container spacing={2}>
-                                        {products &&
-                                            products.map((product) => (
-                                                <Grid
-                                                    item
-                                                    xs={12}
-                                                    sm={6}
-                                                    md={4}
-                                                    lg={4}
-                                                    xl={3}
-                                                >
-                                                    <ProductCard
-                                                    product={product && product} 
-                                                    myBag={myBag} 
-                                                    config={config}
-                                                    changeMyBag={changeMyBag}
-                                                    />
-                                                </Grid>
-                                            ))}
-                                    </Grid>
+                                    <AllProductsForMultiple
+                                        products={products}
+                                        myBag={myBag}
+                                        changeMyBag={changeMyBag}
+                                        changeForMultiple={changeBrand}
+                                        urlForChangeCardForMultiple={`${process.env.NEXT_PUBLIC_BASE_URL}/brands/${brandSlug}/`}
+                                        config={config}
+                                    />
                                 </Box>
                             </Grid>
                         </Grid>
@@ -463,13 +363,14 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
-
     const dataBrand = await fetchDataForBrand(params);
     const brand = dataBrand.brand;
 
     return {
         props: {
-            brand, myBag, config
+            brand,
+            myBag,
+            config,
         },
     };
 }

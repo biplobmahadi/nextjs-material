@@ -339,20 +339,11 @@ export default function ProductForTrialCard({
                             </Box>
                         </Typography>
                         <Typography gutterBottom variant='h6' component='h6'>
-                            <Box textAlign='center' color='secondary.main'>
+                            <Box textAlign='center'>
                                 Tk. {product && product.price}
                             </Box>
                         </Typography>
                     </CardContent>
-                    {product.productavailable.available_quantity === 0 && (
-                        <Box textAlign='center'>
-                            <Chip
-                                label='Not In Stock'
-                                color='secondary'
-                                size='small'
-                            />
-                        </Box>
-                    )}
                 </CardActionArea>
             </Link>
             <Box pb={1}>
@@ -372,7 +363,10 @@ export default function ProductForTrialCard({
                                 }
                             >
                                 <Box textAlign='center' px={3}>
-                                    Add For Trial
+                                    {product.productavailable
+                                        .available_quantity === 0
+                                        ? 'No Stock'
+                                        : 'Add For Trial'}
                                 </Box>
                             </Button>
                             {loading && (

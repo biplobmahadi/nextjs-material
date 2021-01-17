@@ -49,8 +49,8 @@ export default function WomensPant({
                     alignItems='center'
                 >
                     <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-                        <Typography variant='h4' component='h4'>
-                            Women's Pant
+                        <Typography variant='h5' component='h5'>
+                            <strong>Women's Pant</strong>
                         </Typography>
                     </Grid>
 

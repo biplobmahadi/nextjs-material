@@ -11,30 +11,28 @@ import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
 import parseCookies from '../../lib/parseCookies';
 
-
 export default function Trending({ trending, myBag }) {
     return (
         <div>
             <Head>
                 <title>Trending - Logo.com</title>
                 <link rel='icon' href='/a.ico' />
-                <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={ myBag && myBag.product.length} />
+            <ButtonAppBar totalProductInBag={myBag && myBag.product.length} />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
-                    <Box
-                        mb={2}
-                        borderRadius='borderRadius'
-                    >
-                        <img src='/aa.jpg' alt='' srcset='' height='250' width='100%' />
+                    <Box mb={2} borderRadius='borderRadius'>
+                        <img
+                            src='/aa.jpg'
+                            alt=''
+                            srcset=''
+                            height='250'
+                            width='100%'
+                        />
                     </Box>
                     <Box
                         py={2}
@@ -42,17 +40,32 @@ export default function Trending({ trending, myBag }) {
                         style={{ backgroundColor: 'white' }}
                         textAlign='center'
                     >
-                        <Typography variant='h4' component='h4'>
-                            {trending.trend_name}
+                        <Typography variant='h5' component='h5'>
+                            <strong>{trending.trend_name}</strong>
                         </Typography>
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
-                            {trending && trending.trending_outfit && trending.trending_outfit.map(trending_outfit => 
-                                <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                    <Card trending_outfit={trending_outfit}/>
-                                </Grid>
-                            )}
+                            {trending &&
+                                trending.trending_outfit &&
+                                trending.trending_outfit.map(
+                                    (trending_outfit) => (
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={3}
+                                            xl={2}
+                                        >
+                                            <Card
+                                                trending_outfit={
+                                                    trending_outfit
+                                                }
+                                            />
+                                        </Grid>
+                                    )
+                                )}
                         </Grid>
                     </Box>
                 </Box>
@@ -64,7 +77,6 @@ export default function Trending({ trending, myBag }) {
         </div>
     );
 }
-
 
 const fetchDataForBag = async (config) =>
     await axios
@@ -112,13 +124,13 @@ export async function getServerSideProps({ req, params }) {
         }
     }
 
-
     const dataTrending = await fetchDataForTrending(params);
     const trending = dataTrending.trending;
 
     return {
         props: {
-            trending, myBag
+            trending,
+            myBag,
         },
     };
 }

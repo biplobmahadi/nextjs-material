@@ -23,7 +23,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ImgMediaCard({trending_outfit}) {
+export default function TrendingCard({ trending_outfit }) {
     const classes = useStyles();
 
     return (
@@ -42,7 +42,9 @@ export default function ImgMediaCard({trending_outfit}) {
                     </Box>
                     <CardContent>
                         <Typography gutterBottom variant='h6' component='h6'>
-                            <Box textAlign='center'>{trending_outfit.trend_outfit_name}</Box>
+                            <Box textAlign='center'>
+                                {trending_outfit.trend_outfit_name}
+                            </Box>
                         </Typography>
                     </CardContent>
                 </CardActionArea>

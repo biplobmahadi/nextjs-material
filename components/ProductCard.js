@@ -468,21 +468,11 @@ export default function ProductCard({
                             </Box>
                         </Typography>
                         <Typography gutterBottom variant='h6' component='h6'>
-                            <Box textAlign='center' color='secondary.main'>
+                            <Box textAlign='center'>
                                 Tk. {product && product.price}
                             </Box>
                         </Typography>
                     </CardContent>
-                    {product &&
-                        product.productavailable.available_quantity === 0 && (
-                            <Box textAlign='center'>
-                                <Chip
-                                    label='Not In Stock'
-                                    color='secondary'
-                                    size='small'
-                                />
-                            </Box>
-                        )}
                 </CardActionArea>
             </Link>
             <Box pb={1}>
@@ -502,7 +492,10 @@ export default function ProductCard({
                                 }
                             >
                                 <Box textAlign='center' px={4}>
-                                    Add To Bag
+                                    {product.productavailable
+                                        .available_quantity === 0
+                                        ? 'No Stock'
+                                        : 'Add To Bag'}
                                 </Box>
                             </Button>
                             {loading && (
