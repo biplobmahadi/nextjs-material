@@ -12,23 +12,20 @@ import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
 import parseCookies from '../lib/parseCookies';
 
-
 export default function Brands({ brands, myBag }) {
     return (
         <div>
             <Head>
                 <title>Brands - Logo.com</title>
                 <link rel='icon' href='/a.ico' />
-                <link
-                    rel='stylesheet'
-                    href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap'
-                />
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
                 ></meta>
             </Head>
-            <ButtonAppBar totalProductInBag={ myBag && myBag.product.length} />
+            <ButtonAppBar
+                totalProductInBag={myBag && myBag.product_with_quantity.length}
+            />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
                 <Box mt={8} pt={3} px={3}>
                     <Box
@@ -43,12 +40,19 @@ export default function Brands({ brands, myBag }) {
                     </Box>
                     <Box mt={2}>
                         <Grid container spacing={2}>
-                            {brands && brands.map(brand => 
-                                <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                <BrandCard brand={brand}/>
-                            </Grid>
-                                )}
-                            
+                            {brands &&
+                                brands.map((brand) => (
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={6}
+                                        md={4}
+                                        lg={3}
+                                        xl={2}
+                                    >
+                                        <BrandCard brand={brand} />
+                                    </Grid>
+                                ))}
                         </Grid>
                     </Box>
                 </Box>
@@ -60,7 +64,6 @@ export default function Brands({ brands, myBag }) {
         </div>
     );
 }
-
 
 const fetchDataForBag = async (config) =>
     await axios
@@ -83,7 +86,6 @@ const fetchDataForBrands = async () =>
         }));
 
 export async function getServerSideProps({ req, params }) {
-
     const cookies = parseCookies(req);
     const haha_ecom_bangla_token = cookies.haha_ecom_bangla_token
         ? cookies.haha_ecom_bangla_token
@@ -108,7 +110,6 @@ export async function getServerSideProps({ req, params }) {
             myBag = myBagNotSendToMyOrder[0];
         }
     }
-
 
     const dataBrands = await fetchDataForBrands();
 

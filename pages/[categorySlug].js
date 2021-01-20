@@ -110,11 +110,347 @@ export default function Category(props) {
     };
 
     let allProducts = category.product ? category.product : [];
-    let products = allProducts;
+    let products;
+
+    if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price > 0 && product.price <= 100
+        );
+    } else if (
+        !priceFilter100TK &&
+        priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 100 && product.price <= 500
+        );
+    } else if (
+        !priceFilter100TK &&
+        !priceFilter500TK &&
+        priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 500 && product.price <= 1000
+        );
+    } else if (
+        !priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 1000 && product.price <= 2000
+        );
+    } else if (
+        !priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 2000 && product.price <= 5000
+        );
+    } else if (
+        priceFilter100TK &&
+        priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price > 0 && product.price <= 500
+        );
+    } else if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price > 0 && product.price <= 100) ||
+                (product.price >= 500 && product.price <= 1000)
+        );
+    } else if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price > 0 && product.price <= 100) ||
+                (product.price >= 1000 && product.price <= 2000)
+        );
+    } else if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price > 0 && product.price <= 100) ||
+                (product.price >= 2000 && product.price <= 5000)
+        );
+    } else if (
+        !priceFilter100TK &&
+        priceFilter500TK &&
+        priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 100 && product.price <= 1000
+        );
+    } else if (
+        !priceFilter100TK &&
+        priceFilter500TK &&
+        !priceFilter1000TK &&
+        priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price >= 100 && product.price <= 500) ||
+                (product.price >= 1000 && product.price <= 2000)
+        );
+    } else if (
+        !priceFilter100TK &&
+        priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price >= 100 && product.price <= 500) ||
+                (product.price >= 2000 && product.price <= 5000)
+        );
+    } else if (
+        !priceFilter100TK &&
+        !priceFilter500TK &&
+        priceFilter1000TK &&
+        priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 500 && product.price <= 2000
+        );
+    } else if (
+        !priceFilter100TK &&
+        !priceFilter500TK &&
+        priceFilter1000TK &&
+        !priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price >= 500 && product.price <= 1000) ||
+                (product.price >= 2000 && product.price <= 5000)
+        );
+    } else if (
+        !priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 1000 && product.price <= 5000
+        );
+    } else if (
+        priceFilter100TK &&
+        priceFilter500TK &&
+        priceFilter1000TK &&
+        !priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price > 0 && product.price <= 1000
+        );
+    } else if (
+        priceFilter100TK &&
+        priceFilter500TK &&
+        !priceFilter1000TK &&
+        priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price > 0 && product.price <= 500) ||
+                (product.price >= 1000 && product.price <= 2000)
+        );
+    } else if (
+        priceFilter100TK &&
+        priceFilter500TK &&
+        !priceFilter1000TK &&
+        !priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price > 0 && product.price <= 500) ||
+                (product.price >= 2000 && product.price <= 5000)
+        );
+    } else if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        priceFilter1000TK &&
+        priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price > 0 && product.price <= 100) ||
+                (product.price >= 500 && product.price <= 2000)
+        );
+    } else if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        priceFilter1000TK &&
+        !priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price > 0 && product.price <= 100) ||
+                (product.price >= 500 && product.price <= 1000) ||
+                (product.price >= 2000 && product.price <= 5000)
+        );
+    } else if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        !priceFilter1000TK &&
+        priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price > 0 && product.price <= 100) ||
+                (product.price >= 1000 && product.price <= 5000)
+        );
+    } else if (
+        !priceFilter100TK &&
+        priceFilter500TK &&
+        priceFilter1000TK &&
+        priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 100 && product.price <= 2000
+        );
+    } else if (
+        !priceFilter100TK &&
+        priceFilter500TK &&
+        priceFilter1000TK &&
+        !priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price >= 100 && product.price <= 1000) ||
+                (product.price >= 2000 && product.price <= 5000)
+        );
+    } else if (
+        !priceFilter100TK &&
+        priceFilter500TK &&
+        !priceFilter1000TK &&
+        priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price >= 100 && product.price <= 500) ||
+                (product.price >= 1000 && product.price <= 5000)
+        );
+    } else if (
+        !priceFilter100TK &&
+        !priceFilter500TK &&
+        priceFilter1000TK &&
+        priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 500 && product.price <= 5000
+        );
+    } else if (
+        priceFilter100TK &&
+        priceFilter500TK &&
+        priceFilter1000TK &&
+        priceFilter2000TK &&
+        !priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price > 0 && product.price <= 2000
+        );
+    } else if (
+        priceFilter100TK &&
+        priceFilter500TK &&
+        priceFilter1000TK &&
+        !priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price > 0 && product.price <= 1000) ||
+                (product.price >= 2000 && product.price <= 5000)
+        );
+    } else if (
+        priceFilter100TK &&
+        priceFilter500TK &&
+        !priceFilter1000TK &&
+        priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price > 0 && product.price <= 500) ||
+                (product.price >= 1000 && product.price <= 5000)
+        );
+    } else if (
+        priceFilter100TK &&
+        !priceFilter500TK &&
+        priceFilter1000TK &&
+        priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) =>
+                (product.price > 0 && product.price <= 100) ||
+                (product.price >= 500 && product.price <= 5000)
+        );
+    } else if (
+        !priceFilter100TK &&
+        priceFilter500TK &&
+        priceFilter1000TK &&
+        priceFilter2000TK &&
+        priceFilter5000TK
+    ) {
+        products = allProducts.filter(
+            (product) => product.price >= 100 && product.price <= 5000
+        );
+    } else {
+        products = allProducts;
+    }
 
     console.log('products', products);
-    console.log('priceFilter100TK', priceFilter100TK);
-    console.log('priceFilter500TK', priceFilter500TK);
+
     return (
         <div>
             <Head>
@@ -147,6 +483,11 @@ export default function Category(props) {
                     <Hidden lgUp>
                         <Box mt={2}>
                             <FilterProductDialog
+                                setPriceFilter100TK={setPriceFilter100TK}
+                                setPriceFilter500TK={setPriceFilter500TK}
+                                setPriceFilter1000TK={setPriceFilter1000TK}
+                                setPriceFilter2000TK={setPriceFilter2000TK}
+                                setPriceFilter5000TK={setPriceFilter5000TK}
                                 handlePriceFilter100TK={handlePriceFilter100TK}
                                 handlePriceFilter500TK={handlePriceFilter500TK}
                                 handlePriceFilter1000TK={

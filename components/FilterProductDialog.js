@@ -9,6 +9,11 @@ import FilterProduct from './FilterProduct';
 import Box from '@material-ui/core/Box';
 
 export default function FilterProductDialog({
+    setPriceFilter100TK,
+    setPriceFilter500TK,
+    setPriceFilter1000TK,
+    setPriceFilter2000TK,
+    setPriceFilter5000TK,
     handlePriceFilter100TK,
     handlePriceFilter500TK,
     handlePriceFilter1000TK,
@@ -21,6 +26,11 @@ export default function FilterProductDialog({
     const handleClickOpen = (scrollType) => () => {
         setOpen(true);
         setScroll(scrollType);
+        setPriceFilter100TK(0);
+        setPriceFilter500TK(0);
+        setPriceFilter1000TK(0);
+        setPriceFilter2000TK(0);
+        setPriceFilter5000TK(0);
     };
 
     const handleClose = () => {
