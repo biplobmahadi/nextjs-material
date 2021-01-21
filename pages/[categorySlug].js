@@ -652,7 +652,7 @@ export default function Category(props) {
 
 const fetchDataForBag = async (config) =>
     await axios
-        .get(`http://localhost:8000/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -662,7 +662,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForCategory = async (params) =>
     await axios
-        .get(`http://localhost:8000/category/${params.categorySlug}/`)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/category/${params.categorySlug}/`)
         .then((res) => ({
             category: res.data,
         }))

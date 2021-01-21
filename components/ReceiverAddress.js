@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
 import Card from '../components/Card';
-import ProductTable from '../components/ProductTable';
 import ProductCard from '../components/ProductCard';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';
@@ -14,6 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import AccountOptionList from '../components/AccountOptionList';
 
 import Divider from '@material-ui/core/Divider';
+
 export default function ReceiverAddressCard({ order }) {
     return (
         <Box

@@ -151,7 +151,7 @@ export default function ProductForTrialCard({
         if (myBag && myBag.length !== 0) {
             axios
                 .get(
-                    `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
                     config
                 )
                 .then((res) => {
@@ -185,7 +185,7 @@ export default function ProductForTrialCard({
                             } else {
                                 axios
                                     .post(
-                                        'http://localhost:8000/product-with-quantity/',
+                                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/`,
                                         addToBag,
                                         config
                                     )
@@ -206,7 +206,7 @@ export default function ProductForTrialCard({
                                         );
                                         axios
                                             .patch(
-                                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                                 {
                                                     product_with_quantity: pk.concat(
                                                         res.data.id
@@ -225,7 +225,7 @@ export default function ProductForTrialCard({
 
                                                 axios
                                                     .patch(
-                                                        `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
+                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
                                                         {
                                                             available_quantity:
                                                                 product
@@ -240,7 +240,7 @@ export default function ProductForTrialCard({
                                                         // final get will be after all post, patch done
                                                         axios
                                                             .get(
-                                                                `http://localhost:8000/category/${product.category.slug}/`
+                                                                `${process.env.NEXT_PUBLIC_BASE_URL}/category/${product.category.slug}/`
                                                             )
                                                             .then((res) => {
                                                                 changeCategoryProducts(
@@ -249,7 +249,7 @@ export default function ProductForTrialCard({
                                                                 );
                                                                 axios
                                                                     .get(
-                                                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                                                         config
                                                                     )
                                                                     .then(

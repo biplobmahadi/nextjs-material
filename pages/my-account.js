@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
 import Card from '../components/Card';
-import ProductTable from '../components/ProductTable';
 import ProfileCard from '../components/ProfileCard';
 import UpdateAccount from '../components/forms/UpdateAccount';
 import PasswordChange from '../components/forms/PasswordChange';
@@ -202,7 +201,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForUser = async (config) =>
     await axios
-        .get('http://localhost:8000/rest-auth/user/', config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/user/`, config)
         .then((res) => ({
             user: res.data,
         }))

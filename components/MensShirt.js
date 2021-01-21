@@ -12,7 +12,6 @@ import Card from '../components/Card';
 import ProductCard from './ProductCard';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';
-import FormikFormDemo from '../components/FormikFormDemo';
 import Receiver from '../components/forms/Receiver';
 import Box from '@material-ui/core/Box';
 import Alert from '@material-ui/lab/Alert';

@@ -13,7 +13,7 @@ export default function SocialLogin() {
         console.log('response', response);
         if (response.status !== 'unknown') {
             axios
-                .post('http://localhost:8000/rest-auth/facebook/', {
+                .post(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/facebook/`, {
                     access_token: response.accessToken,
                 })
                 .then((res) => {
@@ -36,7 +36,7 @@ export default function SocialLogin() {
         // for facebook we get response.status = unknown, but what for google
 if (!response.error) {
         axios
-            .post('http://localhost:8000/rest-auth/google/', {
+            .post(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/google/`, {
                 access_token: response.accessToken,
             })
             .then((res) => {

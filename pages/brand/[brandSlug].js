@@ -12,10 +12,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import { boxSizing } from '@material-ui/system';
-import StarIcon from '@material-ui/icons/Star';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { makeStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 
@@ -644,7 +640,7 @@ export default function SubCategories(props) {
 
 const fetchDataForBag = async (config) =>
     await axios
-        .get(`http://localhost:8000/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -654,7 +650,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForBrand = async (params) =>
     await axios
-        .get(`http://localhost:8000/brands/${params.brandSlug}/`)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/brands/${params.brandSlug}/`)
         .then((res) => ({
             brand: res.data,
         }))

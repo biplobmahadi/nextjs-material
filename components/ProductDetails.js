@@ -2,8 +2,8 @@ import Head from 'next/head';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
-import ProductDetailsTable from './ProductDetailsTable';
 import ProductCard from '../components/ProductCard';
+import ProductDetailsTable from '../components/ProductDetailsTable';
 import Review from './forms/Review';
 import VideoReview from './forms/VideoReview';
 import UpdateReviewDialog from './UpdateReviewDialog';
@@ -101,17 +101,23 @@ export default function ProductDetails(props) {
         };
 
         axios
-            .post('http://localhost:8000/reviews-create/', review, config)
+            .post(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/reviews-create/`,
+                review,
+                config
+            )
             .then((res) => {
                 console.log(res.data);
                 // final get will be after all post, patch done
                 axios
-                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .get(
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
+                    )
                     .then((res) => {
                         changeProduct(res.data);
                         axios
                             .get(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                 config
                             )
                             .then((res) => {
@@ -163,7 +169,7 @@ export default function ProductDetails(props) {
 
             axios
                 .patch(
-                    `http://localhost:8000/reviews-count-for-agree-update/${review.reviewcountforagree.id}/`,
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/reviews-count-for-agree-update/${review.reviewcountforagree.id}/`,
                     reviewCountForAgree,
                     config
                 )
@@ -186,7 +192,7 @@ export default function ProductDetails(props) {
 
                         axios
                             .patch(
-                                `http://localhost:8000/reviews-count-for-disagree-update/${review.reviewcountfordisagree.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/reviews-count-for-disagree-update/${review.reviewcountfordisagree.id}/`,
                                 reviewCountForDisagree,
                                 config
                             )
@@ -194,13 +200,13 @@ export default function ProductDetails(props) {
                                 // final get will be after all post, patch done
                                 axios
                                     .get(
-                                        `http://localhost:8000/products/${product.slug}/`
+                                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
                                     )
                                     .then((res) => {
                                         changeProduct(res.data);
                                         axios
                                             .get(
-                                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                                 config
                                             )
                                             .then((res) => {
@@ -218,13 +224,13 @@ export default function ProductDetails(props) {
                         // final get will be after all post, patch done
                         axios
                             .get(
-                                `http://localhost:8000/products/${product.slug}/`
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
                             )
                             .then((res) => {
                                 changeProduct(res.data);
                                 axios
                                     .get(
-                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                         config
                                     )
                                     .then((res) => {
@@ -267,7 +273,7 @@ export default function ProductDetails(props) {
 
             axios
                 .patch(
-                    `http://localhost:8000/reviews-count-for-disagree-update/${review.reviewcountfordisagree.id}/`,
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/reviews-count-for-disagree-update/${review.reviewcountfordisagree.id}/`,
                     reviewCountForDisagree,
                     config
                 )
@@ -290,7 +296,7 @@ export default function ProductDetails(props) {
 
                         axios
                             .patch(
-                                `http://localhost:8000/reviews-count-for-agree-update/${review.reviewcountforagree.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/reviews-count-for-agree-update/${review.reviewcountforagree.id}/`,
                                 reviewCountForAgree,
                                 config
                             )
@@ -298,13 +304,13 @@ export default function ProductDetails(props) {
                                 // final get will be after all post, patch done
                                 axios
                                     .get(
-                                        `http://localhost:8000/products/${product.slug}/`
+                                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
                                     )
                                     .then((res) => {
                                         changeProduct(res.data);
                                         axios
                                             .get(
-                                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                                 config
                                             )
                                             .then((res) => {
@@ -322,13 +328,13 @@ export default function ProductDetails(props) {
                         // final get will be after all post, patch done
                         axios
                             .get(
-                                `http://localhost:8000/products/${product.slug}/`
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
                             )
                             .then((res) => {
                                 changeProduct(res.data);
                                 axios
                                     .get(
-                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                         config
                                     )
                                     .then((res) => {
@@ -355,19 +361,21 @@ export default function ProductDetails(props) {
 
         axios
             .patch(
-                `http://localhost:8000/reviews/${reviewId}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/${reviewId}/`,
                 reviewUpdate,
                 config
             )
             .then((res) => {
                 // final get will be after all post, patch done
                 axios
-                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .get(
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
+                    )
                     .then((res) => {
                         changeProduct(res.data);
                         axios
                             .get(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                 config
                             )
                             .then((res) => {
@@ -384,16 +392,21 @@ export default function ProductDetails(props) {
 
     const handleDelete = (reviewId, setOpen) => {
         axios
-            .delete(`http://localhost:8000/reviews/${reviewId}/`, config)
+            .delete(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/${reviewId}/`,
+                config
+            )
             .then((res) => {
                 // final get will be after all post, patch done
                 axios
-                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .get(
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
+                    )
                     .then((res) => {
                         changeProduct(res.data);
                         axios
                             .get(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                 config
                             )
                             .then((res) => {
@@ -419,7 +432,7 @@ export default function ProductDetails(props) {
         console.log('clicked config', config);
         axios
             .post(
-                'http://localhost:8000/video-reviews-create/',
+                '${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-create/',
                 videoReview,
                 config
             )
@@ -427,12 +440,14 @@ export default function ProductDetails(props) {
                 console.log(res.data);
                 // final get will be after all post, patch done
                 axios
-                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .get(
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
+                    )
                     .then((res) => {
                         changeProduct(res.data);
                         axios
                             .get(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                 config
                             )
                             .then((res) => {
@@ -486,7 +501,7 @@ export default function ProductDetails(props) {
 
             axios
                 .patch(
-                    `http://localhost:8000/video-reviews-count-for-agree-update/${videoReview.videoreviewcountforagree.id}/`,
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-count-for-agree-update/${videoReview.videoreviewcountforagree.id}/`,
                     videoReviewCountForAgree,
                     config
                 )
@@ -514,7 +529,7 @@ export default function ProductDetails(props) {
 
                         axios
                             .patch(
-                                `http://localhost:8000/video-reviews-count-for-disagree-update/${videoReview.videoreviewcountfordisagree.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-count-for-disagree-update/${videoReview.videoreviewcountfordisagree.id}/`,
                                 videoReviewCountForDisagree,
                                 config
                             )
@@ -522,13 +537,13 @@ export default function ProductDetails(props) {
                                 // final get will be after all post, patch done
                                 axios
                                     .get(
-                                        `http://localhost:8000/products/${product.slug}/`
+                                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
                                     )
                                     .then((res) => {
                                         changeProduct(res.data);
                                         axios
                                             .get(
-                                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                                 config
                                             )
                                             .then((res) => {
@@ -548,13 +563,13 @@ export default function ProductDetails(props) {
                         // final get will be after all post, patch done
                         axios
                             .get(
-                                `http://localhost:8000/products/${product.slug}/`
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
                             )
                             .then((res) => {
                                 changeProduct(res.data);
                                 axios
                                     .get(
-                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                         config
                                     )
                                     .then((res) => {
@@ -602,7 +617,7 @@ export default function ProductDetails(props) {
 
             axios
                 .patch(
-                    `http://localhost:8000/video-reviews-count-for-disagree-update/${videoReview.videoreviewcountfordisagree.id}/`,
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-count-for-disagree-update/${videoReview.videoreviewcountfordisagree.id}/`,
                     videoReviewCountForDisagree,
                     config
                 )
@@ -630,7 +645,7 @@ export default function ProductDetails(props) {
 
                         axios
                             .patch(
-                                `http://localhost:8000/video-reviews-count-for-agree-update/${videoReview.videoreviewcountforagree.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-count-for-agree-update/${videoReview.videoreviewcountforagree.id}/`,
                                 videoReviewCountForAgree,
                                 config
                             )
@@ -638,13 +653,13 @@ export default function ProductDetails(props) {
                                 // final get will be after all post, patch done
                                 axios
                                     .get(
-                                        `http://localhost:8000/products/${product.slug}/`
+                                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
                                     )
                                     .then((res) => {
                                         changeProduct(res.data);
                                         axios
                                             .get(
-                                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                                 config
                                             )
                                             .then((res) => {
@@ -664,13 +679,13 @@ export default function ProductDetails(props) {
                         // final get will be after all post, patch done
                         axios
                             .get(
-                                `http://localhost:8000/products/${product.slug}/`
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
                             )
                             .then((res) => {
                                 changeProduct(res.data);
                                 axios
                                     .get(
-                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                         config
                                     )
                                     .then((res) => {
@@ -701,19 +716,21 @@ export default function ProductDetails(props) {
 
         axios
             .patch(
-                `http://localhost:8000/video-reviews/${videoReviewId}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews/${videoReviewId}/`,
                 videoReviewUpdate,
                 config
             )
             .then((res) => {
                 // final get will be after all post, patch done
                 axios
-                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .get(
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
+                    )
                     .then((res) => {
                         changeProduct(res.data);
                         axios
                             .get(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                 config
                             )
                             .then((res) => {
@@ -731,18 +748,20 @@ export default function ProductDetails(props) {
     const handleDeleteForVideoReview = (videoReviewId, setOpen) => {
         axios
             .delete(
-                `http://localhost:8000/video-reviews/${videoReviewId}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews/${videoReviewId}/`,
                 config
             )
             .then((res) => {
                 // final get will be after all post, patch done
                 axios
-                    .get(`http://localhost:8000/products/${product.slug}/`)
+                    .get(
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
+                    )
                     .then((res) => {
                         changeProduct(res.data);
                         axios
                             .get(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                 config
                             )
                             .then((res) => {

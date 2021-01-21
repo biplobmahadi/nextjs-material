@@ -138,7 +138,7 @@ export default function ProductCard({
         // else we send a msg that, product not available
         axios
             .get(
-                `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
                 config
             )
             .then((res) => {
@@ -159,7 +159,7 @@ export default function ProductCard({
                         } else {
                             axios
                                 .patch(
-                                    `http://localhost:8000/product-with-quantity/${productWithQuantityExistInBag[0].id}/`,
+                                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantityExistInBag[0].id}/`,
                                     {
                                         quantity:
                                             productWithQuantityExistInBag[0]
@@ -181,7 +181,7 @@ export default function ProductCard({
                                     console.log(pk);
                                     axios
                                         .patch(
-                                            `http://localhost:8000/my-bag/${myBag.id}/`,
+                                            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                             {
                                                 product_with_quantity: pk,
                                                 sub_total:
@@ -193,7 +193,7 @@ export default function ProductCard({
                                         .then((res) => {
                                             axios
                                                 .patch(
-                                                    `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
+                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
                                                     {
                                                         available_quantity:
                                                             product
@@ -216,7 +216,7 @@ export default function ProductCard({
                                                             );
                                                             axios
                                                                 .get(
-                                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                                                     config
                                                                 )
                                                                 .then((res) => {
@@ -259,7 +259,7 @@ export default function ProductCard({
                     } else {
                         axios
                             .post(
-                                'http://localhost:8000/product-with-quantity/',
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/`,
                                 addToBag,
                                 config
                             )
@@ -278,7 +278,7 @@ export default function ProductCard({
                                     );
                                     axios
                                         .patch(
-                                            `http://localhost:8000/my-bag/${myBag.id}/`,
+                                            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                             {
                                                 product_with_quantity: pk.concat(
                                                     res.data.id
@@ -297,7 +297,7 @@ export default function ProductCard({
 
                                             axios
                                                 .patch(
-                                                    `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
+                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
                                                     {
                                                         available_quantity:
                                                             product
@@ -319,7 +319,7 @@ export default function ProductCard({
                                                             );
                                                             axios
                                                                 .get(
-                                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                                                     config
                                                                 )
                                                                 .then((res) => {
@@ -359,7 +359,7 @@ export default function ProductCard({
                                 } else {
                                     axios
                                         .post(
-                                            'http://localhost:8000/my-bag/',
+                                            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`,
                                             {
                                                 product_with_quantity: [
                                                     res.data.id,
@@ -376,7 +376,7 @@ export default function ProductCard({
                                             // use this myBagId when we get requ in myBag
                                             axios
                                                 .patch(
-                                                    `http://localhost:8000/product-update-only-quantity/${product.productavailable.id}/`,
+                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
                                                     {
                                                         available_quantity:
                                                             product
@@ -398,7 +398,7 @@ export default function ProductCard({
                                                             );
                                                             axios
                                                                 .get(
-                                                                    `http://localhost:8000/my-bag/${myBagId}/`,
+                                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBagId}/`,
                                                                     config
                                                                 )
                                                                 .then((res) => {

@@ -56,7 +56,7 @@ export default function ReceiverForm({ receiverOrderCode }) {
     const receiverNext = (values, setSubmitting) => {
         axios
             .patch(
-                `http://localhost:8000/my-order/${receiverOrderCode}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/my-order/${receiverOrderCode}/`,
                 values,
                 config
             )

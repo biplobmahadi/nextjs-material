@@ -82,7 +82,7 @@ export default function Trending({ trending, myBag }) {
 
 const fetchDataForBag = async (config) =>
     await axios
-        .get(`http://localhost:8000/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -92,7 +92,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForTrending = async (params) =>
     await axios
-        .get(`http://localhost:8000/trending/${params.trendingSlug}/`)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/trending/${params.trendingSlug}/`)
         .then((res) => ({
             trending: res.data,
         }))

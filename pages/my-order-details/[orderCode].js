@@ -213,7 +213,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForUser = async (config) =>
     await axios
-        .get('http://localhost:8000/rest-auth/user/', config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/user/`, config)
         .then((res) => ({
             user: res.data,
         }))
@@ -223,7 +223,10 @@ const fetchDataForUser = async (config) =>
 
 const fetchDataForOrder = async (params, config) =>
     await axios
-        .get(`http://localhost:8000/my-order/${params.orderCode}/`, config)
+        .get(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/my-order/${params.orderCode}/`,
+            config
+        )
         .then((res) => ({
             order: res.data,
         }))

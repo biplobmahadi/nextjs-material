@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
 import Card from '../components/Card';
-import ProductTable from '../components/ProductTable';
 import OrderCard from '../components/OrderCard';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';
@@ -187,7 +186,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForUser = async (config) =>
     await axios
-        .get('http://localhost:8000/rest-auth/user/', config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/user/`, config)
         .then((res) => ({
             user: res.data,
         }))
@@ -197,7 +196,7 @@ const fetchDataForUser = async (config) =>
 
 const fetchDataForOrder = async (config) =>
     await axios
-        .get(`http://localhost:8000/my-order/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-order/`, config)
         .then((res) => ({
             orders: res.data,
         }))

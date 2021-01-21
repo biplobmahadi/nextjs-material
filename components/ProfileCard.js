@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
 import Card from '../components/Card';
-import ProductTable from '../components/ProductTable';
 import ProductCard from '../components/ProductCard';
 import Footer from '../components/Footer';
 import MainFooter from '../components/MainFooter';

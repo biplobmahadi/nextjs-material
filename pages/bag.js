@@ -85,7 +85,7 @@ export default function Bag(props) {
             if (myBag.product_with_quantity.length !== 0) {
                 axios
                     .post(
-                        'http://localhost:8000/my-order/',
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-order/`,
                         {
                             my_bag: myBag.id,
                             total: myBag.sub_total,
@@ -99,7 +99,7 @@ export default function Bag(props) {
                         let orderCode = res.data.order_code;
                         axios
                             .patch(
-                                `http://localhost:8000/my-bag/${myBag.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                 { is_send_to_my_order: true },
                                 config
                             )
@@ -397,7 +397,7 @@ export default function Bag(props) {
 
 const fetchDataForBag = async (config) =>
     await axios
-        .get(`http://localhost:8000/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
         .then((res) => ({
             bag: res.data,
         }))

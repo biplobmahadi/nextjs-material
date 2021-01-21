@@ -58,7 +58,7 @@ export default function PaymentForm({ paymentOrderCode }) {
         //     if (this.state.myOrder.is_payment_confirm === false){
         axios
             .patch(
-                `http://localhost:8000/my-order/${paymentOrderCode}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/my-order/${paymentOrderCode}/`,
                 {
                     payment: values.payment,
                     is_payment_confirm: true,

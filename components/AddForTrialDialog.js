@@ -19,7 +19,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
 import Rating from '@material-ui/lab/Rating';
-import ProductCardForTrial from '../components/ProductCardForTrial';
+import ProductCardForTrial from './ProductCardForTrial';
 
 export default function AddForTrialDialog({
     categoryProducts,

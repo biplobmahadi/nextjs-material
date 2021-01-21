@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import ButtonAppBar from '../components/ButtonAppBar';
-import ProductTable from '../components/ProductTable';
 import MainFooter from '../components/MainFooter';
 import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
@@ -171,7 +170,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
         // 1st we need to get the available quantity for this product
         axios
             .get(
-                `http://localhost:8000/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
                 config
             )
             .then((res) => {
@@ -180,7 +179,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                 if (res.data.available_quantity > 0) {
                     axios
                         .patch(
-                            `http://localhost:8000/product-with-quantity/${productWithQuantity.id}/`,
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantity.id}/`,
                             {
                                 quantity: productWithQuantity.quantity + 1,
                                 cost:
@@ -199,7 +198,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                             console.log(pk);
                             axios
                                 .patch(
-                                    `http://localhost:8000/my-bag/${myBag.id}/`,
+                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                     {
                                         product_with_quantity: pk,
                                         sub_total:
@@ -213,7 +212,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                                     // here productWithQuantity.product.productavailable.id used, because here product means product with quantity not single product
                                     axios
                                         .patch(
-                                            `http://localhost:8000/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
+                                            `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
                                             {
                                                 available_quantity:
                                                     productWithQuantity.product
@@ -226,7 +225,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                                             // final get will be after all post, patch done
                                             axios
                                                 .get(
-                                                    `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                                     config
                                                 )
                                                 .then((res) => {
@@ -260,7 +259,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
 
         axios
             .patch(
-                `http://localhost:8000/product-with-quantity/${productWithQuantity.id}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantity.id}/`,
                 {
                     quantity: productWithQuantity.quantity - 1,
                     cost:
@@ -279,7 +278,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                 console.log(pk);
                 axios
                     .patch(
-                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                         {
                             product_with_quantity: pk,
                             sub_total:
@@ -293,7 +292,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                         // here product.product.productavailable.id used, because here product means product with quantity not single product
                         axios
                             .patch(
-                                `http://localhost:8000/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
+                                `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
                                 {
                                     available_quantity:
                                         productWithQuantity.product
@@ -306,7 +305,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                                 // final get will be after all post, patch done
                                 axios
                                     .get(
-                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                         config
                                     )
                                     .then((res) => {
@@ -431,13 +430,13 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
 
         axios
             .delete(
-                `http://localhost:8000/product-with-quantity/${productWithQuantity.id}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantity.id}/`,
                 config
             )
             .then((res) => {
                 axios
                     .patch(
-                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                         {
                             product_with_quantity: pk,
                             sub_total:
@@ -457,7 +456,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                         ) {
                             axios
                                 .patch(
-                                    `http://localhost:8000/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
+                                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${productWithQuantity.product.productavailable.id}/`,
                                     {
                                         available_quantity:
                                             productWithQuantity.product
@@ -471,7 +470,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                                     // final get will be after all post, patch done
                                     axios
                                         .get(
-                                            `http://localhost:8000/my-bag/${myBag.id}/`,
+                                            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                             config
                                         )
                                         .then((res) => {
@@ -494,7 +493,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                                 ) => {
                                     axios
                                         .delete(
-                                            `http://localhost:8000/product-with-quantity/${allTrialProductWithQuantityForSameCategoryProductsWithQuantity.id}/`,
+                                            `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${allTrialProductWithQuantityForSameCategoryProductsWithQuantity.id}/`,
                                             config
                                         )
                                         .then((res) => {
@@ -513,7 +512,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                                 ) => {
                                     axios
                                         .patch(
-                                            `http://localhost:8000/product-update-only-quantity/${sameCategoryProductsWithQuantityEach.product.productavailable.id}/`,
+                                            `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${sameCategoryProductsWithQuantityEach.product.productavailable.id}/`,
                                             {
                                                 available_quantity:
                                                     sameCategoryProductsWithQuantityEach
@@ -537,7 +536,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                                             ) {
                                                 axios
                                                     .get(
-                                                        `http://localhost:8000/my-bag/${myBag.id}/`,
+                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
                                                         config
                                                     )
                                                     .then((res) => {

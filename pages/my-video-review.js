@@ -188,7 +188,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForUser = async (config) =>
     await axios
-        .get('http://localhost:8000/rest-auth/user/', config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/user/`, config)
         .then((res) => ({
             user: res.data,
         }))
@@ -198,7 +198,7 @@ const fetchDataForUser = async (config) =>
 
 const fetchDataForReview = async (config) =>
     await axios
-        .get(`http://localhost:8000/video-reviews-read/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-read/`, config)
         .then((res) => ({
             reviews: res.data,
         }))
@@ -208,7 +208,7 @@ const fetchDataForReview = async (config) =>
 
 const fetchDataForMyOrderProducts = async (config) =>
     await axios
-        .get(`http://localhost:8000/my-order/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-order/`, config)
         .then((res) => ({
             myOrders: res.data,
         }))

@@ -2,7 +2,6 @@ import Head from 'next/head';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
-import ProductDetailsTable from './ProductDetailsTable';
 import ProductCard from '../components/ProductCard';
 import Review from './forms/Review';
 import VideoReview from './forms/VideoReview';

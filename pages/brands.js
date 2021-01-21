@@ -67,7 +67,7 @@ export default function Brands({ brands, myBag }) {
 
 const fetchDataForBag = async (config) =>
     await axios
-        .get(`http://localhost:8000/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -77,7 +77,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForBrands = async () =>
     await axios
-        .get('http://localhost:8000/brands/')
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/brands/`)
         .then((res) => ({
             brands: res.data,
         }))

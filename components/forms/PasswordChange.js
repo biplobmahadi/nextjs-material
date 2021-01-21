@@ -80,7 +80,7 @@ export default function PassWordChangeForm() {
     const passwordChange = (values, setSubmitting) => {
         axios
             .post(
-                'http://localhost:8000/rest-auth/password/change/',
+                `${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/password/change/`,
                 values,
                 config
             )

@@ -13,7 +13,7 @@ export default function Logout() {
 
     const logout = () => {
         axios
-            .post('http://localhost:8000/rest-auth/logout/')
+            .post(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/logout/`)
             .then((res) => {
                 console.log(res.data);
                 dispatch({ type: 'LOGOUT', payload: res.data });

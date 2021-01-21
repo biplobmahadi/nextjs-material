@@ -50,7 +50,7 @@ export default function UpdateAccountForm({ changeUser }) {
 
     const updateAccount = (values, setSubmitting) => {
         axios
-            .patch('http://localhost:8000/rest-auth/user/', values, config)
+            .patch(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/user/`, values, config)
             .then((res) => {
                 changeUser(res.data);
                 setSuccessMessage('Successfully Updated Your Account!');

@@ -153,7 +153,7 @@ export default function Product(props) {
 
 const fetchDataForProduct = async (params) =>
     await axios
-        .get(`http://localhost:8000/products/${params.slug}/`)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/products/${params.slug}/`)
         .then((res) => ({
             product: res.data,
         }))
@@ -163,7 +163,7 @@ const fetchDataForProduct = async (params) =>
 
 const fetchDataForBag = async (config) =>
     await axios
-        .get(`http://localhost:8000/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -173,7 +173,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForUser = async (config) =>
     await axios
-        .get('http://localhost:8000/rest-auth/user/', config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/user/`, config)
         .then((res) => ({
             user: res.data,
         }))
@@ -183,7 +183,7 @@ const fetchDataForUser = async (config) =>
 
 const fetchDataForCategory = async (category_slug) =>
     await axios
-        .get(`http://localhost:8000/category/${category_slug}/`)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/category/${category_slug}/`)
         .then((res) => ({
             category: res.data,
         }))
