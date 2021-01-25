@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import ButtonAppBar from './ButtonAppBar';
 import Card from './Card';
-import ProductCard from './ProductCard';
+import NotReviewedProductCard from './NotReviewedProductCard';
 import Footer from './Footer';
 import MainFooter from './MainFooter';
 import Box from '@material-ui/core/Box';
@@ -21,7 +21,9 @@ export default function NotReviewedProduct({ notReviewedProduct }) {
                 {notReviewedProduct &&
                     notReviewedProduct.map((product) => (
                         <Grid item xs={12} sm={6} md={4} lg={3} xl={3}>
-                            <ProductCard product={product && product} />
+                            <NotReviewedProductCard
+                                product={product && product}
+                            />
                         </Grid>
                     ))}
             </Grid>

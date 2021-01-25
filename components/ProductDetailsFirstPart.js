@@ -22,6 +22,7 @@ import RedeemIcon from '@material-ui/icons/Redeem';
 import Zoom from 'react-medium-image-zoom';
 
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -60,6 +61,7 @@ export default function ProductDetailsFirstPart({
     const [loading, setLoading] = React.useState(false);
     const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
+    const [openForLogin, setOpenForLogin] = React.useState(false);
     const [openForAdd, setOpenForAdd] = React.useState(false);
     const [openForNotInStock, setOpenForNotInStock] = React.useState(false);
     const [openForAddAsTrial, setOpenForAddAsTrial] = React.useState(false);
@@ -69,6 +71,13 @@ export default function ProductDetailsFirstPart({
     };
 
     // this is for alert close
+    const handleCloseForLogin = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenForLogin(false);
+    };
     const handleCloseForAdd = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -107,335 +116,369 @@ export default function ProductDetailsFirstPart({
         // create a loading
         setLoading(true);
 
-        let addToBag = {
-            product: product.id,
-            quantity: quantity,
-            cost: product.price * quantity,
-        };
+        // above 1 remain for network speed
+        // when net speed is low then it will give better user experience
+        // now check user login or not
+        // if not login then an alert will show
 
-        console.log(
-            'productWithQuantityExistInBag',
-            productWithQuantityExistInBag
-        );
+        if (Cookies.get('haha_ecom_bangla_token')) {
+            let addToBag = {
+                product: product.id,
+                quantity: quantity,
+                cost: product.price * quantity,
+            };
 
-        // 1st we need to get the available quantity for this product
-        axios
-            .get(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
-                config
-            )
-            .then((res) => {
-                // if product available then this will run from below
-                // add to bag process will start from here
-                if (res.data.available_quantity > 0) {
-                    // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
-                    // this is very important
-                    if (
-                        productWithQuantityExistInBag &&
-                        productWithQuantityExistInBag.length !== 0
-                    ) {
-                        if (productWithQuantityExistInBag[0].add_as_trial) {
-                            console.log('this product already add as trial');
-                            setLoading(false);
-                            setOpenForAddAsTrial(true);
+            console.log(
+                'productWithQuantityExistInBag',
+                productWithQuantityExistInBag
+            );
+
+            // 1st we need to get the available quantity for this product
+            axios
+                .get(
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
+                    config
+                )
+                .then((res) => {
+                    // if product available then this will run from below
+                    // add to bag process will start from here
+                    if (res.data.available_quantity > 0) {
+                        // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
+                        // this is very important
+                        if (
+                            productWithQuantityExistInBag &&
+                            productWithQuantityExistInBag.length !== 0
+                        ) {
+                            if (productWithQuantityExistInBag[0].add_as_trial) {
+                                console.log(
+                                    'this product already add as trial'
+                                );
+                                setLoading(false);
+                                setOpenForAddAsTrial(true);
+                            } else {
+                                axios
+                                    .patch(
+                                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantityExistInBag[0].id}/`,
+                                        {
+                                            quantity:
+                                                productWithQuantityExistInBag[0]
+                                                    .quantity + quantity, // here state quantity used
+                                            cost:
+                                                productWithQuantityExistInBag[0]
+                                                    .cost + product.price,
+                                        },
+                                        config
+                                    )
+                                    .then((res) => {
+                                        // console.log(res.data);
+                                        let pk = [];
+                                        myBag.product_with_quantity.map(
+                                            (product_with_quantity) =>
+                                                (pk = pk.concat(
+                                                    product_with_quantity.id
+                                                ))
+                                        );
+                                        console.log(pk);
+                                        axios
+                                            .patch(
+                                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
+                                                {
+                                                    product_with_quantity: pk,
+                                                    sub_total:
+                                                        myBag.sub_total +
+                                                        product.price,
+                                                },
+                                                config
+                                            )
+                                            .then((res) => {
+                                                axios
+                                                    .patch(
+                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
+                                                        {
+                                                            available_quantity:
+                                                                product
+                                                                    .productavailable
+                                                                    .available_quantity -
+                                                                quantity, // here state quantity used
+                                                        },
+                                                        config
+                                                    )
+                                                    .then((res) => {
+                                                        // console.log('updated quantity', res.data)
+                                                        // final get will be after all post, patch done
+                                                        axios
+                                                            .get(
+                                                                `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
+                                                            )
+                                                            .then((res) => {
+                                                                changeProduct(
+                                                                    res.data
+                                                                );
+                                                                console.log(
+                                                                    'product after updated quantity',
+                                                                    res.data
+                                                                );
+                                                                axios
+                                                                    .get(
+                                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
+                                                                        config
+                                                                    )
+                                                                    .then(
+                                                                        (
+                                                                            res
+                                                                        ) => {
+                                                                            // new myBag need to add to state
+                                                                            changeMyBag(
+                                                                                res.data
+                                                                            );
+                                                                            setLoading(
+                                                                                false
+                                                                            );
+                                                                            setOpenForAdd(
+                                                                                true
+                                                                            );
+                                                                        }
+                                                                    )
+                                                                    .catch(
+                                                                        (err) =>
+                                                                            console.log(
+                                                                                err.response
+                                                                            )
+                                                                    );
+                                                            })
+                                                            .catch((err) =>
+                                                                console.log(
+                                                                    err.response
+                                                                )
+                                                            );
+                                                    })
+                                                    .catch((err) =>
+                                                        console.log(
+                                                            err.response
+                                                        )
+                                                    );
+                                            })
+                                            .catch((err) =>
+                                                console.log(err.response)
+                                            );
+                                    })
+                                    .catch((err) => console.log(err.response));
+                            }
                         } else {
                             axios
-                                .patch(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantityExistInBag[0].id}/`,
-                                    {
-                                        quantity:
-                                            productWithQuantityExistInBag[0]
-                                                .quantity + quantity, // here state quantity used
-                                        cost:
-                                            productWithQuantityExistInBag[0]
-                                                .cost + product.price,
-                                    },
+                                .post(
+                                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/`,
+                                    addToBag,
                                     config
                                 )
                                 .then((res) => {
-                                    // console.log(res.data);
-                                    let pk = [];
-                                    myBag.product_with_quantity.map(
-                                        (product_with_quantity) =>
-                                            (pk = pk.concat(
-                                                product_with_quantity.id
-                                            ))
-                                    );
-                                    console.log(pk);
-                                    axios
-                                        .patch(
-                                            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                            {
-                                                product_with_quantity: pk,
-                                                sub_total:
-                                                    myBag.sub_total +
-                                                    product.price,
-                                            },
-                                            config
-                                        )
-                                        .then((res) => {
-                                            axios
-                                                .patch(
-                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
-                                                    {
-                                                        available_quantity:
-                                                            product
-                                                                .productavailable
-                                                                .available_quantity -
-                                                            quantity, // here state quantity used
-                                                    },
-                                                    config
-                                                )
-                                                .then((res) => {
-                                                    // console.log('updated quantity', res.data)
-                                                    // final get will be after all post, patch done
-                                                    axios
-                                                        .get(
-                                                            `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                                                        )
-                                                        .then((res) => {
-                                                            changeProduct(
-                                                                res.data
-                                                            );
-                                                            console.log(
-                                                                'product after updated quantity',
-                                                                res.data
-                                                            );
-                                                            axios
-                                                                .get(
-                                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                                                    config
-                                                                )
-                                                                .then((res) => {
-                                                                    // new myBag need to add to state
-                                                                    changeMyBag(
-                                                                        res.data
-                                                                    );
-                                                                    setLoading(
-                                                                        false
-                                                                    );
-                                                                    setOpenForAdd(
-                                                                        true
-                                                                    );
-                                                                })
-                                                                .catch((err) =>
-                                                                    console.log(
-                                                                        err.response
-                                                                    )
-                                                                );
-                                                        })
-                                                        .catch((err) =>
-                                                            console.log(
-                                                                err.response
-                                                            )
-                                                        );
-                                                })
-                                                .catch((err) =>
-                                                    console.log(err.response)
-                                                );
-                                        })
-                                        .catch((err) =>
-                                            console.log(err.response)
+                                    // console.log('bag nai - pwq', res.data);
+                                    if (myBag && myBag.length !== 0) {
+                                        // console.log(res.data.id, myBag.product.id, myBag.product) .. middle is not correct
+                                        let pk = [];
+                                        myBag.product_with_quantity.map(
+                                            (product_with_quantity) =>
+                                                (pk = pk.concat(
+                                                    product_with_quantity.id
+                                                ))
                                         );
+                                        console.log(
+                                            'bag e onno product ase - pk',
+                                            pk
+                                        );
+                                        axios
+                                            .patch(
+                                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
+                                                {
+                                                    product_with_quantity: pk.concat(
+                                                        res.data.id
+                                                    ),
+                                                    sub_total:
+                                                        myBag.sub_total +
+                                                        res.data.cost,
+                                                },
+                                                config
+                                            )
+                                            .then((res) => {
+                                                console.log(
+                                                    'bag e product ase - patch bag',
+                                                    res.data
+                                                );
+
+                                                axios
+                                                    .patch(
+                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
+                                                        {
+                                                            available_quantity:
+                                                                product
+                                                                    .productavailable
+                                                                    .available_quantity -
+                                                                quantity, // here state quantity used
+                                                        },
+                                                        config
+                                                    )
+                                                    .then((res) => {
+                                                        // console.log('updated quantity', res.data)
+                                                        // final get will be after all post, patch done
+                                                        axios
+                                                            .get(
+                                                                `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
+                                                            )
+                                                            .then((res) => {
+                                                                changeProduct(
+                                                                    res.data
+                                                                );
+                                                                console.log(
+                                                                    'product after updated quantity',
+                                                                    res.data
+                                                                );
+                                                                axios
+                                                                    .get(
+                                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
+                                                                        config
+                                                                    )
+                                                                    .then(
+                                                                        (
+                                                                            res
+                                                                        ) => {
+                                                                            // new myBag need to add to state
+                                                                            changeMyBag(
+                                                                                res.data
+                                                                            );
+                                                                            setLoading(
+                                                                                false
+                                                                            );
+                                                                            setOpenForAdd(
+                                                                                true
+                                                                            );
+                                                                        }
+                                                                    )
+                                                                    .catch(
+                                                                        (err) =>
+                                                                            console.log(
+                                                                                err.response
+                                                                            )
+                                                                    );
+                                                            })
+                                                            .catch((err) =>
+                                                                console.log(
+                                                                    err.response
+                                                                )
+                                                            );
+                                                    })
+                                                    .catch((err) =>
+                                                        console.log(
+                                                            err.response
+                                                        )
+                                                    );
+                                            })
+                                            .catch((err) =>
+                                                console.log(err.response)
+                                            );
+                                    } else {
+                                        axios
+                                            .post(
+                                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`,
+                                                {
+                                                    product_with_quantity: [
+                                                        res.data.id,
+                                                    ],
+                                                    sub_total: res.data.cost,
+                                                },
+                                                config
+                                            )
+                                            .then((res) => {
+                                                // when there is no bag available then this promise will done
+                                                // so here we don't have any myBag id
+                                                // need to assign it here
+                                                const myBagId = res.data.id;
+                                                // use this myBagId when we get requ in myBag
+                                                axios
+                                                    .patch(
+                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
+                                                        {
+                                                            available_quantity:
+                                                                product
+                                                                    .productavailable
+                                                                    .available_quantity -
+                                                                quantity, // here state quantity used
+                                                        },
+                                                        config
+                                                    )
+                                                    .then((res) => {
+                                                        // console.log('updated quantity', res.data)
+                                                        // final get will be after all post, patch done
+                                                        axios
+                                                            .get(
+                                                                `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
+                                                            )
+                                                            .then((res) => {
+                                                                changeProduct(
+                                                                    res.data
+                                                                );
+                                                                console.log(
+                                                                    'product after updated quantity',
+                                                                    res.data
+                                                                );
+                                                                axios
+                                                                    .get(
+                                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBagId}/`,
+                                                                        config
+                                                                    )
+                                                                    .then(
+                                                                        (
+                                                                            res
+                                                                        ) => {
+                                                                            // new myBag need to add to state
+                                                                            changeMyBag(
+                                                                                res.data
+                                                                            );
+                                                                            setLoading(
+                                                                                false
+                                                                            );
+                                                                            setOpenForAdd(
+                                                                                true
+                                                                            );
+                                                                        }
+                                                                    )
+                                                                    .catch(
+                                                                        (err) =>
+                                                                            console.log(
+                                                                                err.response
+                                                                            )
+                                                                    );
+                                                            })
+                                                            .catch((err) =>
+                                                                console.log(
+                                                                    err.response
+                                                                )
+                                                            );
+                                                    })
+                                                    .catch((err) =>
+                                                        console.log(
+                                                            err.response
+                                                        )
+                                                    );
+                                            })
+                                            .catch((err) =>
+                                                console.log(err.response)
+                                            );
+                                    }
                                 })
                                 .catch((err) => console.log(err.response));
                         }
                     } else {
-                        axios
-                            .post(
-                                `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/`,
-                                addToBag,
-                                config
-                            )
-                            .then((res) => {
-                                // console.log('bag nai - pwq', res.data);
-                                if (myBag && myBag.length !== 0) {
-                                    // console.log(res.data.id, myBag.product.id, myBag.product) .. middle is not correct
-                                    let pk = [];
-                                    myBag.product_with_quantity.map(
-                                        (product_with_quantity) =>
-                                            (pk = pk.concat(
-                                                product_with_quantity.id
-                                            ))
-                                    );
-                                    console.log(
-                                        'bag e onno product ase - pk',
-                                        pk
-                                    );
-                                    axios
-                                        .patch(
-                                            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                            {
-                                                product_with_quantity: pk.concat(
-                                                    res.data.id
-                                                ),
-                                                sub_total:
-                                                    myBag.sub_total +
-                                                    res.data.cost,
-                                            },
-                                            config
-                                        )
-                                        .then((res) => {
-                                            console.log(
-                                                'bag e product ase - patch bag',
-                                                res.data
-                                            );
-
-                                            axios
-                                                .patch(
-                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
-                                                    {
-                                                        available_quantity:
-                                                            product
-                                                                .productavailable
-                                                                .available_quantity -
-                                                            quantity, // here state quantity used
-                                                    },
-                                                    config
-                                                )
-                                                .then((res) => {
-                                                    // console.log('updated quantity', res.data)
-                                                    // final get will be after all post, patch done
-                                                    axios
-                                                        .get(
-                                                            `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                                                        )
-                                                        .then((res) => {
-                                                            changeProduct(
-                                                                res.data
-                                                            );
-                                                            console.log(
-                                                                'product after updated quantity',
-                                                                res.data
-                                                            );
-                                                            axios
-                                                                .get(
-                                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                                                    config
-                                                                )
-                                                                .then((res) => {
-                                                                    // new myBag need to add to state
-                                                                    changeMyBag(
-                                                                        res.data
-                                                                    );
-                                                                    setLoading(
-                                                                        false
-                                                                    );
-                                                                    setOpenForAdd(
-                                                                        true
-                                                                    );
-                                                                })
-                                                                .catch((err) =>
-                                                                    console.log(
-                                                                        err.response
-                                                                    )
-                                                                );
-                                                        })
-                                                        .catch((err) =>
-                                                            console.log(
-                                                                err.response
-                                                            )
-                                                        );
-                                                })
-                                                .catch((err) =>
-                                                    console.log(err.response)
-                                                );
-                                        })
-                                        .catch((err) =>
-                                            console.log(err.response)
-                                        );
-                                } else {
-                                    axios
-                                        .post(
-                                            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`,
-                                            {
-                                                product_with_quantity: [
-                                                    res.data.id,
-                                                ],
-                                                sub_total: res.data.cost,
-                                            },
-                                            config
-                                        )
-                                        .then((res) => {
-                                            // when there is no bag available then this promise will done
-                                            // so here we don't have any myBag id
-                                            // need to assign it here
-                                            const myBagId = res.data.id
-                                            // use this myBagId when we get requ in myBag 
-                                            axios
-                                                .patch(
-                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
-                                                    {
-                                                        available_quantity:
-                                                            product
-                                                                .productavailable
-                                                                .available_quantity -
-                                                            quantity, // here state quantity used
-                                                    },
-                                                    config
-                                                )
-                                                .then((res) => {
-                                                    // console.log('updated quantity', res.data)
-                                                    // final get will be after all post, patch done
-                                                    axios
-                                                        .get(
-                                                            `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                                                        )
-                                                        .then((res) => {
-                                                            changeProduct(
-                                                                res.data
-                                                            );
-                                                            console.log(
-                                                                'product after updated quantity',
-                                                                res.data
-                                                            );
-                                                            axios
-                                                                .get(
-                                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBagId}/`,
-                                                                    config
-                                                                )
-                                                                .then((res) => {
-                                                                    // new myBag need to add to state
-                                                                    changeMyBag(
-                                                                        res.data
-                                                                    );
-                                                                    setLoading(
-                                                                        false
-                                                                    );
-                                                                    setOpenForAdd(
-                                                                        true
-                                                                    );
-                                                                })
-                                                                .catch((err) =>
-                                                                    console.log(
-                                                                        err.response
-                                                                    )
-                                                                );
-                                                        })
-                                                        .catch((err) =>
-                                                            console.log(
-                                                                err.response
-                                                            )
-                                                        );
-                                                })
-                                                .catch((err) =>
-                                                    console.log(err.response)
-                                                );
-                                        })
-                                        .catch((err) =>
-                                            console.log(err.response)
-                                        );
-                                }
-                            })
-                            .catch((err) => console.log(err.response));
+                        console.log('product not available');
+                        setLoading(false);
+                        setOpenForNotInStock(true);
                     }
-                } else {
-                    console.log('product not available');
-                    setLoading(false);
-                    setOpenForNotInStock(true);
-                }
-            })
-            .catch((err) => console.log(err.response));
+                })
+                .catch((err) => console.log(err.response));
+        } else {
+            console.log('login first');
+            setLoading(false);
+            setOpenForLogin(true);
+        }
     };
 
     return (
@@ -629,6 +672,19 @@ export default function ProductDetailsFirstPart({
                                             )}
                                         </div>
                                     </div>
+                                    <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'center',
+                                        }}
+                                        open={openForLogin}
+                                        autoHideDuration={4000}
+                                        onClose={handleCloseForLogin}
+                                    >
+                                        <Alert severity='info' variant='filled'>
+                                            Please Login First!
+                                        </Alert>
+                                    </Snackbar>
                                     <Snackbar
                                         anchorOrigin={{
                                             vertical: 'top',

@@ -80,7 +80,9 @@ export default function ProfileCard({ user }) {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>{user && user.phone}</Typography>
+                        <Typography>
+                            {user && user.phone ? user.phone : 'N/A'}
+                        </Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -126,7 +128,7 @@ export default function ProfileCard({ user }) {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>{user && user.division}</Typography>
+                        <Typography>{user && user.division ? user.division : 'N/A'}</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -149,7 +151,7 @@ export default function ProfileCard({ user }) {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>{user && user.city}</Typography>
+                        <Typography>{user && user.city ? user.city : 'N/A'}</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -172,7 +174,7 @@ export default function ProfileCard({ user }) {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>{user && user.area}</Typography>
+                        <Typography>{user && user.area ? user.area : 'N/A'}</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -195,7 +197,7 @@ export default function ProfileCard({ user }) {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>{user && user.address}</Typography>
+                        <Typography>{user && user.address ? user.address : 'N/A'}</Typography>
                     </Box>
                 </Grid>
             </Grid>

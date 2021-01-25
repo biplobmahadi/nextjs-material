@@ -40,7 +40,11 @@ export default function ReceiverAddressCard({ order }) {
                 <Grid item>
                     <Box px={3} py={1}>
                         {' '}
-                        <Typography>{order && order.receiver_name}</Typography>
+                        <Typography>
+                            {order && order.receiver_name
+                                ? order.receiver_name
+                                : 'N/A'}
+                        </Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -63,7 +67,11 @@ export default function ReceiverAddressCard({ order }) {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>{order && order.receiver_phone}</Typography>
+                        <Typography>
+                            {order && order.receiver_phone
+                                ? order.receiver_phone
+                                : 'N/A'}
+                        </Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -114,7 +122,9 @@ export default function ReceiverAddressCard({ order }) {
                 <Grid item>
                     <Box px={3} py={1}>
                         <Typography>
-                            {order && order.receiver_division}
+                            {order && order.receiver_division
+                                ? order.receiver_division
+                                : 'N/A'}
                         </Typography>
                     </Box>
                 </Grid>
@@ -138,7 +148,11 @@ export default function ReceiverAddressCard({ order }) {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>{order && order.receiver_city}</Typography>
+                        <Typography>
+                            {order && order.receiver_city
+                                ? order.receiver_city
+                                : 'N/A'}
+                        </Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -161,7 +175,11 @@ export default function ReceiverAddressCard({ order }) {
 
                 <Grid item>
                     <Box px={3} py={1}>
-                        <Typography>{order && order.receiver_area}</Typography>
+                        <Typography>
+                            {order && order.receiver_area
+                                ? order.receiver_area
+                                : 'N/A'}
+                        </Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -185,7 +203,9 @@ export default function ReceiverAddressCard({ order }) {
                 <Grid item>
                     <Box px={3} py={1}>
                         <Typography>
-                            {order && order.receiver_address}
+                            {order && order.receiver_address
+                                ? order.receiver_address
+                                : 'N/A'}
                         </Typography>
                     </Box>
                 </Grid>

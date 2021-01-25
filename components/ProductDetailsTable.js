@@ -11,6 +11,8 @@ import Paper from '@material-ui/core/Paper';
 const useStyles = makeStyles({
     table: {
         minWidth: 650,
+        backgroundColor: 'white',
+        borderRadius: '4px',
     },
 });
 
@@ -18,26 +20,24 @@ export default function ProductDetailsTable({ product }) {
     const classes = useStyles();
 
     return (
-        <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label='simple table'>
-                <TableBody>
-                    {product &&
-                        product.product_detail.map((productDetail) => (
-                            <TableRow hover key={productDetail.id}>
-                                <TableCell
-                                    align='center'
-                                    component='th'
-                                    scope='row'
-                                >
-                                    {productDetail.title}
-                                </TableCell>
-                                <TableCell align='center'>
-                                    {productDetail.value}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <Table className={classes.table} aria-label='simple table'>
+            <TableBody>
+                {product &&
+                    product.product_detail.map((productDetail) => (
+                        <TableRow hover key={productDetail.id}>
+                            <TableCell
+                                align='center'
+                                component='th'
+                                scope='row'
+                            >
+                                {productDetail.title}
+                            </TableCell>
+                            <TableCell align='center'>
+                                {productDetail.value}
+                            </TableCell>
+                        </TableRow>
+                    ))}
+            </TableBody>
+        </Table>
     );
 }

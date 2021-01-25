@@ -123,28 +123,28 @@ export default function OrderCard({ myOrder }) {
                                     ) : (
                                         <Chip
                                             label={`In Road`}
-                                            color='secondary'
+                                            color='primary'
                                             size='small'
                                         />
                                     )
                                 ) : (
                                     <Chip
                                         label={`Is Placed`}
-                                        color='secondary'
+                                        color='primary'
                                         size='small'
                                     />
                                 )
                             ) : (
                                 <Chip
                                     label={`Is Processing`}
-                                    color='secondary'
+                                    color='primary'
                                     size='small'
                                 />
                             )
                         ) : (
                             <Chip
                                 label={`On Obsevation`}
-                                color='secondary'
+                                color='primary'
                                 size='small'
                             />
                         )}
@@ -181,7 +181,7 @@ export default function OrderCard({ myOrder }) {
                                         href={`/receiver/${myOrder.order_code}`}
                                     >
                                         <Button
-                                            color='secondary'
+                                            color='primary'
                                             variant='contained'
                                             size='small'
                                         >
@@ -195,7 +195,7 @@ export default function OrderCard({ myOrder }) {
                                         href={`/payment/${myOrder.order_code}`}
                                     >
                                         <Button
-                                            color='secondary'
+                                            color='primary'
                                             variant='contained'
                                             size='small'
                                         >
