@@ -25,6 +25,8 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
+import Alert from '@material-ui/lab/Alert';
+
 const config = {
     headers: {
         Authorization: 'Token ' + Cookies.get('haha_ecom_bangla_token'),
@@ -53,9 +55,9 @@ const useStyles = makeStyles((theme) => ({
 export default function PaymentForm({ paymentOrderCode }) {
     const classes = useStyles();
     const router = useRouter();
+    const [successMessage, setSuccessMessage] = React.useState('');
+
     const paymentNext = (values, setSubmitting) => {
-        // if (this.state.myOrder.is_confirm === true){
-        //     if (this.state.myOrder.is_payment_confirm === false){
         axios
             .patch(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/my-order/${paymentOrderCode}/`,
@@ -69,25 +71,13 @@ export default function PaymentForm({ paymentOrderCode }) {
             .then((res) => {
                 console.log(res.data);
                 setSubmitting(false);
-                router.push(`/my-order-details/${res.data.order_code}`);
-                //   this.setState({
-                //     loading: false,
-                //     submitted: true
-                //   });
+                setSuccessMessage('Successfully Done! ');
+                // router.push(`/my-order-details/${res.data.order_code}`);
             })
             .catch((err) => {
                 console.log(err.response);
                 setSubmitting(false);
-                // error response do not handling yet. it will be added when access of internet available
-                //   this.setState({
-                //     loading: false,
-                //     submitted: false
-                //   });
             });
-        // }
-        //   } else {
-        //     this.setState({message: 'You need to complete the receiver address first...!!', loading: false})
-        //   }
     };
 
     return (
@@ -97,6 +87,20 @@ export default function PaymentForm({ paymentOrderCode }) {
                 <Typography component='h5' variant='h5'>
                     Payment Method
                 </Typography>
+
+                {successMessage && (
+                    <Box my={4}>
+                        <Alert severity='success'>
+                            {successMessage}
+                            <Link
+                                href={`/my-order-details/${paymentOrderCode}`}
+                            >
+                                See Order Details
+                            </Link>
+                        </Alert>
+                    </Box>
+                )}
+
                 <div className={classes.form}>
                     <Formik
                         initialValues={{

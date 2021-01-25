@@ -34,8 +34,8 @@ export default function Brands({ brands, myBag }) {
                         style={{ backgroundColor: 'white' }}
                         textAlign='center'
                     >
-                        <Typography variant='h4' component='h4'>
-                            Our Brands
+                        <Typography variant='h5' component='h5'>
+                            <strong>Our Brands</strong>
                         </Typography>
                     </Box>
                     <Box mt={2}>

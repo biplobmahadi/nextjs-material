@@ -40,7 +40,7 @@ export default function AccountOptionList() {
                     </ListItem>
                 </Link>
                 <Divider variant='middle' />
-                <Link href='/my-account'>
+                <Link href=''>
                     <ListItem button>
                         <ListItemIcon>
                             <InboxIcon />
@@ -67,7 +67,7 @@ export default function AccountOptionList() {
                     </ListItem>
                 </Link>
                 <Divider variant='middle' />
-                <Link href='/my-account'>
+                <Link href=''>
                     <ListItem button>
                         <ListItemIcon>
                             <DraftsIcon />

@@ -27,7 +27,7 @@ export default function TrendingCard({ product }) {
     const classes = useStyles();
 
     return (
-        <Link href={`/product/${product.slug}`}>
+        <Link href={`/product/${product.slug}`} color='inherit'>
             <Card className={classes.root}>
                 <CardActionArea>
                     <Box className={classes.imgHover} p={2}>
@@ -48,7 +48,7 @@ export default function TrendingCard({ product }) {
                 </CardActionArea>
                 <Box pb={1}>
                     <CardActions style={{ justifyContent: 'center' }}>
-                        <Link href={`/product/${product.slug}`}>
+                        <Link href={`/product/${product.slug}`} color='inherit'>
                             <Button
                                 variant='contained'
                                 size='small'

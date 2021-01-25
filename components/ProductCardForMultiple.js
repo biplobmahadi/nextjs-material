@@ -494,7 +494,8 @@ export default function ProductCardForMultiple({
 
     return (
         <Card className={classes.boot}>
-            <Link href={`/product/${product && product.slug}`}>
+            <Link href={`/product/${product && product.slug}`}color='inherit'
+                underline='none'>
                 <CardActionArea>
                     <Box className={classes.imgHover} p={2}>
                         <CardMedia

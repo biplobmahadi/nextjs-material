@@ -168,33 +168,111 @@ export default function ReceiverForm({ receiverOrderCode }) {
                                                 name='receiver_division'
                                                 type='text'
                                                 component={TextField}
+                                                select={true}
                                                 label='Division *'
                                                 variant='outlined'
                                                 size='small'
                                                 fullWidth
-                                            />
+                                            >
+                                                <MenuItem value='Dhaka'>
+                                                    Dhaka
+                                                </MenuItem>
+                                                <MenuItem value='Chittagong'>
+                                                    Chittagong
+                                                </MenuItem>
+                                                <MenuItem value='Rajshahi'>
+                                                    Rajshahi
+                                                </MenuItem>
+                                                <MenuItem value='Sylhet'>
+                                                    Sylhet
+                                                </MenuItem>
+                                                <MenuItem value='Khulna'>
+                                                    Khulna
+                                                </MenuItem>
+                                                <MenuItem value='Barisal'>
+                                                    Barisal
+                                                </MenuItem>
+                                                <MenuItem value='Rangpur'>
+                                                    Rangpur
+                                                </MenuItem>
+                                                <MenuItem value='Mymensingh'>
+                                                    Mymensingh
+                                                </MenuItem>
+                                            </Field>
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field
                                                 name='receiver_city'
                                                 type='text'
                                                 component={TextField}
+                                                select={true}
                                                 label='City *'
                                                 variant='outlined'
                                                 size='small'
                                                 fullWidth
-                                            />
+                                            >
+                                                <MenuItem value='Dhaka'>
+                                                    Dhaka
+                                                </MenuItem>
+                                                <MenuItem value='Chittagong'>
+                                                    Chittagong
+                                                </MenuItem>
+                                                <MenuItem value='Rajshahi'>
+                                                    Rajshahi
+                                                </MenuItem>
+                                                <MenuItem value='Sylhet'>
+                                                    Sylhet
+                                                </MenuItem>
+                                                <MenuItem value='Khulna'>
+                                                    Khulna
+                                                </MenuItem>
+                                                <MenuItem value='Barisal'>
+                                                    Barisal
+                                                </MenuItem>
+                                                <MenuItem value='Rangpur'>
+                                                    Rangpur
+                                                </MenuItem>
+                                                <MenuItem value='Mymensingh'>
+                                                    Mymensingh
+                                                </MenuItem>
+                                            </Field>
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field
                                                 name='receiver_area'
                                                 type='text'
                                                 component={TextField}
+                                                select={true}
                                                 label='Area *'
                                                 variant='outlined'
                                                 size='small'
                                                 fullWidth
-                                            />
+                                            >
+                                                <MenuItem value='Dhaka'>
+                                                    Dhaka
+                                                </MenuItem>
+                                                <MenuItem value='Chittagong'>
+                                                    Chittagong
+                                                </MenuItem>
+                                                <MenuItem value='Rajshahi'>
+                                                    Rajshahi
+                                                </MenuItem>
+                                                <MenuItem value='Sylhet'>
+                                                    Sylhet
+                                                </MenuItem>
+                                                <MenuItem value='Khulna'>
+                                                    Khulna
+                                                </MenuItem>
+                                                <MenuItem value='Barisal'>
+                                                    Barisal
+                                                </MenuItem>
+                                                <MenuItem value='Rangpur'>
+                                                    Rangpur
+                                                </MenuItem>
+                                                <MenuItem value='Mymensingh'>
+                                                    Mymensingh
+                                                </MenuItem>
+                                            </Field>
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field

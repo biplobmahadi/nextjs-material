@@ -50,7 +50,11 @@ export default function UpdateAccountForm({ changeUser }) {
 
     const updateAccount = (values, setSubmitting) => {
         axios
-            .patch(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/user/`, values, config)
+            .patch(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/user/`,
+                values,
+                config
+            )
             .then((res) => {
                 changeUser(res.data);
                 setSuccessMessage('Successfully Updated Your Account!');
@@ -171,14 +175,26 @@ export default function UpdateAccountForm({ changeUser }) {
                                                 <MenuItem value='Dhaka'>
                                                     Dhaka
                                                 </MenuItem>
-                                                <MenuItem value='cats'>
+                                                <MenuItem value='Chittagong'>
+                                                    Chittagong
+                                                </MenuItem>
+                                                <MenuItem value='Rajshahi'>
                                                     Rajshahi
                                                 </MenuItem>
-                                                <MenuItem value='rats'>
-                                                    Chottogram
-                                                </MenuItem>
-                                                <MenuItem value='snakes'>
+                                                <MenuItem value='Sylhet'>
                                                     Sylhet
+                                                </MenuItem>
+                                                <MenuItem value='Khulna'>
+                                                    Khulna
+                                                </MenuItem>
+                                                <MenuItem value='Barisal'>
+                                                    Barisal
+                                                </MenuItem>
+                                                <MenuItem value='Rangpur'>
+                                                    Rangpur
+                                                </MenuItem>
+                                                <MenuItem value='Mymensingh'>
+                                                    Mymensingh
                                                 </MenuItem>
                                             </Field>
                                         </Grid>
@@ -187,22 +203,74 @@ export default function UpdateAccountForm({ changeUser }) {
                                                 name='city'
                                                 type='text'
                                                 component={TextField}
+                                                select={true}
                                                 label='City *'
                                                 variant='outlined'
                                                 size='small'
                                                 fullWidth
-                                            />
+                                            >
+                                                <MenuItem value='Dhaka'>
+                                                    Dhaka
+                                                </MenuItem>
+                                                <MenuItem value='Chittagong'>
+                                                    Chittagong
+                                                </MenuItem>
+                                                <MenuItem value='Rajshahi'>
+                                                    Rajshahi
+                                                </MenuItem>
+                                                <MenuItem value='Sylhet'>
+                                                    Sylhet
+                                                </MenuItem>
+                                                <MenuItem value='Khulna'>
+                                                    Khulna
+                                                </MenuItem>
+                                                <MenuItem value='Barisal'>
+                                                    Barisal
+                                                </MenuItem>
+                                                <MenuItem value='Rangpur'>
+                                                    Rangpur
+                                                </MenuItem>
+                                                <MenuItem value='Mymensingh'>
+                                                    Mymensingh
+                                                </MenuItem>
+                                            </Field>
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field
                                                 name='area'
                                                 type='text'
                                                 component={TextField}
+                                                select={true}
                                                 label='Area *'
                                                 variant='outlined'
                                                 size='small'
                                                 fullWidth
-                                            />
+                                            >
+                                                <MenuItem value='Dhaka'>
+                                                    Dhaka
+                                                </MenuItem>
+                                                <MenuItem value='Chittagong'>
+                                                    Chittagong
+                                                </MenuItem>
+                                                <MenuItem value='Rajshahi'>
+                                                    Rajshahi
+                                                </MenuItem>
+                                                <MenuItem value='Sylhet'>
+                                                    Sylhet
+                                                </MenuItem>
+                                                <MenuItem value='Khulna'>
+                                                    Khulna
+                                                </MenuItem>
+                                                <MenuItem value='Barisal'>
+                                                    Barisal
+                                                </MenuItem>
+                                                <MenuItem value='Rangpur'>
+                                                    Rangpur
+                                                </MenuItem>
+                                                <MenuItem value='Mymensingh'>
+                                                    Mymensingh
+                                                </MenuItem>
+                                            </Field>
                                         </Grid>
                                         <Grid item xs={12}>
                                             <Field

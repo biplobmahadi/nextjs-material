@@ -17,6 +17,7 @@ import axios from 'axios';
 import parseCookies from '../lib/parseCookies';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from '../src/Link'
 
 let myBagRe;
 let mensShirtProductsRe;
@@ -109,16 +110,14 @@ export default function Index(props) {
                             </Grid>
 
                             <Grid item>
+                                <Link href='/trending-season/winter'>
                                 <Button
                                     variant='contained'
                                     size='small'
                                     color='secondary'
-                                    onClick={() =>
-                                        router.push('/trending-season/winter')
-                                    }
                                 >
                                     <Box px={3}>See All</Box>
-                                </Button>
+                                </Button></Link>
                             </Grid>
                         </Grid>
                     </Box>

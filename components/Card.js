@@ -27,7 +27,7 @@ export default function TrendingCard({ trending_outfit }) {
     const classes = useStyles();
 
     return (
-        <Link href={`/trending-outfit/${trending_outfit.slug}`}>
+        <Link href={`/trending-outfit/${trending_outfit.slug}`} color='inherit'>
             <Card className={classes.root}>
                 <CardActionArea>
                     <Box className={classes.imgHover} p={2}>

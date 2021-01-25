@@ -49,19 +49,20 @@ export default function MensShirt({
                 >
                     <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
                         <Typography variant='h5' component='h5'>
-                           <strong>Men's Shirt</strong> 
+                            <strong>Men's Shirt</strong>
                         </Typography>
                     </Grid>
 
                     <Grid item>
-                        <Button
-                            variant='contained'
-                            size='small'
-                            color='secondary'
-                            onClick={() => router.push('/mens-shirt')}
-                        >
-                            <Box px={3}>See All</Box>
-                        </Button>
+                        <Link href='/mens-shirt'>
+                            <Button
+                                variant='contained'
+                                size='small'
+                                color='secondary'
+                            >
+                                <Box px={3}>See All</Box>
+                            </Button>
+                        </Link>
                     </Grid>
                 </Grid>
             </Box>

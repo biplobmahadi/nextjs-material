@@ -22,11 +22,11 @@ const useStyles = makeStyles({
     },
 });
 
-export default function BrandCard({brand}) {
+export default function BrandCard({ brand }) {
     const classes = useStyles();
 
     return (
-        <Link href={`/brand/${brand.slug}`}>
+        <Link href={`/brand/${brand.slug}`} color='inherit'>
             <Box textAlign='center'>
                 <Card className={classes.root}>
                     <CardActionArea>

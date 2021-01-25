@@ -54,14 +54,15 @@ export default function WomensPant({
                     </Grid>
 
                     <Grid item>
-                        <Button
-                            variant='contained'
-                            size='small'
-                            color='secondary'
-                            onClick={() => router.push('/womens-pant')}
-                        >
-                            <Box px={3}>See All</Box>
-                        </Button>
+                        <Link href='/womens-pant'>
+                            <Button
+                                variant='contained'
+                                size='small'
+                                color='secondary'
+                            >
+                                <Box px={3}>See All</Box>
+                            </Button>
+                        </Link>
                     </Grid>
                 </Grid>
             </Box>
