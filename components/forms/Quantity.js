@@ -17,19 +17,17 @@ export default function SignupForm({ setQuantity }) {
                 inputBase: Yup.number().required('Required'),
             })}
         >
-            
-                <Form>
-                    <Field
-                        component={TextField}
-                        type='number'
-                        name='inputBase'
-                        label='Quantity *'
-                        variant='outlined'
-                        size='small'
-                        fullWidth
-                    />
-                </Form>
-            
+            <Form>
+                <Field
+                    component={TextField}
+                    type='number'
+                    name='inputBase'
+                    label='Quantity *'
+                    variant='outlined'
+                    size='small'
+                    fullWidth
+                />
+            </Form>
         </Formik>
     );
 }

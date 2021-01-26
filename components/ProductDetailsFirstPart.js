@@ -619,9 +619,9 @@ export default function ProductDetailsFirstPart({
                         </Box>
                         <Box pt={2}>
                             <Grid container spacing={2} alignItems='center'>
-                                <Grid item xs={12} sm>
+                                {/* <Grid item xs={12} sm>
                                     <Quantity setQuantity={setQuantity} />
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={12} sm>
                                     {product &&
                                     product.productavailable

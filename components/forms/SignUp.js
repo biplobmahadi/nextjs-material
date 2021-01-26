@@ -22,7 +22,7 @@ import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(10),
+        marginTop: theme.spacing(8),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     },
     form: {
         width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(5),
+        marginTop: theme.spacing(4),
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
@@ -93,7 +93,7 @@ export default function SignupForm() {
                 <Typography component='h1' variant='h5'>
                     Register
                 </Typography>
-                <Box mt={3} mb={2}>
+                <Box mt={3} mb={3}>
                     <SocialLogin />
                 </Box>
                 <Typography component='b' variant='b'>
