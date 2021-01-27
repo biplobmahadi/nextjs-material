@@ -34,7 +34,7 @@ export default function SocialLogin() {
                     }
                 )
                 .then((res) => {
-                setErrMessage('');
+                    setErrMessage('');
                     console.log('got facebook', res.data);
                     Cookies.set('haha_ecom_bangla_token', res.data.key, {
                         expires: 7,
@@ -59,7 +59,7 @@ export default function SocialLogin() {
                     access_token: response.accessToken,
                 })
                 .then((res) => {
-                setErrMessage('');
+                    setErrMessage('');
                     console.log('got google', res.data);
                     Cookies.set('haha_ecom_bangla_token', res.data.key, {
                         expires: 7,
@@ -75,43 +75,44 @@ export default function SocialLogin() {
     };
 
     return (
-    <Box textAlign='center'>
-    {errMessage &&
-                    errMessage.detail &&
-                    errMessage.detail.map((detail) => (
-                        <Box>
-                            <Alert severity='error'>{detail}</Alert>
-                        </Box>
-                    ))}
-                {errMessage &&
-                    errMessage.non_field_errors &&
-                    errMessage.non_field_errors.map((non_field_errors) => (
-                    <Box>
-                        <Box>
+        <Box textAlign='center'>
+            {errMessage &&
+                errMessage.detail &&
+                errMessage.detail.map((detail) => (
+                    <Box textAlign='center'>
+                        <Alert severity='error'>{detail}</Alert>
+                    </Box>
+                ))}
+            {errMessage &&
+                errMessage.non_field_errors &&
+                errMessage.non_field_errors.map((non_field_errors) => (
+                    <Box textAlign='center'>
+                        <Box textAlign='center'>
                             <Alert severity='error'>{non_field_errors}</Alert>
                         </Box>
-                        <Box my={2}>
-                            <Alert severity='error'>Please Login With Your Email & Password!</Alert>
+                        <Box my={2} textAlign='center'>
+                            <Alert severity='error'>
+                                Please Login With Your Email & Password!
+                            </Alert>
                         </Box>
-                     </Box>
-                    ))}
-                    <GoogleLogin
-                    clientId='699909175796-tbimuqfjf0ujgordqb8471k5vonlalr2.apps.googleusercontent.com'
-                    buttonText='Login'
-                    render={(renderProps) => (
-                        <Button
-                            color='primary'
-                            variant='outlined'
-                            onClick={renderProps.onClick}
-                        >
-                          Login With Google 
-                        </Button>
-                    )}
-                    onSuccess={responseGoogle}
-                    onFailure={responseGoogle}
-                    cookiePolicy={'single_host_origin'}
-                />
-    </Box>
-        
+                    </Box>
+                ))}
+            <GoogleLogin
+                clientId='699909175796-tbimuqfjf0ujgordqb8471k5vonlalr2.apps.googleusercontent.com'
+                buttonText='Login'
+                render={(renderProps) => (
+                    <Button
+                        color='primary'
+                        variant='outlined'
+                        onClick={renderProps.onClick}
+                    >
+                        Login With Google
+                    </Button>
+                )}
+                onSuccess={responseGoogle}
+                onFailure={responseGoogle}
+                cookiePolicy={'single_host_origin'}
+            />
+        </Box>
     );
 }

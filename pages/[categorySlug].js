@@ -109,7 +109,7 @@ export default function Category(props) {
         setPriceFilter5000TK(event.target.checked ? event.target.value : 0);
     };
 
-    let allProducts = category.product ? category.product : [];
+    let allProducts = category && category.product ? category.product : [];
     let products;
 
     if (
@@ -452,201 +452,255 @@ export default function Category(props) {
     console.log('products', products);
 
     return (
-        <div>
-            <Head>
-                <title>
-                    Catergories - {category && category.category_name}
-                </title>
-                <link rel='icon' href='/a.ico' />
-                <meta
-                    name='viewport'
-                    content='width=device-width, initial-scale=1.0'
-                ></meta>
-            </Head>
-            <ButtonAppBar
-                totalProductInBag={myBag && myBag.product_with_quantity.length}
-            />
-            <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                <Box mt={8} pt={3} px={3}>
-                    <Box
-                        py={2}
-                        borderRadius='borderRadius'
-                        style={{ backgroundColor: 'white' }}
-                        textAlign='center'
-                    >
-                        <Typography variant='h5' component='h5'>
-                            <strong>
-                                {category && category.category_name}
-                            </strong>
-                        </Typography>
-                    </Box>
-                    <Hidden lgUp>
-                        <Box mt={2}>
-                            <FilterProductDialog
-                                setPriceFilter100TK={setPriceFilter100TK}
-                                setPriceFilter500TK={setPriceFilter500TK}
-                                setPriceFilter1000TK={setPriceFilter1000TK}
-                                setPriceFilter2000TK={setPriceFilter2000TK}
-                                setPriceFilter5000TK={setPriceFilter5000TK}
-                                handlePriceFilter100TK={handlePriceFilter100TK}
-                                handlePriceFilter500TK={handlePriceFilter500TK}
-                                handlePriceFilter1000TK={
-                                    handlePriceFilter1000TK
-                                }
-                                handlePriceFilter2000TK={
-                                    handlePriceFilter2000TK
-                                }
-                                handlePriceFilter5000TK={
-                                    handlePriceFilter5000TK
-                                }
-                            />
-                        </Box>
-                    </Hidden>
-
-                    <Box mt={2}>
-                        <Grid container spacing={3}>
-                            <Hidden mdDown>
-                                <Grid item xs={12} sm={3} md={4} lg={3} xl={3}>
-                                    <Box
-                                        style={{ backgroundColor: 'white' }}
-                                        p={3}
-                                        className={classes.root}
-                                        borderRadius='borderRadius'
-                                    >
-                                        <Typography
-                                            gutterBottom
-                                            variant='h6'
-                                            component='h6'
-                                        >
-                                            Filter by Price
-                                        </Typography>
-                                        <FormControl component='fieldset'>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            value={100}
-                                                            color='secondary'
-                                                            onClick={(event) =>
-                                                                handlePriceFilter100TK(
-                                                                    event
-                                                                )
-                                                            }
-                                                        />
-                                                    }
-                                                    label='Tk. 0 - 100'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            value={500}
-                                                            color='secondary'
-                                                            onClick={(event) =>
-                                                                handlePriceFilter500TK(
-                                                                    event
-                                                                )
-                                                            }
-                                                        />
-                                                    }
-                                                    label='Tk. 100 - 500'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            value={1000}
-                                                            color='secondary'
-                                                            onClick={(event) =>
-                                                                handlePriceFilter1000TK(
-                                                                    event
-                                                                )
-                                                            }
-                                                        />
-                                                    }
-                                                    label='Tk. 500 - 1000'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            value={2000}
-                                                            color='secondary'
-                                                            onClick={(event) =>
-                                                                handlePriceFilter2000TK(
-                                                                    event
-                                                                )
-                                                            }
-                                                        />
-                                                    }
-                                                    label='Tk. 1000 - 2000'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                            <FormGroup
-                                                aria-label='position'
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            value={5000}
-                                                            color='secondary'
-                                                            onClick={(event) =>
-                                                                handlePriceFilter5000TK(
-                                                                    event
-                                                                )
-                                                            }
-                                                        />
-                                                    }
-                                                    label='Tk. 2000 - 5000'
-                                                    labelPlacement='end'
-                                                />
-                                            </FormGroup>
-                                        </FormControl>
-                                    </Box>
-                                </Grid>
-                            </Hidden>
-
-                            <Grid item xs={12} sm={12} md={12} lg={9} xl={9}>
-                                <Box className={classes.boot}>
-                                    <AllProductsForMultiple
-                                        products={products}
-                                        myBag={myBag}
-                                        changeMyBag={changeMyBag}
-                                        changeForMultiple={changeCategory}
-                                        urlForChangeCardForMultiple={`${process.env.NEXT_PUBLIC_BASE_URL}/category/${categorySlug}/`}
-                                        config={config}
+        <>
+            {!category ? (
+                <Box textAlign='center' mt={10}>
+                    <Typography variant='h4'>
+                        <strong>Sorry - There have nothing!</strong>
+                    </Typography>
+                </Box>
+            ) : (
+                <div>
+                    <Head>
+                        <title>
+                            Catergories - {category && category.category_name}
+                        </title>
+                        <link rel='icon' href='/a.ico' />
+                        <meta
+                            name='viewport'
+                            content='width=device-width, initial-scale=1.0'
+                        ></meta>
+                    </Head>
+                    <ButtonAppBar
+                        totalProductInBag={
+                            myBag && myBag.product_with_quantity.length
+                        }
+                    />
+                    <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                        <Box mt={8} pt={3} px={3}>
+                            <Box
+                                py={2}
+                                borderRadius='borderRadius'
+                                style={{ backgroundColor: 'white' }}
+                                textAlign='center'
+                            >
+                                <Typography variant='h5' component='h5'>
+                                    <strong>
+                                        {category && category.category_name}
+                                    </strong>
+                                </Typography>
+                            </Box>
+                            <Hidden lgUp>
+                                <Box mt={2}>
+                                    <FilterProductDialog
+                                        setPriceFilter100TK={
+                                            setPriceFilter100TK
+                                        }
+                                        setPriceFilter500TK={
+                                            setPriceFilter500TK
+                                        }
+                                        setPriceFilter1000TK={
+                                            setPriceFilter1000TK
+                                        }
+                                        setPriceFilter2000TK={
+                                            setPriceFilter2000TK
+                                        }
+                                        setPriceFilter5000TK={
+                                            setPriceFilter5000TK
+                                        }
+                                        handlePriceFilter100TK={
+                                            handlePriceFilter100TK
+                                        }
+                                        handlePriceFilter500TK={
+                                            handlePriceFilter500TK
+                                        }
+                                        handlePriceFilter1000TK={
+                                            handlePriceFilter1000TK
+                                        }
+                                        handlePriceFilter2000TK={
+                                            handlePriceFilter2000TK
+                                        }
+                                        handlePriceFilter5000TK={
+                                            handlePriceFilter5000TK
+                                        }
                                     />
                                 </Box>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </Box>
-            </Box>
+                            </Hidden>
 
-            <Box mx={3} mt={6}>
-                <MainFooter />
-            </Box>
-        </div>
+                            <Box mt={2}>
+                                <Grid container spacing={3}>
+                                    <Hidden mdDown>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={3}
+                                            md={4}
+                                            lg={3}
+                                            xl={3}
+                                        >
+                                            <Box
+                                                style={{
+                                                    backgroundColor: 'white',
+                                                }}
+                                                p={3}
+                                                className={classes.root}
+                                                borderRadius='borderRadius'
+                                            >
+                                                <Typography
+                                                    gutterBottom
+                                                    variant='h6'
+                                                    component='h6'
+                                                >
+                                                    Filter by Price
+                                                </Typography>
+                                                <FormControl component='fieldset'>
+                                                    <FormGroup
+                                                        aria-label='position'
+                                                        row
+                                                    >
+                                                        <FormControlLabel
+                                                            control={
+                                                                <Checkbox
+                                                                    value={100}
+                                                                    color='secondary'
+                                                                    onClick={(
+                                                                        event
+                                                                    ) =>
+                                                                        handlePriceFilter100TK(
+                                                                            event
+                                                                        )
+                                                                    }
+                                                                />
+                                                            }
+                                                            label='Tk. 0 - 100'
+                                                            labelPlacement='end'
+                                                        />
+                                                    </FormGroup>
+                                                    <FormGroup
+                                                        aria-label='position'
+                                                        row
+                                                    >
+                                                        <FormControlLabel
+                                                            control={
+                                                                <Checkbox
+                                                                    value={500}
+                                                                    color='secondary'
+                                                                    onClick={(
+                                                                        event
+                                                                    ) =>
+                                                                        handlePriceFilter500TK(
+                                                                            event
+                                                                        )
+                                                                    }
+                                                                />
+                                                            }
+                                                            label='Tk. 100 - 500'
+                                                            labelPlacement='end'
+                                                        />
+                                                    </FormGroup>
+                                                    <FormGroup
+                                                        aria-label='position'
+                                                        row
+                                                    >
+                                                        <FormControlLabel
+                                                            control={
+                                                                <Checkbox
+                                                                    value={1000}
+                                                                    color='secondary'
+                                                                    onClick={(
+                                                                        event
+                                                                    ) =>
+                                                                        handlePriceFilter1000TK(
+                                                                            event
+                                                                        )
+                                                                    }
+                                                                />
+                                                            }
+                                                            label='Tk. 500 - 1000'
+                                                            labelPlacement='end'
+                                                        />
+                                                    </FormGroup>
+                                                    <FormGroup
+                                                        aria-label='position'
+                                                        row
+                                                    >
+                                                        <FormControlLabel
+                                                            control={
+                                                                <Checkbox
+                                                                    value={2000}
+                                                                    color='secondary'
+                                                                    onClick={(
+                                                                        event
+                                                                    ) =>
+                                                                        handlePriceFilter2000TK(
+                                                                            event
+                                                                        )
+                                                                    }
+                                                                />
+                                                            }
+                                                            label='Tk. 1000 - 2000'
+                                                            labelPlacement='end'
+                                                        />
+                                                    </FormGroup>
+                                                    <FormGroup
+                                                        aria-label='position'
+                                                        row
+                                                    >
+                                                        <FormControlLabel
+                                                            control={
+                                                                <Checkbox
+                                                                    value={5000}
+                                                                    color='secondary'
+                                                                    onClick={(
+                                                                        event
+                                                                    ) =>
+                                                                        handlePriceFilter5000TK(
+                                                                            event
+                                                                        )
+                                                                    }
+                                                                />
+                                                            }
+                                                            label='Tk. 2000 - 5000'
+                                                            labelPlacement='end'
+                                                        />
+                                                    </FormGroup>
+                                                </FormControl>
+                                            </Box>
+                                        </Grid>
+                                    </Hidden>
+
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={12}
+                                        md={12}
+                                        lg={9}
+                                        xl={9}
+                                    >
+                                        <Box className={classes.boot}>
+                                            <AllProductsForMultiple
+                                                products={products}
+                                                myBag={myBag}
+                                                changeMyBag={changeMyBag}
+                                                changeForMultiple={
+                                                    changeCategory
+                                                }
+                                                urlForChangeCardForMultiple={`${process.env.NEXT_PUBLIC_BASE_URL}/category/${categorySlug}/`}
+                                                config={config}
+                                            />
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        </Box>
+                    </Box>
+
+                    <Box mx={3} mt={6}>
+                        <MainFooter />
+                    </Box>
+                </div>
+            )}
+        </>
     );
 }
 
@@ -662,7 +716,9 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForCategory = async (params) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/category/${params.categorySlug}/`)
+        .get(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/category/${params.categorySlug}/`
+        )
         .then((res) => ({
             category: res.data,
         }))
