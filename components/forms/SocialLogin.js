@@ -7,6 +7,8 @@ import axios from 'axios';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import GoogleLogin from 'react-google-login';
 
+import Box from '@material-ui/core/Box';
+import Alert from '@material-ui/lab/Alert';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 
@@ -19,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SocialLogin() {
     const classes = useStyles();
     const router = useRouter();
+    const [errMessage, setErrMessage] = React.useState('');
 
     const responseFacebook = (response) => {
         console.log('response', response);
@@ -31,6 +34,7 @@ export default function SocialLogin() {
                     }
                 )
                 .then((res) => {
+                setErrMessage('');
                     console.log('got facebook', res.data);
                     Cookies.set('haha_ecom_bangla_token', res.data.key, {
                         expires: 7,
@@ -39,6 +43,7 @@ export default function SocialLogin() {
                 })
                 .catch((err) => {
                     console.log(err.response);
+                    setErrMessage(err.response.data);
                     // error response do not handling yet. it will be added when access of internet available
                 });
         }
@@ -54,6 +59,7 @@ export default function SocialLogin() {
                     access_token: response.accessToken,
                 })
                 .then((res) => {
+                setErrMessage('');
                     console.log('got google', res.data);
                     Cookies.set('haha_ecom_bangla_token', res.data.key, {
                         expires: 7,
@@ -61,6 +67,7 @@ export default function SocialLogin() {
                     router.push('/my-account');
                 })
                 .catch((err) => {
+                    setErrMessage(err.response.data);
                     console.log(err.response);
                     // error response do not handling yet. it will be added when access of internet available
                 });
@@ -87,6 +94,22 @@ export default function SocialLogin() {
                     )}
                 />
             </Grid>
+            
+                {errMessage &&
+                    errMessage.detail &&
+                    errMessage.detail.map((detail) => (
+                        <Box mt={2}>
+                            <Alert severity='error'>{detail}</Alert>
+                        </Box>
+                    ))}
+                {errMessage &&
+                    errMessage.non_field_errors &&
+                    errMessage.non_field_errors.map((non_field_errors) => (
+                        <Box mt={2}>
+                            <Alert severity='error'>{non_field_errors}</Alert>
+                        </Box>
+                    ))}
+
             <Grid item xs={12}>
                 <GoogleLogin
                     clientId='699909175796-tbimuqfjf0ujgordqb8471k5vonlalr2.apps.googleusercontent.com'
