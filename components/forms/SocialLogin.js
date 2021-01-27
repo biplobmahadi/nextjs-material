@@ -80,16 +80,21 @@ export default function SocialLogin() {
                 {errMessage &&
                     errMessage.detail &&
                     errMessage.detail.map((detail) => (
-                        <Box mt={2}>
+                        <Box>
                             <Alert severity='error'>{detail}</Alert>
                         </Box>
                     ))}
                 {errMessage &&
                     errMessage.non_field_errors &&
                     errMessage.non_field_errors.map((non_field_errors) => (
-                        <Box mt={2}>
+                    <Box>
+                        <Box>
                             <Alert severity='error'>{non_field_errors}</Alert>
                         </Box>
+                        <Box mt={2}>
+                            <Alert severity='error'>Please Login With Your Email & Password!</Alert>
+                        </Box>
+                     </Box>
                     ))}
             </Grid>
             
