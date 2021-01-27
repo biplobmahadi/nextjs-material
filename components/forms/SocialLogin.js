@@ -90,7 +90,7 @@ export default function SocialLogin() {
                         <Box>
                             <Alert severity='error'>{non_field_errors}</Alert>
                         </Box>
-                        <Box mt={2}>
+                        <Box my={2}>
                             <Alert severity='error'>Please Login With Your Email & Password!</Alert>
                         </Box>
                      </Box>
@@ -103,7 +103,6 @@ export default function SocialLogin() {
                             color='primary'
                             variant='outlined'
                             onClick={renderProps.onClick}
-                            fullWidth
                         >
                           Login With Google 
                         </Button>
