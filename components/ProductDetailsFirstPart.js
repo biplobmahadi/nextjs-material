@@ -59,7 +59,7 @@ export default function ProductDetailsFirstPart({
 }) {
     const classes = useStyles();
     const [loading, setLoading] = React.useState(false);
-    const [value, setValue] = React.useState('/s1.jpg');
+    const [value, setValue] = React.useState(product.product_image[0].image);
     const [quantity, setQuantity] = React.useState(1);
     const [openForLogin, setOpenForLogin] = React.useState(false);
     const [openForAdd, setOpenForAdd] = React.useState(false);
@@ -509,42 +509,28 @@ export default function ProductDetailsFirstPart({
                                 justify='center'
                                 alignItems='center'
                             >
-                                <Grid item>
-                                    <img
-                                        alt='that wanaka tree'
-                                        src='/s1.jpg'
-                                        width='60px'
-                                        height='50px'
-                                        onClick={() =>
-                                            handleImageClick('/s1.jpg')
-                                        }
-                                        style={{ cursor: 'pointer' }}
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <img
-                                        alt='that wanaka tree'
-                                        src='/s2.jpg'
-                                        width='60px'
-                                        height='50px'
-                                        onClick={() =>
-                                            handleImageClick('/s2.jpg')
-                                        }
-                                        style={{ cursor: 'pointer' }}
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <img
-                                        alt='that wanaka tree'
-                                        src='/s3.jpg'
-                                        width='60px'
-                                        height='50px'
-                                        onClick={() =>
-                                            handleImageClick('/s3.jpg')
-                                        }
-                                        style={{ cursor: 'pointer' }}
-                                    />
-                                </Grid>
+                                {product &&
+                                    product.product_image &&
+                                    product.product_image.map(
+                                        (product_image) => (
+                                            <Grid item>
+                                                <img
+                                                    alt='product image'
+                                                    src={product_image.image}
+                                                    width='60px'
+                                                    height='50px'
+                                                    onClick={() =>
+                                                        handleImageClick(
+                                                            product_image.image
+                                                        )
+                                                    }
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                    }}
+                                                />
+                                            </Grid>
+                                        )
+                                    )}
                             </Grid>
                         </Box>
                     </Box>

@@ -101,7 +101,7 @@ export default function Product(props) {
         });
 
     console.log('here product', product);
-    console.log('re render happend');
+    console.log('re render happened');
     console.log('here bag', myBag);
     console.log('bag Re', myBagRe);
     console.log('product Re', productRe);
@@ -109,9 +109,8 @@ export default function Product(props) {
     return (
         <div>
             <Head>
-                <title>Product Details - {product && product.name}</title>
+                <title>Product - {product ? product.name : 'Not Valid'}</title>
                 <link rel='icon' href='/a.ico' />
-
                 <meta
                     name='viewport'
                     content='width=device-width, initial-scale=1.0'
@@ -120,30 +119,43 @@ export default function Product(props) {
             <ButtonAppBar
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
-            <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                <ProductDetailsFirstPart
-                    product={product && product}
-                    changeProduct={changeProduct}
-                    config={config}
-                    myBag={myBag}
-                    changeMyBag={changeMyBag}
-                    avgRating={avgRating}
-                    categoryProducts={categoryProducts}
-                    changeCategoryProducts={changeCategoryProducts}
-                />
+            {!product ? (
+                <Box
+                    textAlign='center'
+                    pt={18}
+                    pb={12}
+                    style={{ backgroundColor: '#E6E6FA' }}
+                >
+                    <Typography variant='h4' color='secondary'>
+                        <strong>Sorry - There have nothing !</strong>
+                    </Typography>
+                </Box>
+            ) : (
+                <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                    <ProductDetailsFirstPart
+                        product={product && product}
+                        changeProduct={changeProduct}
+                        config={config}
+                        myBag={myBag}
+                        changeMyBag={changeMyBag}
+                        avgRating={avgRating}
+                        categoryProducts={categoryProducts}
+                        changeCategoryProducts={changeCategoryProducts}
+                    />
 
-                <ProductDetails
-                    product={product && product}
-                    changeProduct={changeProduct}
-                    user={user && user}
-                    categoryProducts={categoryProducts}
-                    config={config}
-                    myBag={myBag}
-                    changeMyBag={changeMyBag}
-                    changeCategoryProducts={changeCategoryProducts}
-                    avgRating={avgRating}
-                />
-            </Box>
+                    <ProductDetails
+                        product={product && product}
+                        changeProduct={changeProduct}
+                        user={user && user}
+                        categoryProducts={categoryProducts}
+                        config={config}
+                        myBag={myBag}
+                        changeMyBag={changeMyBag}
+                        changeCategoryProducts={changeCategoryProducts}
+                        avgRating={avgRating}
+                    />
+                </Box>
+            )}
             <Box mx={3} mt={6}>
                 <MainFooter />
             </Box>

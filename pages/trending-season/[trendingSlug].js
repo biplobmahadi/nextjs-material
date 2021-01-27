@@ -25,53 +25,66 @@ export default function Trending({ trending, myBag }) {
             <ButtonAppBar
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
-            <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                <Box mt={8} pt={3} px={3}>
-                    <Box mb={2} borderRadius='borderRadius'>
-                        <img
-                            src='/aa.jpg'
-                            alt=''
-                            srcset=''
-                            height='250'
-                            width='100%'
-                        />
-                    </Box>
-                    <Box
-                        py={2}
-                        borderRadius='borderRadius'
-                        style={{ backgroundColor: 'white' }}
-                        textAlign='center'
-                    >
-                        <Typography variant='h5' component='h5'>
-                            <strong>{trending.trend_name}</strong>
-                        </Typography>
-                    </Box>
-                    <Box mt={2}>
-                        <Grid container spacing={2}>
-                            {trending &&
-                                trending.trending_outfit &&
-                                trending.trending_outfit.map(
-                                    (trending_outfit) => (
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            sm={6}
-                                            md={4}
-                                            lg={3}
-                                            xl={2}
-                                        >
-                                            <Card
-                                                trending_outfit={
-                                                    trending_outfit
-                                                }
-                                            />
-                                        </Grid>
-                                    )
-                                )}
-                        </Grid>
+            {!trending ? (
+                <Box
+                    textAlign='center'
+                    pt={18}
+                    pb={12}
+                    style={{ backgroundColor: '#E6E6FA' }}
+                >
+                    <Typography variant='h4' color='secondary'>
+                        <strong>Sorry - There have nothing !</strong>
+                    </Typography>
+                </Box>
+            ) : (
+                <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                    <Box mt={8} pt={3} px={3}>
+                        <Box mb={2} borderRadius='borderRadius'>
+                            <img
+                                src={trending.trend_img}
+                                alt=''
+                                srcset=''
+                                height='250'
+                                width='100%'
+                            />
+                        </Box>
+                        <Box
+                            py={2}
+                            borderRadius='borderRadius'
+                            style={{ backgroundColor: 'white' }}
+                            textAlign='center'
+                        >
+                            <Typography variant='h5' component='h5'>
+                                <strong>{trending.trend_name}</strong>
+                            </Typography>
+                        </Box>
+                        <Box mt={2}>
+                            <Grid container spacing={2}>
+                                {trending &&
+                                    trending.trending_outfit &&
+                                    trending.trending_outfit.map(
+                                        (trending_outfit) => (
+                                            <Grid
+                                                item
+                                                xs={12}
+                                                sm={6}
+                                                md={4}
+                                                lg={3}
+                                                xl={2}
+                                            >
+                                                <Card
+                                                    trending_outfit={
+                                                        trending_outfit
+                                                    }
+                                                />
+                                            </Grid>
+                                        )
+                                    )}
+                            </Grid>
+                        </Box>
                     </Box>
                 </Box>
-            </Box>
+            )}
 
             <Box mx={3} mt={6}>
                 <MainFooter />
@@ -92,7 +105,9 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForTrending = async (params) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/trending/${params.trendingSlug}/`)
+        .get(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/trending/${params.trendingSlug}/`
+        )
         .then((res) => ({
             trending: res.data,
         }))
@@ -127,7 +142,7 @@ export async function getServerSideProps({ req, params }) {
     }
 
     const dataTrending = await fetchDataForTrending(params);
-    const trending = dataTrending.trending;
+    const trending = dataTrending.trending ? dataTrending.trending : null;
 
     return {
         props: {

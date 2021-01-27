@@ -70,39 +70,54 @@ export default function Trending(props) {
             <ButtonAppBar
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
-            <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                <Box mt={8} pt={3} px={3}>
-                    <Box mb={2} borderRadius='borderRadius'>
-                        <img
-                            src='/aa.jpg'
-                            alt=''
-                            srcset=''
-                            height='250'
-                            width='100%'
-                        />
-                    </Box>
-                    <Box
-                        py={2}
-                        borderRadius='borderRadius'
-                        style={{ backgroundColor: 'white' }}
-                        textAlign='center'
-                    >
-                        <Typography variant='h5' component='h5'>
-                            <strong>{trendingOutfit.trend_outfit_name}</strong>
-                        </Typography>
-                    </Box>
-                    <Box mt={2}>
-                        <AllProductsForTrendingOutfit
-                            products={products}
-                            myBag={myBag}
-                            changeMyBag={changeMyBag}
-                            changeForMultiple={changeTrendingOutfit}
-                            urlForChangeCardForMultiple={`${process.env.NEXT_PUBLIC_BASE_URL}/trending-outfit/${trendingOutfitSlug}/`}
-                            config={config}
-                        />
+            {!trendingOutfit ? (
+                <Box
+                    textAlign='center'
+                    pt={18}
+                    pb={12}
+                    style={{ backgroundColor: '#E6E6FA' }}
+                >
+                    <Typography variant='h4' color='secondary'>
+                        <strong>Sorry - There have nothing !</strong>
+                    </Typography>
+                </Box>
+            ) : (
+                <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                    <Box mt={8} pt={3} px={3}>
+                        <Box mb={2} borderRadius='borderRadius'>
+                            <img
+                                src='/aa.jpg'
+                                alt=''
+                                srcset=''
+                                height='250'
+                                width='100%'
+                            />
+                        </Box>
+                        <Box
+                            py={2}
+                            borderRadius='borderRadius'
+                            style={{ backgroundColor: 'white' }}
+                            textAlign='center'
+                        >
+                            <Typography variant='h5' component='h5'>
+                                <strong>
+                                    {trendingOutfit.trend_outfit_name}
+                                </strong>
+                            </Typography>
+                        </Box>
+                        <Box mt={2}>
+                            <AllProductsForTrendingOutfit
+                                products={products}
+                                myBag={myBag}
+                                changeMyBag={changeMyBag}
+                                changeForMultiple={changeTrendingOutfit}
+                                urlForChangeCardForMultiple={`${process.env.NEXT_PUBLIC_BASE_URL}/trending-outfit/${trendingOutfitSlug}/`}
+                                config={config}
+                            />
+                        </Box>
                     </Box>
                 </Box>
-            </Box>
+            )}
 
             <Box mx={3} mt={6}>
                 <MainFooter />
@@ -160,7 +175,9 @@ export async function getServerSideProps({ req, params }) {
     }
 
     const dataTrendingOutfit = await fetchDataForTrendingOutfit(params);
-    const trendingOutfit = dataTrendingOutfit.trendingOutfit;
+    const trendingOutfit = dataTrendingOutfit.trendingOutfit
+        ? dataTrendingOutfit.trendingOutfit
+        : null;
 
     return {
         props: {

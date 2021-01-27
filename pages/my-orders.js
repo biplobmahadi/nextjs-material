@@ -19,6 +19,8 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -144,9 +146,9 @@ export default function MyOrders({ orders, myBag, user }) {
                                 </Box>
 
                                 <Box mt={2}>
-                                    <Grid container spacing={3}>
-                                        {orders.length !== 0 &&
-                                            orders.map((myOrder) => (
+                                    {orders.length !== 0 ? (
+                                        <Grid container spacing={3}>
+                                            {orders.map((myOrder) => (
                                                 <Grid
                                                     item
                                                     xs={12}
@@ -160,7 +162,17 @@ export default function MyOrders({ orders, myBag, user }) {
                                                     />
                                                 </Grid>
                                             ))}
-                                    </Grid>
+                                        </Grid>
+                                    ) : (
+                                        <Alert severity='error'>
+                                            <AlertTitle>Sorry Dear</AlertTitle>
+                                            You Have No Order Right Now —{' '}
+                                            <strong>
+                                                Hope You Will Make Order Very
+                                                Soon!
+                                            </strong>
+                                        </Alert>
+                                    )}
                                 </Box>
                             </Grid>
                         </Grid>

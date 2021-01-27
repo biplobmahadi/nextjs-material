@@ -33,7 +33,7 @@ export default function MainFooter() {
                     <Grid item xs={12} sm={12} md={12} lg={3} xl={3}>
                         <Box className={classes.root}>
                             <Typography variant='h6' component='h6'>
-                                Logo.com
+                                Logo
                             </Typography>
 
                             <Box pt={2} pb={3}>
@@ -70,11 +70,15 @@ export default function MainFooter() {
                                     </Link>
 
                                     <Typography>
-                                        <Link href='' color='inherit'>Logo Melaa</Link>
+                                        <Link href='' color='inherit'>
+                                            Logo Melaa
+                                        </Link>
                                     </Typography>
 
                                     <Typography>
-                                        <Link href='' color='inherit'>Music Show</Link>
+                                        <Link href='' color='inherit'>
+                                            Music Show
+                                        </Link>
                                     </Typography>
                                 </Box>
                             </Box>

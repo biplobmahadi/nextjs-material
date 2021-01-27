@@ -68,132 +68,157 @@ export default function MyOrderDetails({ order, myBag, user }) {
             <ButtonAppBar
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
-            <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                <Box mt={8} pt={3} px={3}>
-                    <Box
-                        p={2}
-                        boxShadow={1}
-                        textAlign='center'
-                        borderRadius='borderRadius'
-                        style={{ backgroundColor: 'white' }}
-                    >
-                        <img
-                            src='/aa.jpg'
-                            alt=''
-                            srcset=''
-                            height='60'
-                            width='60'
-                            style={{ borderRadius: '50%' }}
-                        />
-                        <Typography variant='h5'>
-                            <strong>
-                                {user &&
-                                    user.first_name.toUpperCase() +
-                                        ' ' +
-                                        user.last_name.toUpperCase()}
-                            </strong>
-                        </Typography>
-                    </Box>
-                    <Box mt={3}>
-                        <Grid container spacing={3}>
-                            <Hidden lgDown>
+            {!order ? (
+                <Box
+                    textAlign='center'
+                    pt={18}
+                    pb={12}
+                    style={{ backgroundColor: '#E6E6FA' }}
+                >
+                    <Typography variant='h4' color='secondary'>
+                        <strong>Sorry - There have nothing !</strong>
+                    </Typography>
+                </Box>
+            ) : (
+                <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                    <Box mt={8} pt={3} px={3}>
+                        <Box
+                            p={2}
+                            boxShadow={1}
+                            textAlign='center'
+                            borderRadius='borderRadius'
+                            style={{ backgroundColor: 'white' }}
+                        >
+                            <img
+                                src='/aa.jpg'
+                                alt=''
+                                srcset=''
+                                height='60'
+                                width='60'
+                                style={{ borderRadius: '50%' }}
+                            />
+                            <Typography variant='h5'>
+                                <strong>
+                                    {user &&
+                                        user.first_name.toUpperCase() +
+                                            ' ' +
+                                            user.last_name.toUpperCase()}
+                                </strong>
+                            </Typography>
+                        </Box>
+                        <Box mt={3}>
+                            <Grid container spacing={3}>
+                                <Hidden lgDown>
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={12}
+                                        md={12}
+                                        lg={12}
+                                        xl={3}
+                                    >
+                                        <Box
+                                            p={1}
+                                            boxShadow={1}
+                                            borderRadius='borderRadius'
+                                            style={{ backgroundColor: 'white' }}
+                                        >
+                                            <AccountOptionList />
+                                        </Box>
+                                    </Grid>
+                                </Hidden>
                                 <Grid
                                     item
                                     xs={12}
                                     sm={12}
                                     md={12}
                                     lg={12}
-                                    xl={3}
+                                    xl={9}
                                 >
                                     <Box
-                                        p={1}
+                                        p={2}
                                         boxShadow={1}
                                         borderRadius='borderRadius'
                                         style={{ backgroundColor: 'white' }}
                                     >
-                                        <AccountOptionList />
-                                    </Box>
-                                </Grid>
-                            </Hidden>
-                            <Grid item xs={12} sm={12} md={12} lg={12} xl={9}>
-                                <Box
-                                    p={2}
-                                    boxShadow={1}
-                                    borderRadius='borderRadius'
-                                    style={{ backgroundColor: 'white' }}
-                                >
-                                    <Grid
-                                        container
-                                        direction='row'
-                                        justify='space-between'
-                                        alignItems='center'
-                                        spacing={2}
-                                    >
                                         <Grid
-                                            item
-                                            xs={12}
-                                            sm={6}
-                                            md={6}
-                                            lg={6}
-                                            xl={6}
+                                            container
+                                            direction='row'
+                                            justify='space-between'
+                                            alignItems='center'
+                                            spacing={2}
                                         >
-                                            <Typography
-                                                variant='h5'
-                                                component='h5'
+                                            <Grid
+                                                item
+                                                xs={12}
+                                                sm={6}
+                                                md={6}
+                                                lg={6}
+                                                xl={6}
                                             >
-                                                <strong>
-                                                    My Orders Details
-                                                </strong>{' '}
-                                            </Typography>
-                                        </Grid>
+                                                <Typography
+                                                    variant='h5'
+                                                    component='h5'
+                                                >
+                                                    <strong>
+                                                        My Orders Details
+                                                    </strong>{' '}
+                                                </Typography>
+                                            </Grid>
 
-                                        <Grid item>
-                                            <Button
-                                                variant='contained'
-                                                size='small'
-                                            >
-                                                <Box px={3}>
-                                                    Order ID: {order.id}
-                                                </Box>
-                                            </Button>
+                                            <Grid item>
+                                                <Button
+                                                    variant='contained'
+                                                    size='small'
+                                                >
+                                                    <Box px={3}>
+                                                        Order ID: {order.id}
+                                                    </Box>
+                                                </Button>
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
-                                </Box>
-                                <Box
-                                    p={2}
-                                    mt={2}
-                                    boxShadow={1}
-                                    borderRadius='borderRadius'
-                                    style={{ backgroundColor: 'white' }}
-                                >
-                                    <TrackingStepper order={order && order} />
-                                </Box>
-                                <Paper className={classes.root}>
-                                    <Tabs
-                                        value={value}
-                                        onChange={handleChange}
-                                        indicatorColor='primary'
-                                        textColor='primary'
-                                        variant='fullWidth'
-                                        centered
+                                    </Box>
+                                    <Box
+                                        p={2}
+                                        mt={2}
+                                        boxShadow={1}
+                                        borderRadius='borderRadius'
+                                        style={{ backgroundColor: 'white' }}
                                     >
-                                        <Tab label='Order Details' value='0' />
-                                        <Tab
-                                            label='Receiver Address'
-                                            value='1'
+                                        <TrackingStepper
+                                            order={order && order}
                                         />
-                                        <Tab
-                                            label='Ordered Products'
-                                            value='2'
-                                        />
-                                    </Tabs>
-                                </Paper>
-                                <Box>{output}</Box>
+                                    </Box>
+                                    <Paper className={classes.root}>
+                                        <Tabs
+                                            value={value}
+                                            onChange={handleChange}
+                                            indicatorColor='primary'
+                                            textColor='primary'
+                                            variant='fullWidth'
+                                            centered
+                                        >
+                                            <Tab
+                                                label='Order Details'
+                                                value='0'
+                                            />
+                                            <Tab
+                                                label='Receiver Address'
+                                                value='1'
+                                            />
+                                            <Tab
+                                                label='Ordered Products'
+                                                value='2'
+                                            />
+                                        </Tabs>
+                                    </Paper>
+                                    <Box>{output}</Box>
+                                </Grid>
                             </Grid>
-                        </Grid>
+                        </Box>
                     </Box>
                 </Box>
-            </Box>
+            )}
             <Box mx={3} mt={6}>
                 <MainFooter />
             </Box>

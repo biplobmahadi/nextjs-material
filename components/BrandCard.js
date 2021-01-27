@@ -36,7 +36,7 @@ export default function BrandCard({ brand }) {
                                 component='img'
                                 alt='Brand Name'
                                 height='180'
-                                image='/s2.jpg'
+                                image={brand.brand_img}
                                 title='Brand Name'
                             />
                         </Box>

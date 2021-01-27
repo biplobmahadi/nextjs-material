@@ -12,19 +12,31 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import AccountOptionList from '../components/AccountOptionList';
 
-import Divider from '@material-ui/core/Divider';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+
 export default function MyReviewedProduct({ mainProductReviewed }) {
     return (
         <Box mt={2}>
-            {/* <Typography>{value}</Typography> */}
-            <Grid container spacing={2}>
-                {mainProductReviewed &&
-                    mainProductReviewed.map((product) => (
+            {mainProductReviewed.length !== 0 ? (
+                <Grid container spacing={2}>
+                    {mainProductReviewed.map((product) => (
                         <Grid item xs={12} sm={6} md={4} lg={3} xl={3}>
-                            <MyReviewedProductCard product={product && product} />
+                            <MyReviewedProductCard
+                                product={product && product}
+                            />
                         </Grid>
                     ))}
-            </Grid>
+                </Grid>
+            ) : (
+                <Box>
+                    <Alert severity='error'>
+                        <AlertTitle>Sorry Dear</AlertTitle>
+                        You Have No Review Right Now —{' '}
+                        <strong>Hope You Will Make A Review Very Soon!</strong>
+                    </Alert>
+                </Box>
+            )}
         </Box>
     );
 }

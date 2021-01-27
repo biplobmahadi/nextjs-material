@@ -332,7 +332,7 @@ export default function ProductForTrialCard({
                             component='img'
                             alt='Product'
                             height='180'
-                            image='/s2.jpg'
+                            image={product.product_image[0].image}
                             title='Product'
                         />
                     </Box>

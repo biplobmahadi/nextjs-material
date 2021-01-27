@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '../src/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Drawer from '@material-ui/core/Drawer';
@@ -206,7 +206,7 @@ export default function ButtonAppBar({ totalProductInBag }) {
                             unmountOnExit
                         >
                             <List dense component='div' disablePadding>
-                                <Link href='/mens-shirt'>
+                                <Link href='/category/mens-shirt'>
                                     <ListItem
                                         button
                                         className={classes.nestedAgain}
@@ -463,7 +463,7 @@ export default function ButtonAppBar({ totalProductInBag }) {
                             unmountOnExit
                         >
                             <List dense component='div' disablePadding>
-                                <Link href='/womens-pant'>
+                                <Link href='/category/womens-pant'>
                                     <ListItem
                                         button
                                         className={classes.nestedAgain}
@@ -780,11 +780,13 @@ export default function ButtonAppBar({ totalProductInBag }) {
                     >
                         {list('left')}
                     </Drawer>
-                    <Link href='/'>
-                        <Typography variant='h6' className={classes.title}>
-                            Logo.com
-                        </Typography>
-                    </Link>
+
+                    <Typography variant='h6' className={classes.title}>
+                        <Link href='/' color='inherit'>
+                            Logo
+                        </Link>
+                    </Typography>
+
                     {token ? (
                         <>
                             <Link href='/bag'>
