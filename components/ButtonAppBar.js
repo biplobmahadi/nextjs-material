@@ -782,9 +782,8 @@ export default function ButtonAppBar({ totalProductInBag }) {
                     </Drawer>
 
                     <Typography variant='h6' className={classes.title}>
-                        <Link href='/'>
+                        
                             Logo
-                        </Link>
                     </Typography>
 
                     {token ? (
