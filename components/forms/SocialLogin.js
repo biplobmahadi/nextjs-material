@@ -77,24 +77,6 @@ export default function SocialLogin() {
     return (
         <Grid container spacing={2} alignItems='center'>
             <Grid item xs={12}>
-                <FacebookLogin
-                    appId='221049159230997'
-                    autoLoad={false}
-                    fields='name,email,picture'
-                    callback={responseFacebook}
-                    render={(renderProps) => (
-                        <Button
-                            color='primary'
-                            variant='outlined'
-                            onClick={renderProps.onClick}
-                            fullWidth
-                        >
-                            Facebook Login
-                        </Button>
-                    )}
-                />
-            </Grid>
-            
                 {errMessage &&
                     errMessage.detail &&
                     errMessage.detail.map((detail) => (
@@ -109,6 +91,9 @@ export default function SocialLogin() {
                             <Alert severity='error'>{non_field_errors}</Alert>
                         </Box>
                     ))}
+            </Grid>
+            
+                
 
             <Grid item xs={12}>
                 <GoogleLogin
