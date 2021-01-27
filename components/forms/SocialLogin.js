@@ -106,7 +106,7 @@ export default function SocialLogin() {
                             onClick={renderProps.onClick}
                             fullWidth
                         >
-                            Google Login
+                          Login With Google 
                         </Button>
                     )}
                     onSuccess={responseGoogle}
