@@ -155,7 +155,11 @@ export default function ProductDetails(props) {
         }
     };
 
-    const handleAgree = (stringifyReview, setReviewAgreeLoading) => {
+    const handleAgree = (
+        stringifyReview,
+        setReviewAgreeLoading,
+        setOpenForAlreadyDone
+    ) => {
         // start loading
         setReviewAgreeLoading(true);
 
@@ -278,6 +282,7 @@ export default function ProductDetails(props) {
                     'you cant agree with your own review or already done'
                 );
                 setReviewAgreeLoading(false);
+                setOpenForAlreadyDone(true);
             }
         } else {
             console.log('login first');
@@ -286,7 +291,11 @@ export default function ProductDetails(props) {
         }
     };
 
-    const handleDisagree = (stringifyReview, setReviewDisagreeLoading) => {
+    const handleDisagree = (
+        stringifyReview,
+        setReviewDisagreeLoading,
+        setOpenForAlreadyDone
+    ) => {
         // start loading
         setReviewDisagreeLoading(true);
 
@@ -397,6 +406,7 @@ export default function ProductDetails(props) {
                     'you cant disagree with your review or already done'
                 );
                 setReviewDisagreeLoading(false);
+                setOpenForAlreadyDone(true);
             }
         } else {
             console.log('login first');
@@ -524,7 +534,8 @@ export default function ProductDetails(props) {
 
     const handleAgreeForVideoReview = (
         stringifyReview,
-        setVideoReviewAgreeLoading
+        setVideoReviewAgreeLoading,
+        setOpenForAlreadyDone
     ) => {
         // start loading
         setVideoReviewAgreeLoading(true);
@@ -654,6 +665,7 @@ export default function ProductDetails(props) {
                     'you cant agree with your own review or already done'
                 );
                 setVideoReviewAgreeLoading(false);
+                setOpenForAlreadyDone(true);
             }
         } else {
             console.log('login first');
@@ -664,7 +676,8 @@ export default function ProductDetails(props) {
 
     const handleDisagreeForVideoReview = (
         stringifyReview,
-        setVideoReviewDisagreeLoading
+        setVideoReviewDisagreeLoading,
+        setOpenForAlreadyDone
     ) => {
         // start loading
         setVideoReviewDisagreeLoading(true);
@@ -787,6 +800,7 @@ export default function ProductDetails(props) {
                     'you cant disagree with your review or already done'
                 );
                 setVideoReviewDisagreeLoading(false);
+                setOpenForAlreadyDone(true);
             }
         } else {
             console.log('login first');

@@ -15,6 +15,9 @@ import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 import Button from '@material-ui/core/Button';
@@ -66,6 +69,16 @@ export default function SingleVideoReview({
         videoReviewDisagreeLoading,
         setVideoReviewDisagreeLoading,
     ] = React.useState(false);
+
+    const [openForAlreadyDone, setOpenForAlreadyDone] = React.useState(false);
+    // this is for alert close
+    const handleCloseForAlreadyDone = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenForAlreadyDone(false);
+    };
 
     return (
         <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
@@ -129,12 +142,14 @@ export default function SingleVideoReview({
                                                     JSON.stringify(
                                                         video_review
                                                     ),
-                                                    setVideoReviewAgreeLoading
+                                                    setVideoReviewAgreeLoading,
+                                                    setOpenForAlreadyDone
                                                 )
                                             }
                                             // use this type of value sending in bag page
                                             disabled={
                                                 videoReviewAgreeLoading ||
+                                                videoReviewDisagreeLoading ||
                                                 video_review.user.pk ===
                                                     (user && user.pk)
                                             }
@@ -158,6 +173,20 @@ export default function SingleVideoReview({
                                 </div>
                             </Box>
                         </Grid>
+                        {/* this snackbar is used by both agree disagree */}
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
+                            open={openForAlreadyDone}
+                            autoHideDuration={4000}
+                            onClose={handleCloseForAlreadyDone}
+                        >
+                            <Alert severity='success' variant='filled'>
+                                Already Done !
+                            </Alert>
+                        </Snackbar>
                         <Grid item xs={12} sm>
                             <Box textAlign='center'>
                                 <div className={classes.root}>
@@ -179,12 +208,14 @@ export default function SingleVideoReview({
                                                     JSON.stringify(
                                                         video_review
                                                     ),
-                                                    setVideoReviewDisagreeLoading
+                                                    setVideoReviewDisagreeLoading,
+                                                    setOpenForAlreadyDone
                                                 )
                                             }
                                             // use this type of value sending in bag page
                                             disabled={
                                                 videoReviewDisagreeLoading ||
+                                                videoReviewAgreeLoading ||
                                                 video_review.user.pk ===
                                                     (user && user.pk)
                                             }

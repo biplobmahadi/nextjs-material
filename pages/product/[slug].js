@@ -183,6 +183,20 @@ const fetchDataForBag = async (config) =>
             error: err.response.data,
         }));
 
+const fetchDataForBagCreate = async (config) =>
+    await axios
+        .post(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`,
+            { sub_total: 0 },
+            config
+        )
+        .then((res) => ({
+            bag: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
 const fetchDataForUser = async (config) =>
     await axios
         .get(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/user/`, config)
@@ -222,8 +236,13 @@ export async function getServerSideProps({ req, params }) {
 
     const user = dataUser.user ? dataUser.user : null;
 
+    // ###### only here
+    // if user have no bag then create one
+    // because when user have no bag tn agree disagree not happened
+    // re render is based on myBag
+    // so create a bag if there is no one
     let myBag = null;
-    if (dataBag.bag) {
+    if (dataBag.bag.length !== 0) {
         let allMyBag = dataBag.bag;
         let myBagNotSendToMyOrder = allMyBag.filter(
             (myBag) => myBag.is_send_to_my_order === false
@@ -232,6 +251,9 @@ export async function getServerSideProps({ req, params }) {
         if (myBagNotSendToMyOrder[0]) {
             myBag = myBagNotSendToMyOrder[0];
         }
+    } else {
+        const dataBagCreate = await fetchDataForBagCreate(config);
+        myBag = dataBagCreate.bag;
     }
 
     const product = dataProduct.product ? dataProduct.product : null;

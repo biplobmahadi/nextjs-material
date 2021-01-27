@@ -14,6 +14,9 @@ import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 import Button from '@material-ui/core/Button';
@@ -61,6 +64,16 @@ export default function SingleReview({
     const [reviewDisagreeLoading, setReviewDisagreeLoading] = React.useState(
         false
     );
+
+    const [openForAlreadyDone, setOpenForAlreadyDone] = React.useState(false);
+    // this is for alert close
+    const handleCloseForAlreadyDone = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenForAlreadyDone(false);
+    };
 
     return (
         <Box
@@ -144,12 +157,14 @@ export default function SingleReview({
                                     onClick={() =>
                                         handleAgree(
                                             JSON.stringify(review),
-                                            setReviewAgreeLoading
+                                            setReviewAgreeLoading,
+                                            setOpenForAlreadyDone
                                         )
                                     }
                                     // use this type of value sending in bag page
                                     disabled={
                                         reviewAgreeLoading ||
+                                        reviewDisagreeLoading ||
                                         review.user.pk === (user && user.pk)
                                     }
                                 >
@@ -166,6 +181,20 @@ export default function SingleReview({
                                 )}
                             </div>
                         </div>
+                        {/* this snackbar is used by both agree disagree */}
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
+                            open={openForAlreadyDone}
+                            autoHideDuration={4000}
+                            onClose={handleCloseForAlreadyDone}
+                        >
+                            <Alert severity='success' variant='filled'>
+                                Already Done !
+                            </Alert>
+                        </Snackbar>
                         <Box mt={1}>
                             <div className={classes.root}>
                                 <div className={classes.wrapper}>
@@ -184,12 +213,14 @@ export default function SingleReview({
                                         onClick={() =>
                                             handleDisagree(
                                                 JSON.stringify(review),
-                                                setReviewDisagreeLoading
+                                                setReviewDisagreeLoading,
+                                                setOpenForAlreadyDone
                                             )
                                         }
                                         // use this type of value sending in bag page
                                         disabled={
                                             reviewDisagreeLoading ||
+                                            reviewAgreeLoading ||
                                             review.user.pk === (user && user.pk)
                                         }
                                     >
