@@ -93,7 +93,7 @@ export default function SignupForm() {
                 <Typography component='h1' variant='h5'>
                     Register
                 </Typography>
-                <Box mt={3} mb={3}>
+                <Box mt={5} mb={3}>
                     <SocialLogin />
                 </Box>
                 <Typography component='b' variant='b'>

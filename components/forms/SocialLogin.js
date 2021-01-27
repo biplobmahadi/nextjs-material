@@ -75,7 +75,7 @@ export default function SocialLogin() {
     };
 
     return (
-    <>
+    <Box textAlign='center'>
     {errMessage &&
                     errMessage.detail &&
                     errMessage.detail.map((detail) => (
@@ -111,7 +111,7 @@ export default function SocialLogin() {
                     onFailure={responseGoogle}
                     cookiePolicy={'single_host_origin'}
                 />
-    </>
+    </Box>
         
     );
 }
