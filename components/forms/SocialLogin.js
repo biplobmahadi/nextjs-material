@@ -75,9 +75,8 @@ export default function SocialLogin() {
     };
 
     return (
-        <Grid container spacing={2} alignItems='center'>
-            <Grid item xs={12}>
-                {errMessage &&
+    <>
+    {errMessage &&
                     errMessage.detail &&
                     errMessage.detail.map((detail) => (
                         <Box>
@@ -96,12 +95,7 @@ export default function SocialLogin() {
                         </Box>
                      </Box>
                     ))}
-            </Grid>
-            
-                
-
-            <Grid item xs={12}>
-                <GoogleLogin
+                    <GoogleLogin
                     clientId='699909175796-tbimuqfjf0ujgordqb8471k5vonlalr2.apps.googleusercontent.com'
                     buttonText='Login'
                     render={(renderProps) => (
@@ -118,7 +112,7 @@ export default function SocialLogin() {
                     onFailure={responseGoogle}
                     cookiePolicy={'single_host_origin'}
                 />
-            </Grid>
-        </Grid>
+    </>
+        
     );
 }
