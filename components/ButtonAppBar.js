@@ -1,4 +1,4 @@
-import Link from '../src/Link';
+import Link from 'next/link'
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Drawer from '@material-ui/core/Drawer';
@@ -782,7 +782,7 @@ export default function ButtonAppBar({ totalProductInBag }) {
                     </Drawer>
 
                     <Typography variant='h6' className={classes.title}>
-                        <Link href='/' color='inherit'>
+                        <Link href='/'>
                             Logo
                         </Link>
                     </Typography>
