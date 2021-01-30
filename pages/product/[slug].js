@@ -241,8 +241,10 @@ export async function getServerSideProps({ req, params }) {
     // because when user have no bag tn agree disagree not happened
     // re render is based on myBag
     // so create a bag if there is no one
+    // if user not logged in then also they can view this page, so here we don't
+    // get any bag and user, so myBag will null in this case -> no bug will occur
     let myBag = null;
-    if (dataBag.bag.length !== 0) {
+    if (dataBag.bag && dataBag.bag.length !== 0) {
         let allMyBag = dataBag.bag;
         let myBagNotSendToMyOrder = allMyBag.filter(
             (myBag) => myBag.is_send_to_my_order === false
@@ -251,7 +253,7 @@ export async function getServerSideProps({ req, params }) {
         if (myBagNotSendToMyOrder[0]) {
             myBag = myBagNotSendToMyOrder[0];
         }
-    } else {
+    } else if (dataBag.bag && dataBag.bag.length === 0) {
         const dataBagCreate = await fetchDataForBagCreate(config);
         myBag = dataBagCreate.bag;
     }

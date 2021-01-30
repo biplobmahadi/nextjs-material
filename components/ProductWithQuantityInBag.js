@@ -617,7 +617,11 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                                     {row.quantity > 1 && !row.add_as_trial && (
                                         <IconButton
                                             color='error'
-                                            disabled={loadingForRemove}
+                                            disabled={
+                                                loadingForAdd ||
+                                                loadingForRemove ||
+                                                loadingForDelete
+                                            }
                                             onClick={() =>
                                                 handleRemove(
                                                     JSON.stringify(row)
@@ -634,7 +638,11 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                                             .available_quantity !== 0 && (
                                             <IconButton
                                                 color='error'
-                                                disabled={loadingForAdd}
+                                                disabled={
+                                                    loadingForAdd ||
+                                                    loadingForRemove ||
+                                                    loadingForDelete
+                                                }
                                                 onClick={() =>
                                                     handleAdd(
                                                         JSON.stringify(row)
@@ -670,7 +678,11 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                                 >
                                     <IconButton
                                         color='error'
-                                        disabled={loadingForDelete}
+                                        disabled={
+                                            loadingForAdd ||
+                                            loadingForRemove ||
+                                            loadingForDelete
+                                        }
                                         onClick={() =>
                                             handleDelete(JSON.stringify(row))
                                         }

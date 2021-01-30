@@ -60,23 +60,35 @@ export default function MainFooter() {
                                     Specail
                                 </Typography>
                                 <Box pt={2} pb={3}>
-                                    <Link href='' color='inherit'>
+                                    <Link
+                                        href='javascript:void(0);'
+                                        color='inherit'
+                                    >
                                         <Typography>
                                             Tranding Outfits
                                         </Typography>
                                     </Link>
-                                    <Link href='' color='inherit'>
+                                    <Link
+                                        href='javascript:void(0);'
+                                        color='inherit'
+                                    >
                                         <Typography>Offers</Typography>
                                     </Link>
 
                                     <Typography>
-                                        <Link href='' color='inherit'>
+                                        <Link
+                                            href='javascript:void(0);'
+                                            color='inherit'
+                                        >
                                             Logo Melaa
                                         </Link>
                                     </Typography>
 
                                     <Typography>
-                                        <Link href='' color='inherit'>
+                                        <Link
+                                            href='javascript:void(0);'
+                                            color='inherit'
+                                        >
                                             Music Show
                                         </Link>
                                     </Typography>
@@ -89,22 +101,37 @@ export default function MainFooter() {
                                     Help Center
                                 </Typography>
                                 <Box pt={2} pb={3}>
-                                    <Link href='' color='inherit'>
+                                    <Link
+                                        href='javascript:void(0);'
+                                        color='inherit'
+                                    >
                                         <Typography>Happy Return</Typography>
                                     </Link>
-                                    <Link href='' color='inherit'>
+                                    <Link
+                                        href='javascript:void(0);'
+                                        color='inherit'
+                                    >
                                         <Typography>Refund Policy</Typography>
                                     </Link>
 
-                                    <Link href='' color='inherit'>
+                                    <Link
+                                        href='javascript:void(0);'
+                                        color='inherit'
+                                    >
                                         <Typography>Privacy Policy</Typography>
                                     </Link>
-                                    <Link href='' color='inherit'>
+                                    <Link
+                                        href='javascript:void(0);'
+                                        color='inherit'
+                                    >
                                         <Typography>
                                             Terms & Conditions
                                         </Typography>
                                     </Link>
-                                    <Link href='' color='inherit'>
+                                    <Link
+                                        href='javascript:void(0);'
+                                        color='inherit'
+                                    >
                                         <Typography>FAQs</Typography>
                                     </Link>
                                 </Box>
@@ -116,16 +143,28 @@ export default function MainFooter() {
                                     About
                                 </Typography>
                                 <Box pt={2} pb={3}>
-                                    <Link href='' color='inherit'>
+                                    <Link
+                                        href='javascript:void(0);'
+                                        color='inherit'
+                                    >
                                         <Typography>Contact Us</Typography>
                                     </Link>
-                                    <Link href='' color='inherit'>
+                                    <Link
+                                        href='javascript:void(0);'
+                                        color='inherit'
+                                    >
                                         <Typography>About Us</Typography>
                                     </Link>
-                                    <Link href='' color='inherit'>
+                                    <Link
+                                        href='javascript:void(0);'
+                                        color='inherit'
+                                    >
                                         <Typography>Career</Typography>
                                     </Link>
-                                    <Link href='' color='inherit'>
+                                    <Link
+                                        href='javascript:void(0);'
+                                        color='inherit'
+                                    >
                                         <Typography>Our Brands</Typography>
                                     </Link>
                                 </Box>

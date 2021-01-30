@@ -41,8 +41,15 @@ export default function TrendingCard({ product }) {
                         />
                     </Box>
                     <CardContent>
+                        <Typography gutterBottom>
+                            <Box textAlign='center'>
+                                {product && product.name}
+                            </Box>
+                        </Typography>
                         <Typography gutterBottom variant='h6' component='h6'>
-                            <Box textAlign='center'>{product.name}</Box>
+                            <Box textAlign='center'>
+                                Tk. {product && product.price}
+                            </Box>
                         </Typography>
                     </CardContent>
                 </CardActionArea>

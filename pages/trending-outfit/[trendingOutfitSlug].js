@@ -86,7 +86,7 @@ export default function Trending(props) {
                     <Box mt={8} pt={3} px={3}>
                         <Box mb={2} borderRadius='borderRadius'>
                             <img
-                                src='/aa.jpg'
+                                src={trendingOutfit.trend_outfit_img}
                                 alt=''
                                 srcset=''
                                 height='250'

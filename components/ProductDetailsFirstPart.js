@@ -613,7 +613,14 @@ export default function ProductDetailsFirstPart({
                                     product.productavailable
                                         .available_quantity !== 0 ? (
                                         <Chip
-                                            label='In Stock'
+                                            label={
+                                                'In Stock ' +
+                                                `(${
+                                                    product &&
+                                                    product.productavailable
+                                                        .available_quantity
+                                                })`
+                                            }
                                             color='primary'
                                             size='small'
                                         />

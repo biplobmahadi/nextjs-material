@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '../src/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Drawer from '@material-ui/core/Drawer';
@@ -159,7 +159,11 @@ export default function ButtonAppBar({ totalProductInBag }) {
                 </ListItem>
                 <Collapse in={openTrending} timeout='auto' unmountOnExit>
                     <List dense component='div' disablePadding>
-                        <Link href='/trending-season/summer'>
+                        <Link
+                            href='/trending-season/summer'
+                            color='inherit'
+                            underline='none'
+                        >
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
                                     <StarBorder fontSize='small' />
@@ -167,7 +171,11 @@ export default function ButtonAppBar({ totalProductInBag }) {
                                 <ListItemText primary='Summer' />
                             </ListItem>
                         </Link>
-                        <Link href='/trending-season/winter'>
+                        <Link
+                            href='/trending-season/winter'
+                            color='inherit'
+                            underline='none'
+                        >
                             <ListItem button className={classes.nested}>
                                 <ListItemIcon>
                                     <StarBorder fontSize='small' />
@@ -206,7 +214,11 @@ export default function ButtonAppBar({ totalProductInBag }) {
                             unmountOnExit
                         >
                             <List dense component='div' disablePadding>
-                                <Link href='/category/mens-shirt'>
+                                <Link
+                                    href='/category/mens-shirt'
+                                    color='inherit'
+                                    underline='none'
+                                >
                                     <ListItem
                                         button
                                         className={classes.nestedAgain}
@@ -463,7 +475,11 @@ export default function ButtonAppBar({ totalProductInBag }) {
                             unmountOnExit
                         >
                             <List dense component='div' disablePadding>
-                                <Link href='/category/womens-pant'>
+                                <Link
+                                    href='/category/womens-pant'
+                                    color='inherit'
+                                    underline='none'
+                                >
                                     <ListItem
                                         button
                                         className={classes.nestedAgain}
@@ -735,7 +751,7 @@ export default function ButtonAppBar({ totalProductInBag }) {
                     <ListItemText primary='Premium Others' />
                 </ListItem>
                 <Divider variant='middle' />
-                <Link href='/brands'>
+                <Link href='/brands' color='inherit' underline='none'>
                     <ListItem button>
                         <ListItemIcon>
                             <DraftsIcon fontSize='small' />
@@ -782,8 +798,9 @@ export default function ButtonAppBar({ totalProductInBag }) {
                     </Drawer>
 
                     <Typography variant='h6' className={classes.title}>
-                        
+                        <Link href='/' color='inherit'>
                             Logo
+                        </Link>
                     </Typography>
 
                     {token ? (
@@ -820,42 +837,66 @@ export default function ButtonAppBar({ totalProductInBag }) {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <Link href='/my-account'>
+                                <Link
+                                    href='/my-account'
+                                    color='inherit'
+                                    underline='none'
+                                >
                                     <MenuItem onClick={handleClose}>
                                         <InboxIcon fontSize='small' />
                                         <Box ml={2}>My Account</Box>
                                     </MenuItem>
                                 </Link>
                                 <Divider variant='middle' />
-                                <Link href='/my-orders'>
+                                <Link
+                                    href='/my-orders'
+                                    color='inherit'
+                                    underline='none'
+                                >
                                     <MenuItem onClick={handleClose}>
                                         <DraftsIcon fontSize='small' />
                                         <Box ml={2}>My Orders</Box>
                                     </MenuItem>
                                 </Link>
                                 <Divider variant='middle' />
-                                <Link href='/my-account'>
+                                <Link
+                                    href='javascript:void(0);'
+                                    color='inherit'
+                                    underline='none'
+                                >
                                     <MenuItem onClick={handleClose}>
                                         <InboxIcon fontSize='small' />
                                         <Box ml={2}>My Lottery</Box>
                                     </MenuItem>
                                 </Link>
                                 <Divider variant='middle' />
-                                <Link href='/my-review'>
+                                <Link
+                                    href='/my-review'
+                                    color='inherit'
+                                    underline='none'
+                                >
                                     <MenuItem onClick={handleClose}>
                                         <DraftsIcon fontSize='small' />
                                         <Box ml={2}>My Review</Box>
                                     </MenuItem>
                                 </Link>
                                 <Divider variant='middle' />
-                                <Link href='/my-video-review'>
+                                <Link
+                                    href='/my-video-review'
+                                    color='inherit'
+                                    underline='none'
+                                >
                                     <MenuItem onClick={handleClose}>
                                         <InboxIcon fontSize='small' />
                                         <Box ml={2}>My Video Review</Box>
                                     </MenuItem>
                                 </Link>
                                 <Divider variant='middle' />
-                                <Link href='/my-account'>
+                                <Link
+                                    href='javascript:void(0);'
+                                    color='inherit'
+                                    underline='none'
+                                >
                                     <MenuItem onClick={handleClose}>
                                         <DraftsIcon fontSize='small' />
                                         <Box ml={2}>I Gift It</Box>
