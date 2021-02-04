@@ -137,7 +137,7 @@ export default function Bag(props) {
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                <Box pt={11} px={3}>
+                <Box pt={9} px={3}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} sm={12} md={12} lg={12} xl={8}>
                             <Box

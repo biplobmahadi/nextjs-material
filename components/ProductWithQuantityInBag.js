@@ -743,7 +743,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                 autoHideDuration={6000}
                 onClose={handleClose}
             >
-                <Alert severity='warning' variant='filled'>
+                <Alert severity='info' variant='filled'>
                     <AlertTitle>
                         Trial Products of This Similar Product are Deleted!
                     </AlertTitle>
