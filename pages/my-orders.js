@@ -40,7 +40,7 @@ export default function MyOrders({ orders, myBag, user }) {
         }
     }, []);
 
-    console.log(orders);
+    // console.log(orders);
     return (
         <div>
             <Head>
@@ -55,7 +55,7 @@ export default function MyOrders({ orders, myBag, user }) {
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                <Box mt={8} pt={3} px={3}>
+                <Box pt={11} px={3}>
                     <Box
                         p={2}
                         boxShadow={1}

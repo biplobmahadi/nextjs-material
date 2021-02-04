@@ -41,8 +41,8 @@ export default function Trending({ trending, myBag }) {
                     <Box mt={8} pt={3} px={3}>
                         <Box mb={2} borderRadius='borderRadius'>
                             <img
-                                src={trending.trend_img}
-                                alt=''
+                                src='/aa.jpg'
+                                alt='trending'
                                 srcset=''
                                 height='250'
                                 width='100%'

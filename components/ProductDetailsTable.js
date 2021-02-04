@@ -20,24 +20,26 @@ export default function ProductDetailsTable({ product }) {
     const classes = useStyles();
 
     return (
-        <Table className={classes.table} aria-label='simple table'>
-            <TableBody>
-                {product &&
-                    product.product_detail.map((productDetail) => (
-                        <TableRow hover key={productDetail.id}>
-                            <TableCell
-                                align='center'
-                                component='th'
-                                scope='row'
-                            >
-                                {productDetail.title}
-                            </TableCell>
-                            <TableCell align='center'>
-                                {productDetail.value}
-                            </TableCell>
-                        </TableRow>
-                    ))}
-            </TableBody>
-        </Table>
+        <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label='simple table'>
+                <TableBody>
+                    {product &&
+                        product.product_detail.map((productDetail) => (
+                            <TableRow hover key={productDetail.id}>
+                                <TableCell
+                                    align='center'
+                                    component='th'
+                                    scope='row'
+                                >
+                                    {productDetail.title}
+                                </TableCell>
+                                <TableCell align='center'>
+                                    {productDetail.value}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 }

@@ -50,7 +50,7 @@ export default function MyOrderDetails({ order, myBag, user }) {
         output = <OrderedProduct order={order && order} />;
     }
 
-    console.log(order);
+    // console.log(order);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -81,7 +81,7 @@ export default function MyOrderDetails({ order, myBag, user }) {
                 </Box>
             ) : (
                 <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                    <Box mt={8} pt={3} px={3}>
+                    <Box pt={11} px={3}>
                         <Box
                             p={2}
                             boxShadow={1}

@@ -52,7 +52,7 @@ export default function Product(props) {
     // so use reRender will done one time here
     const changeProduct = (value) => {
         productRe = value;
-        console.log('product now', productRe);
+        // console.log('product now', productRe);
 
         // setReRender(!reRender);
     };
@@ -72,7 +72,7 @@ export default function Product(props) {
     // changeMyBag is the last when get fetch req, so here reRender call
     const changeMyBag = (value) => {
         myBagRe = value;
-        console.log('my bag now', myBagRe);
+        // console.log('my bag now', myBagRe);
 
         setReRender(!reRender);
     };
@@ -100,11 +100,11 @@ export default function Product(props) {
             avgRating = Math.floor(fractionalAvgRating);
         });
 
-    console.log('here product', product);
-    console.log('re render happened');
-    console.log('here bag', myBag);
-    console.log('bag Re', myBagRe);
-    console.log('product Re', productRe);
+    // console.log('here product', product);
+    // console.log('re render happened');
+    // console.log('here bag', myBag);
+    // console.log('bag Re', myBagRe);
+    // console.log('product Re', productRe);
 
     return (
         <div>

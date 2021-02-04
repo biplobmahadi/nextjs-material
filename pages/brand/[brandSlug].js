@@ -68,7 +68,7 @@ export default function SubCategories(props) {
     };
     const changeMyBag = (value) => {
         myBagRe = value;
-        console.log('my bag now', myBagRe);
+        // console.log('my bag now', myBagRe);
 
         setReRender(!reRender);
     };
@@ -82,8 +82,8 @@ export default function SubCategories(props) {
         brandRe = undefined;
     });
 
-    console.log('my bag 1st ', myBag);
-    console.log('my bag Re ', myBagRe);
+    // console.log('my bag 1st ', myBag);
+    // console.log('my bag Re ', myBagRe);
 
     const handlePriceFilter100TK = (event) => {
         setPriceFilter100TK(event.target.checked ? event.target.value : 0);
@@ -441,7 +441,7 @@ export default function SubCategories(props) {
         products = allProducts;
     }
 
-    console.log('products', products);
+    // console.log('products', products);
 
     return (
         <div>
@@ -469,7 +469,7 @@ export default function SubCategories(props) {
                 </Box>
             ) : (
                 <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                    <Box mt={8} pt={3} px={3}>
+                    <Box pt={11} px={3}>
                         <Box
                             py={2}
                             borderRadius='borderRadius'

@@ -85,13 +85,13 @@ export default function PassWordChangeForm() {
                 config
             )
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 setSuccessMessage(res.data.detail);
                 setErrMessage('');
                 setSubmitting(false);
             })
             .catch((err) => {
-                console.log(err.response);
+                // console.log(err.response);
                 setErrMessage(err.response.data);
                 setSuccessMessage('');
                 setSubmitting(false);

@@ -61,7 +61,7 @@ export default function UpdateAccountForm({ changeUser }) {
                 setSubmitting(false);
             })
             .catch((err) => {
-                console.log(err.response);
+                // console.log(err.response);
                 setSubmitting(false);
             });
     };

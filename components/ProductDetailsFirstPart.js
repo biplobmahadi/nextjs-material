@@ -59,7 +59,8 @@ export default function ProductDetailsFirstPart({
 }) {
     const classes = useStyles();
     const [loading, setLoading] = React.useState(false);
-    const [value, setValue] = React.useState(product.product_image[0].image);
+    // const [value, setValue] = React.useState(product.product_image[0].image);
+    const [value, setValue] = React.useState('/s1.jpg');
     const [quantity, setQuantity] = React.useState(1);
     const [openForLogin, setOpenForLogin] = React.useState(false);
     const [openForAdd, setOpenForAdd] = React.useState(false);
@@ -128,10 +129,10 @@ export default function ProductDetailsFirstPart({
                 cost: product.price * quantity,
             };
 
-            console.log(
-                'productWithQuantityExistInBag',
-                productWithQuantityExistInBag
-            );
+            // console.log(
+            //     'productWithQuantityExistInBag',
+            //     productWithQuantityExistInBag
+            // );
 
             // 1st we need to get the available quantity for this product
             axios
@@ -150,9 +151,9 @@ export default function ProductDetailsFirstPart({
                             productWithQuantityExistInBag.length !== 0
                         ) {
                             if (productWithQuantityExistInBag[0].add_as_trial) {
-                                console.log(
-                                    'this product already add as trial'
-                                );
+                                // console.log(
+                                //     'this product already add as trial'
+                                // );
                                 setLoading(false);
                                 setOpenForAddAsTrial(true);
                             } else {
@@ -178,7 +179,7 @@ export default function ProductDetailsFirstPart({
                                                     product_with_quantity.id
                                                 ))
                                         );
-                                        console.log(pk);
+                                        // console.log(pk);
                                         axios
                                             .patch(
                                                 `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
@@ -214,10 +215,10 @@ export default function ProductDetailsFirstPart({
                                                                 changeProduct(
                                                                     res.data
                                                                 );
-                                                                console.log(
-                                                                    'product after updated quantity',
-                                                                    res.data
-                                                                );
+                                                                // console.log(
+                                                                //     'product after updated quantity',
+                                                                //     res.data
+                                                                // );
                                                                 axios
                                                                     .get(
                                                                         `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
@@ -282,10 +283,10 @@ export default function ProductDetailsFirstPart({
                                                     product_with_quantity.id
                                                 ))
                                         );
-                                        console.log(
-                                            'bag e onno product ase - pk',
-                                            pk
-                                        );
+                                        // console.log(
+                                        //     'bag e onno product ase - pk',
+                                        //     pk
+                                        // );
                                         axios
                                             .patch(
                                                 `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
@@ -300,10 +301,10 @@ export default function ProductDetailsFirstPart({
                                                 config
                                             )
                                             .then((res) => {
-                                                console.log(
-                                                    'bag e product ase - patch bag',
-                                                    res.data
-                                                );
+                                                // console.log(
+                                                //     'bag e product ase - patch bag',
+                                                //     res.data
+                                                // );
 
                                                 axios
                                                     .patch(
@@ -328,10 +329,10 @@ export default function ProductDetailsFirstPart({
                                                                 changeProduct(
                                                                     res.data
                                                                 );
-                                                                console.log(
-                                                                    'product after updated quantity',
-                                                                    res.data
-                                                                );
+                                                                // console.log(
+                                                                //     'product after updated quantity',
+                                                                //     res.data
+                                                                // );
                                                                 axios
                                                                     .get(
                                                                         `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
@@ -416,10 +417,10 @@ export default function ProductDetailsFirstPart({
                                                                 changeProduct(
                                                                     res.data
                                                                 );
-                                                                console.log(
-                                                                    'product after updated quantity',
-                                                                    res.data
-                                                                );
+                                                                // console.log(
+                                                                //     'product after updated quantity',
+                                                                //     res.data
+                                                                // );
                                                                 axios
                                                                     .get(
                                                                         `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBagId}/`,
@@ -468,14 +469,14 @@ export default function ProductDetailsFirstPart({
                                 .catch((err) => console.log(err.response));
                         }
                     } else {
-                        console.log('product not available');
+                        // console.log('product not available');
                         setLoading(false);
                         setOpenForNotInStock(true);
                     }
                 })
                 .catch((err) => console.log(err.response));
         } else {
-            console.log('login first');
+            // console.log('login first');
             setLoading(false);
             setOpenForLogin(true);
         }
@@ -495,10 +496,10 @@ export default function ProductDetailsFirstPart({
                     >
                         <Zoom>
                             <img
-                                alt='that wanaka tree'
+                                alt='product image'
                                 src={value}
                                 width='100%'
-                                height='100%'
+                                height='320px'
                             />
                         </Zoom>
                         <Box pt={2}>
@@ -509,7 +510,49 @@ export default function ProductDetailsFirstPart({
                                 justify='center'
                                 alignItems='center'
                             >
-                                {product &&
+                                <Grid item>
+                                    <img
+                                        alt='product image'
+                                        src='/s1.jpg'
+                                        width='60px'
+                                        height='50px'
+                                        onClick={() =>
+                                            handleImageClick('/s1.jpg')
+                                        }
+                                        style={{
+                                            cursor: 'pointer',
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <img
+                                        alt='product image'
+                                        src='/s2.jpg'
+                                        width='60px'
+                                        height='50px'
+                                        onClick={() =>
+                                            handleImageClick('/s2.jpg')
+                                        }
+                                        style={{
+                                            cursor: 'pointer',
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <img
+                                        alt='product image'
+                                        src='/s3.jpg'
+                                        width='60px'
+                                        height='50px'
+                                        onClick={() =>
+                                            handleImageClick('/s3.jpg')
+                                        }
+                                        style={{
+                                            cursor: 'pointer',
+                                        }}
+                                    />
+                                </Grid>
+                                {/* {product &&
                                     product.product_image &&
                                     product.product_image.map(
                                         (product_image) => (
@@ -530,7 +573,7 @@ export default function ProductDetailsFirstPart({
                                                 />
                                             </Grid>
                                         )
-                                    )}
+                                    )} */}
                             </Grid>
                         </Box>
                     </Box>

@@ -27,7 +27,7 @@ export default function Brands({ brands, myBag }) {
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                <Box mt={8} pt={3} px={3}>
+                <Box pt={11} px={3}>
                     <Box
                         py={2}
                         borderRadius='borderRadius'

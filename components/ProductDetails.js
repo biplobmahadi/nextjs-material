@@ -63,8 +63,8 @@ export default function ProductDetails(props) {
 
     let avgRating = props.avgRating;
 
-    console.log('got re render for product details');
-    console.log('got product', product);
+    // console.log('got re render for product details');
+    // console.log('got product', product);
 
     // alert close function
     const handleCloseForLogin = (event, reason) => {
@@ -120,7 +120,7 @@ export default function ProductDetails(props) {
                     config
                 )
                 .then((res) => {
-                    console.log(res.data);
+                    // console.log(res.data);
                     // final get will be after all post, patch done
                     axios
                         .get(
@@ -147,7 +147,7 @@ export default function ProductDetails(props) {
                 })
                 .catch((err) => console.log(err.response));
         } else {
-            console.log('login first');
+            // console.log('login first');
             setOpenForLogin(true);
             setSubmitting(false);
             setValue(3);
@@ -278,14 +278,14 @@ export default function ProductDetails(props) {
                     })
                     .catch((err) => console.log(err.response));
             } else {
-                console.log(
-                    'you cant agree with your own review or already done'
-                );
+                // console.log(
+                //     'you cant agree with your own review or already done'
+                // );
                 setReviewAgreeLoading(false);
                 setOpenForAlreadyDone(true);
             }
         } else {
-            console.log('login first');
+            // console.log('login first');
             setReviewAgreeLoading(false);
             setOpenForLogin(true);
         }
@@ -302,7 +302,7 @@ export default function ProductDetails(props) {
         if (Cookies.get('haha_ecom_bangla_token')) {
             const review = JSON.parse(stringifyReview);
 
-            console.log('setReviewDisagreeLoading', setReviewDisagreeLoading);
+            // console.log('setReviewDisagreeLoading', setReviewDisagreeLoading);
 
             // ###########  Same process like agreed
             // ######### All in all, User can not agreed and disagreed at a time
@@ -402,14 +402,14 @@ export default function ProductDetails(props) {
                     })
                     .catch((err) => console.log(err.response));
             } else {
-                console.log(
-                    'you cant disagree with your review or already done'
-                );
+                // console.log(
+                //     'you cant disagree with your review or already done'
+                // );
                 setReviewDisagreeLoading(false);
                 setOpenForAlreadyDone(true);
             }
         } else {
-            console.log('login first');
+            // console.log('login first');
             setReviewDisagreeLoading(false);
             setOpenForLogin(true);
         }
@@ -491,8 +491,8 @@ export default function ProductDetails(props) {
                 product: product.id,
             };
 
-            console.log('clicked myBag', myBag);
-            console.log('clicked config', config);
+            // console.log('clicked myBag', myBag);
+            // console.log('clicked config', config);
             axios
                 .post(
                     '${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-create/',
@@ -500,7 +500,7 @@ export default function ProductDetails(props) {
                     config
                 )
                 .then((res) => {
-                    console.log(res.data);
+                    // console.log(res.data);
                     // final get will be after all post, patch done
                     axios
                         .get(
@@ -525,7 +525,7 @@ export default function ProductDetails(props) {
                 })
                 .catch((err) => console.log(err.response));
         } else {
-            console.log('login first');
+            // console.log('login first');
             setOpenForLogin(true);
             setSubmitting(false);
             resetForm();
@@ -661,14 +661,14 @@ export default function ProductDetails(props) {
                     })
                     .catch((err) => console.log(err.response));
             } else {
-                console.log(
-                    'you cant agree with your own review or already done'
-                );
+                // console.log(
+                //     'you cant agree with your own review or already done'
+                // );
                 setVideoReviewAgreeLoading(false);
                 setOpenForAlreadyDone(true);
             }
         } else {
-            console.log('login first');
+            // console.log('login first');
             setVideoReviewAgreeLoading(false);
             setOpenForLogin(true);
         }
@@ -796,14 +796,14 @@ export default function ProductDetails(props) {
                     })
                     .catch((err) => console.log(err.response));
             } else {
-                console.log(
-                    'you cant disagree with your review or already done'
-                );
+                // console.log(
+                //     'you cant disagree with your review or already done'
+                // );
                 setVideoReviewDisagreeLoading(false);
                 setOpenForAlreadyDone(true);
             }
         } else {
-            console.log('login first');
+            // console.log('login first');
             setVideoReviewDisagreeLoading(false);
             setOpenForLogin(true);
         }

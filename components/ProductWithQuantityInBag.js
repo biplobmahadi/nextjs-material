@@ -163,7 +163,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
 
     const handleAdd = (value) => {
         let productWithQuantity = JSON.parse(value);
-        console.log(productWithQuantity);
+        // console.log(productWithQuantity);
 
         setLoadingForAdd(true);
 
@@ -189,13 +189,13 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                             config
                         )
                         .then((res) => {
-                            console.log(res.data);
+                            // console.log(res.data);
                             let pk = [];
                             myBag.product_with_quantity.map(
                                 (product_with_quantity) =>
                                     (pk = pk.concat(product_with_quantity.id))
                             );
-                            console.log(pk);
+                            // console.log(pk);
                             axios
                                 .patch(
                                     `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
@@ -208,7 +208,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                                     config
                                 )
                                 .then((res) => {
-                                    console.log(res.data);
+                                    // console.log(res.data);
                                     // here productWithQuantity.product.productavailable.id used, because here product means product with quantity not single product
                                     axios
                                         .patch(
@@ -253,7 +253,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
 
     const handleRemove = (value) => {
         let productWithQuantity = JSON.parse(value);
-        console.log(productWithQuantity);
+        // console.log(productWithQuantity);
 
         setLoadingForRemove(true);
 
@@ -269,13 +269,13 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                 config
             )
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 let pk = [];
                 myBag.product_with_quantity.map(
                     (product_with_quantity) =>
                         (pk = pk.concat(product_with_quantity.id))
                 );
-                console.log(pk);
+                // console.log(pk);
                 axios
                     .patch(
                         `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
@@ -288,7 +288,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                         config
                     )
                     .then((res) => {
-                        console.log(res.data);
+                        // console.log(res.data);
                         // here product.product.productavailable.id used, because here product means product with quantity not single product
                         axios
                             .patch(
@@ -323,7 +323,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
 
     const handleDelete = (value) => {
         let productWithQuantity = JSON.parse(value);
-        console.log(productWithQuantity);
+        // console.log(productWithQuantity);
 
         setLoadingForDelete(true);
         // ###### Most Important
@@ -382,14 +382,14 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                 (sameCategoryProductsWithQuantity) =>
                     !sameCategoryProductsWithQuantity.add_as_trial
             );
-            console.log(
-                'sameCategoryProductsWithQuantity',
-                sameCategoryProductsWithQuantity
-            );
-            console.log(
-                'sameCategoryProductsWithQuantityNotAddAsTrial',
-                sameCategoryProductsWithQuantityNotAddAsTrial
-            );
+            // console.log(
+            //     'sameCategoryProductsWithQuantity',
+            //     sameCategoryProductsWithQuantity
+            // );
+            // console.log(
+            //     'sameCategoryProductsWithQuantityNotAddAsTrial',
+            //     sameCategoryProductsWithQuantityNotAddAsTrial
+            // );
             // if same category productWithQuantity is more than 1 then only delete this
             if (sameCategoryProductsWithQuantityNotAddAsTrial.length > 1) {
                 // only delete one product by this process
@@ -413,7 +413,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
             }
         }
 
-        console.log('final pk not remove', pk);
+        // console.log('final pk not remove', pk);
 
         // here only delete one productWithQuantity
         // when we also delete all trial productWithQuantity with this productWithQuantity
@@ -445,7 +445,7 @@ export default function Bag({ myBag, rows, config, changeMyBag }) {
                         config
                     )
                     .then((res) => {
-                        console.log(res.data);
+                        // console.log(res.data);
                         // if productWithQuantity add as trial then only one patch will done to update available quantity for main product
                         // also if the length of same category productWithQuantity which not add as trial is greater than 1 then also delete 1
                         // and update available quantity of 1 main product

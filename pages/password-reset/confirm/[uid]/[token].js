@@ -79,7 +79,7 @@ export default function PasswordResetConfirm() {
     };
 
     const handleSubmit = (values, setSubmitting) => {
-        console.log(uid, token);
+        // console.log(uid, token);
         axios
             .post(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/password/reset/confirm/`,
@@ -91,13 +91,13 @@ export default function PasswordResetConfirm() {
                 }
             )
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 setSuccessMessage(res.data.detail);
                 setErrMessage('');
                 setSubmitting(false);
             })
             .catch((err) => {
-                console.log(err.response);
+                // console.log(err.response);
                 setErrMessage(err.response.data);
                 setSuccessMessage('');
                 setSubmitting(false);

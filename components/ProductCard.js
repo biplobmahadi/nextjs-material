@@ -56,7 +56,7 @@ export default function ProductCard({
     setNeedDisabled,
 }) {
     const classes = useStyles();
-    console.log('got product for card', product);
+    // console.log('got product for card', product);
 
     const [loading, setLoading] = React.useState(false);
     const [openForLogin, setOpenForLogin] = React.useState(false);
@@ -143,10 +143,10 @@ export default function ProductCard({
                     (filterProduct) => filterProduct.product.id === product.id
                 );
             }
-            console.log(
-                'productWithQuantityExistInBag',
-                productWithQuantityExistInBag
-            );
+            // console.log(
+            //     'productWithQuantityExistInBag',
+            //     productWithQuantityExistInBag
+            // );
 
             // 1st we need to get the available quantity for this product
             // if product available then we can add it
@@ -167,9 +167,9 @@ export default function ProductCard({
                         ) {
                             // if productWithQuantity is already exist in bag as trial than not add more
                             if (productWithQuantityExistInBag[0].add_as_trial) {
-                                console.log(
-                                    'this product already add as trial'
-                                );
+                                // console.log(
+                                //     'this product already add as trial'
+                                // );
                                 setLoading(false);
                                 setNeedDisabled(false);
                                 setOpenForAddAsTrial(true);
@@ -195,7 +195,7 @@ export default function ProductCard({
                                                     product_with_quantity.id
                                                 ))
                                         );
-                                        console.log(pk);
+                                        // console.log(pk);
                                         axios
                                             .patch(
                                                 `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
@@ -297,10 +297,10 @@ export default function ProductCard({
                                                     product_with_quantity.id
                                                 ))
                                         );
-                                        console.log(
-                                            'bag e onno product ase - pk',
-                                            pk
-                                        );
+                                        // console.log(
+                                        //     'bag e onno product ase - pk',
+                                        //     pk
+                                        // );
                                         axios
                                             .patch(
                                                 `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
@@ -315,10 +315,10 @@ export default function ProductCard({
                                                 config
                                             )
                                             .then((res) => {
-                                                console.log(
-                                                    'bag e product ase - patch bag',
-                                                    res.data
-                                                );
+                                                // console.log(
+                                                //     'bag e product ase - patch bag',
+                                                //     res.data
+                                                // );
 
                                                 axios
                                                     .patch(
@@ -480,7 +480,7 @@ export default function ProductCard({
                                 .catch((err) => console.log(err.response));
                         }
                     } else {
-                        console.log('product not available');
+                        // console.log('product not available');
                         setLoading(false);
                         setNeedDisabled(false);
                         setOpenForNotInStock(true);
@@ -488,7 +488,7 @@ export default function ProductCard({
                 })
                 .catch((err) => console.log(err.response));
         } else {
-            console.log('login first');
+            // console.log('login first');
             setLoading(false);
             setNeedDisabled(false);
             setOpenForLogin(true);
@@ -509,7 +509,8 @@ export default function ProductCard({
                             component='img'
                             alt='Product'
                             height='180'
-                            image={product.product_image[0].image}
+                            // image={product.product_image[0].image}
+                            image='/s2.jpg'
                             title='Product'
                         />
                     </Box>

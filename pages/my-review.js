@@ -64,12 +64,12 @@ export default function MyReview({
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    console.log('all reviewed', allProductReviewed);
-    console.log('main', mainProductReviewed);
+    // console.log('all reviewed', allProductReviewed);
+    // console.log('main', mainProductReviewed);
 
-    console.log('all ordered', myOrderedAllProducts);
+    // console.log('all ordered', myOrderedAllProducts);
 
-    console.log('not', notReviewedProduct);
+    // console.log('not', notReviewedProduct);
     return (
         <div>
             {' '}
@@ -85,7 +85,7 @@ export default function MyReview({
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                <Box mt={8} pt={3} px={3}>
+                <Box  pt={11} px={3}>
                     <Box
                         p={2}
                         boxShadow={1}

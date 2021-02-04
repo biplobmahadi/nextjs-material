@@ -7,6 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FilterProduct from './FilterProduct';
 import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -78,24 +79,40 @@ export default function AddForTrialDialog({
                 </DialogTitle>
 
                 <DialogContent dividers={scroll === 'paper'}>
-                    <Grid container spacing={5}>
-                        {categoryProducts &&
-                            categoryProducts.map((categoryProduct) => (
-                                <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
-                                    <ProductCardForTrial
-                                        product={categoryProduct}
-                                        myBag={myBag}
-                                        config={config}
-                                        changeMyBag={changeMyBag}
-                                        changeCategoryProducts={
-                                            changeCategoryProducts
-                                        }
-                                        needDisabled={needDisabled}
-                                        setNeedDisabled={setNeedDisabled}
-                                    />
-                                </Grid>
-                            ))}
-                    </Grid>
+                    {categoryProducts.length !== 0 ? (
+                        <Grid container spacing={5}>
+                            {categoryProducts &&
+                                categoryProducts.map((categoryProduct) => (
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={12}
+                                        md={6}
+                                        lg={4}
+                                        xl={3}
+                                    >
+                                        <ProductCardForTrial
+                                            product={categoryProduct}
+                                            myBag={myBag}
+                                            config={config}
+                                            changeMyBag={changeMyBag}
+                                            changeCategoryProducts={
+                                                changeCategoryProducts
+                                            }
+                                            needDisabled={needDisabled}
+                                            setNeedDisabled={setNeedDisabled}
+                                        />
+                                    </Grid>
+                                ))}
+                        </Grid>
+                    ) : (
+                        <Box py={4} textAlign='center'>
+                            <Typography color='secondary'>
+                                There Have No Similar Product To Trail Right Now
+                                !
+                            </Typography>
+                        </Box>
+                    )}
                 </DialogContent>
             </Dialog>
         </div>

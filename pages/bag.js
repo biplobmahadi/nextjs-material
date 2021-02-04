@@ -61,13 +61,13 @@ export default function Bag(props) {
 
     const changeMyBag = (value) => {
         myBagRe = value;
-        console.log('my bag now', myBagRe);
+        // console.log('my bag now', myBagRe);
 
         setReRender(!reRender);
     };
 
-    console.log('bag e', myBag);
-    console.log('bag e Re', myBagRe);
+    // console.log('bag e', myBag);
+    // console.log('bag e Re', myBagRe);
 
     // here useEffect -> when component mount and update myBagRe will undefined
     // because, when we change route then myBagRe again remain previous one which is not
@@ -94,7 +94,7 @@ export default function Bag(props) {
                         config
                     )
                     .then((res) => {
-                        console.log(res.data);
+                        // console.log(res.data);
                         // this.setState({ orderId: res.data.id });
                         let orderCode = res.data.order_code;
                         axios
@@ -104,7 +104,7 @@ export default function Bag(props) {
                                 config
                             )
                             .then((res) => {
-                                console.log(res.data);
+                                // console.log(res.data);
                                 router.push(`/receiver/${orderCode}`);
                             })
                             .catch((err) => {
@@ -137,7 +137,7 @@ export default function Bag(props) {
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
             <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                <Box mt={6} pt={3} px={3}>
+                <Box pt={11} px={3}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} sm={12} md={12} lg={12} xl={8}>
                             <Box

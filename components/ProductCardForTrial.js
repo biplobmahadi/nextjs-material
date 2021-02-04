@@ -54,7 +54,7 @@ export default function ProductForTrialCard({
     setNeedDisabled,
 }) {
     const classes = useStyles();
-    console.log('got product for card in trial', product);
+    // console.log('got product for card in trial', product);
 
     const [loading, setLoading] = React.useState(false);
     const [openForAdd, setOpenForAdd] = React.useState(false);
@@ -115,10 +115,10 @@ export default function ProductForTrialCard({
                 (filterProduct) => filterProduct.product.id === product.id
             );
         }
-        console.log(
-            'productWithQuantityExistInBag',
-            productWithQuantityExistInBag
-        );
+        // console.log(
+        //     'productWithQuantityExistInBag',
+        //     productWithQuantityExistInBag
+        // );
 
         // need to get the trial product of same category in myBag
         // because, if trial product of same category is 2 then, it will not add more
@@ -131,10 +131,10 @@ export default function ProductForTrialCard({
                     filterProduct.add_as_trial
             );
         }
-        console.log(
-            'trialProductsWithQuantityOfSameCategoryInBag',
-            trialProductsWithQuantityOfSameCategoryInBag
-        );
+        // console.log(
+        //     'trialProductsWithQuantityOfSameCategoryInBag',
+        //     trialProductsWithQuantityOfSameCategoryInBag
+        // );
 
         // ######### Most Important, if anybody add multiple product of same category then also
         // 2 product can be added as trial of this category ######
@@ -162,9 +162,9 @@ export default function ProductForTrialCard({
                             trialProductsWithQuantityOfSameCategoryInBag.length >
                             1
                         ) {
-                            console.log(
-                                'you cant add more than 2 product of same category as trial'
-                            );
+                            // console.log(
+                            //     'you cant add more than 2 product of same category as trial'
+                            // );
                             setLoading(false);
                             setNeedDisabled(false);
                             setOpenForTwoAlreadyAdded(true);
@@ -174,9 +174,9 @@ export default function ProductForTrialCard({
                                 productWithQuantityExistInBag &&
                                 productWithQuantityExistInBag.length !== 0
                             ) {
-                                console.log(
-                                    'already product add in bag or add as trial'
-                                );
+                                // console.log(
+                                //     'already product add in bag or add as trial'
+                                // );
                                 setLoading(false);
                                 setNeedDisabled(false);
                                 setOpenForAddAsTrial(true);
@@ -200,10 +200,10 @@ export default function ProductForTrialCard({
                                                     product_with_quantity.id
                                                 ))
                                         );
-                                        console.log(
-                                            'bag e onno product ase - pk',
-                                            pk
-                                        );
+                                        // console.log(
+                                        //     'bag e onno product ase - pk',
+                                        //     pk
+                                        // );
                                         axios
                                             .patch(
                                                 `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
@@ -218,10 +218,10 @@ export default function ProductForTrialCard({
                                                 config
                                             )
                                             .then((res) => {
-                                                console.log(
-                                                    'bag e product ase - patch bag',
-                                                    res.data
-                                                );
+                                                // console.log(
+                                                //     'bag e product ase - patch bag',
+                                                //     res.data
+                                                // );
 
                                                 axios
                                                     .patch(
@@ -268,10 +268,10 @@ export default function ProductForTrialCard({
                                                                             changeMyBag(
                                                                                 res.data
                                                                             );
-                                                                            console.log(
-                                                                                'bag after updated quantity',
-                                                                                res.data
-                                                                            );
+                                                                            // console.log(
+                                                                            //     'bag after updated quantity',
+                                                                            //     res.data
+                                                                            // );
                                                                             // setTotalBagProduct(res.data.product.length);
                                                                         }
                                                                     )
@@ -302,7 +302,7 @@ export default function ProductForTrialCard({
                             }
                         }
                     } else {
-                        console.log('product not available');
+                        // console.log('product not available');
                         setLoading(false);
                         setNeedDisabled(false);
                         setOpenForNotInStock(true);
@@ -310,9 +310,9 @@ export default function ProductForTrialCard({
                 })
                 .catch((err) => console.log(err.response));
         } else {
-            console.log(
-                'there have no product in myBag, so can not add any product as trail'
-            );
+            // console.log(
+            //     'there have no product in myBag, so can not add any product as trail'
+            // );
             setLoading(false);
             setNeedDisabled(false);
         }
@@ -332,7 +332,8 @@ export default function ProductForTrialCard({
                             component='img'
                             alt='Product'
                             height='180'
-                            image={product.product_image[0].image}
+                            // image={product.product_image[0].image}
+                            image='/s2.jpg'
                             title='Product'
                         />
                     </Box>

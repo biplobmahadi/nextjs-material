@@ -34,13 +34,13 @@ export default function VerifyEmail() {
                 }
             )
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 setLoading(false);
                 setResponseData(res.data);
             })
             .catch((err) => {
                 setErrMessage(err.response.data.detail);
-                console.log(err.response);
+                // console.log(err.response);
             });
     };
     return (

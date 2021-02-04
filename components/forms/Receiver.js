@@ -61,12 +61,12 @@ export default function ReceiverForm({ receiverOrderCode }) {
                 config
             )
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 setSubmitting(false);
                 router.push(`/payment/${res.data.order_code}`);
             })
             .catch((err) => {
-                console.log(err.response);
+                // console.log(err.response);
                 setSubmitting(false);
             });
     };

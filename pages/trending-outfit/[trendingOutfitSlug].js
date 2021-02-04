@@ -38,7 +38,7 @@ export default function Trending(props) {
     };
     const changeMyBag = (value) => {
         myBagRe = value;
-        console.log('my bag now', myBagRe);
+        // console.log('my bag now', myBagRe);
 
         setReRender(!reRender);
     };
@@ -54,8 +54,8 @@ export default function Trending(props) {
 
     let products = trendingOutfit.product ? trendingOutfit.product : [];
 
-    console.log('my bag 1st ', myBag);
-    console.log('my bag Re ', myBagRe);
+    // console.log('my bag 1st ', myBag);
+    // console.log('my bag Re ', myBagRe);
 
     return (
         <div>
@@ -83,11 +83,11 @@ export default function Trending(props) {
                 </Box>
             ) : (
                 <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
-                    <Box mt={8} pt={3} px={3}>
+                    <Box pt={11} px={3}>
                         <Box mb={2} borderRadius='borderRadius'>
                             <img
-                                src={trendingOutfit.trend_outfit_img}
-                                alt=''
+                                src='/aa.jpg'
+                                alt='trending outfit'
                                 srcset=''
                                 height='250'
                                 width='100%'

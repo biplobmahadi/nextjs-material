@@ -51,7 +51,7 @@ export default function Index(props) {
 
     const changeMyBag = (value) => {
         myBagRe = value;
-        console.log('my bag now', myBagRe);
+        // console.log('my bag now', myBagRe);
 
         setReRender(!reRender);
     };
@@ -68,8 +68,8 @@ export default function Index(props) {
 
     // console.log('top product', topShirtProducts);
     // console.log('bottom product', bottomPantProducts);
-    console.log('my bag 1st ', myBag);
-    console.log('my bag Re ', myBagRe);
+    // console.log('my bag 1st ', myBag);
+    // console.log('my bag Re ', myBagRe);
     return (
         <div>
             <Head>

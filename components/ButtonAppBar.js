@@ -70,7 +70,7 @@ export default function ButtonAppBar({ totalProductInBag }) {
         axios
             .post(`${process.env.NEXT_PUBLIC_BASE_URL}/rest-auth/logout/`)
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 dispatch({ type: 'LOGOUT', payload: res.data });
                 Cookies.remove('haha_ecom_bangla_token');
                 router.push('/login');
@@ -805,7 +805,7 @@ export default function ButtonAppBar({ totalProductInBag }) {
 
                     {token ? (
                         <>
-                            <Link href='/bag'>
+                            <Link href='/bag' color='inherit'>
                                 <IconButton color='inherit' aria-label='cart'>
                                     <Badge
                                         badgeContent={

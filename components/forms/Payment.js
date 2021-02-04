@@ -69,13 +69,13 @@ export default function PaymentForm({ paymentOrderCode }) {
                 config
             )
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 setSubmitting(false);
                 setSuccessMessage('Successfully Done! ');
                 // router.push(`/my-order-details/${res.data.order_code}`);
             })
             .catch((err) => {
-                console.log(err.response);
+                // console.log(err.response);
                 setSubmitting(false);
             });
     };
