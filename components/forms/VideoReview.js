@@ -28,12 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function VideoReviewForm({
-    handleSubmitForVideoReview,
-    product,
-    myBag,
-    changeProduct,
-    changeMyBag,
-    config,
+    handleSubmitForVideoReview
 }) {
     const classes = useStyles();
     return (
@@ -54,12 +49,7 @@ export default function VideoReviewForm({
                 handleSubmitForVideoReview(
                     values,
                     setSubmitting,
-                    resetForm,
-                    product,
-                    myBag,
-                    changeProduct,
-                    changeMyBag,
-                    config
+                    resetForm
                 );
             }}
         >

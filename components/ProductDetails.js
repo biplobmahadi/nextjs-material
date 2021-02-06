@@ -500,7 +500,7 @@ export default function ProductDetails(props) {
                     config
                 )
                 .then((res) => {
-                    // console.log(res.data);
+                    console.log(res.data);
                     // final get will be after all post, patch done
                     axios
                         .get(
