@@ -75,7 +75,7 @@ export default function PaymentForm({ paymentOrderCode }) {
                 // router.push(`/my-order-details/${res.data.order_code}`);
             })
             .catch((err) => {
-                // console.log(err.response);
+                console.log(err.response);
                 setSubmitting(false);
             });
     };

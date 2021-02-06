@@ -66,7 +66,7 @@ export default function ReceiverForm({ receiverOrderCode }) {
                 router.push(`/payment/${res.data.order_code}`);
             })
             .catch((err) => {
-                // console.log(err.response);
+                console.log(err.response);
                 setSubmitting(false);
             });
     };
