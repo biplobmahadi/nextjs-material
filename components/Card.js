@@ -36,7 +36,7 @@ export default function TrendingCard({ trending_outfit }) {
                             component='img'
                             alt='Tranding Product'
                             height='180'
-                            image={trending_outfit.trend_outfit_img}
+                            image='/s2.jpg'
                             title='Tranding Product'
                         />
                     </Box>

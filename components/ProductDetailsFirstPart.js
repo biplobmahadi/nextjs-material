@@ -483,7 +483,7 @@ export default function ProductDetailsFirstPart({
     };
 
     return (
-        <Box mx={3} mt={6} pt={4}>
+        <Box mx={3} mt={5} pt={4}>
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
                     <Box
