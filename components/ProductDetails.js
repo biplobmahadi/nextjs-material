@@ -495,7 +495,7 @@ export default function ProductDetails(props) {
             // console.log('clicked config', config);
             axios
                 .post(
-                    '${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-create/',
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-create/`,
                     videoReview,
                     config
                 )
