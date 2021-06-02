@@ -213,10 +213,9 @@ const fetchDataForWomensPant = async () =>
 const fetchDataForTrending = async (params) =>
     await axios
         .get(`${process.env.NEXT_PUBLIC_BASE_URL}/trending/winter/`)
-        .then((res) => {({
+        .then((res) => ({
             trending: res.data,
-        });
-            console.log(res.data);})
+        }))
         .catch((err) => ({
             error: err.response.data,
         }));
