@@ -50,7 +50,7 @@ export default function SocialLogin() {
     };
 
     const responseGoogle = (response) => {
-        // console.log('response', response);
+        console.log('response', response);
         // if we cross the popup because we don't want to login then what happened
         // for facebook we get response.status = unknown, but what for google
         if (!response.error) {
@@ -60,7 +60,7 @@ export default function SocialLogin() {
                 })
                 .then((res) => {
                     setErrMessage('');
-                    // console.log('got google', res.data);
+                    console.log('got google', res.data);
                     Cookies.set('haha_ecom_bangla_token', res.data.key, {
                         expires: 7,
                     });
