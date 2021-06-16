@@ -45,6 +45,14 @@ Router.onRouteChangeError = () => {
     NProgress.done();
 };
 
+// crisp
+import dynamic from 'next/dynamic'
+
+const CrispWithNoSSR = dynamic(
+  () => import('../components/crisp'),
+  { ssr: false }
+)
+
 export default function MyApp(props) {
     const [loaded, setLoaded] = useState(false);
     const classes = useStyles();
@@ -98,7 +106,9 @@ export default function MyApp(props) {
                         </span>
                     </>
                 </Provider>
+                
             </ThemeProvider>
+            <CrispWithNoSSR />
         </React.Fragment>
     );
 }
