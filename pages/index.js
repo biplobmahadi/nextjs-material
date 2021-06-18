@@ -1,23 +1,23 @@
-import React from 'react';
-import Container from '@material-ui/core/Container';
-import Head from 'next/head';
-import ButtonAppBar from '../components/ButtonAppBar';
-import Carousel from '../components/Carousel';
-import Card from '../components/Card';
-import MensShirt from '../components/MensShirt';
-import WomensPant from '../components/WomensPant';
-import MainFooter from '../components/MainFooter';
-import Box from '@material-ui/core/Box';
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import axios from 'axios';
-import parseCookies from '../lib/parseCookies';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Link from '../src/Link';
+import React from "react";
+import Container from "@material-ui/core/Container";
+import Head from "next/head";
+import ButtonAppBar from "../components/ButtonAppBar";
+import Carousel from "../components/Carousel";
+import Card from "../components/Card";
+import MensShirt from "../components/MensShirt";
+import WomensPant from "../components/WomensPant";
+import MainFooter from "../components/MainFooter";
+import Box from "@material-ui/core/Box";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import axios from "axios";
+import parseCookies from "../lib/parseCookies";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import Link from "../src/Link";
 
 let myBagRe;
 let mensShirtProductsRe;
@@ -77,16 +77,16 @@ export default function Index(props) {
                     Logo - Experience Best (Only one premium e-commerce in
                     Bangladesh)
                 </title>
-                <link rel='icon' href='/a.ico' />
+                <link rel="icon" href="/a.ico" />
                 <meta
-                    name='viewport'
-                    content='width=device-width, initial-scale=1.0'
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
                 ></meta>
             </Head>
             <ButtonAppBar
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
-            <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+            <Box pb={8} style={{ backgroundColor: "#E6E6FA" }}>
                 <Box pt={11} px={3}>
                     <Carousel />
                 </Box>
@@ -94,27 +94,27 @@ export default function Index(props) {
                 <Box mx={3} mt={8}>
                     <Box
                         p={2}
-                        borderRadius='borderRadius'
-                        style={{ backgroundColor: 'white' }}
+                        borderRadius="borderRadius"
+                        style={{ backgroundColor: "white" }}
                     >
                         <Grid
                             container
-                            direction='row'
-                            justify='space-between'
-                            alignItems='center'
+                            direction="row"
+                            justify="space-between"
+                            alignItems="center"
                         >
                             <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-                                <Typography variant='h5' component='h5'>
+                                <Typography variant="h5" component="h5">
                                     <strong>Trending Now</strong>
                                 </Typography>
                             </Grid>
 
                             <Grid item>
-                                <Link href='/trending-season/winter'>
+                                <Link href="/trending-season/winter">
                                     <Button
-                                        variant='contained'
-                                        size='small'
-                                        color='secondary'
+                                        variant="contained"
+                                        size="small"
+                                        color="secondary"
                                     >
                                         <Box px={3}>See All</Box>
                                     </Button>
@@ -148,9 +148,9 @@ export default function Index(props) {
                     </Box>
                     {!trending && (
                         <Box mt={2}>
-                            <Alert severity='error'>
+                            <Alert severity="error">
                                 <AlertTitle>Sorry Dear</AlertTitle>
-                                We Have No Trending Outfit Now —{' '}
+                                We Have No Trending Outfit Now —{" "}
                                 <strong>Hope It Will Come Soon!</strong>
                             </Alert>
                         </Box>
@@ -187,7 +187,7 @@ const fetchDataForBag = async (config) =>
             bag: res.data,
         }))
         .catch((err) => ({
-            error: err.response.data,
+            error: err.response,
         }));
 
 const fetchDataForMensShirt = async () =>
@@ -197,7 +197,7 @@ const fetchDataForMensShirt = async () =>
             mensShirt: res.data,
         }))
         .catch((err) => ({
-            error: err.response.data,
+            error: err.response,
         }));
 
 const fetchDataForWomensPant = async () =>
@@ -207,7 +207,7 @@ const fetchDataForWomensPant = async () =>
             womensPant: res.data,
         }))
         .catch((err) => ({
-            error: err.response.data,
+            error: err.response,
         }));
 
 const fetchDataForTrending = async (params) =>
@@ -217,7 +217,7 @@ const fetchDataForTrending = async (params) =>
             trending: res.data,
         }))
         .catch((err) => ({
-            error: err.response.data,
+            error: err.response,
         }));
 
 export async function getServerSideProps({ req, params }) {
@@ -230,7 +230,7 @@ export async function getServerSideProps({ req, params }) {
 
     const config = {
         headers: {
-            Authorization: 'Token ' + haha_ecom_bangla_token,
+            Authorization: "Token " + haha_ecom_bangla_token,
         },
     };
 

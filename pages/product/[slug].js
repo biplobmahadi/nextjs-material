@@ -1,36 +1,36 @@
-import Head from 'next/head';
-import ButtonAppBar from '../../components/ButtonAppBar';
-import ProductDetails from '../../components/ProductDetails';
-import ProductDetailsFirstPart from '../../components/ProductDetailsFirstPart';
-import Size from '../../components/forms/Size';
-import Quantity from '../../components/forms/Quantity';
-import MainFooter from '../../components/MainFooter';
-import AddForTrialDialog from '../../components/AddForTrialDialog';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
-import Snackbar from '@material-ui/core/Snackbar';
+import Head from "next/head";
+import ButtonAppBar from "../../components/ButtonAppBar";
+import ProductDetails from "../../components/ProductDetails";
+import ProductDetailsFirstPart from "../../components/ProductDetailsFirstPart";
+import Size from "../../components/forms/Size";
+import Quantity from "../../components/forms/Quantity";
+import MainFooter from "../../components/MainFooter";
+import AddForTrialDialog from "../../components/AddForTrialDialog";
+import Box from "@material-ui/core/Box";
+import Divider from "@material-ui/core/Divider";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
+import Snackbar from "@material-ui/core/Snackbar";
 
-import Rating from '@material-ui/lab/Rating';
-import Chip from '@material-ui/core/Chip';
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import PaymentIcon from '@material-ui/icons/Payment';
-import RestoreIcon from '@material-ui/icons/Restore';
-import InfoIcon from '@material-ui/icons/Info';
-import RedeemIcon from '@material-ui/icons/Redeem';
-import Zoom from 'react-medium-image-zoom';
+import Rating from "@material-ui/lab/Rating";
+import Chip from "@material-ui/core/Chip";
+import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
+import PaymentIcon from "@material-ui/icons/Payment";
+import RestoreIcon from "@material-ui/icons/Restore";
+import InfoIcon from "@material-ui/icons/Info";
+import RedeemIcon from "@material-ui/icons/Redeem";
+import Zoom from "react-medium-image-zoom";
 
-import Cookies from 'js-cookie';
-import parseCookies from '../../lib/parseCookies';
-import axios from 'axios';
-import { useEffect } from 'react';
+import Cookies from "js-cookie";
+import parseCookies from "../../lib/parseCookies";
+import axios from "axios";
+import { useEffect } from "react";
 
-import { makeStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Button from '@material-ui/core/Button';
+import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Button from "@material-ui/core/Button";
 
 let productRe;
 let myBagRe;
@@ -109,11 +109,11 @@ export default function Product(props) {
     return (
         <div>
             <Head>
-                <title>Product - {product ? product.name : 'Not Valid'}</title>
-                <link rel='icon' href='/a.ico' />
+                <title>Product - {product ? product.name : "Not Valid"}</title>
+                <link rel="icon" href="/a.ico" />
                 <meta
-                    name='viewport'
-                    content='width=device-width, initial-scale=1.0'
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
                 ></meta>
             </Head>
             <ButtonAppBar
@@ -121,17 +121,17 @@ export default function Product(props) {
             />
             {!product ? (
                 <Box
-                    textAlign='center'
+                    textAlign="center"
                     pt={18}
                     pb={12}
-                    style={{ backgroundColor: '#E6E6FA' }}
+                    style={{ backgroundColor: "#E6E6FA" }}
                 >
-                    <Typography variant='h4' color='secondary'>
+                    <Typography variant="h4" color="secondary">
                         <strong>Sorry - There have nothing !</strong>
                     </Typography>
                 </Box>
             ) : (
-                <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                <Box pb={8} style={{ backgroundColor: "#E6E6FA" }}>
                     <ProductDetailsFirstPart
                         product={product && product}
                         changeProduct={changeProduct}
@@ -143,7 +143,7 @@ export default function Product(props) {
                         changeCategoryProducts={changeCategoryProducts}
                     />
 
-                    <ProductDetails
+                    {/* <ProductDetails
                         product={product && product}
                         changeProduct={changeProduct}
                         user={user && user}
@@ -153,7 +153,7 @@ export default function Product(props) {
                         changeMyBag={changeMyBag}
                         changeCategoryProducts={changeCategoryProducts}
                         avgRating={avgRating}
-                    />
+                    /> */}
                 </Box>
             )}
             <Box mx={3} mt={6}>
@@ -165,7 +165,7 @@ export default function Product(props) {
 
 const fetchDataForProduct = async (params) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/products/${params.slug}/`)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/product/${params.slug}/`)
         .then((res) => ({
             product: res.data,
         }))
@@ -175,7 +175,7 @@ const fetchDataForProduct = async (params) =>
 
 const fetchDataForBag = async (config) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -185,11 +185,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForBagCreate = async (config) =>
     await axios
-        .post(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`,
-            { sub_total: 0 },
-            config
-        )
+        .post(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, {}, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -226,7 +222,7 @@ export async function getServerSideProps({ req, params }) {
 
     const config = {
         headers: {
-            Authorization: 'Token ' + haha_ecom_bangla_token,
+            Authorization: "Token " + haha_ecom_bangla_token,
         },
     };
 
@@ -237,22 +233,16 @@ export async function getServerSideProps({ req, params }) {
     const user = dataUser.user ? dataUser.user : null;
 
     // ###### only here
-    // if user have no bag then create one
-    // because when user have no bag tn agree disagree not happened
-    // re render is based on myBag
-    // so create a bag if there is no one
+    // always create bag first if this page has add to bag avaiable
+    // it's not good to create bag again again for visiting this page
+    // if user already has an non order bag then find that, there have many in worst case, so find the 1st one
+    // if user have no non order bag then create one bag for this user
     // if user not logged in then also they can view this page, so here we don't
     // get any bag and user, so myBag will null in this case -> no bug will occur
     let myBag = null;
     if (dataBag.bag && dataBag.bag.length !== 0) {
         let allMyBag = dataBag.bag;
-        let myBagNotSendToMyOrder = allMyBag.filter(
-            (myBag) => myBag.is_send_to_my_order === false
-        );
-
-        if (myBagNotSendToMyOrder[0]) {
-            myBag = myBagNotSendToMyOrder[0];
-        }
+        myBag = allMyBag[0];
     } else if (dataBag.bag && dataBag.bag.length === 0) {
         const dataBagCreate = await fetchDataForBagCreate(config);
         myBag = dataBagCreate.bag;
