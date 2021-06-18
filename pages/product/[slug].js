@@ -134,13 +134,10 @@ export default function Product(props) {
                 <Box pb={8} style={{ backgroundColor: "#E6E6FA" }}>
                     <ProductDetailsFirstPart
                         product={product && product}
-                        changeProduct={changeProduct}
                         config={config}
                         myBag={myBag}
-                        changeMyBag={changeMyBag}
                         avgRating={avgRating}
                         categoryProducts={categoryProducts}
-                        changeCategoryProducts={changeCategoryProducts}
                     />
 
                     {/* <ProductDetails

@@ -47,17 +47,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ProductDetailsFirstPart({
-    product,
-    changeProduct,
-    config,
-    myBag,
-    changeMyBag,
-    avgRating,
-    categoryProducts,
-    changeCategoryProducts,
-}) {
+export default function ProductDetailsFirstPart(props) {
+    const { product, config, avgRating, categoryProducts, myBag } = props;
     const classes = useStyles();
+    // const [myBag, setMyBag] = React.useState(props.myBag);
     const [quantity, setQuantity] = React.useState(1);
     const [value, setValue] = React.useState("/s1.jpg");
     // need for product image
@@ -106,16 +99,19 @@ export default function ProductDetailsFirstPart({
     let productWithQuantityExistInBag;
     if (myBag) {
         productWithQuantityExistInBag = myBag.product_with_quantity.filter(
-            (filterProduct) => filterProduct.product.id === product.id
+            (productWithQuantity) =>
+                productWithQuantity.product.id === product.id
         );
     }
-    console.log(myBag);
+
+    const [productWithQuantityInBag, setProductWithQuantityInBag] =
+        React.useState(
+            productWithQuantityExistInBag.length !== 0
+                ? productWithQuantityExistInBag[0]
+                : null
+        );
 
     const handleAddToBag = () => {
-        // ######## here always quantity can be selected by user
-        // if productWithQuantity already exist then also user can select quantity
-        // if user not select quantity then it will be 1 always
-
         // create a loading
         setLoading(true);
 
@@ -131,61 +127,45 @@ export default function ProductDetailsFirstPart({
                 my_bag: myBag.id,
             };
 
-            // console.log(
-            //     'productWithQuantityExistInBag',
-            //     productWithQuantityExistInBag
-            // );
-
-            // if product available limit is ok then this will run from below
-            // we check it here also, because limit can be change in state then the button can be enable
-            // so check it here also
-            if (product.available_limit > 0) {
-                // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
-                // this is very important
-                if (
-                    productWithQuantityExistInBag &&
-                    productWithQuantityExistInBag.length !== 0
-                ) {
-                    if (productWithQuantityExistInBag[0].add_as_trial) {
-                        // console.log(
-                        //     'this product already add as trial'
-                        // );
-                        setLoading(false);
-                        setOpenForAddAsTrial(true);
-                    } else {
-                        axios
-                            .patch(
-                                `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantityExistInBag[0].id}/`,
-                                {
-                                    quantity:
-                                        productWithQuantityExistInBag[0]
-                                            .quantity + quantity, // here state quantity used
-                                },
-                                config
-                            )
-                            .then((res) => {
-                                console.log(res.data);
-                                setLoading(false);
-                            })
-                            .catch((err) => console.log(err.response));
-                    }
+            // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
+            // this is very important
+            if (productWithQuantityInBag) {
+                if (productWithQuantityInBag.add_as_trial) {
+                    setLoading(false);
+                    setOpenForAddAsTrial(true);
                 } else {
+                    setOpenForAdd(true);
+                    setLoading(false);
                     axios
-                        .post(
-                            `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/`,
-                            addToProductWithQuantity,
+                        .patch(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantityInBag.id}/`,
+                            {
+                                quantity:
+                                    productWithQuantityInBag.quantity +
+                                    quantity, // here state quantity used
+                            },
                             config
                         )
                         .then((res) => {
-                            console.log("bag nai - pwq", res.data);
-                            setLoading(false);
+                            console.log("patched product", res.data);
+                            setProductWithQuantityInBag(res.data);
                         })
                         .catch((err) => console.log(err.response));
                 }
             } else {
-                // console.log('product not available');
+                setOpenForAdd(true);
                 setLoading(false);
-                setOpenForNotInStock(true);
+                axios
+                    .post(
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/`,
+                        addToProductWithQuantity,
+                        config
+                    )
+                    .then((res) => {
+                        console.log("bag nai - pwq", res.data);
+                        setProductWithQuantityInBag(res.data);
+                    })
+                    .catch((err) => console.log(err.response));
             }
         } else {
             // console.log('login first');
@@ -193,6 +173,8 @@ export default function ProductDetailsFirstPart({
             setOpenForLogin(true);
         }
     };
+
+    console.log("rendering for add to bag");
 
     return (
         <Box mx={3} mt={5} pt={4}>
@@ -364,16 +346,9 @@ export default function ProductDetailsFirstPart({
                                     <Quantity setQuantity={setQuantity} />
                                 </Grid> */}
                                 <Grid item xs={12} sm>
-                                    {product &&
-                                    product.available_limit !== 0 ? (
+                                    {product && product.is_available ? (
                                         <Chip
-                                            label={
-                                                "In Stock " +
-                                                `(${
-                                                    product &&
-                                                    product.available_limit
-                                                })`
-                                            }
+                                            label="In Stock"
                                             color="primary"
                                             size="small"
                                         />
@@ -399,8 +374,7 @@ export default function ProductDetailsFirstPart({
                                                 disabled={
                                                     loading ||
                                                     (product &&
-                                                        product.available_limit ===
-                                                            0)
+                                                        !product.is_available)
                                                 }
                                             >
                                                 <Box textAlign="center" px={4}>
@@ -423,7 +397,7 @@ export default function ProductDetailsFirstPart({
                                             horizontal: "center",
                                         }}
                                         open={openForLogin}
-                                        autoHideDuration={4000}
+                                        autoHideDuration={2000}
                                         onClose={handleCloseForLogin}
                                     >
                                         <Alert severity="info" variant="filled">
@@ -436,7 +410,7 @@ export default function ProductDetailsFirstPart({
                                             horizontal: "center",
                                         }}
                                         open={openForAdd}
-                                        autoHideDuration={4000}
+                                        autoHideDuration={2000}
                                         onClose={handleCloseForAdd}
                                     >
                                         <Alert
@@ -452,7 +426,7 @@ export default function ProductDetailsFirstPart({
                                             horizontal: "center",
                                         }}
                                         open={openForAddAsTrial}
-                                        autoHideDuration={4000}
+                                        autoHideDuration={2000}
                                         onClose={handleCloseForAddAsTrial}
                                     >
                                         <Alert severity="info" variant="filled">
@@ -466,7 +440,7 @@ export default function ProductDetailsFirstPart({
                                             horizontal: "center",
                                         }}
                                         open={openForNotInStock}
-                                        autoHideDuration={4000}
+                                        autoHideDuration={2000}
                                         onClose={handleCloseForNotInStock}
                                     >
                                         <Alert severity="info" variant="filled">
@@ -475,7 +449,7 @@ export default function ProductDetailsFirstPart({
                                     </Snackbar>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    {product &&
+                                    {/* {product &&
                                         product.has_trial &&
                                         productWithQuantityExistInBag &&
                                         productWithQuantityExistInBag.length !==
@@ -492,7 +466,7 @@ export default function ProductDetailsFirstPart({
                                                 }
                                                 product={product}
                                             />
-                                        )}
+                                        )} */}
                                 </Grid>
                             </Grid>
                         </Box>
