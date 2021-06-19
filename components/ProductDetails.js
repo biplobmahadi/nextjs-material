@@ -497,82 +497,64 @@ export default function ProductDetails(props) {
     };
 
     const handleAgreeForVideoReview = (
-        stringifyReview,
+        videoReview,
         setVideoReviewAgreeLoading,
         setOpenForAlreadyDone,
-        lengthForAgreed,
-        lengthOfCountForAgreed,
+        userDidAgreedState,
+        userDidDisagreedState,
+        setUserDidAgreedState,
+        setUserDidDisagreedState,
         setLengthForAgreed,
-        setLengthForDisagreed
+        setLengthForDisagreed,
+        videoReviewCountId,
+        setVideoReviewCountId
     ) => {
         // start loading
         setVideoReviewAgreeLoading(true);
 
         if (Cookies.get("haha_ecom_bangla_token")) {
-            const videoReview = JSON.parse(stringifyReview);
-
             // ####### Process of agreed
-            // 1st check this user is equal to the videoReview made user or not
-            // if same user, then user can't add agreed
-            // if the user of this videoReview is not same requested user
-            // then check, is this user already agreed or not
-            // if user already agreed than also show a msg, you cant agreed
-            // if user not same of creator and also not agreed yet then the process will start
-            // update the agreed backed with this user,
-            // ### if this user disagreed before then need to remove from disagreed
-            // so remove this user from disagreed and finally get updated product and bag for re render
-            // ## if user not disagreed before then just get updated product and bag for re render
-            // Done #######
+            // lengthForAgreed === lengthOfCountForAgreed use for state change to give effect
+            if (!userDidAgreedState) {
+                if (!userDidDisagreedState) {
+                    const videoReviewCountForAgree = {
+                        vote: "agreed",
+                        video_review: videoReview.id,
+                    };
 
-            // ######### All in all, User can not agreed and disagreed at a time
-
-            // check user who own this videoReview,then user can't make agreed
-            // also check, user already agreed or not
-            // if already agreed then can not agreed now
-
-            const userDidIt = videoReview.video_review_count.filter(
-                (video_review_count) => video_review_count.user.pk === user.pk
-            );
-            console.log(userDidIt);
-
-            if (
-                userDidIt.length === 0 &&
-                lengthForAgreed === lengthOfCountForAgreed
-            ) {
-                const videoReviewCountForAgree = {
-                    vote: "agreed",
-                    video_review: videoReview.id,
-                };
-
-                setVideoReviewAgreeLoading(false);
-                axios
-                    .post(
-                        `${process.env.NEXT_PUBLIC_BASE_URL}/video-review-count-create/`,
-                        videoReviewCountForAgree,
-                        config
-                    )
-                    .then((res) => {
-                        setLengthForAgreed((prevState) => prevState + 1);
-                    })
-                    .catch((err) => console.log(err.response));
-            } else {
-                if (userDidIt[0].vote === "disagreed") {
                     setVideoReviewAgreeLoading(false);
+                    setUserDidAgreedState(true);
+                    setLengthForAgreed((prevState) => prevState + 1);
                     axios
-                        .patch(
-                            `${process.env.NEXT_PUBLIC_BASE_URL}/video-review-count-update/${userDidIt[0].id}/`,
-                            { vote: "agreed" },
+                        .post(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/video-review-count-create/`,
+                            videoReviewCountForAgree,
                             config
                         )
                         .then((res) => {
-                            setLengthForAgreed((prevState) => prevState + 1);
-                            setLengthForDisagreed((prevState) => prevState - 1);
+                            setVideoReviewCountId(res.data.id);
                         })
                         .catch((err) => console.log(err.response));
                 } else {
                     setVideoReviewAgreeLoading(false);
-                    setOpenForAlreadyDone(true);
+                    setUserDidAgreedState(true);
+                    setUserDidDisagreedState(false);
+                    setLengthForAgreed((prevState) => prevState + 1);
+                    setLengthForDisagreed((prevState) => prevState - 1);
+                    axios
+                        .patch(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/video-review-count-update/${videoReviewCountId}/`,
+                            { vote: "agreed" },
+                            config
+                        )
+                        .then((res) => {
+                            console.log(res.data);
+                        })
+                        .catch((err) => console.log(err.response));
                 }
+            } else {
+                setVideoReviewAgreeLoading(false);
+                setOpenForAlreadyDone(true);
             }
         } else {
             // console.log('login first');
@@ -582,132 +564,61 @@ export default function ProductDetails(props) {
     };
 
     const handleDisagreeForVideoReview = (
-        stringifyReview,
+        videoReview,
         setVideoReviewDisagreeLoading,
         setOpenForAlreadyDone,
+        userDidAgreedState,
+        userDidDisagreedState,
+        setUserDidAgreedState,
+        setUserDidDisagreedState,
         setLengthForAgreed,
-        setLengthForDisagreed
+        setLengthForDisagreed,
+        videoReviewCountId,
+        setVideoReviewCountId
     ) => {
         // start loading
         setVideoReviewDisagreeLoading(true);
 
         if (Cookies.get("haha_ecom_bangla_token")) {
-            const videoReview = JSON.parse(stringifyReview);
-
             // ###########  Same process like agreed
-            // ######### All in all, User can not agreed and disagreed at a time
+            if (!userDidDisagreedState) {
+                if (!userDidAgreedState) {
+                    const videoReviewCountForAgree = {
+                        vote: "disagreed",
+                        video_review: videoReview.id,
+                    };
 
-            // check user who own this videoReview, then user can't make disagreed
-            // also check, user already disagreed or not
-            // if already disagreed then can not disagreed now
-            if (
-                !videoReview.videoreviewcountfordisagree.user.includes(
-                    user.pk
-                ) &&
-                videoReview.user.pk !== user.pk
-            ) {
-                const videoReviewCountForDisagree = {
-                    disagreed:
-                        videoReview.videoreviewcountfordisagree.disagreed + 1,
-                    user: videoReview.videoreviewcountfordisagree.user.concat(
-                        user.pk
-                    ),
-                };
-
-                axios
-                    .patch(
-                        `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-count-for-disagree-update/${videoReview.videoreviewcountfordisagree.id}/`,
-                        videoReviewCountForDisagree,
-                        config
-                    )
-                    .then((res) => {
-                        // here, if user agreed before then need to remove from agreed
-                        // because User can not agreed and disagreed at a time
-
-                        if (
-                            videoReview.videoreviewcountforagree.user.includes(
-                                user.pk
-                            )
-                        ) {
-                            let arr = videoReview.videoreviewcountforagree.user;
-                            for (let i = 0; i < arr.length; i++) {
-                                if (arr[i] === user.pk) {
-                                    arr.splice(i, 1);
-                                    i--;
-                                }
-                            }
-                            const videoReviewCountForAgree = {
-                                agreed:
-                                    videoReview.videoreviewcountforagree
-                                        .agreed - 1,
-                                user: arr,
-                            };
-
-                            axios
-                                .patch(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-count-for-agree-update/${videoReview.videoreviewcountforagree.id}/`,
-                                    videoReviewCountForAgree,
-                                    config
-                                )
-                                .then((res) => {
-                                    // final get will be after all post, patch done
-                                    axios
-                                        .get(
-                                            `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                                        )
-                                        .then((res) => {
-                                            changeProduct(res.data);
-                                            axios
-                                                .get(
-                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                                    config
-                                                )
-                                                .then((res) => {
-                                                    setVideoReviewDisagreeLoading(
-                                                        false
-                                                    );
-                                                    changeMyBag(res.data);
-                                                })
-                                                .catch((err) =>
-                                                    console.log(err.response)
-                                                );
-                                        })
-                                        .catch((err) =>
-                                            console.log(err.response)
-                                        );
-                                })
-                                .catch((err) => console.log(err.response));
-                        } else {
-                            // final get will be after all post, patch done
-                            axios
-                                .get(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                                )
-                                .then((res) => {
-                                    changeProduct(res.data);
-                                    axios
-                                        .get(
-                                            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                            config
-                                        )
-                                        .then((res) => {
-                                            setVideoReviewDisagreeLoading(
-                                                false
-                                            );
-                                            changeMyBag(res.data);
-                                        })
-                                        .catch((err) =>
-                                            console.log(err.response)
-                                        );
-                                })
-                                .catch((err) => console.log(err.response));
-                        }
-                    })
-                    .catch((err) => console.log(err.response));
+                    setVideoReviewDisagreeLoading(false);
+                    setUserDidDisagreedState(true);
+                    setLengthForDisagreed((prevState) => prevState + 1);
+                    axios
+                        .post(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/video-review-count-create/`,
+                            videoReviewCountForAgree,
+                            config
+                        )
+                        .then((res) => {
+                            setVideoReviewCountId(res.data.id);
+                        })
+                        .catch((err) => console.log(err.response));
+                } else {
+                    setVideoReviewDisagreeLoading(false);
+                    setUserDidDisagreedState(true);
+                    setUserDidAgreedState(false);
+                    setLengthForDisagreed((prevState) => prevState + 1);
+                    setLengthForAgreed((prevState) => prevState - 1);
+                    axios
+                        .patch(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/video-review-count-update/${videoReviewCountId}/`,
+                            { vote: "disagreed" },
+                            config
+                        )
+                        .then((res) => {
+                            console.log(res.data);
+                        })
+                        .catch((err) => console.log(err.response));
+                }
             } else {
-                // console.log(
-                //     'you cant disagree with your review or already done'
-                // );
                 setVideoReviewDisagreeLoading(false);
                 setOpenForAlreadyDone(true);
             }
@@ -1136,7 +1047,7 @@ export default function ProductDetails(props) {
                     </Grid>
                 </Box>
 
-                {product &&
+                {/* {product &&
                     product.review &&
                     product.review.length !== 0 &&
                     product.review.map((review) => (
@@ -1148,10 +1059,10 @@ export default function ProductDetails(props) {
                             handleAgree={handleAgree}
                             handleDisagree={handleDisagree}
                         />
-                    ))}
+                    ))} */}
                 {/* no need to loop previous all, so created review only loop here, user can create multiple at a time, so need array */}
 
-                {reviewInState &&
+                {/* {reviewInState &&
                     reviewInState.length !== 0 &&
                     reviewInState.map((review) => (
                         <SingleReview
@@ -1162,7 +1073,7 @@ export default function ProductDetails(props) {
                             handleAgree={handleAgree}
                             handleDisagree={handleDisagree}
                         />
-                    ))}
+                    ))} */}
                 {product && product.review.length === 0 && (
                     <Box mt={2}>
                         <Alert severity="error">

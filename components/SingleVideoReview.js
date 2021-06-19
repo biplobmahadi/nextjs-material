@@ -79,13 +79,37 @@ export default function SingleVideoReview(props) {
         setOpenForAlreadyDone(false);
     };
 
-    const userDidIt =
+    const userDidAgreed =
         videoReview &&
         videoReview.video_review_count.filter(
-            (video_review_count) => video_review_count.user.pk === user.pk
+            (video_review_count) =>
+                video_review_count.user.pk === user.pk &&
+                video_review_count.vote === "agreed"
         );
-    console.log("videoReview in single", videoReview);
-    console.log("userDidIt in single", userDidIt);
+
+    const [userDidAgreedState, setUserDidAgreedState] = React.useState(
+        userDidAgreed.length !== 0 ? true : false
+    );
+
+    const userDidDisagreed =
+        videoReview &&
+        videoReview.video_review_count.filter(
+            (video_review_count) =>
+                video_review_count.user.pk === user.pk &&
+                video_review_count.vote === "disagreed"
+        );
+
+    const [userDidDisagreedState, setUserDidDisagreedState] = React.useState(
+        userDidDisagreed.length !== 0 ? true : false
+    );
+
+    const [videoReviewCountId, setVideoReviewCountId] = React.useState(
+        userDidAgreed.length !== 0
+            ? userDidAgreed[0].id
+            : userDidDisagreed.length !== 0
+            ? userDidDisagreed[0].id
+            : null
+    );
 
     const countForAgreed =
         videoReview &&
@@ -98,16 +122,12 @@ export default function SingleVideoReview(props) {
         videoReview.video_review_count.filter(
             (video_review_count) => video_review_count.vote === "disagreed"
         );
-    const lengthOfCountForAgreed = countForAgreed ? countForAgreed.length : 0;
-    const lengthOfCountForDisagreed = countForDisagreed
-        ? countForDisagreed.length
-        : 0;
 
     const [lengthForAgreed, setLengthForAgreed] = React.useState(
-        lengthOfCountForAgreed
+        countForAgreed ? countForAgreed.length : 0
     );
     const [lengthForDisagreed, setLengthForDisagreed] = React.useState(
-        lengthOfCountForDisagreed
+        countForDisagreed ? countForDisagreed.length : 0
     );
 
     if (videoReview) {
@@ -163,24 +183,24 @@ export default function SingleVideoReview(props) {
                                                 fullWidth
                                                 variant="contained"
                                                 color={
-                                                    userDidIt.length !== 0 ||
-                                                    lengthForAgreed !==
-                                                        lengthOfCountForAgreed
+                                                    userDidAgreedState
                                                         ? "secondary"
                                                         : "default"
                                                 }
                                                 startIcon={<ThumbUpIcon />}
                                                 onClick={() =>
                                                     handleAgreeForVideoReview(
-                                                        JSON.stringify(
-                                                            videoReview
-                                                        ),
+                                                        videoReview,
                                                         setVideoReviewAgreeLoading,
                                                         setOpenForAlreadyDone,
-                                                        lengthForAgreed,
-                                                        lengthOfCountForAgreed,
+                                                        userDidAgreedState,
+                                                        userDidDisagreedState,
+                                                        setUserDidAgreedState,
+                                                        setUserDidDisagreedState,
                                                         setLengthForAgreed,
-                                                        setLengthForDisagreed
+                                                        setLengthForDisagreed,
+                                                        videoReviewCountId,
+                                                        setVideoReviewCountId
                                                     )
                                                 }
                                                 // use this type of value sending in bag page
@@ -212,7 +232,7 @@ export default function SingleVideoReview(props) {
                                     horizontal: "center",
                                 }}
                                 open={openForAlreadyDone}
-                                autoHideDuration={4000}
+                                autoHideDuration={2000}
                                 onClose={handleCloseForAlreadyDone}
                             >
                                 <Alert severity="success" variant="filled">
@@ -228,22 +248,24 @@ export default function SingleVideoReview(props) {
                                                 fullWidth
                                                 variant="contained"
                                                 color={
-                                                    userDidIt.length !== 0 ||
-                                                    lengthForDisagreed !==
-                                                        lengthOfCountForDisagreed
+                                                    userDidDisagreedState
                                                         ? "secondary"
                                                         : "default"
                                                 }
                                                 startIcon={<ThumbDownIcon />}
                                                 onClick={() =>
                                                     handleDisagreeForVideoReview(
-                                                        JSON.stringify(
-                                                            videoReview
-                                                        ),
+                                                        videoReview,
                                                         setVideoReviewDisagreeLoading,
                                                         setOpenForAlreadyDone,
+                                                        userDidAgreedState,
+                                                        userDidDisagreedState,
+                                                        setUserDidAgreedState,
+                                                        setUserDidDisagreedState,
                                                         setLengthForAgreed,
-                                                        setLengthForDisagreed
+                                                        setLengthForDisagreed,
+                                                        videoReviewCountId,
+                                                        setVideoReviewCountId
                                                     )
                                                 }
                                                 // use this type of value sending in bag page
