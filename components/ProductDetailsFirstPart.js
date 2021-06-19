@@ -106,7 +106,8 @@ export default function ProductDetailsFirstPart(props) {
 
     const [productWithQuantityInBag, setProductWithQuantityInBag] =
         React.useState(
-            productWithQuantityExistInBag.length !== 0
+            productWithQuantityExistInBag &&
+                productWithQuantityExistInBag.length !== 0
                 ? productWithQuantityExistInBag[0]
                 : null
         );
@@ -173,8 +174,6 @@ export default function ProductDetailsFirstPart(props) {
             setOpenForLogin(true);
         }
     };
-
-    console.log("rendering for add to bag");
 
     return (
         <Box mx={3} mt={5} pt={4}>
@@ -449,24 +448,17 @@ export default function ProductDetailsFirstPart(props) {
                                     </Snackbar>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    {/* {product &&
+                                    {product &&
                                         product.has_trial &&
-                                        productWithQuantityExistInBag &&
-                                        productWithQuantityExistInBag.length !==
-                                            0 && (
+                                        productWithQuantityInBag && (
                                             <AddForTrialDialog
                                                 categoryProducts={
                                                     categoryProducts
                                                 }
                                                 config={config}
                                                 myBag={myBag}
-                                                changeMyBag={changeMyBag}
-                                                changeCategoryProducts={
-                                                    changeCategoryProducts
-                                                }
-                                                product={product}
                                             />
-                                        )} */}
+                                        )}
                                 </Grid>
                             </Grid>
                         </Box>

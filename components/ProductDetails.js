@@ -1,42 +1,42 @@
-import Head from 'next/head';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { TextField } from 'formik-material-ui';
-import ProductCard from '../components/ProductCard';
-import ProductDetailsTable from '../components/ProductDetailsTable';
-import Review from './forms/Review';
-import VideoReview from './forms/VideoReview';
-import UpdateReviewDialog from './UpdateReviewDialog';
-import DeleteReviewDialog from './DeleteReviewDialog';
-import UpdateVideoReviewDialog from './UpdateVideoReviewDialog';
-import DeleteVideoReviewDialog from './DeleteVideoReviewDialog';
-import MainFooter from '../components/MainFooter';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
-import Snackbar from '@material-ui/core/Snackbar';
+import Head from "next/head";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { TextField } from "formik-material-ui";
+import ProductCard from "../components/ProductCard";
+import ProductDetailsTable from "../components/ProductDetailsTable";
+import Review from "./forms/Review";
+import VideoReview from "./forms/VideoReview";
+import UpdateReviewDialog from "./UpdateReviewDialog";
+import DeleteReviewDialog from "./DeleteReviewDialog";
+import UpdateVideoReviewDialog from "./UpdateVideoReviewDialog";
+import DeleteVideoReviewDialog from "./DeleteVideoReviewDialog";
+import MainFooter from "../components/MainFooter";
+import Box from "@material-ui/core/Box";
+import Divider from "@material-ui/core/Divider";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
+import Snackbar from "@material-ui/core/Snackbar";
 
-import StarHalfIcon from '@material-ui/icons/StarHalf';
-import Button from '@material-ui/core/Button';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
-import ThumbDownIcon from '@material-ui/icons/ThumbDown';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import UpdateIcon from '@material-ui/icons/Update';
-import EditIcon from '@material-ui/icons/Edit';
-import Rating from '@material-ui/lab/Rating';
-import ReactPlayer from 'react-player/youtube';
+import StarHalfIcon from "@material-ui/icons/StarHalf";
+import Button from "@material-ui/core/Button";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import ThumbDownIcon from "@material-ui/icons/ThumbDown";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import UpdateIcon from "@material-ui/icons/Update";
+import EditIcon from "@material-ui/icons/Edit";
+import Rating from "@material-ui/lab/Rating";
+import ReactPlayer from "react-player/youtube";
 
-import SingleVideoReview from './SingleVideoReview';
-import SingleReview from './SingleReview';
+import SingleVideoReview from "./SingleVideoReview";
+import SingleReview from "./SingleReview";
 
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import axios from "axios";
+import Cookies from "js-cookie";
 
-import { makeStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 // 1. when anything change on state the component will re render
 // 2. we use useEffect only if we need anything to do before component mount or willmount
@@ -49,18 +49,15 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 export default function ProductDetails(props) {
     const [needDisabled, setNeedDisabled] = React.useState(false);
     const [openForLogin, setOpenForLogin] = React.useState(false);
+    const [reviewInState, setReviewInState] = React.useState([]);
+    const [videoReviewArrayInState, setVideoReviewArrayInState] =
+        React.useState([]);
 
     let categoryProducts = props.categoryProducts;
     let myBag = props.myBag;
     let config = props.config;
-    let changeProduct = props.changeProduct;
-    let changeMyBag = props.changeMyBag;
-
     let product = props.product;
     let user = props.user;
-
-    let changeCategoryProducts = props.changeCategoryProducts;
-
     let avgRating = props.avgRating;
 
     // console.log('got re render for product details');
@@ -68,7 +65,7 @@ export default function ProductDetails(props) {
 
     // alert close function
     const handleCloseForLogin = (event, reason) => {
-        if (reason === 'clickaway') {
+        if (reason === "clickaway") {
             return;
         }
 
@@ -106,44 +103,28 @@ export default function ProductDetails(props) {
         setValue,
         resetForm
     ) => {
-        if (Cookies.get('haha_ecom_bangla_token')) {
+        if (Cookies.get("haha_ecom_bangla_token")) {
             const review = {
                 review_detail: values.review,
                 rating_star: value,
                 product: product.id,
             };
 
+            setSubmitting(false);
+            setValue(3);
+            resetForm();
             axios
                 .post(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/reviews-create/`,
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/review-create/`,
                     review,
                     config
                 )
                 .then((res) => {
-                    // console.log(res.data);
-                    // final get will be after all post, patch done
-                    axios
-                        .get(
-                            `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                        )
-                        .then((res) => {
-                            changeProduct(res.data);
-                            axios
-                                .get(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                    config
-                                )
-                                .then((res) => {
-                                    changeMyBag(res.data);
-                                    setSubmitting(false);
-                                    setValue(3);
-                                    resetForm();
-                                    // after submitting the rating value will default
-                                    // and also need to clear form
-                                })
-                                .catch((err) => console.log(err.response));
-                        })
-                        .catch((err) => console.log(err.response));
+                    console.log(res.data);
+                    // user can add more than one review, so use an array as state
+                    // state need to update with all element, so need to concat with previous element
+                    const newReviewInState = reviewInState.concat(res.data);
+                    setReviewInState(newReviewInState);
                 })
                 .catch((err) => console.log(err.response));
         } else {
@@ -163,7 +144,7 @@ export default function ProductDetails(props) {
         // start loading
         setReviewAgreeLoading(true);
 
-        if (Cookies.get('haha_ecom_bangla_token')) {
+        if (Cookies.get("haha_ecom_bangla_token")) {
             const review = JSON.parse(stringifyReview);
 
             // ####### Process of agreed
@@ -299,7 +280,7 @@ export default function ProductDetails(props) {
         // start loading
         setReviewDisagreeLoading(true);
 
-        if (Cookies.get('haha_ecom_bangla_token')) {
+        if (Cookies.get("haha_ecom_bangla_token")) {
             const review = JSON.parse(stringifyReview);
 
             // console.log('setReviewDisagreeLoading', setReviewDisagreeLoading);
@@ -485,47 +466,30 @@ export default function ProductDetails(props) {
     // ####### start for video review
 
     const handleSubmitForVideoReview = (values, setSubmitting, resetForm) => {
-        if (Cookies.get('haha_ecom_bangla_token')) {
+        if (Cookies.get("haha_ecom_bangla_token")) {
             const videoReview = {
                 link: values.link,
                 product: product.id,
             };
 
-            // console.log('clicked myBag', myBag);
-            // console.log('clicked config', config);
+            setSubmitting(false);
+            resetForm();
             axios
                 .post(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-create/`,
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/video-review-create/`,
                     videoReview,
                     config
                 )
                 .then((res) => {
                     console.log(res.data);
-                    // final get will be after all post, patch done
-                    axios
-                        .get(
-                            `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                        )
-                        .then((res) => {
-                            changeProduct(res.data);
-                            axios
-                                .get(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                    config
-                                )
-                                .then((res) => {
-                                    changeMyBag(res.data);
-                                    setSubmitting(false);
-                                    resetForm();
-                                    // need to clear form
-                                })
-                                .catch((err) => console.log(err.response));
-                        })
-                        .catch((err) => console.log(err.response));
+                    // user can add more than one video review, so use an array as state
+                    // state need to update with all element, so need to concat with previous element
+                    const newVideoReviewArrayInState =
+                        videoReviewArrayInState.concat(res.data);
+                    setVideoReviewArrayInState(newVideoReviewArrayInState);
                 })
                 .catch((err) => console.log(err.response));
         } else {
-            // console.log('login first');
             setOpenForLogin(true);
             setSubmitting(false);
             resetForm();
@@ -535,12 +499,16 @@ export default function ProductDetails(props) {
     const handleAgreeForVideoReview = (
         stringifyReview,
         setVideoReviewAgreeLoading,
-        setOpenForAlreadyDone
+        setOpenForAlreadyDone,
+        lengthForAgreed,
+        lengthOfCountForAgreed,
+        setLengthForAgreed,
+        setLengthForDisagreed
     ) => {
         // start loading
         setVideoReviewAgreeLoading(true);
 
-        if (Cookies.get('haha_ecom_bangla_token')) {
+        if (Cookies.get("haha_ecom_bangla_token")) {
             const videoReview = JSON.parse(stringifyReview);
 
             // ####### Process of agreed
@@ -561,111 +529,50 @@ export default function ProductDetails(props) {
             // check user who own this videoReview,then user can't make agreed
             // also check, user already agreed or not
             // if already agreed then can not agreed now
+
+            const userDidIt = videoReview.video_review_count.filter(
+                (video_review_count) => video_review_count.user.pk === user.pk
+            );
+            console.log(userDidIt);
+
             if (
-                !videoReview.videoreviewcountforagree.user.includes(user.pk) &&
-                videoReview.user.pk !== user.pk
+                userDidIt.length === 0 &&
+                lengthForAgreed === lengthOfCountForAgreed
             ) {
                 const videoReviewCountForAgree = {
-                    agreed: videoReview.videoreviewcountforagree.agreed + 1,
-                    user: videoReview.videoreviewcountforagree.user.concat(
-                        user.pk
-                    ),
+                    vote: "agreed",
+                    video_review: videoReview.id,
                 };
 
+                setVideoReviewAgreeLoading(false);
                 axios
-                    .patch(
-                        `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-count-for-agree-update/${videoReview.videoreviewcountforagree.id}/`,
+                    .post(
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/video-review-count-create/`,
                         videoReviewCountForAgree,
                         config
                     )
                     .then((res) => {
-                        // here, if user disagreed before then need to remove from disagreed
-                        // because User can not agreed and disagreed at a time
-                        if (
-                            videoReview.videoreviewcountfordisagree.user.includes(
-                                user.pk
-                            )
-                        ) {
-                            let arr =
-                                videoReview.videoreviewcountfordisagree.user;
-                            for (let i = 0; i < arr.length; i++) {
-                                if (arr[i] === user.pk) {
-                                    arr.splice(i, 1);
-                                    i--;
-                                }
-                            }
-                            const videoReviewCountForDisagree = {
-                                disagreed:
-                                    videoReview.videoreviewcountfordisagree
-                                        .disagreed - 1,
-                                user: arr,
-                            };
-
-                            axios
-                                .patch(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews-count-for-disagree-update/${videoReview.videoreviewcountfordisagree.id}/`,
-                                    videoReviewCountForDisagree,
-                                    config
-                                )
-                                .then((res) => {
-                                    // final get will be after all post, patch done
-                                    axios
-                                        .get(
-                                            `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                                        )
-                                        .then((res) => {
-                                            changeProduct(res.data);
-                                            axios
-                                                .get(
-                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                                    config
-                                                )
-                                                .then((res) => {
-                                                    setVideoReviewAgreeLoading(
-                                                        false
-                                                    );
-                                                    changeMyBag(res.data);
-                                                })
-                                                .catch((err) =>
-                                                    console.log(err.response)
-                                                );
-                                        })
-                                        .catch((err) =>
-                                            console.log(err.response)
-                                        );
-                                })
-                                .catch((err) => console.log(err.response));
-                        } else {
-                            // final get will be after all post, patch done
-                            axios
-                                .get(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                                )
-                                .then((res) => {
-                                    changeProduct(res.data);
-                                    axios
-                                        .get(
-                                            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                            config
-                                        )
-                                        .then((res) => {
-                                            setVideoReviewAgreeLoading(false);
-                                            changeMyBag(res.data);
-                                        })
-                                        .catch((err) =>
-                                            console.log(err.response)
-                                        );
-                                })
-                                .catch((err) => console.log(err.response));
-                        }
+                        setLengthForAgreed((prevState) => prevState + 1);
                     })
                     .catch((err) => console.log(err.response));
             } else {
-                // console.log(
-                //     'you cant agree with your own review or already done'
-                // );
-                setVideoReviewAgreeLoading(false);
-                setOpenForAlreadyDone(true);
+                if (userDidIt[0].vote === "disagreed") {
+                    setVideoReviewAgreeLoading(false);
+                    axios
+                        .patch(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/video-review-count-update/${userDidIt[0].id}/`,
+                            { vote: "agreed" },
+                            config
+                        )
+                        .then((res) => {
+                            setLengthForAgreed((prevState) => prevState + 1);
+                            setLengthForDisagreed((prevState) => prevState - 1);
+                        })
+                        .catch((err) => console.log(err.response));
+                } else {
+                    setVideoReviewAgreeLoading(false);
+                    setOpenForAlreadyDone(true);
+                }
             }
         } else {
             // console.log('login first');
@@ -677,12 +584,14 @@ export default function ProductDetails(props) {
     const handleDisagreeForVideoReview = (
         stringifyReview,
         setVideoReviewDisagreeLoading,
-        setOpenForAlreadyDone
+        setOpenForAlreadyDone,
+        setLengthForAgreed,
+        setLengthForDisagreed
     ) => {
         // start loading
         setVideoReviewDisagreeLoading(true);
 
-        if (Cookies.get('haha_ecom_bangla_token')) {
+        if (Cookies.get("haha_ecom_bangla_token")) {
             const videoReview = JSON.parse(stringifyReview);
 
             // ###########  Same process like agreed
@@ -813,69 +722,42 @@ export default function ProductDetails(props) {
         values,
         setSubmitting,
         videoReviewId,
-        setOpen
+        setOpen,
+        setVideoReview
     ) => {
         const videoReviewUpdate = {
             link: values.link,
         };
 
+        setSubmitting(false);
+        setOpen(false);
         axios
             .patch(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews/${videoReviewId}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/video-review/${videoReviewId}/`,
                 videoReviewUpdate,
                 config
             )
             .then((res) => {
-                // final get will be after all post, patch done
-                axios
-                    .get(
-                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                    )
-                    .then((res) => {
-                        changeProduct(res.data);
-                        axios
-                            .get(
-                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                config
-                            )
-                            .then((res) => {
-                                changeMyBag(res.data);
-                                setSubmitting(false);
-                                setOpen(false);
-                            })
-                            .catch((err) => console.log(err.response));
-                    })
-                    .catch((err) => console.log(err.response));
+                console.log(res.data);
+                setVideoReview(res.data);
             })
             .catch((err) => console.log(err.response));
     };
 
-    const handleDeleteForVideoReview = (videoReviewId, setOpen) => {
+    const handleDeleteForVideoReview = (
+        videoReviewId,
+        setOpen,
+        setVideoReview
+    ) => {
+        setOpen(false);
+        setVideoReview(null);
         axios
             .delete(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/video-reviews/${videoReviewId}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/video-review/${videoReviewId}/`,
                 config
             )
             .then((res) => {
-                // final get will be after all post, patch done
-                axios
-                    .get(
-                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                    )
-                    .then((res) => {
-                        changeProduct(res.data);
-                        axios
-                            .get(
-                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                config
-                            )
-                            .then((res) => {
-                                changeMyBag(res.data);
-                                setOpen(false);
-                            })
-                            .catch((err) => console.log(err.response));
-                    })
-                    .catch((err) => console.log(err.response));
+                console.log(res);
             })
             .catch((err) => console.log(err.response));
     };
@@ -883,50 +765,50 @@ export default function ProductDetails(props) {
     return (
         <div>
             <Box mx={3} mt={8}>
-                <Grid container spacing={2} alignItems='stretch'>
+                <Grid container spacing={2} alignItems="stretch">
                     <Grid item xs={12} sm={12} md={12} lg={7} xl={7}>
-                        <Box height='100%'>
+                        <Box height="100%">
                             <Box
                                 p={2}
-                                textAlign='center'
-                                borderRadius='borderRadius'
-                                style={{ backgroundColor: 'white' }}
+                                textAlign="center"
+                                borderRadius="borderRadius"
+                                style={{ backgroundColor: "white" }}
                             >
-                                <Typography variant='h5'>
+                                <Typography variant="h5">
                                     <strong>Product Details</strong>
                                 </Typography>
                             </Box>
 
-                            <Box mt={2} borderRadius='borderRadius'>
+                            <Box mt={2} borderRadius="borderRadius">
                                 <ProductDetailsTable
                                     product={product && product}
                                 />
                             </Box>
                             {product && product.product_detail.length === 0 && (
-                                <Alert severity='error'>
+                                <Alert severity="error">
                                     <AlertTitle>Sorry Dear</AlertTitle>
-                                    Here Are No Product Details Included Yet —{' '}
+                                    Here Are No Product Details Included Yet —{" "}
                                     <strong>Hope It Will Come Soon!</strong>
                                 </Alert>
                             )}
                         </Box>
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
-                        <Box height='100%'>
+                        <Box height="100%">
                             <Box
                                 p={2}
-                                textAlign='center'
-                                borderRadius='borderRadius'
-                                style={{ backgroundColor: 'white' }}
+                                textAlign="center"
+                                borderRadius="borderRadius"
+                                style={{ backgroundColor: "white" }}
                             >
-                                <Typography variant='h5'>
+                                <Typography variant="h5">
                                     <strong>Video Details</strong>
                                 </Typography>
                             </Box>
                             <Box mt={2}>
                                 <ReactPlayer
-                                    width='100%'
-                                    height='280px'
+                                    width="100%"
+                                    height="280px"
                                     // height='324px'
                                     controls
                                     light
@@ -941,11 +823,11 @@ export default function ProductDetails(props) {
             <Box mx={3} mt={8}>
                 <Box
                     p={2}
-                    textAlign='center'
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
+                    textAlign="center"
+                    borderRadius="borderRadius"
+                    style={{ backgroundColor: "white" }}
                 >
-                    <Typography variant='h5'>
+                    <Typography variant="h5">
                         <strong>You May Like</strong>
                     </Typography>
                 </Box>
@@ -958,11 +840,6 @@ export default function ProductDetails(props) {
                                         product={categoryProduct}
                                         myBag={myBag}
                                         config={config}
-                                        changeMyBag={changeMyBag}
-                                        changeCardProducts={
-                                            changeCategoryProducts
-                                        }
-                                        urlForChangeCardProducts={`${process.env.NEXT_PUBLIC_BASE_URL}/category/${categoryProduct.category.slug}/`}
                                         needDisabled={needDisabled}
                                         setNeedDisabled={setNeedDisabled}
                                     />
@@ -972,9 +849,9 @@ export default function ProductDetails(props) {
                 </Box>
                 {categoryProducts.length === 0 && (
                     <Box mt={2}>
-                        <Alert severity='error'>
+                        <Alert severity="error">
                             <AlertTitle>Sorry Dear</AlertTitle>
-                            Here Are No Similar Category Products Included Yet —{' '}
+                            Here Are No Similar Category Products Included Yet —{" "}
                             <strong>Hope It Will Come Soon!</strong>
                         </Alert>
                     </Box>
@@ -985,31 +862,31 @@ export default function ProductDetails(props) {
                 <Box
                     px={2}
                     py={1}
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
+                    borderRadius="borderRadius"
+                    style={{ backgroundColor: "white" }}
                 >
                     <Grid
                         container
-                        direction='row'
-                        justify='space-between'
-                        alignItems='center'
+                        direction="row"
+                        justify="space-between"
+                        alignItems="center"
                     >
                         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-                            <Typography variant='h5' component='h5'>
+                            <Typography variant="h5" component="h5">
                                 <strong>Customer Video Review</strong>
                             </Typography>
                         </Grid>
                         {/* snackbar is set here */}
                         <Snackbar
                             anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'center',
+                                vertical: "top",
+                                horizontal: "center",
                             }}
                             open={openForLogin}
                             autoHideDuration={4000}
                             onClose={handleCloseForLogin}
                         >
-                            <Alert severity='info' variant='filled'>
+                            <Alert severity="info" variant="filled">
                                 Please Login First!
                             </Alert>
                         </Snackbar>
@@ -1020,11 +897,6 @@ export default function ProductDetails(props) {
                                     handleSubmitForVideoReview={
                                         handleSubmitForVideoReview
                                     }
-                                    product={product}
-                                    myBag={myBag}
-                                    changeProduct={changeProduct}
-                                    changeMyBag={changeMyBag}
-                                    config={config}
                                 />
                             </Box>
                         </Grid>
@@ -1053,13 +925,34 @@ export default function ProductDetails(props) {
                                     }
                                 />
                             ))}
+                        {/* no need to loop previous all, so created videoReview only loop here, user can create multiple at a time, so need array */}
+                        {videoReviewArrayInState &&
+                            videoReviewArrayInState.length !== 0 &&
+                            videoReviewArrayInState.map((video_review) => (
+                                <SingleVideoReview
+                                    video_review={video_review}
+                                    user={user}
+                                    handleUpdateForVideoReview={
+                                        handleUpdateForVideoReview
+                                    }
+                                    handleDeleteForVideoReview={
+                                        handleDeleteForVideoReview
+                                    }
+                                    handleAgreeForVideoReview={
+                                        handleAgreeForVideoReview
+                                    }
+                                    handleDisagreeForVideoReview={
+                                        handleDisagreeForVideoReview
+                                    }
+                                />
+                            ))}
                     </Grid>
                 </Box>
                 {product && product.video_review.length === 0 && (
                     <Box mt={2}>
-                        <Alert severity='error'>
+                        <Alert severity="error">
                             <AlertTitle>Sorry Dear</AlertTitle>
-                            Here Are No Video Review Created By Customer Yet —{' '}
+                            Here Are No Video Review Created By Customer Yet —{" "}
                             <strong>
                                 Hope Customer Will Add Video Review Soon!
                             </strong>
@@ -1071,11 +964,11 @@ export default function ProductDetails(props) {
             <Box mx={3} mt={8}>
                 <Box
                     p={2}
-                    textAlign='center'
-                    borderRadius='borderRadius'
-                    style={{ backgroundColor: 'white' }}
+                    textAlign="center"
+                    borderRadius="borderRadius"
+                    style={{ backgroundColor: "white" }}
                 >
-                    <Typography variant='h5'>
+                    <Typography variant="h5">
                         <strong>Review & Ratings</strong>
                     </Typography>
                 </Box>
@@ -1084,19 +977,19 @@ export default function ProductDetails(props) {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
                             <Box
-                                style={{ backgroundColor: 'white' }}
+                                style={{ backgroundColor: "white" }}
                                 p={2}
-                                height='100%'
-                                textAlign='center'
-                                borderRadius='borderRadius'
+                                height="100%"
+                                textAlign="center"
+                                borderRadius="borderRadius"
                             >
                                 <Box>
-                                    <Typography variant='h4' component='h4'>
+                                    <Typography variant="h4" component="h4">
                                         {avgRating}
-                                        {'.0'}
+                                        {".0"}
                                     </Typography>
                                     <Rating
-                                        name='read-only'
+                                        name="read-only"
                                         value={
                                             avgRating !== 0 ? avgRating : null
                                         }
@@ -1104,7 +997,7 @@ export default function ProductDetails(props) {
                                     />
 
                                     <Typography>
-                                        {product && product.review.length}{' '}
+                                        {product && product.review.length}{" "}
                                         Rating & Review
                                     </Typography>
                                 </Box>
@@ -1112,18 +1005,18 @@ export default function ProductDetails(props) {
                                     <Box>
                                         <Grid
                                             container
-                                            justify='center'
-                                            alignItems='center'
+                                            justify="center"
+                                            alignItems="center"
                                         >
                                             <Rating
-                                                name='read-only'
+                                                name="read-only"
                                                 value={5}
                                                 readOnly
-                                            />{' '}
+                                            />{" "}
                                             <span>
                                                 <Box pl={2}>
                                                     <Typography>
-                                                        {' '}
+                                                        {" "}
                                                         [
                                                         {totalFiveRating.length}
                                                         ]
@@ -1135,18 +1028,18 @@ export default function ProductDetails(props) {
                                     <Box mt={1}>
                                         <Grid
                                             container
-                                            justify='center'
-                                            alignItems='center'
+                                            justify="center"
+                                            alignItems="center"
                                         >
                                             <Rating
-                                                name='read-only'
+                                                name="read-only"
                                                 value={4}
                                                 readOnly
-                                            />{' '}
+                                            />{" "}
                                             <span>
                                                 <Box pl={2}>
                                                     <Typography>
-                                                        {' '}
+                                                        {" "}
                                                         [
                                                         {totalFourRating.length}
                                                         ]
@@ -1158,18 +1051,18 @@ export default function ProductDetails(props) {
                                     <Box mt={1}>
                                         <Grid
                                             container
-                                            justify='center'
-                                            alignItems='center'
+                                            justify="center"
+                                            alignItems="center"
                                         >
                                             <Rating
-                                                name='read-only'
+                                                name="read-only"
                                                 value={3}
                                                 readOnly
-                                            />{' '}
+                                            />{" "}
                                             <span>
                                                 <Box pl={2}>
                                                     <Typography>
-                                                        {' '}
+                                                        {" "}
                                                         [
                                                         {
                                                             totalThreeRating.length
@@ -1183,18 +1076,18 @@ export default function ProductDetails(props) {
                                     <Box mt={1}>
                                         <Grid
                                             container
-                                            justify='center'
-                                            alignItems='center'
+                                            justify="center"
+                                            alignItems="center"
                                         >
                                             <Rating
-                                                name='read-only'
+                                                name="read-only"
                                                 value={2}
                                                 readOnly
-                                            />{' '}
+                                            />{" "}
                                             <span>
                                                 <Box pl={2}>
                                                     <Typography>
-                                                        {' '}
+                                                        {" "}
                                                         [{totalTwoRating.length}
                                                         ]
                                                     </Typography>
@@ -1205,18 +1098,18 @@ export default function ProductDetails(props) {
                                     <Box mt={1}>
                                         <Grid
                                             container
-                                            justify='center'
-                                            alignItems='center'
+                                            justify="center"
+                                            alignItems="center"
                                         >
                                             <Rating
-                                                name='read-only'
+                                                name="read-only"
                                                 value={1}
                                                 readOnly
-                                            />{' '}
+                                            />{" "}
                                             <span>
                                                 <Box pl={2}>
                                                     <Typography>
-                                                        {' '}
+                                                        {" "}
                                                         [{totalOneRating.length}
                                                         ]
                                                     </Typography>
@@ -1229,11 +1122,11 @@ export default function ProductDetails(props) {
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
                             <Box
-                                style={{ backgroundColor: 'white' }}
+                                style={{ backgroundColor: "white" }}
                                 p={2}
-                                height='100%'
-                                textAlign='center'
-                                borderRadius='borderRadius'
+                                height="100%"
+                                textAlign="center"
+                                borderRadius="borderRadius"
                             >
                                 <Box>
                                     <Review handleSubmit={handleSubmit} />
@@ -1256,11 +1149,25 @@ export default function ProductDetails(props) {
                             handleDisagree={handleDisagree}
                         />
                     ))}
+                {/* no need to loop previous all, so created review only loop here, user can create multiple at a time, so need array */}
+
+                {reviewInState &&
+                    reviewInState.length !== 0 &&
+                    reviewInState.map((review) => (
+                        <SingleReview
+                            review={review}
+                            user={user}
+                            handleUpdate={handleUpdate}
+                            handleDelete={handleDelete}
+                            handleAgree={handleAgree}
+                            handleDisagree={handleDisagree}
+                        />
+                    ))}
                 {product && product.review.length === 0 && (
                     <Box mt={2}>
-                        <Alert severity='error'>
+                        <Alert severity="error">
                             <AlertTitle>Sorry Dear</AlertTitle>
-                            Here Are No Review Created By Customer Yet —{' '}
+                            Here Are No Review Created By Customer Yet —{" "}
                             <strong>Hope Customer Will Add Review Soon!</strong>
                         </Alert>
                     </Box>

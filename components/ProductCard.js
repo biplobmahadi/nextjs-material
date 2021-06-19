@@ -1,45 +1,45 @@
-import Link from '../src/Link';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Chip from '@material-ui/core/Chip';
-import Box from '@material-ui/core/Box';
-import axios from 'axios';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
-import Snackbar from '@material-ui/core/Snackbar';
-import Cookies from 'js-cookie';
+import Link from "../src/Link";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Chip from "@material-ui/core/Chip";
+import Box from "@material-ui/core/Box";
+import axios from "axios";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
+import Snackbar from "@material-ui/core/Snackbar";
+import Cookies from "js-cookie";
 
 const useStyles = makeStyles((theme) => ({
     boot: {
-        maxWidth: '100%',
+        maxWidth: "100%",
     },
     imgHover: {
-        overflow: 'hidden',
+        overflow: "hidden",
     },
     imgHoverZoom: {
-        transition: 'transform .5s ease',
-        '&:hover': { transform: 'scale(1.1)' },
+        transition: "transform .5s ease",
+        "&:hover": { transform: "scale(1.1)" },
     },
     root: {
-        display: 'flex',
-        alignItems: 'center',
+        display: "flex",
+        alignItems: "center",
     },
     wrapper: {
         margin: theme.spacing(1),
-        position: 'relative',
+        position: "relative",
     },
     buttonProgress: {
-        color: '#3f50b5',
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
+        color: "#3f50b5",
+        position: "absolute",
+        top: "50%",
+        left: "50%",
         marginTop: -12,
         marginLeft: -12,
     },
@@ -49,9 +49,6 @@ export default function ProductCard({
     product,
     myBag,
     config,
-    changeMyBag,
-    changeCardProducts,
-    urlForChangeCardProducts,
     needDisabled,
     setNeedDisabled,
 }) {
@@ -61,33 +58,26 @@ export default function ProductCard({
     const [loading, setLoading] = React.useState(false);
     const [openForLogin, setOpenForLogin] = React.useState(false);
     const [openForAdd, setOpenForAdd] = React.useState(false);
-    const [openForNotInStock, setOpenForNotInStock] = React.useState(false);
     const [openForAddAsTrial, setOpenForAddAsTrial] = React.useState(false);
 
     // this is for alert close
     const handleCloseForLogin = (event, reason) => {
-        if (reason === 'clickaway') {
+        if (reason === "clickaway") {
             return;
         }
 
         setOpenForLogin(false);
     };
     const handleCloseForAdd = (event, reason) => {
-        if (reason === 'clickaway') {
+        if (reason === "clickaway") {
             return;
         }
 
         setOpenForAdd(false);
     };
-    const handleCloseForNotInStock = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
 
-        setOpenForNotInStock(false);
-    };
     const handleCloseForAddAsTrial = (event, reason) => {
-        if (reason === 'clickaway') {
+        if (reason === "clickaway") {
             return;
         }
 
@@ -118,6 +108,22 @@ export default function ProductCard({
     // then create a bag with this productWithQuantity then follow the next steps
     // Done #########
 
+    let productWithQuantityExistInBag;
+    if (myBag) {
+        productWithQuantityExistInBag = myBag.product_with_quantity.filter(
+            (productWithQuantity) =>
+                productWithQuantity.product.id === product.id
+        );
+    }
+
+    const [productWithQuantityInBag, setProductWithQuantityInBag] =
+        React.useState(
+            productWithQuantityExistInBag &&
+                productWithQuantityExistInBag.length !== 0
+                ? productWithQuantityExistInBag[0]
+                : null
+        );
+
     const handleAddToBag = () => {
         // start loading
         setLoading(true);
@@ -129,364 +135,54 @@ export default function ProductCard({
         // now check user login or not
         // if not login then an alert will show
 
-        if (Cookies.get('haha_ecom_bangla_token')) {
-            let addToBag = {
+        if (Cookies.get("haha_ecom_bangla_token")) {
+            let addToProductWithQuantity = {
                 product: product.id,
                 quantity: 1,
-                cost: product.price,
+                my_bag: myBag.id,
             };
 
-            // check productWithQuantity exist in bag or not
-            let productWithQuantityExistInBag;
-            if (myBag) {
-                productWithQuantityExistInBag = myBag.product_with_quantity.filter(
-                    (filterProduct) => filterProduct.product.id === product.id
-                );
+            // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
+            // this is very important
+            if (productWithQuantityInBag) {
+                if (productWithQuantityInBag.add_as_trial) {
+                    setLoading(false);
+                    setNeedDisabled(false);
+                    setOpenForAddAsTrial(true);
+                } else {
+                    setOpenForAdd(true);
+                    setLoading(false);
+                    setNeedDisabled(false);
+                    axios
+                        .patch(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantityInBag.id}/`,
+                            {
+                                quantity: productWithQuantityInBag.quantity + 1,
+                            },
+                            config
+                        )
+                        .then((res) => {
+                            console.log("patched product", res.data);
+                            setProductWithQuantityInBag(res.data);
+                        })
+                        .catch((err) => console.log(err.response));
+                }
+            } else {
+                setOpenForAdd(true);
+                setLoading(false);
+                setNeedDisabled(false);
+                axios
+                    .post(
+                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/`,
+                        addToProductWithQuantity,
+                        config
+                    )
+                    .then((res) => {
+                        console.log("bag nai - pwq", res.data);
+                        setProductWithQuantityInBag(res.data);
+                    })
+                    .catch((err) => console.log(err.response));
             }
-            // console.log(
-            //     'productWithQuantityExistInBag',
-            //     productWithQuantityExistInBag
-            // );
-
-            // 1st we need to get the available quantity for this product
-            // if product available then we can add it
-            // else we send a msg that, product not available
-            axios
-                .get(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
-                    config
-                )
-                .then((res) => {
-                    // if product available then this will run from below
-                    // add to bag process will start from here
-                    if (res.data.available_quantity > 0) {
-                        // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
-                        if (
-                            productWithQuantityExistInBag &&
-                            productWithQuantityExistInBag.length !== 0
-                        ) {
-                            // if productWithQuantity is already exist in bag as trial than not add more
-                            if (productWithQuantityExistInBag[0].add_as_trial) {
-                                // console.log(
-                                //     'this product already add as trial'
-                                // );
-                                setLoading(false);
-                                setNeedDisabled(false);
-                                setOpenForAddAsTrial(true);
-                            } else {
-                                axios
-                                    .patch(
-                                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantityExistInBag[0].id}/`,
-                                        {
-                                            quantity:
-                                                productWithQuantityExistInBag[0]
-                                                    .quantity + 1,
-                                            cost:
-                                                productWithQuantityExistInBag[0]
-                                                    .cost + product.price,
-                                        },
-                                        config
-                                    )
-                                    .then((res) => {
-                                        let pk = [];
-                                        myBag.product_with_quantity.map(
-                                            (product_with_quantity) =>
-                                                (pk = pk.concat(
-                                                    product_with_quantity.id
-                                                ))
-                                        );
-                                        // console.log(pk);
-                                        axios
-                                            .patch(
-                                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                                {
-                                                    product_with_quantity: pk,
-                                                    sub_total:
-                                                        myBag.sub_total +
-                                                        product.price,
-                                                },
-                                                config
-                                            )
-                                            .then((res) => {
-                                                axios
-                                                    .patch(
-                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
-                                                        {
-                                                            available_quantity:
-                                                                product
-                                                                    .productavailable
-                                                                    .available_quantity -
-                                                                1,
-                                                        },
-                                                        config
-                                                    )
-                                                    .then((res) => {
-                                                        // final get will be after all post, patch done
-                                                        // everything will update here for user
-                                                        axios
-                                                            .get(
-                                                                urlForChangeCardProducts
-                                                            )
-                                                            .then((res) => {
-                                                                changeCardProducts(
-                                                                    res.data
-                                                                        .product
-                                                                );
-                                                                axios
-                                                                    .get(
-                                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                                                        config
-                                                                    )
-                                                                    .then(
-                                                                        (
-                                                                            res
-                                                                        ) => {
-                                                                            setLoading(
-                                                                                false
-                                                                            );
-                                                                            setNeedDisabled(
-                                                                                false
-                                                                            );
-                                                                            setOpenForAdd(
-                                                                                true
-                                                                            );
-                                                                            // new myBag need to update
-                                                                            changeMyBag(
-                                                                                res.data
-                                                                            );
-                                                                        }
-                                                                    )
-                                                                    .catch(
-                                                                        (err) =>
-                                                                            console.log(
-                                                                                err.response
-                                                                            )
-                                                                    );
-                                                            })
-                                                            .catch((err) => ({
-                                                                error:
-                                                                    err.response
-                                                                        .data,
-                                                            }));
-                                                    })
-                                                    .catch((err) =>
-                                                        console.log(
-                                                            err.response
-                                                        )
-                                                    );
-                                            })
-                                            .catch((err) =>
-                                                console.log(err.response)
-                                            );
-                                    })
-                                    .catch((err) => console.log(err.response));
-                            }
-                        } else {
-                            axios
-                                .post(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/`,
-                                    addToBag,
-                                    config
-                                )
-                                .then((res) => {
-                                    if (myBag && myBag.length !== 0) {
-                                        let pk = [];
-                                        myBag.product_with_quantity.map(
-                                            (product_with_quantity) =>
-                                                (pk = pk.concat(
-                                                    product_with_quantity.id
-                                                ))
-                                        );
-                                        // console.log(
-                                        //     'bag e onno product ase - pk',
-                                        //     pk
-                                        // );
-                                        axios
-                                            .patch(
-                                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                                {
-                                                    product_with_quantity: pk.concat(
-                                                        res.data.id
-                                                    ),
-                                                    sub_total:
-                                                        myBag.sub_total +
-                                                        res.data.cost,
-                                                },
-                                                config
-                                            )
-                                            .then((res) => {
-                                                // console.log(
-                                                //     'bag e product ase - patch bag',
-                                                //     res.data
-                                                // );
-
-                                                axios
-                                                    .patch(
-                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
-                                                        {
-                                                            available_quantity:
-                                                                product
-                                                                    .productavailable
-                                                                    .available_quantity -
-                                                                1,
-                                                        },
-                                                        config
-                                                    )
-                                                    .then((res) => {
-                                                        // final get will be after all post, patch done
-                                                        axios
-                                                            .get(
-                                                                urlForChangeCardProducts
-                                                            )
-                                                            .then((res) => {
-                                                                changeCardProducts(
-                                                                    res.data
-                                                                        .product
-                                                                );
-                                                                axios
-                                                                    .get(
-                                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                                                        config
-                                                                    )
-                                                                    .then(
-                                                                        (
-                                                                            res
-                                                                        ) => {
-                                                                            setLoading(
-                                                                                false
-                                                                            );
-                                                                            setNeedDisabled(
-                                                                                false
-                                                                            );
-                                                                            setOpenForAdd(
-                                                                                true
-                                                                            );
-                                                                            // new myBag need to update
-                                                                            changeMyBag(
-                                                                                res.data
-                                                                            );
-                                                                        }
-                                                                    )
-                                                                    .catch(
-                                                                        (err) =>
-                                                                            console.log(
-                                                                                err.response
-                                                                            )
-                                                                    );
-                                                            })
-                                                            .catch((err) => ({
-                                                                error:
-                                                                    err.response
-                                                                        .data,
-                                                            }));
-                                                    })
-                                                    .catch((err) =>
-                                                        console.log(
-                                                            err.response
-                                                        )
-                                                    );
-                                            })
-                                            .catch((err) =>
-                                                console.log(err.response)
-                                            );
-                                    } else {
-                                        axios
-                                            .post(
-                                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`,
-                                                {
-                                                    product_with_quantity: [
-                                                        res.data.id,
-                                                    ],
-                                                    sub_total: res.data.cost,
-                                                },
-                                                config
-                                            )
-                                            .then((res) => {
-                                                // when there is no bag available then this promise will done
-                                                // so here we don't have any myBag id
-                                                // need to assign it here
-                                                const myBagId = res.data.id;
-                                                // use this myBagId when we get requ in myBag
-                                                axios
-                                                    .patch(
-                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/product-update-only-quantity/${product.productavailable.id}/`,
-                                                        {
-                                                            available_quantity:
-                                                                product
-                                                                    .productavailable
-                                                                    .available_quantity -
-                                                                1,
-                                                        },
-                                                        config
-                                                    )
-                                                    .then((res) => {
-                                                        // final get will be after all post, patch done
-                                                        axios
-                                                            .get(
-                                                                urlForChangeCardProducts
-                                                            )
-                                                            .then((res) => {
-                                                                changeCardProducts(
-                                                                    res.data
-                                                                        .product
-                                                                );
-                                                                axios
-                                                                    .get(
-                                                                        `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBagId}/`,
-                                                                        config
-                                                                    )
-                                                                    .then(
-                                                                        (
-                                                                            res
-                                                                        ) => {
-                                                                            setLoading(
-                                                                                false
-                                                                            );
-                                                                            setNeedDisabled(
-                                                                                false
-                                                                            );
-                                                                            setOpenForAdd(
-                                                                                true
-                                                                            );
-                                                                            // new myBag need to update
-                                                                            changeMyBag(
-                                                                                res.data
-                                                                            );
-                                                                        }
-                                                                    )
-                                                                    .catch(
-                                                                        (err) =>
-                                                                            console.log(
-                                                                                err.response
-                                                                            )
-                                                                    );
-                                                            })
-                                                            .catch((err) => ({
-                                                                error:
-                                                                    err.response,
-                                                            }));
-                                                    })
-                                                    .catch((err) =>
-                                                        console.log(
-                                                            err.response
-                                                        )
-                                                    );
-                                            })
-                                            .catch((err) =>
-                                                console.log(err.response)
-                                            );
-                                    }
-                                })
-                                .catch((err) => console.log(err.response));
-                        }
-                    } else {
-                        // console.log('product not available');
-                        setLoading(false);
-                        setNeedDisabled(false);
-                        setOpenForNotInStock(true);
-                    }
-                })
-                .catch((err) => console.log(err.response));
         } else {
             // console.log('login first');
             setLoading(false);
@@ -499,29 +195,29 @@ export default function ProductCard({
         <Card className={classes.boot}>
             <Link
                 href={`/product/${product && product.slug}`}
-                color='inherit'
-                underline='none'
+                color="inherit"
+                underline="none"
             >
                 <CardActionArea>
                     <Box className={classes.imgHover} p={2}>
                         <CardMedia
                             className={classes.imgHoverZoom}
-                            component='img'
-                            alt='Product'
-                            height='180'
+                            component="img"
+                            alt="Product"
+                            height="180"
                             // image={product.product_image[0].image}
-                            image='/s2.jpg'
-                            title='Product'
+                            image="/s2.jpg"
+                            title="Product"
                         />
                     </Box>
                     <CardContent>
                         <Typography gutterBottom>
-                            <Box textAlign='center'>
+                            <Box textAlign="center">
                                 {product && product.name}
                             </Box>
                         </Typography>
-                        <Typography gutterBottom variant='h6' component='h6'>
-                            <Box textAlign='center'>
+                        <Typography gutterBottom variant="h6" component="h6">
+                            <Box textAlign="center">
                                 Tk. {product && product.price}
                             </Box>
                         </Typography>
@@ -529,26 +225,24 @@ export default function ProductCard({
                 </CardActionArea>
             </Link>
             <Box pb={1}>
-                <CardActions style={{ justifyContent: 'center' }}>
+                <CardActions style={{ justifyContent: "center" }}>
                     <div className={classes.root}>
                         <div className={classes.wrapper}>
                             <Button
-                                variant='contained'
-                                size='small'
-                                color='primary'
+                                variant="contained"
+                                size="small"
+                                color="primary"
                                 onClick={handleAddToBag}
                                 disabled={
                                     needDisabled ||
                                     loading ||
-                                    product.productavailable
-                                        .available_quantity === 0
+                                    !product.is_available
                                 }
                             >
-                                <Box textAlign='center' px={4}>
-                                    {product.productavailable
-                                        .available_quantity === 0
-                                        ? 'No Stock'
-                                        : 'Add To Bag'}
+                                <Box textAlign="center" px={4}>
+                                    {product.is_available
+                                        ? "Add To Bag"
+                                        : "No Stock"}
                                 </Box>
                             </Button>
                             {loading && (
@@ -561,54 +255,41 @@ export default function ProductCard({
                     </div>
                     <Snackbar
                         anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
+                            vertical: "top",
+                            horizontal: "center",
                         }}
                         open={openForLogin}
                         autoHideDuration={4000}
                         onClose={handleCloseForLogin}
                     >
-                        <Alert severity='info' variant='filled'>
+                        <Alert severity="info" variant="filled">
                             Please Login First!
                         </Alert>
                     </Snackbar>
                     <Snackbar
                         anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
+                            vertical: "top",
+                            horizontal: "center",
                         }}
                         open={openForAdd}
                         autoHideDuration={4000}
                         onClose={handleCloseForAdd}
                     >
-                        <Alert severity='success' variant='filled'>
+                        <Alert severity="success" variant="filled">
                             Successfully Product Added To Bag!
                         </Alert>
                     </Snackbar>
                     <Snackbar
                         anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
+                            vertical: "top",
+                            horizontal: "center",
                         }}
                         open={openForAddAsTrial}
                         autoHideDuration={4000}
                         onClose={handleCloseForAddAsTrial}
                     >
-                        <Alert severity='info' variant='filled'>
+                        <Alert severity="info" variant="filled">
                             Already Add as Trial, Can't Add More!
-                        </Alert>
-                    </Snackbar>
-                    <Snackbar
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                        }}
-                        open={openForNotInStock}
-                        autoHideDuration={4000}
-                        onClose={handleCloseForNotInStock}
-                    >
-                        <Alert severity='info' variant='filled'>
-                            Sorry, Product Not In Stock Now!
                         </Alert>
                     </Snackbar>
                 </CardActions>

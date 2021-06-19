@@ -1,247 +1,279 @@
-import Head from 'next/head';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { TextField } from 'formik-material-ui';
-import ProductDetailsTable from './ProductDetailsTable';
-import ProductCard from '../components/ProductCard';
-import Review from './forms/Review';
-import VideoReview from './forms/VideoReview';
-import UpdateReviewDialog from './UpdateReviewDialog';
-import DeleteReviewDialog from './DeleteReviewDialog';
-import UpdateVideoReviewDialog from './UpdateVideoReviewDialog';
-import DeleteVideoReviewDialog from './DeleteVideoReviewDialog';
-import MainFooter from '../components/MainFooter';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
-import Snackbar from '@material-ui/core/Snackbar';
+import Head from "next/head";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { TextField } from "formik-material-ui";
+import ProductDetailsTable from "./ProductDetailsTable";
+import ProductCard from "../components/ProductCard";
+import Review from "./forms/Review";
+import VideoReview from "./forms/VideoReview";
+import UpdateReviewDialog from "./UpdateReviewDialog";
+import DeleteReviewDialog from "./DeleteReviewDialog";
+import UpdateVideoReviewDialog from "./UpdateVideoReviewDialog";
+import DeleteVideoReviewDialog from "./DeleteVideoReviewDialog";
+import MainFooter from "../components/MainFooter";
+import Box from "@material-ui/core/Box";
+import Divider from "@material-ui/core/Divider";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
+import Snackbar from "@material-ui/core/Snackbar";
 
-import StarHalfIcon from '@material-ui/icons/StarHalf';
-import Button from '@material-ui/core/Button';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
-import ThumbDownIcon from '@material-ui/icons/ThumbDown';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import UpdateIcon from '@material-ui/icons/Update';
-import EditIcon from '@material-ui/icons/Edit';
-import Rating from '@material-ui/lab/Rating';
-import ReactPlayer from 'react-player/youtube';
+import StarHalfIcon from "@material-ui/icons/StarHalf";
+import Button from "@material-ui/core/Button";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import ThumbDownIcon from "@material-ui/icons/ThumbDown";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import UpdateIcon from "@material-ui/icons/Update";
+import EditIcon from "@material-ui/icons/Edit";
+import Rating from "@material-ui/lab/Rating";
+import ReactPlayer from "react-player/youtube";
 
-import axios from 'axios';
+import axios from "axios";
 
-import { makeStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         // display: 'flex',
-        alignItems: 'center',
+        alignItems: "center",
     },
     wrapper: {
-        position: 'relative',
+        position: "relative",
     },
     buttonProgress: {
-        color: '#3f50b5',
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
+        color: "#3f50b5",
+        position: "absolute",
+        top: "50%",
+        left: "50%",
         marginTop: -12,
         marginLeft: -12,
     },
 }));
 
-export default function SingleVideoReview({
-    video_review,
-    user,
-    handleUpdateForVideoReview,
-    handleDeleteForVideoReview,
-    handleAgreeForVideoReview,
-    handleDisagreeForVideoReview,
-}) {
+export default function SingleVideoReview(props) {
     const classes = useStyles();
-    const [
-        videoReviewAgreeLoading,
-        setVideoReviewAgreeLoading,
-    ] = React.useState(false);
-    const [
-        videoReviewDisagreeLoading,
-        setVideoReviewDisagreeLoading,
-    ] = React.useState(false);
+    const [videoReview, setVideoReview] = React.useState(props.video_review);
+    const {
+        user,
+        handleUpdateForVideoReview,
+        handleDeleteForVideoReview,
+        handleAgreeForVideoReview,
+        handleDisagreeForVideoReview,
+    } = props;
+
+    const [videoReviewAgreeLoading, setVideoReviewAgreeLoading] =
+        React.useState(false);
+    const [videoReviewDisagreeLoading, setVideoReviewDisagreeLoading] =
+        React.useState(false);
 
     const [openForAlreadyDone, setOpenForAlreadyDone] = React.useState(false);
     // this is for alert close
     const handleCloseForAlreadyDone = (event, reason) => {
-        if (reason === 'clickaway') {
+        if (reason === "clickaway") {
             return;
         }
 
         setOpenForAlreadyDone(false);
     };
 
-    return (
-        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
-            <Box
-                borderRadius='borderRadius'
-                style={{ backgroundColor: 'white' }}
-            >
-                {video_review.user.pk === (user && user.pk) && (
+    const userDidIt =
+        videoReview &&
+        videoReview.video_review_count.filter(
+            (video_review_count) => video_review_count.user.pk === user.pk
+        );
+    console.log("videoReview in single", videoReview);
+    console.log("userDidIt in single", userDidIt);
+
+    const countForAgreed =
+        videoReview &&
+        videoReview.video_review_count.filter(
+            (video_review_count) => video_review_count.vote === "agreed"
+        );
+
+    const countForDisagreed =
+        videoReview &&
+        videoReview.video_review_count.filter(
+            (video_review_count) => video_review_count.vote === "disagreed"
+        );
+    const lengthOfCountForAgreed = countForAgreed ? countForAgreed.length : 0;
+    const lengthOfCountForDisagreed = countForDisagreed
+        ? countForDisagreed.length
+        : 0;
+
+    const [lengthForAgreed, setLengthForAgreed] = React.useState(
+        lengthOfCountForAgreed
+    );
+    const [lengthForDisagreed, setLengthForDisagreed] = React.useState(
+        lengthOfCountForDisagreed
+    );
+
+    if (videoReview) {
+        return (
+            <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                <Box
+                    borderRadius="borderRadius"
+                    style={{ backgroundColor: "white" }}
+                >
+                    {videoReview.user.pk === (user && user.pk) && (
+                        <Box p={2}>
+                            <Grid container spacing={1} alignItems="center">
+                                <Grid item xs={12} sm>
+                                    <Box textAlign="center">
+                                        <UpdateVideoReviewDialog
+                                            videoReviewId={videoReview.id}
+                                            handleUpdateForVideoReview={
+                                                handleUpdateForVideoReview
+                                            }
+                                            setVideoReview={setVideoReview}
+                                        />
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12} sm>
+                                    <Box textAlign="center">
+                                        <DeleteVideoReviewDialog
+                                            videoReviewId={videoReview.id}
+                                            handleDeleteForVideoReview={
+                                                handleDeleteForVideoReview
+                                            }
+                                            setVideoReview={setVideoReview}
+                                        />
+                                    </Box>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    )}
+                    <ReactPlayer
+                        width="100%"
+                        height="260px"
+                        controls
+                        light
+                        url={videoReview.link}
+                    />
                     <Box p={2}>
-                        <Grid container spacing={1} alignItems='center'>
+                        <Grid container spacing={1} alignItems="center">
                             <Grid item xs={12} sm>
-                                <Box textAlign='center'>
-                                    <UpdateVideoReviewDialog
-                                        videoReviewId={video_review.id}
-                                        handleUpdateForVideoReview={
-                                            handleUpdateForVideoReview
-                                        }
-                                    />
+                                <Box textAlign="center">
+                                    <div className={classes.root}>
+                                        <div className={classes.wrapper}>
+                                            <Button
+                                                size="small"
+                                                fullWidth
+                                                variant="contained"
+                                                color={
+                                                    userDidIt.length !== 0 ||
+                                                    lengthForAgreed !==
+                                                        lengthOfCountForAgreed
+                                                        ? "secondary"
+                                                        : "default"
+                                                }
+                                                startIcon={<ThumbUpIcon />}
+                                                onClick={() =>
+                                                    handleAgreeForVideoReview(
+                                                        JSON.stringify(
+                                                            videoReview
+                                                        ),
+                                                        setVideoReviewAgreeLoading,
+                                                        setOpenForAlreadyDone,
+                                                        lengthForAgreed,
+                                                        lengthOfCountForAgreed,
+                                                        setLengthForAgreed,
+                                                        setLengthForDisagreed
+                                                    )
+                                                }
+                                                // use this type of value sending in bag page
+                                                disabled={
+                                                    videoReviewAgreeLoading ||
+                                                    videoReviewDisagreeLoading ||
+                                                    videoReview.user.pk ===
+                                                        (user && user.pk)
+                                                }
+                                            >
+                                                Agreed ({lengthForAgreed})
+                                            </Button>
+                                            {videoReviewAgreeLoading && (
+                                                <CircularProgress
+                                                    size={24}
+                                                    className={
+                                                        classes.buttonProgress
+                                                    }
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
                                 </Box>
                             </Grid>
+                            {/* this snackbar is used by both agree disagree */}
+                            <Snackbar
+                                anchorOrigin={{
+                                    vertical: "top",
+                                    horizontal: "center",
+                                }}
+                                open={openForAlreadyDone}
+                                autoHideDuration={4000}
+                                onClose={handleCloseForAlreadyDone}
+                            >
+                                <Alert severity="success" variant="filled">
+                                    Already Done !
+                                </Alert>
+                            </Snackbar>
                             <Grid item xs={12} sm>
-                                <Box textAlign='center'>
-                                    <DeleteVideoReviewDialog
-                                        videoReviewId={video_review.id}
-                                        handleDeleteForVideoReview={
-                                            handleDeleteForVideoReview
-                                        }
-                                    />
+                                <Box textAlign="center">
+                                    <div className={classes.root}>
+                                        <div className={classes.wrapper}>
+                                            <Button
+                                                size="small"
+                                                fullWidth
+                                                variant="contained"
+                                                color={
+                                                    userDidIt.length !== 0 ||
+                                                    lengthForDisagreed !==
+                                                        lengthOfCountForDisagreed
+                                                        ? "secondary"
+                                                        : "default"
+                                                }
+                                                startIcon={<ThumbDownIcon />}
+                                                onClick={() =>
+                                                    handleDisagreeForVideoReview(
+                                                        JSON.stringify(
+                                                            videoReview
+                                                        ),
+                                                        setVideoReviewDisagreeLoading,
+                                                        setOpenForAlreadyDone,
+                                                        setLengthForAgreed,
+                                                        setLengthForDisagreed
+                                                    )
+                                                }
+                                                // use this type of value sending in bag page
+                                                disabled={
+                                                    videoReviewDisagreeLoading ||
+                                                    videoReviewAgreeLoading ||
+                                                    videoReview.user.pk ===
+                                                        (user && user.pk)
+                                                }
+                                            >
+                                                Disagreed ({lengthForDisagreed})
+                                            </Button>
+                                            {videoReviewDisagreeLoading && (
+                                                <CircularProgress
+                                                    size={24}
+                                                    className={
+                                                        classes.buttonProgress
+                                                    }
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
                                 </Box>
                             </Grid>
                         </Grid>
                     </Box>
-                )}
-                <ReactPlayer
-                    width='100%'
-                    height='260px'
-                    controls
-                    light
-                    url={video_review.link}
-                />
-                <Box p={2}>
-                    <Grid container spacing={1} alignItems='center'>
-                        <Grid item xs={12} sm>
-                            <Box textAlign='center'>
-                                <div className={classes.root}>
-                                    <div className={classes.wrapper}>
-                                        <Button
-                                            size='small'
-                                            fullWidth
-                                            variant='contained'
-                                            color={
-                                                video_review.videoreviewcountforagree.user.includes(
-                                                    user && user.pk
-                                                )
-                                                    ? 'secondary'
-                                                    : 'default'
-                                            }
-                                            startIcon={<ThumbUpIcon />}
-                                            onClick={() =>
-                                                handleAgreeForVideoReview(
-                                                    JSON.stringify(
-                                                        video_review
-                                                    ),
-                                                    setVideoReviewAgreeLoading,
-                                                    setOpenForAlreadyDone
-                                                )
-                                            }
-                                            // use this type of value sending in bag page
-                                            disabled={
-                                                videoReviewAgreeLoading ||
-                                                videoReviewDisagreeLoading ||
-                                                video_review.user.pk ===
-                                                    (user && user.pk)
-                                            }
-                                        >
-                                            Agreed (
-                                            {video_review.videoreviewcountforagree &&
-                                                video_review
-                                                    .videoreviewcountforagree
-                                                    .agreed}
-                                            )
-                                        </Button>
-                                        {videoReviewAgreeLoading && (
-                                            <CircularProgress
-                                                size={24}
-                                                className={
-                                                    classes.buttonProgress
-                                                }
-                                            />
-                                        )}
-                                    </div>
-                                </div>
-                            </Box>
-                        </Grid>
-                        {/* this snackbar is used by both agree disagree */}
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'center',
-                            }}
-                            open={openForAlreadyDone}
-                            autoHideDuration={4000}
-                            onClose={handleCloseForAlreadyDone}
-                        >
-                            <Alert severity='success' variant='filled'>
-                                Already Done !
-                            </Alert>
-                        </Snackbar>
-                        <Grid item xs={12} sm>
-                            <Box textAlign='center'>
-                                <div className={classes.root}>
-                                    <div className={classes.wrapper}>
-                                        <Button
-                                            size='small'
-                                            fullWidth
-                                            variant='contained'
-                                            color={
-                                                video_review.videoreviewcountfordisagree.user.includes(
-                                                    user && user.pk
-                                                )
-                                                    ? 'secondary'
-                                                    : 'default'
-                                            }
-                                            startIcon={<ThumbDownIcon />}
-                                            onClick={() =>
-                                                handleDisagreeForVideoReview(
-                                                    JSON.stringify(
-                                                        video_review
-                                                    ),
-                                                    setVideoReviewDisagreeLoading,
-                                                    setOpenForAlreadyDone
-                                                )
-                                            }
-                                            // use this type of value sending in bag page
-                                            disabled={
-                                                videoReviewDisagreeLoading ||
-                                                videoReviewAgreeLoading ||
-                                                video_review.user.pk ===
-                                                    (user && user.pk)
-                                            }
-                                        >
-                                            Disagreed (
-                                            {video_review.videoreviewcountfordisagree &&
-                                                video_review
-                                                    .videoreviewcountfordisagree
-                                                    .disagreed}
-                                            )
-                                        </Button>
-                                        {videoReviewDisagreeLoading && (
-                                            <CircularProgress
-                                                size={24}
-                                                className={
-                                                    classes.buttonProgress
-                                                }
-                                            />
-                                        )}
-                                    </div>
-                                </div>
-                            </Box>
-                        </Grid>
-                    </Grid>
                 </Box>
-            </Box>
-        </Grid>
-    );
+            </Grid>
+        );
+    } else {
+        return <></>;
+    }
 }

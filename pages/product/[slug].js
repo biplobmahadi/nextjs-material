@@ -32,60 +32,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 
-let productRe;
-let myBagRe;
-let categoryProductsRe;
-
 export default function Product(props) {
-    const [reRender, setReRender] = React.useState(false);
-
-    let product = productRe ? productRe : props.product;
+    let product = props.product;
     let user = props.user;
     let config = props.config;
-    let categoryProducts = categoryProductsRe
-        ? categoryProductsRe
-        : props.categoryProducts;
+    let categoryProducts = props.categoryProducts;
 
-    let myBag = myBagRe ? myBagRe : props.myBag;
+    console.log("first product", product);
 
-    // these changeProduct & changeMyBag & changeCategoryProducts will call at adding product in bag and also at a time
-    // so use reRender will done one time here
-    const changeProduct = (value) => {
-        productRe = value;
-        // console.log('product now', productRe);
-
-        // setReRender(!reRender);
-    };
-
-    const changeCategoryProducts = (value) => {
-        // here I got all the product because product card will use in everywhere
-        // so need to filter
-        let allCategoryProducts = value;
-        let filteredCategoryProducts = allCategoryProducts.filter(
-            (categoryProduct) => categoryProduct.id !== product.id
-        );
-        categoryProductsRe = filteredCategoryProducts.slice(0, 6);
-
-        // setReRender(!reRender);
-    };
-
-    // changeMyBag is the last when get fetch req, so here reRender call
-    const changeMyBag = (value) => {
-        myBagRe = value;
-        // console.log('my bag now', myBagRe);
-
-        setReRender(!reRender);
-    };
-
-    // here useEffect -> when component mount and update myBagRe & productRe & categoryProductsRe will undefined
-    // because, when we change route then myBagRe & productRe & categoryProductsRe again remain previous one which is not
-    // updated one, that's why we make it undefined and bag & product & categoryProducts will server rendered
-
-    useEffect(() => {
-        myBagRe = undefined;
-        productRe = undefined;
-        categoryProductsRe = undefined;
-    });
+    let myBag = props.myBag;
 
     // ### Calculate product review rating
     let avgRating = 0;
@@ -101,7 +56,7 @@ export default function Product(props) {
         });
 
     // console.log('here product', product);
-    // console.log('re render happened');
+    console.log("re render happened");
     // console.log('here bag', myBag);
     // console.log('bag Re', myBagRe);
     // console.log('product Re', productRe);
@@ -140,17 +95,14 @@ export default function Product(props) {
                         categoryProducts={categoryProducts}
                     />
 
-                    {/* <ProductDetails
+                    <ProductDetails
                         product={product && product}
-                        changeProduct={changeProduct}
                         user={user && user}
                         categoryProducts={categoryProducts}
                         config={config}
                         myBag={myBag}
-                        changeMyBag={changeMyBag}
-                        changeCategoryProducts={changeCategoryProducts}
                         avgRating={avgRating}
-                    /> */}
+                    />
                 </Box>
             )}
             <Box mx={3} mt={6}>

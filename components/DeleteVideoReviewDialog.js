@@ -1,20 +1,21 @@
-import { useState, useRef, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Box from '@material-ui/core/Box';
+import { useState, useRef, useEffect } from "react";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Box from "@material-ui/core/Box";
 
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
 export default function DeleteVideoReviewDialog({
     videoReviewId,
     handleDeleteForVideoReview,
+    setVideoReview,
 }) {
     const [open, setOpen] = useState(false);
-    const [scroll, setScroll] = useState('paper');
+    const [scroll, setScroll] = useState("paper");
 
     const handleClickOpen = (scrollType) => () => {
         setOpen(true);
@@ -38,37 +39,41 @@ export default function DeleteVideoReviewDialog({
     return (
         <>
             <Button
-                variant='contained'
+                variant="contained"
                 fullWidth
-                color='primary'
-                size='small'
+                color="primary"
+                size="small"
                 startIcon={<DeleteForeverIcon />}
-                onClick={handleClickOpen('paper')}
+                onClick={handleClickOpen("paper")}
             >
                 <Box px={1}>Delete</Box>
             </Button>
             <Dialog
                 fullWidth
-                maxWidth='md'
+                maxWidth="md"
                 open={open}
                 onClose={handleClose}
                 scroll={scroll}
-                aria-labelledby='scroll-dialog-title'
-                aria-describedby='scroll-dialog-description'
+                aria-labelledby="scroll-dialog-title"
+                aria-describedby="scroll-dialog-description"
             >
-                <DialogTitle id='scroll-dialog-title'>
+                <DialogTitle id="scroll-dialog-title">
                     Delete Your Video Review?
                 </DialogTitle>
 
                 <DialogActions>
-                    <Button onClick={handleClose} color='primary'>
+                    <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
                     <Button
                         onClick={() =>
-                            handleDeleteForVideoReview(videoReviewId, setOpen)
+                            handleDeleteForVideoReview(
+                                videoReviewId,
+                                setOpen,
+                                setVideoReview
+                            )
                         }
-                        color='primary'
+                        color="primary"
                     >
                         Delete
                     </Button>
