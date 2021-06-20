@@ -47,10 +47,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ProductDetailsFirstPart(props) {
-    const { product, config, avgRating, categoryProducts, myBag } = props;
+export default function ProductDetailsFirstPart({
+    product,
+    config,
+    avgRating,
+    categoryProducts,
+    myBag,
+    reviewArrayInState,
+    videoReviewArrayInState,
+}) {
     const classes = useStyles();
-    // const [myBag, setMyBag] = React.useState(props.myBag);
     const [quantity, setQuantity] = React.useState(1);
     const [value, setValue] = React.useState("/s1.jpg");
     // need for product image
@@ -292,31 +298,25 @@ export default function ProductDetailsFirstPart(props) {
                                 />
                                 <span>
                                     <Box pl={1}>
-                                        <Typography> |</Typography>
+                                        <Typography> | </Typography>
                                     </Box>
                                 </span>
                                 <span>
                                     <Box pl={1}>
                                         <Typography>
-                                            {" "}
-                                            {product &&
-                                                product.review.length}{" "}
-                                            Review
+                                            {reviewArrayInState.length} Review
                                         </Typography>
                                     </Box>
                                 </span>
                                 <span>
                                     <Box pl={1}>
-                                        <Typography> |</Typography>
+                                        <Typography> | </Typography>
                                     </Box>
                                 </span>
                                 <span>
                                     <Box pl={1}>
                                         <Typography>
-                                            {" "}
-                                            {product &&
-                                                product.video_review
-                                                    .length}{" "}
+                                            {videoReviewArrayInState.length}{" "}
                                             Video Review
                                         </Typography>
                                     </Box>

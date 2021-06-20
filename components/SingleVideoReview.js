@@ -53,17 +53,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SingleVideoReview(props) {
+export default function SingleVideoReview({
+    videoReview,
+    user,
+    handleUpdateForVideoReview,
+    handleDeleteForVideoReview,
+    handleAgreeForVideoReview,
+    handleDisagreeForVideoReview,
+}) {
     const classes = useStyles();
-    const [videoReview, setVideoReview] = React.useState(props.video_review);
-    const {
-        user,
-        handleUpdateForVideoReview,
-        handleDeleteForVideoReview,
-        handleAgreeForVideoReview,
-        handleDisagreeForVideoReview,
-    } = props;
-
     const [videoReviewAgreeLoading, setVideoReviewAgreeLoading] =
         React.useState(false);
     const [videoReviewDisagreeLoading, setVideoReviewDisagreeLoading] =
@@ -147,7 +145,6 @@ export default function SingleVideoReview(props) {
                                             handleUpdateForVideoReview={
                                                 handleUpdateForVideoReview
                                             }
-                                            setVideoReview={setVideoReview}
                                         />
                                     </Box>
                                 </Grid>
@@ -158,7 +155,6 @@ export default function SingleVideoReview(props) {
                                             handleDeleteForVideoReview={
                                                 handleDeleteForVideoReview
                                             }
-                                            setVideoReview={setVideoReview}
                                         />
                                     </Box>
                                 </Grid>

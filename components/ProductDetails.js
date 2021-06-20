@@ -53,16 +53,13 @@ export default function ProductDetails(props) {
     let product = props.product;
     let user = props.user;
     let avgRating = props.avgRating;
+    let reviewArrayInState = props.reviewArrayInState;
+    let setReviewArrayInState = props.setReviewArrayInState;
+    let videoReviewArrayInState = props.videoReviewArrayInState;
+    let setVideoReviewArrayInState = props.setVideoReviewArrayInState;
 
     const [needDisabled, setNeedDisabled] = React.useState(false);
     const [openForLogin, setOpenForLogin] = React.useState(false);
-    const [reviewArrayInState, setReviewArrayInState] = React.useState(
-        product && product.review ? product.review : []
-    );
-    const [videoReviewArrayInState, setVideoReviewArrayInState] =
-        React.useState(
-            product && product.video_review ? product.video_review : []
-        );
 
     // console.log('got re render for product details');
     // console.log('got product', product);
@@ -272,14 +269,7 @@ export default function ProductDetails(props) {
         }
     };
 
-    const handleUpdate = (
-        values,
-        setSubmitting,
-        reviewId,
-        setOpen,
-        value,
-        setReview
-    ) => {
+    const handleUpdate = (values, setSubmitting, reviewId, setOpen, value) => {
         const reviewUpdate = {
             review_detail: values.review,
             rating_star: value,
@@ -294,21 +284,32 @@ export default function ProductDetails(props) {
                 config
             )
             .then((res) => {
-                setReview(res.data);
+                const newReviewArrayInState = reviewArrayInState.map(
+                    (review) => {
+                        if (review.id === reviewId) {
+                            review = res.data;
+                        }
+                        return review;
+                    }
+                );
+                console.log("newReviewArrayInState", newReviewArrayInState);
+                setReviewArrayInState(newReviewArrayInState);
             })
             .catch((err) => console.log(err.response));
     };
 
-    const handleDelete = (reviewId, setOpen, setReview) => {
+    const handleDelete = (reviewId, setOpen) => {
         setOpen(false);
-        setReview(null);
         axios
             .delete(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/review/${reviewId}/`,
                 config
             )
             .then((res) => {
-                console.log(res.data);
+                const newReviewArrayInState = reviewArrayInState.filter(
+                    (review) => review.id !== reviewId
+                );
+                setReviewArrayInState(newReviewArrayInState);
             })
             .catch((err) => console.log(err.response));
     };
@@ -480,8 +481,7 @@ export default function ProductDetails(props) {
         values,
         setSubmitting,
         videoReviewId,
-        setOpen,
-        setVideoReview
+        setOpen
     ) => {
         const videoReviewUpdate = {
             link: values.link,
@@ -496,25 +496,32 @@ export default function ProductDetails(props) {
                 config
             )
             .then((res) => {
-                setVideoReview(res.data);
+                const newVideoReviewArrayInState = videoReviewArrayInState.map(
+                    (videoReview) => {
+                        if (videoReview.id === videoReviewId) {
+                            videoReview = res.data;
+                        }
+                        return videoReview;
+                    }
+                );
+                setVideoReviewArrayInState(newVideoReviewArrayInState);
             })
             .catch((err) => console.log(err.response));
     };
 
-    const handleDeleteForVideoReview = (
-        videoReviewId,
-        setOpen,
-        setVideoReview
-    ) => {
+    const handleDeleteForVideoReview = (videoReviewId, setOpen) => {
         setOpen(false);
-        setVideoReview(null);
         axios
             .delete(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/video-review/${videoReviewId}/`,
                 config
             )
             .then((res) => {
-                console.log(res);
+                const newVideoReviewArrayInState =
+                    videoReviewArrayInState.filter(
+                        (videoReview) => videoReview.id !== videoReviewId
+                    );
+                setVideoReviewArrayInState(newVideoReviewArrayInState);
             })
             .catch((err) => console.log(err.response));
     };
@@ -687,7 +694,7 @@ export default function ProductDetails(props) {
                             videoReviewArrayInState.length !== 0 &&
                             videoReviewArrayInState.map((video_review) => (
                                 <SingleVideoReview
-                                    video_review={video_review}
+                                    videoReview={video_review}
                                     user={user}
                                     handleUpdateForVideoReview={
                                         handleUpdateForVideoReview

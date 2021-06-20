@@ -9,57 +9,50 @@ import AddForTrialDialog from "../../components/AddForTrialDialog";
 import Box from "@material-ui/core/Box";
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Alert from "@material-ui/lab/Alert";
-import AlertTitle from "@material-ui/lab/AlertTitle";
-import Snackbar from "@material-ui/core/Snackbar";
-
-import Rating from "@material-ui/lab/Rating";
-import Chip from "@material-ui/core/Chip";
-import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
-import PaymentIcon from "@material-ui/icons/Payment";
-import RestoreIcon from "@material-ui/icons/Restore";
-import InfoIcon from "@material-ui/icons/Info";
-import RedeemIcon from "@material-ui/icons/Redeem";
-import Zoom from "react-medium-image-zoom";
 
 import Cookies from "js-cookie";
 import parseCookies from "../../lib/parseCookies";
 import axios from "axios";
 import { useEffect } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Button from "@material-ui/core/Button";
-
 export default function Product(props) {
     let product = props.product;
     let user = props.user;
     let config = props.config;
     let categoryProducts = props.categoryProducts;
-
-    console.log("first product", product);
-
     let myBag = props.myBag;
+
+    const [reviewArrayInState, setReviewArrayInState] = React.useState(
+        product && product.review ? product.review : []
+    );
+    const [videoReviewArrayInState, setVideoReviewArrayInState] =
+        React.useState(
+            product && product.video_review ? product.video_review : []
+        );
+
+    useEffect(() => {
+        // when user 1st navigate this page it will happend
+        // when user navigate same page again with other product then
+        // it will happend to change review, video review
+        setReviewArrayInState(product && product.review ? product.review : []);
+        setVideoReviewArrayInState(
+            product && product.video_review ? product.video_review : []
+        );
+    }, [product]);
 
     // ### Calculate product review rating
     let avgRating = 0;
     let totalRating = 0;
 
-    product &&
-        product.review &&
-        product.review.length !== 0 &&
-        product.review.forEach((review) => {
+    reviewArrayInState &&
+        reviewArrayInState.length !== 0 &&
+        reviewArrayInState.forEach((review) => {
             totalRating += review.rating_star;
-            let fractionalAvgRating = totalRating / product.review.length;
-            avgRating = Math.floor(fractionalAvgRating);
         });
+    let fractionalAvgRating = totalRating / reviewArrayInState.length;
+    avgRating = Math.floor(fractionalAvgRating);
 
-    // console.log('here product', product);
-    console.log("re render happened");
-    // console.log('here bag', myBag);
-    // console.log('bag Re', myBagRe);
-    // console.log('product Re', productRe);
+    console.log("re render - slug");
 
     return (
         <div>
@@ -93,6 +86,8 @@ export default function Product(props) {
                         myBag={myBag}
                         avgRating={avgRating}
                         categoryProducts={categoryProducts}
+                        reviewArrayInState={reviewArrayInState}
+                        videoReviewArrayInState={videoReviewArrayInState}
                     />
 
                     <ProductDetails
@@ -102,6 +97,10 @@ export default function Product(props) {
                         config={config}
                         myBag={myBag}
                         avgRating={avgRating}
+                        reviewArrayInState={reviewArrayInState}
+                        setReviewArrayInState={setReviewArrayInState}
+                        videoReviewArrayInState={videoReviewArrayInState}
+                        setVideoReviewArrayInState={setVideoReviewArrayInState}
                     />
                 </Box>
             )}
@@ -211,7 +210,6 @@ export async function getServerSideProps({ req, params }) {
     let categoryProducts = filteredCategoryProducts
         ? filteredCategoryProducts.slice(0, 6)
         : null;
-
     return {
         props: {
             product,

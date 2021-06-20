@@ -51,11 +51,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SingleReview(props) {
+export default function SingleReview({
+    review,
+    user,
+    handleUpdate,
+    handleDelete,
+    handleAgree,
+    handleDisagree,
+}) {
     const classes = useStyles();
-    const [review, setReview] = React.useState(props.review);
-    const { user, handleUpdate, handleDelete, handleAgree, handleDisagree } =
-        props;
     const [reviewAgreeLoading, setReviewAgreeLoading] = React.useState(false);
     const [reviewDisagreeLoading, setReviewDisagreeLoading] =
         React.useState(false);
@@ -173,14 +177,12 @@ export default function SingleReview(props) {
                                             <UpdateReviewDialog
                                                 reviewId={review.id}
                                                 handleUpdate={handleUpdate}
-                                                setReview={setReview}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm>
                                             <DeleteReviewDialog
                                                 reviewId={review.id}
                                                 handleDelete={handleDelete}
-                                                setReview={setReview}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm></Grid>
