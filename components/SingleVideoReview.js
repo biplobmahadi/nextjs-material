@@ -88,7 +88,7 @@ export default function SingleVideoReview(props) {
         );
 
     const [userDidAgreedState, setUserDidAgreedState] = React.useState(
-        userDidAgreed.length !== 0 ? true : false
+        userDidAgreed && userDidAgreed.length !== 0 ? true : false
     );
 
     const userDidDisagreed =
@@ -100,13 +100,13 @@ export default function SingleVideoReview(props) {
         );
 
     const [userDidDisagreedState, setUserDidDisagreedState] = React.useState(
-        userDidDisagreed.length !== 0 ? true : false
+        userDidDisagreed && userDidDisagreed.length !== 0 ? true : false
     );
 
     const [videoReviewCountId, setVideoReviewCountId] = React.useState(
-        userDidAgreed.length !== 0
+        userDidAgreed && userDidAgreed.length !== 0
             ? userDidAgreed[0].id
-            : userDidDisagreed.length !== 0
+            : userDidDisagreed && userDidDisagreed.length !== 0
             ? userDidDisagreed[0].id
             : null
     );

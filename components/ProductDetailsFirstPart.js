@@ -301,7 +301,23 @@ export default function ProductDetailsFirstPart(props) {
                                             {" "}
                                             {product &&
                                                 product.review.length}{" "}
-                                            Rating & Review
+                                            Review
+                                        </Typography>
+                                    </Box>
+                                </span>
+                                <span>
+                                    <Box pl={1}>
+                                        <Typography> |</Typography>
+                                    </Box>
+                                </span>
+                                <span>
+                                    <Box pl={1}>
+                                        <Typography>
+                                            {" "}
+                                            {product &&
+                                                product.video_review
+                                                    .length}{" "}
+                                            Video Review
                                         </Typography>
                                     </Box>
                                 </span>

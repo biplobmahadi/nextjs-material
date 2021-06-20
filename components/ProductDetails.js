@@ -47,18 +47,22 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 // 6. formik to get form value, here also no need to use state.
 
 export default function ProductDetails(props) {
-    const [needDisabled, setNeedDisabled] = React.useState(false);
-    const [openForLogin, setOpenForLogin] = React.useState(false);
-    const [reviewInState, setReviewInState] = React.useState([]);
-    const [videoReviewArrayInState, setVideoReviewArrayInState] =
-        React.useState([]);
-
     let categoryProducts = props.categoryProducts;
     let myBag = props.myBag;
     let config = props.config;
     let product = props.product;
     let user = props.user;
     let avgRating = props.avgRating;
+
+    const [needDisabled, setNeedDisabled] = React.useState(false);
+    const [openForLogin, setOpenForLogin] = React.useState(false);
+    const [reviewArrayInState, setReviewArrayInState] = React.useState(
+        product && product.review ? product.review : []
+    );
+    const [videoReviewArrayInState, setVideoReviewArrayInState] =
+        React.useState(
+            product && product.video_review ? product.video_review : []
+        );
 
     // console.log('got re render for product details');
     // console.log('got product', product);
@@ -78,20 +82,20 @@ export default function ProductDetails(props) {
     let totalThreeRating = [];
     let totalFourRating = [];
     let totalFiveRating = [];
-    if (product && product.review && product.review.length !== 0) {
-        totalOneRating = product.review.filter(
+    if (reviewArrayInState && reviewArrayInState.length !== 0) {
+        totalOneRating = reviewArrayInState.filter(
             (review) => review.rating_star === 1
         );
-        totalTwoRating = product.review.filter(
+        totalTwoRating = reviewArrayInState.filter(
             (review) => review.rating_star === 2
         );
-        totalThreeRating = product.review.filter(
+        totalThreeRating = reviewArrayInState.filter(
             (review) => review.rating_star === 3
         );
-        totalFourRating = product.review.filter(
+        totalFourRating = reviewArrayInState.filter(
             (review) => review.rating_star === 4
         );
-        totalFiveRating = product.review.filter(
+        totalFiveRating = reviewArrayInState.filter(
             (review) => review.rating_star === 5
         );
     }
@@ -123,8 +127,10 @@ export default function ProductDetails(props) {
                     console.log(res.data);
                     // user can add more than one review, so use an array as state
                     // state need to update with all element, so need to concat with previous element
-                    const newReviewInState = reviewInState.concat(res.data);
-                    setReviewInState(newReviewInState);
+                    const newReviewArrayInState = reviewArrayInState.concat(
+                        res.data
+                    );
+                    setReviewArrayInState(newReviewArrayInState);
                 })
                 .catch((err) => console.log(err.response));
         } else {
@@ -137,328 +143,172 @@ export default function ProductDetails(props) {
     };
 
     const handleAgree = (
-        stringifyReview,
+        review,
         setReviewAgreeLoading,
-        setOpenForAlreadyDone
+        setOpenForAlreadyDone,
+        userDidAgreedState,
+        userDidDisagreedState,
+        setUserDidAgreedState,
+        setUserDidDisagreedState,
+        setLengthForAgreed,
+        setLengthForDisagreed,
+        reviewCountId,
+        setReviewCountId
     ) => {
         // start loading
         setReviewAgreeLoading(true);
 
         if (Cookies.get("haha_ecom_bangla_token")) {
-            const review = JSON.parse(stringifyReview);
-
             // ####### Process of agreed
-            // 1st check this user is equal to the review made user or not
-            // if same user, then user can't add agreed
-            // if the user of this review is not same requested user
-            // then check, is this user already agreed or not
-            // if user already agreed than also show a msg, you cant agreed
-            // if user not same of creator and also not agreed yet then the process will start
-            // update the agreed backed with this user,
-            // ### if this user disagreed before then need to remove from disagreed
-            // so remove this user from disagreed and finally get updated product and bag for re render
-            // ## if user not disagreed before then just get updated product and bag for re render
-            // Done #######
+            if (!userDidAgreedState) {
+                if (!userDidDisagreedState) {
+                    const reviewCountForAgree = {
+                        vote: "agreed",
+                        review: review.id,
+                    };
 
-            // ######### All in all, User can not agreed and disagreed at a time
-
-            // check user who own this review,then user can't make agreed
-            // also check, user already agreed or not
-            // if already agreed then can not agreed now
-            if (
-                !review.reviewcountforagree.user.includes(user.pk) &&
-                review.user.pk !== user.pk
-            ) {
-                const reviewCountForAgree = {
-                    agreed: review.reviewcountforagree.agreed + 1,
-                    user: review.reviewcountforagree.user.concat(user.pk),
-                };
-
-                axios
-                    .patch(
-                        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews-count-for-agree-update/${review.reviewcountforagree.id}/`,
-                        reviewCountForAgree,
-                        config
-                    )
-                    .then((res) => {
-                        // here, if user disagreed before then need to remove from disagreed
-                        // because User can not agreed and disagreed at a time
-                        if (
-                            review.reviewcountfordisagree.user.includes(user.pk)
-                        ) {
-                            let arr = review.reviewcountfordisagree.user;
-                            for (let i = 0; i < arr.length; i++) {
-                                if (arr[i] === user.pk) {
-                                    arr.splice(i, 1);
-                                    i--;
-                                }
-                            }
-                            const reviewCountForDisagree = {
-                                disagreed:
-                                    review.reviewcountfordisagree.disagreed - 1,
-                                user: arr,
-                            };
-
-                            axios
-                                .patch(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/reviews-count-for-disagree-update/${review.reviewcountfordisagree.id}/`,
-                                    reviewCountForDisagree,
-                                    config
-                                )
-                                .then((res) => {
-                                    // final get will be after all post, patch done
-                                    axios
-                                        .get(
-                                            `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                                        )
-                                        .then((res) => {
-                                            changeProduct(res.data);
-                                            axios
-                                                .get(
-                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                                    config
-                                                )
-                                                .then((res) => {
-                                                    setReviewAgreeLoading(
-                                                        false
-                                                    );
-                                                    changeMyBag(res.data);
-                                                })
-                                                .catch((err) =>
-                                                    console.log(err.response)
-                                                );
-                                        })
-                                        .catch((err) =>
-                                            console.log(err.response)
-                                        );
-                                })
-                                .catch((err) => console.log(err.response));
-                        } else {
-                            // final get will be after all post, patch done
-                            axios
-                                .get(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                                )
-                                .then((res) => {
-                                    changeProduct(res.data);
-                                    axios
-                                        .get(
-                                            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                            config
-                                        )
-                                        .then((res) => {
-                                            setReviewAgreeLoading(false);
-                                            changeMyBag(res.data);
-                                        })
-                                        .catch((err) =>
-                                            console.log(err.response)
-                                        );
-                                })
-                                .catch((err) => console.log(err.response));
-                        }
-                    })
-                    .catch((err) => console.log(err.response));
+                    setReviewAgreeLoading(false);
+                    setUserDidAgreedState(true);
+                    setLengthForAgreed((prevState) => prevState + 1);
+                    axios
+                        .post(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/review-count-create/`,
+                            reviewCountForAgree,
+                            config
+                        )
+                        .then((res) => {
+                            setReviewCountId(res.data.id);
+                        })
+                        .catch((err) => console.log(err.response));
+                } else {
+                    setReviewAgreeLoading(false);
+                    setUserDidAgreedState(true);
+                    setUserDidDisagreedState(false);
+                    setLengthForAgreed((prevState) => prevState + 1);
+                    setLengthForDisagreed((prevState) => prevState - 1);
+                    axios
+                        .patch(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/review-count-update/${reviewCountId}/`,
+                            { vote: "agreed" },
+                            config
+                        )
+                        .then((res) => {
+                            console.log(res.data);
+                        })
+                        .catch((err) => console.log(err.response));
+                }
             } else {
-                // console.log(
-                //     'you cant agree with your own review or already done'
-                // );
                 setReviewAgreeLoading(false);
                 setOpenForAlreadyDone(true);
             }
         } else {
-            // console.log('login first');
             setReviewAgreeLoading(false);
             setOpenForLogin(true);
         }
     };
 
     const handleDisagree = (
-        stringifyReview,
+        review,
         setReviewDisagreeLoading,
-        setOpenForAlreadyDone
+        setOpenForAlreadyDone,
+        userDidAgreedState,
+        userDidDisagreedState,
+        setUserDidAgreedState,
+        setUserDidDisagreedState,
+        setLengthForAgreed,
+        setLengthForDisagreed,
+        reviewCountId,
+        setReviewCountId
     ) => {
         // start loading
         setReviewDisagreeLoading(true);
 
         if (Cookies.get("haha_ecom_bangla_token")) {
-            const review = JSON.parse(stringifyReview);
-
-            // console.log('setReviewDisagreeLoading', setReviewDisagreeLoading);
-
             // ###########  Same process like agreed
-            // ######### All in all, User can not agreed and disagreed at a time
+            if (!userDidDisagreedState) {
+                if (!userDidAgreedState) {
+                    const reviewCountForAgree = {
+                        vote: "disagreed",
+                        review: review.id,
+                    };
 
-            // check user who own this review, then user can't make disagreed
-            // also check, user already disagreed or not
-            // if already disagreed then can not disagreed now
-            if (
-                !review.reviewcountfordisagree.user.includes(user.pk) &&
-                review.user.pk !== user.pk
-            ) {
-                const reviewCountForDisagree = {
-                    disagreed: review.reviewcountfordisagree.disagreed + 1,
-                    user: review.reviewcountfordisagree.user.concat(user.pk),
-                };
-
-                axios
-                    .patch(
-                        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews-count-for-disagree-update/${review.reviewcountfordisagree.id}/`,
-                        reviewCountForDisagree,
-                        config
-                    )
-                    .then((res) => {
-                        // here, if user agreed before then need to remove from agreed
-                        // because User can not agreed and disagreed at a time
-
-                        if (review.reviewcountforagree.user.includes(user.pk)) {
-                            let arr = review.reviewcountforagree.user;
-                            for (let i = 0; i < arr.length; i++) {
-                                if (arr[i] === user.pk) {
-                                    arr.splice(i, 1);
-                                    i--;
-                                }
-                            }
-                            const reviewCountForAgree = {
-                                agreed: review.reviewcountforagree.agreed - 1,
-                                user: arr,
-                            };
-
-                            axios
-                                .patch(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/reviews-count-for-agree-update/${review.reviewcountforagree.id}/`,
-                                    reviewCountForAgree,
-                                    config
-                                )
-                                .then((res) => {
-                                    // final get will be after all post, patch done
-                                    axios
-                                        .get(
-                                            `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                                        )
-                                        .then((res) => {
-                                            changeProduct(res.data);
-                                            axios
-                                                .get(
-                                                    `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                                    config
-                                                )
-                                                .then((res) => {
-                                                    setReviewDisagreeLoading(
-                                                        false
-                                                    );
-                                                    changeMyBag(res.data);
-                                                })
-                                                .catch((err) =>
-                                                    console.log(err.response)
-                                                );
-                                        })
-                                        .catch((err) =>
-                                            console.log(err.response)
-                                        );
-                                })
-                                .catch((err) => console.log(err.response));
-                        } else {
-                            // final get will be after all post, patch done
-                            axios
-                                .get(
-                                    `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                                )
-                                .then((res) => {
-                                    changeProduct(res.data);
-                                    axios
-                                        .get(
-                                            `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                            config
-                                        )
-                                        .then((res) => {
-                                            setReviewDisagreeLoading(false);
-                                            changeMyBag(res.data);
-                                        })
-                                        .catch((err) =>
-                                            console.log(err.response)
-                                        );
-                                })
-                                .catch((err) => console.log(err.response));
-                        }
-                    })
-                    .catch((err) => console.log(err.response));
+                    setReviewDisagreeLoading(false);
+                    setUserDidDisagreedState(true);
+                    setLengthForDisagreed((prevState) => prevState + 1);
+                    axios
+                        .post(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/review-count-create/`,
+                            reviewCountForAgree,
+                            config
+                        )
+                        .then((res) => {
+                            setReviewCountId(res.data.id);
+                        })
+                        .catch((err) => console.log(err.response));
+                } else {
+                    setReviewDisagreeLoading(false);
+                    setUserDidDisagreedState(true);
+                    setUserDidAgreedState(false);
+                    setLengthForDisagreed((prevState) => prevState + 1);
+                    setLengthForAgreed((prevState) => prevState - 1);
+                    axios
+                        .patch(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/review-count-update/${reviewCountId}/`,
+                            { vote: "disagreed" },
+                            config
+                        )
+                        .then((res) => {
+                            console.log(res.data);
+                        })
+                        .catch((err) => console.log(err.response));
+                }
             } else {
-                // console.log(
-                //     'you cant disagree with your review or already done'
-                // );
                 setReviewDisagreeLoading(false);
                 setOpenForAlreadyDone(true);
             }
         } else {
-            // console.log('login first');
             setReviewDisagreeLoading(false);
             setOpenForLogin(true);
         }
     };
 
-    const handleUpdate = (values, setSubmitting, reviewId, setOpen, value) => {
+    const handleUpdate = (
+        values,
+        setSubmitting,
+        reviewId,
+        setOpen,
+        value,
+        setReview
+    ) => {
         const reviewUpdate = {
             review_detail: values.review,
             rating_star: value,
         };
 
+        setSubmitting(false);
+        setOpen(false);
         axios
             .patch(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/${reviewId}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/review/${reviewId}/`,
                 reviewUpdate,
                 config
             )
             .then((res) => {
-                // final get will be after all post, patch done
-                axios
-                    .get(
-                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                    )
-                    .then((res) => {
-                        changeProduct(res.data);
-                        axios
-                            .get(
-                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                config
-                            )
-                            .then((res) => {
-                                changeMyBag(res.data);
-                                setSubmitting(false);
-                                setOpen(false);
-                            })
-                            .catch((err) => console.log(err.response));
-                    })
-                    .catch((err) => console.log(err.response));
+                setReview(res.data);
             })
             .catch((err) => console.log(err.response));
     };
 
-    const handleDelete = (reviewId, setOpen) => {
+    const handleDelete = (reviewId, setOpen, setReview) => {
+        setOpen(false);
+        setReview(null);
         axios
             .delete(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/${reviewId}/`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/review/${reviewId}/`,
                 config
             )
             .then((res) => {
-                // final get will be after all post, patch done
-                axios
-                    .get(
-                        `${process.env.NEXT_PUBLIC_BASE_URL}/products/${product.slug}/`
-                    )
-                    .then((res) => {
-                        changeProduct(res.data);
-                        axios
-                            .get(
-                                `${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/${myBag.id}/`,
-                                config
-                            )
-                            .then((res) => {
-                                changeMyBag(res.data);
-                                setOpen(false);
-                            })
-                            .catch((err) => console.log(err.response));
-                    })
-                    .catch((err) => console.log(err.response));
+                console.log(res.data);
             })
             .catch((err) => console.log(err.response));
     };
@@ -514,7 +364,6 @@ export default function ProductDetails(props) {
 
         if (Cookies.get("haha_ecom_bangla_token")) {
             // ####### Process of agreed
-            // lengthForAgreed === lengthOfCountForAgreed use for state change to give effect
             if (!userDidAgreedState) {
                 if (!userDidDisagreedState) {
                     const videoReviewCountForAgree = {
@@ -557,7 +406,6 @@ export default function ProductDetails(props) {
                 setOpenForAlreadyDone(true);
             }
         } else {
-            // console.log('login first');
             setVideoReviewAgreeLoading(false);
             setOpenForLogin(true);
         }
@@ -623,7 +471,6 @@ export default function ProductDetails(props) {
                 setOpenForAlreadyDone(true);
             }
         } else {
-            // console.log('login first');
             setVideoReviewDisagreeLoading(false);
             setOpenForLogin(true);
         }
@@ -649,7 +496,6 @@ export default function ProductDetails(props) {
                 config
             )
             .then((res) => {
-                console.log(res.data);
                 setVideoReview(res.data);
             })
             .catch((err) => console.log(err.response));
@@ -815,7 +661,7 @@ export default function ProductDetails(props) {
                 </Box>
                 <Box mt={2}>
                     <Grid container spacing={2}>
-                        {product &&
+                        {/* {product &&
                             product.video_review &&
                             product.video_review.length !== 0 &&
                             product.video_review.map((video_review) => (
@@ -835,7 +681,7 @@ export default function ProductDetails(props) {
                                         handleDisagreeForVideoReview
                                     }
                                 />
-                            ))}
+                            ))} */}
                         {/* no need to loop previous all, so created videoReview only loop here, user can create multiple at a time, so need array */}
                         {videoReviewArrayInState &&
                             videoReviewArrayInState.length !== 0 &&
@@ -880,7 +726,7 @@ export default function ProductDetails(props) {
                     style={{ backgroundColor: "white" }}
                 >
                     <Typography variant="h5">
-                        <strong>Review & Ratings</strong>
+                        <strong>Reviews & Ratings</strong>
                     </Typography>
                 </Box>
 
@@ -908,8 +754,9 @@ export default function ProductDetails(props) {
                                     />
 
                                     <Typography>
-                                        {product && product.review.length}{" "}
-                                        Rating & Review
+                                        {reviewArrayInState &&
+                                            reviewArrayInState.length}{" "}
+                                        Review & Rating
                                     </Typography>
                                 </Box>
                                 <Box mt={3}>
@@ -1060,11 +907,9 @@ export default function ProductDetails(props) {
                             handleDisagree={handleDisagree}
                         />
                     ))} */}
-                {/* no need to loop previous all, so created review only loop here, user can create multiple at a time, so need array */}
-
-                {/* {reviewInState &&
-                    reviewInState.length !== 0 &&
-                    reviewInState.map((review) => (
+                {reviewArrayInState &&
+                    reviewArrayInState.length !== 0 &&
+                    reviewArrayInState.map((review) => (
                         <SingleReview
                             review={review}
                             user={user}
@@ -1073,7 +918,7 @@ export default function ProductDetails(props) {
                             handleAgree={handleAgree}
                             handleDisagree={handleDisagree}
                         />
-                    ))} */}
+                    ))}
                 {product && product.review.length === 0 && (
                     <Box mt={2}>
                         <Alert severity="error">

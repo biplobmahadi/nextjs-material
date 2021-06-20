@@ -259,7 +259,7 @@ export default function ProductCard({
                             horizontal: "center",
                         }}
                         open={openForLogin}
-                        autoHideDuration={4000}
+                        autoHideDuration={2000}
                         onClose={handleCloseForLogin}
                     >
                         <Alert severity="info" variant="filled">
@@ -272,7 +272,7 @@ export default function ProductCard({
                             horizontal: "center",
                         }}
                         open={openForAdd}
-                        autoHideDuration={4000}
+                        autoHideDuration={2000}
                         onClose={handleCloseForAdd}
                     >
                         <Alert severity="success" variant="filled">
@@ -285,7 +285,7 @@ export default function ProductCard({
                             horizontal: "center",
                         }}
                         open={openForAddAsTrial}
-                        autoHideDuration={4000}
+                        autoHideDuration={2000}
                         onClose={handleCloseForAddAsTrial}
                     >
                         <Alert severity="info" variant="filled">
