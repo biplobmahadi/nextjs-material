@@ -152,6 +152,11 @@ export default function ProductDetailsFirstPart({
         setCategoryProductsWithQuantityExistInBag,
     ] = useState();
 
+    console.log(
+        "categoryProductsWithQuantityExistInBag",
+        categoryProductsWithQuantityExistInBag
+    );
+
     useEffect(() => {
         setProductWithQuantityInBag(
             productWithQuantityExistInBag &&

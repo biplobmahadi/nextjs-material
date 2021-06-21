@@ -89,11 +89,15 @@ export default function ProductForTrialCard({
     };
 
     const productExist =
+        categoryProductsWithQuantityExistInBag &&
         categoryProductsWithQuantityExistInBag.length !== 0 &&
         categoryProductsWithQuantityExistInBag.filter(
             (productWithQuantityInBag) =>
-                productWithQuantityInBag.product.id === product.id
+                productWithQuantityInBag.product.id === product.id ||
+                productWithQuantityInBag.product === product.id
         );
+
+    console.log(`productExist - ${product.id}`, productExist);
 
     const handleAddToBag = () => {
         // create a loading
