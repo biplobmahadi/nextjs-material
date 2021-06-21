@@ -1,16 +1,7 @@
-import Head from "next/head";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { TextField } from "formik-material-ui";
-import ProductCard from "../components/ProductCard";
+import ProductCard from "./ProductCard";
 import ProductDetailsTable from "../components/ProductDetailsTable";
 import Review from "./forms/Review";
 import VideoReview from "./forms/VideoReview";
-import UpdateReviewDialog from "./UpdateReviewDialog";
-import DeleteReviewDialog from "./DeleteReviewDialog";
-import UpdateVideoReviewDialog from "./UpdateVideoReviewDialog";
-import DeleteVideoReviewDialog from "./DeleteVideoReviewDialog";
-import MainFooter from "../components/MainFooter";
 import Box from "@material-ui/core/Box";
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
@@ -19,13 +10,6 @@ import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import Snackbar from "@material-ui/core/Snackbar";
 
-import StarHalfIcon from "@material-ui/icons/StarHalf";
-import Button from "@material-ui/core/Button";
-import ThumbUpIcon from "@material-ui/icons/ThumbUp";
-import ThumbDownIcon from "@material-ui/icons/ThumbDown";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import UpdateIcon from "@material-ui/icons/Update";
-import EditIcon from "@material-ui/icons/Edit";
 import Rating from "@material-ui/lab/Rating";
 import ReactPlayer from "react-player/youtube";
 
@@ -35,34 +19,20 @@ import SingleReview from "./SingleReview";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
-
-// 1. when anything change on state the component will re render
-// 2. we use useEffect only if we need anything to do before component mount or willmount
-// 3. these two are most important about react component
-// 4. Don't depend on state for data, which related to backend. because state can be changed from devtools
-//    if state change then in server everything will be changed which is too harmful..
-// 5. we can't change component props. so this is secure
-// 6. formik to get form value, here also no need to use state.
-
-export default function ProductDetails(props) {
-    let categoryProducts = props.categoryProducts;
-    let myBag = props.myBag;
-    let config = props.config;
-    let product = props.product;
-    let user = props.user;
-    let avgRating = props.avgRating;
-    let reviewArrayInState = props.reviewArrayInState;
-    let setReviewArrayInState = props.setReviewArrayInState;
-    let videoReviewArrayInState = props.videoReviewArrayInState;
-    let setVideoReviewArrayInState = props.setVideoReviewArrayInState;
-
+export default function ProductDetails({
+    categoryProducts,
+    myBag,
+    config,
+    product,
+    user,
+    avgRating,
+    reviewArrayInState,
+    setReviewArrayInState,
+    videoReviewArrayInState,
+    setVideoReviewArrayInState,
+}) {
     const [needDisabled, setNeedDisabled] = React.useState(false);
     const [openForLogin, setOpenForLogin] = React.useState(false);
-
-    // console.log('got re render for product details');
-    // console.log('got product', product);
 
     // alert close function
     const handleCloseForLogin = (event, reason) => {
@@ -131,7 +101,6 @@ export default function ProductDetails(props) {
                 })
                 .catch((err) => console.log(err.response));
         } else {
-            // console.log('login first');
             setOpenForLogin(true);
             setSubmitting(false);
             setValue(3);
@@ -155,8 +124,13 @@ export default function ProductDetails(props) {
         // start loading
         setReviewAgreeLoading(true);
 
+        // if user not login then need login msg showing
         if (Cookies.get("haha_ecom_bangla_token")) {
             // ####### Process of agreed
+            // 1st check is userDidAgreed, if true then msg will already done
+            // if not userDidAgreed then check is userDidDisagreed
+            // if userDidDisagreed then patch with agreed and state for agreed will plus, disagreed will minus
+            // if not userDidDisagreed then post with agreed and state for agreed will plus
             if (!userDidAgreedState) {
                 if (!userDidDisagreedState) {
                     const reviewCountForAgree = {
@@ -221,7 +195,7 @@ export default function ProductDetails(props) {
         setReviewDisagreeLoading(true);
 
         if (Cookies.get("haha_ecom_bangla_token")) {
-            // ###########  Same process like agreed
+            // ###########  Same process like agreed but opposite
             if (!userDidDisagreedState) {
                 if (!userDidAgreedState) {
                     const reviewCountForAgree = {
@@ -284,6 +258,8 @@ export default function ProductDetails(props) {
                 config
             )
             .then((res) => {
+                // when user update his review then just change that specific review by mapping
+                // which review id is matched for this new patched review id will change
                 const newReviewArrayInState = reviewArrayInState.map(
                     (review) => {
                         if (review.id === reviewId) {
@@ -292,7 +268,6 @@ export default function ProductDetails(props) {
                         return review;
                     }
                 );
-                console.log("newReviewArrayInState", newReviewArrayInState);
                 setReviewArrayInState(newReviewArrayInState);
             })
             .catch((err) => console.log(err.response));
@@ -306,6 +281,8 @@ export default function ProductDetails(props) {
                 config
             )
             .then((res) => {
+                // when user delete this review, then just filter previous all review
+                // without this review all review will added to state
                 const newReviewArrayInState = reviewArrayInState.filter(
                     (review) => review.id !== reviewId
                 );
@@ -365,6 +342,10 @@ export default function ProductDetails(props) {
 
         if (Cookies.get("haha_ecom_bangla_token")) {
             // ####### Process of agreed
+            // 1st check is userDidAgreed, if true then msg will already done
+            // if not userDidAgreed then check is userDidDisagreed
+            // if userDidDisagreed then patch with agreed and state for agreed will plus, disagreed will minus
+            // if not userDidDisagreed then post with agreed and state for agreed will plus
             if (!userDidAgreedState) {
                 if (!userDidDisagreedState) {
                     const videoReviewCountForAgree = {
@@ -429,7 +410,7 @@ export default function ProductDetails(props) {
         setVideoReviewDisagreeLoading(true);
 
         if (Cookies.get("haha_ecom_bangla_token")) {
-            // ###########  Same process like agreed
+            // ###########  Same process like agreed but opposite
             if (!userDidDisagreedState) {
                 if (!userDidAgreedState) {
                     const videoReviewCountForAgree = {
@@ -496,6 +477,8 @@ export default function ProductDetails(props) {
                 config
             )
             .then((res) => {
+                // when user update his video review then just change that specific video review by mapping
+                // which video review id is matched for this new patched video review id will change
                 const newVideoReviewArrayInState = videoReviewArrayInState.map(
                     (videoReview) => {
                         if (videoReview.id === videoReviewId) {
@@ -517,6 +500,8 @@ export default function ProductDetails(props) {
                 config
             )
             .then((res) => {
+                // when user delete this video review, then just filter previous all video review
+                // without this video review all video review will added to state
                 const newVideoReviewArrayInState =
                     videoReviewArrayInState.filter(
                         (videoReview) => videoReview.id !== videoReviewId

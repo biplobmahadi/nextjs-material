@@ -5,30 +5,31 @@ import ProductDetailsFirstPart from "../../components/ProductDetailsFirstPart";
 import Size from "../../components/forms/Size";
 import Quantity from "../../components/forms/Quantity";
 import MainFooter from "../../components/MainFooter";
-import AddForTrialDialog from "../../components/AddForTrialDialog";
 import Box from "@material-ui/core/Box";
-import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 
-import Cookies from "js-cookie";
 import parseCookies from "../../lib/parseCookies";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-export default function Product(props) {
-    let product = props.product;
-    let user = props.user;
-    let config = props.config;
-    let categoryProducts = props.categoryProducts;
-    let myBag = props.myBag;
-
+export default function Product({
+    product,
+    user,
+    config,
+    categoryProducts,
+    myBag,
+}) {
+    // set all review and video review as state, when we change any one then full page will re-render
+    // then rating, review, video review all will updated
     const [reviewArrayInState, setReviewArrayInState] = useState([]);
     const [videoReviewArrayInState, setVideoReviewArrayInState] = useState([]);
 
     useEffect(() => {
-        // when user 1st navigate this page it will happend
+        // when user 1st navigate this page it will happend, state will assign herer
         // when user navigate same page again with other product then
         // it will happend to change review, video review
+        // because same page navigation when happend, state not change by default in nextjs
+        // so need to re-assign state for new product
         setReviewArrayInState(product && product.review ? product.review : []);
         setVideoReviewArrayInState(
             product && product.video_review ? product.video_review : []
@@ -36,6 +37,7 @@ export default function Product(props) {
     }, [product]);
 
     // ### Calculate product review rating
+    // it will show in productDetailsFirst part, and also review and rating section
     let avgRating = 0;
     let totalRating = 0;
 
@@ -116,11 +118,11 @@ const fetchDataForProduct = async (params) =>
             error: err.response.data,
         }));
 
-const fetchDataForBag = async (config) =>
+const fetchDataForBags = async (config) =>
     await axios
         .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, config)
         .then((res) => ({
-            bag: res.data,
+            bags: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
@@ -170,12 +172,12 @@ export async function getServerSideProps({ req, params }) {
     };
 
     const dataProduct = await fetchDataForProduct(params);
-    const dataBag = await fetchDataForBag(config);
+    const dataBags = await fetchDataForBags(config);
     const dataUser = await fetchDataForUser(config);
 
     const user = dataUser.user ? dataUser.user : null;
 
-    // ###### only here
+    // ###### Here for bag
     // always create bag first if this page has add to bag avaiable
     // it's not good to create bag again again for visiting this page
     // if user already has an non order bag then find that, there have many in worst case, so find the 1st one
@@ -183,10 +185,10 @@ export async function getServerSideProps({ req, params }) {
     // if user not logged in then also they can view this page, so here we don't
     // get any bag and user, so myBag will null in this case -> no bug will occur
     let myBag = null;
-    if (dataBag.bag && dataBag.bag.length !== 0) {
-        let allMyBag = dataBag.bag;
+    if (dataBags.bags && dataBags.bags.length !== 0) {
+        let allMyBag = dataBags.bags;
         myBag = allMyBag[0];
-    } else if (dataBag.bag && dataBag.bag.length === 0) {
+    } else if (dataBags.bags && dataBags.bags.length === 0) {
         const dataBagCreate = await fetchDataForBagCreate(config);
         myBag = dataBagCreate.bag;
     }

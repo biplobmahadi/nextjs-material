@@ -19,57 +19,17 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "../src/Link";
 
-let myBagRe;
-let mensShirtProductsRe;
-let womensPantProductsRe;
-
-export default function Index(props) {
-    const router = useRouter();
-    const [reRender, setReRender] = React.useState(false);
-
-    const { config, trending } = props;
-
-    let myBag = myBagRe ? myBagRe : props.myBag;
-    let mensShirtProducts = mensShirtProductsRe
-        ? mensShirtProductsRe
-        : props.mensShirtProducts;
-
-    let womensPantProducts = womensPantProductsRe
-        ? womensPantProductsRe
-        : props.womensPantProducts;
-
-    const changeMensShirtProducts = (value) => {
-        mensShirtProductsRe = value.slice(0, 6);
-
-        // setReRender(!reRender);
-    };
-    const changeWomensPantProducts = (value) => {
-        womensPantProductsRe = value.slice(0, 6);
-
-        // setReRender(!reRender);
-    };
-
-    const changeMyBag = (value) => {
-        myBagRe = value;
-        // console.log('my bag now', myBagRe);
-
-        setReRender(!reRender);
-    };
-
-    // here useEffect -> when component mount and update myBagRe, mensShirtProductsRe will undefined
-    // because, when we change route then myBagRe, mensShirtProductsRe again remain previous one which is not
-    // updated one, that's why we make it undefined and bag, mensShirtProducts will server rendered
-
+export default function Index({
+    config,
+    trending,
+    myBag,
+    mensShirtProducts,
+    womensPantProducts,
+}) {
     useEffect(() => {
-        myBagRe = undefined;
-        mensShirtProductsRe = undefined;
-        womensPantProductsRe = undefined;
+        console.log("mounted");
     });
 
-    // console.log('top product', topShirtProducts);
-    // console.log('bottom product', bottomPantProducts);
-    // console.log('my bag 1st ', myBag);
-    // console.log('my bag Re ', myBagRe);
     return (
         <div>
             <Head>
@@ -159,17 +119,13 @@ export default function Index(props) {
 
                 <MensShirt
                     myBag={myBag}
-                    changeMyBag={changeMyBag}
                     mensShirtProducts={mensShirtProducts}
-                    changeMensShirtProducts={changeMensShirtProducts}
                     config={config}
                 />
 
                 <WomensPant
                     myBag={myBag}
-                    changeMyBag={changeMyBag}
                     womensPantProducts={womensPantProducts}
-                    changeWomensPantProducts={changeWomensPantProducts}
                     config={config}
                 />
             </Box>
@@ -180,14 +136,24 @@ export default function Index(props) {
     );
 }
 
-const fetchDataForBag = async (config) =>
+const fetchDataForBags = async (config) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, config)
+        .then((res) => ({
+            bags: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
+const fetchDataForBagCreate = async (config) =>
+    await axios
+        .post(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, {}, config)
         .then((res) => ({
             bag: res.data,
         }))
         .catch((err) => ({
-            error: err.response,
+            error: err.response.data,
         }));
 
 const fetchDataForMensShirt = async () =>
@@ -234,22 +200,22 @@ export async function getServerSideProps({ req, params }) {
         },
     };
 
-    const dataBag = await fetchDataForBag(config);
+    const dataBags = await fetchDataForBags(config);
 
+    // ###### Here for bag
+    // always create bag first if this page has add to bag avaiable
+    // it's not good to create bag again again for visiting this page
+    // if user already has an non order bag then find that, there have many in worst case, so find the 1st one
+    // if user have no non order bag then create one bag for this user
+    // if user not logged in then also they can view this page, so here we don't
+    // get any bag and user, so myBag will null in this case -> no bug will occur
     let myBag = null;
-    if (dataBag.bag) {
-        let allMyBag = dataBag.bag;
-        let myBagNotSendToMyOrder = allMyBag.filter(
-            (myBag) => myBag.is_send_to_my_order === false
-        );
-        // console.log(myBagNotSendToMyOrder[0])
-        if (myBagNotSendToMyOrder[0]) {
-            myBag = myBagNotSendToMyOrder[0];
-            // We got exact bag for user
-            // 1st we filter out the bags whose not send to my order
-            // then there have many bags for that user because of backend, hacker can do anything!!
-            // the 1st created one is selected as myBag
-        }
+    if (dataBags.bags && dataBags.bags.length !== 0) {
+        let allMyBag = dataBags.bags;
+        myBag = allMyBag[0];
+    } else if (dataBags.bags && dataBags.bags.length === 0) {
+        const dataBagCreate = await fetchDataForBagCreate(config);
+        myBag = dataBagCreate.bag;
     }
 
     const dataMensShirt = await fetchDataForMensShirt();

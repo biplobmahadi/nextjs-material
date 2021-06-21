@@ -88,16 +88,23 @@ export default function ProductForTrialCard({
         setOpenForTwoAlreadyAdded(false);
     };
 
-    const productExist =
+    // we get all categoryProductsWithQuantityExistInBag
+    // now check this productWithQuantity exist in bag or not
+    // if exist then no need to add this as trial
+    const productWithQuantityExist =
         categoryProductsWithQuantityExistInBag &&
         categoryProductsWithQuantityExistInBag.length !== 0 &&
         categoryProductsWithQuantityExistInBag.filter(
             (productWithQuantityInBag) =>
                 productWithQuantityInBag.product.id === product.id ||
                 productWithQuantityInBag.product === product.id
+            // ######### VVI
+            // here we need to add two type filter
+            // 1st, when we get categoryProductsWithQuantityExistInBag,
+            // here productWithQuantityInBag has product details object
+            // but when we set categoryProductsWithQuantityExistInBag after adding new productWithQuantity,
+            // then the post method only give productId as product with productWithQuantity
         );
-
-    console.log(`productExist - ${product.id}`, productExist);
 
     const handleAddToBag = () => {
         // create a loading
@@ -107,56 +114,33 @@ export default function ProductForTrialCard({
 
         let addToProductWithQuantity = {
             product: product.id,
-            quantity: 1,
+            quantity: 1, // here in bag, user can't add more quantity to trial, only one product can trial
             add_as_trial: true,
             my_bag: myBag.id,
         };
 
-        // need to get the trial product of same category in myBag
-        // because, if trial product of same category is 2 then, it will not add more
-        // so 1st find all trial product of same category in myBag
-
-        // console.log(
-        //     'trialProductsWithQuantityOfSameCategoryInBag',
-        //     trialProductsWithQuantityOfSameCategoryInBag
-        // );
-
         // ######### Most Important, if anybody add multiple product of same category then also
         // 2 product can be added as trial of this category ######
 
-        // 1st we need to get the available quantity for this product
-        // if not available then nothing will perform
-        // if available then check, is 2 product already added as trial for similar category
-        // if 2 similar category product add already, then this one will not added as trial
-        // when not 2 product added, then check is this product already added as trial
-        // if already added this product then actions will close here
-        // if not added then it will added successfully
-
-        // ##### First of there have to have any product in bag
-
+        // check the length, is it already two product added as trial for this similar category
+        // is added then user can't add other
         if (lengthOfTrialProducts > 1) {
-            // console.log(
-            //     'you cant add more than 2 product of same category as trial'
-            // );
             setLoading(false);
             setNeedDisabled(false);
             setOpenForTwoAlreadyAdded(true);
         } else {
-            // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
-            if (productExist.length !== 0) {
-                // console.log(
-                //     'already product add in bag or add as trial'
-                // );
+            // if productWithQuantityExist in bag as trial or direct added for buy then can't add more
+            // I use productWithQuantityExist.length !== 0, because [] == true.. if [] then loop will continue
+            if (productWithQuantityExist.length !== 0) {
                 setLoading(false);
                 setNeedDisabled(false);
                 setOpenForAddAsTrial(true);
-                // here in bag, user can't add more quantity to trial, only one product can trial
-                // when user add this for buy then it can't be add as trial
             } else {
                 setOpenForAdd(true);
                 setLoading(false);
                 setNeedDisabled(false);
                 setLengthOfTrialProducts((prevState) => prevState + 1);
+                // if not productWithQuantityExist in bag then just post this with add_as_trial true
                 axios
                     .post(
                         `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/`,
@@ -164,11 +148,19 @@ export default function ProductForTrialCard({
                         config
                     )
                     .then((res) => {
+                        // when we 1st post productWithQuantity as trial then need to set it in categoryProductsWithQuantityExistInBag
+                        // because when we click add as trial button again then need to check productWithQuantityExist
+                        // which will get from categoryProductsWithQuantityExistInBag, if we don't update it
+                        // then we again can add this as trial, so need to update
                         console.log("trial e add", res.data);
                         setCategoryProductsWithQuantityExistInBag((prevState) =>
                             prevState.concat(res.data)
                         );
-                        // need only one set state in async then
+                        // after adding as trial need to update setCategoryProductsWithQuantityExistInBag
+                        // with previous all and new one, so use concat
+                        // here productId as product will get when post on productWithQuantity, no product object
+                        // that's why need to use filter with two data,
+                        // which is described in productWithQuantityExist filter section
                     })
                     .catch((err) => console.log(err.response));
             }

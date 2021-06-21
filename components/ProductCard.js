@@ -54,8 +54,6 @@ export default function ProductCard({
     setNeedDisabled,
 }) {
     const classes = useStyles();
-    // console.log('got product for card', product);
-
     const [loading, setLoading] = useState(false);
     const [openForLogin, setOpenForLogin] = useState(false);
     const [openForAdd, setOpenForAdd] = useState(false);
@@ -85,30 +83,7 @@ export default function ProductCard({
         setOpenForAddAsTrial(false);
     };
 
-    // ####### Full feature of add productWithQuantity to bag
-    // 1st check is product quantity available or not
-    // if not available then show a msg that, product not available
-    // it's important to check product available or not, because for 1st render it can show available
-    // but in that time other user can add it and it can be not available
-    // so check it 1st
-
-    // ## Now, check productWithQuantity already in bag or not
-    // if already in bag, then check is it in trial or not
-    // if in trial then show a msg that, productWithQuantity already add as trial
-    // because we can't add more than 1 productWithQuantity as trial
-    // if not in trial then add 1 quantity extra with this existing productWithQuantity in bag
-    // then also remove 1 quantity from original product available quantity
-    // because we always track the quantity of product that available or not
-
-    // ## if productWithQuantity not exist in bag
-    // then create productWithQuantity
-    // ### Now, check is there any productWithQuantity in Bag or not
-    // if there have some other productWithQuantity in bag then update bag with newly created productWithQuantity
-    // by following previous process
-    // if there have no productWithQuantity, mean no productWithQuantity in bag
-    // then create a bag with this productWithQuantity then follow the next steps
-    // Done #########
-
+    // check productWithQuantity exist in bag or not
     let productWithQuantityExistInBag;
     if (myBag) {
         productWithQuantityExistInBag = myBag.product_with_quantity.filter(
@@ -116,12 +91,18 @@ export default function ProductCard({
                 productWithQuantity.product.id === product.id
         );
     }
-
+    // I don't need to use this state in [slug] page and ProductDetailsFirst component,
+    // this state have no use in [slug] page and ProductDetails component
+    // So set it here, so that [slug] page and ProductDetails component not re render when state change
+    // If productWithQuantity exist in bag then set it on state called another name with useEffect
+    // it will just an object
     const [productWithQuantityInBag, setProductWithQuantityInBag] =
         useState(null);
 
-    // console.log("product card", productWithQuantityInBag);
-
+    // when componentDidMount happend that all necessary state for this section set here
+    // also when product change(mainly categoryProducts) by routing need to set again this state
+    // because same path when change, nextjs not change state
+    // so need to change it
     useEffect(() => {
         setProductWithQuantityInBag(
             productWithQuantityExistInBag &&
@@ -149,8 +130,11 @@ export default function ProductCard({
                 my_bag: myBag.id,
             };
 
-            // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
-            // this is very important
+            // ############ Adding in bag for product
+            // we mainly just add productWithQuantity with bag id, we implement it in backend
+            // if productWithQuantityInBag then need to patch it, obvoisly check is it add_as_trial
+            // if already add_as_trial then no need to add this quantity with that productWithQuantity's quantity
+            // if there have no productWithQuantityInBag, then just post it
             if (productWithQuantityInBag) {
                 if (productWithQuantityInBag.add_as_trial) {
                     setLoading(false);
@@ -165,12 +149,16 @@ export default function ProductCard({
                             `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantityInBag.id}/`,
                             {
                                 quantity: productWithQuantityInBag.quantity + 1,
+                                // everytime quantity will add by 1, here user can't set quantity
                             },
                             config
                         )
                         .then((res) => {
                             console.log("patched product", res.data);
                             setProductWithQuantityInBag(res.data);
+                            // when patch is done need to trace it in client site
+                            // because when we press add button again and agian
+                            // we need to check productWithQuantityInBag with new quantity to patch with it again
                         })
                         .catch((err) => console.log(err.response));
                 }
@@ -187,11 +175,13 @@ export default function ProductCard({
                     .then((res) => {
                         console.log("bag nai - pwq", res.data);
                         setProductWithQuantityInBag(res.data);
+                        // when we 1st post productWithQuantity then need to set it in productWithQuantityInBag
+                        // because when we click add button again then need to patch by productWithQuantityInBag condition check
+                        // if we don't set it then it will post again and again, which is not good to add same productWithQuantity in bag.. just quantity will update
                     })
                     .catch((err) => console.log(err.response));
             }
         } else {
-            // console.log('login first');
             setLoading(false);
             setNeedDisabled(false);
             setOpenForLogin(true);

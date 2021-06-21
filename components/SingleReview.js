@@ -2,7 +2,7 @@ import Head from "next/head";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { TextField } from "formik-material-ui";
-import ProductCard from "../components/ProductCard";
+import ProductCard from "./ProductCard";
 import Review from "./forms/Review";
 import VideoReview from "./forms/VideoReview";
 import UpdateReviewDialog from "./UpdateReviewDialog";
@@ -74,6 +74,18 @@ export default function SingleReview({
         setOpenForAlreadyDone(false);
     };
 
+    // ################ Everything here
+    // no useEffect, because agreed, disagreed not any effect in other component
+    // so just change this component state will update agreed disagreed number and color
+    // ### Need to find out userDidAgreed,  userDidDisagreed for this single review
+    // set it on state, when agreed disagreed change this state will also change
+    // ##### Find eviewCountId
+    // because if there no agreed disagreed then eviewCountId remain null
+    // so 1st agreed disagreed will post request, and after patch it need eviewCountId
+    // so need to set it after post, without set it, second time patch will not done with null of eviewCountId
+    // ###### Find countForAgreed, countForDisagreed
+    // set these on state, when agreed disagreed happend need to show the number of countForAgreed, countForDisagreed
+
     const userDidAgreed =
         review &&
         review.review_count.filter(
@@ -125,76 +137,130 @@ export default function SingleReview({
         countForDisagreed ? countForDisagreed.length : 0
     );
 
-    if (review) {
-        return (
-            <Box
-                p={2}
-                mt={2}
-                borderRadius="borderRadius"
-                style={{ backgroundColor: "white" }}
-            >
-                <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12} md={12} lg={3} xl={2}>
-                        <Box textAlign="center">
-                            <img
-                                src="/aa.jpg"
-                                alt=""
-                                srcset=""
-                                height="50"
-                                width="50"
-                                style={{ borderRadius: "50%" }}
-                            />
-                            <Typography variant="h6" component="h6">
-                                {review.user.first_name.toUpperCase() +
-                                    " " +
-                                    review.user.last_name.toUpperCase()}
+    return (
+        <Box
+            p={2}
+            mt={2}
+            borderRadius="borderRadius"
+            style={{ backgroundColor: "white" }}
+        >
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={12} md={12} lg={3} xl={2}>
+                    <Box textAlign="center">
+                        <img
+                            src="/aa.jpg"
+                            alt=""
+                            srcset=""
+                            height="50"
+                            width="50"
+                            style={{ borderRadius: "50%" }}
+                        />
+                        <Typography variant="h6" component="h6">
+                            {review.user.first_name.toUpperCase() +
+                                " " +
+                                review.user.last_name.toUpperCase()}
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={6} xl={8}>
+                    <Box pr={2} pl={1}>
+                        <Rating
+                            name="read-only"
+                            value={review.rating_star}
+                            readOnly
+                        />
+
+                        <Typography>{review.review_detail}</Typography>
+
+                        <Box pt={3}>
+                            <Typography variant="p">
+                                {review.created_at}
                             </Typography>
                         </Box>
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={6} xl={8}>
-                        <Box pr={2} pl={1}>
-                            <Rating
-                                name="read-only"
-                                value={review.rating_star}
-                                readOnly
-                            />
-
-                            <Typography>{review.review_detail}</Typography>
-
-                            <Box pt={3}>
-                                <Typography variant="p">
-                                    {review.created_at}
-                                </Typography>
-                            </Box>
-                            {review.user.pk === (user && user.pk) && (
-                                <Box pt={2}>
-                                    <Grid
-                                        container
-                                        spacing={1}
-                                        alignItems="center"
-                                    >
-                                        <Grid item xs={12} sm>
-                                            <UpdateReviewDialog
-                                                reviewId={review.id}
-                                                handleUpdate={handleUpdate}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm>
-                                            <DeleteReviewDialog
-                                                reviewId={review.id}
-                                                handleDelete={handleDelete}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm></Grid>
-                                        <Grid item xs={12} sm></Grid>
-                                        <Grid item xs={12} sm></Grid>
+                        {review.user.pk === (user && user.pk) && (
+                            <Box pt={2}>
+                                <Grid container spacing={1} alignItems="center">
+                                    <Grid item xs={12} sm>
+                                        <UpdateReviewDialog
+                                            reviewId={review.id}
+                                            handleUpdate={handleUpdate}
+                                        />
                                     </Grid>
-                                </Box>
-                            )}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={3} xl={2}>
-                        <Box px={3} textAlign="center">
+                                    <Grid item xs={12} sm>
+                                        <DeleteReviewDialog
+                                            reviewId={review.id}
+                                            handleDelete={handleDelete}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm></Grid>
+                                    <Grid item xs={12} sm></Grid>
+                                    <Grid item xs={12} sm></Grid>
+                                </Grid>
+                            </Box>
+                        )}
+                    </Box>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={3} xl={2}>
+                    <Box px={3} textAlign="center">
+                        <div className={classes.root}>
+                            <div className={classes.wrapper}>
+                                <Button
+                                    size="small"
+                                    fullWidth
+                                    variant="contained"
+                                    color={
+                                        userDidAgreedState
+                                            ? "secondary"
+                                            : "default"
+                                    }
+                                    startIcon={<ThumbUpIcon />}
+                                    onClick={() =>
+                                        handleAgree(
+                                            review,
+                                            setReviewAgreeLoading,
+                                            setOpenForAlreadyDone,
+                                            userDidAgreedState,
+                                            userDidDisagreedState,
+                                            setUserDidAgreedState,
+                                            setUserDidDisagreedState,
+                                            setLengthForAgreed,
+                                            setLengthForDisagreed,
+                                            reviewCountId,
+                                            setReviewCountId
+                                        )
+                                    }
+                                    // use this type of value sending in bag page
+                                    disabled={
+                                        reviewAgreeLoading ||
+                                        reviewDisagreeLoading ||
+                                        review.user.pk === (user && user.pk)
+                                    }
+                                >
+                                    Agreed ({lengthForAgreed})
+                                </Button>
+                                {reviewAgreeLoading && (
+                                    <CircularProgress
+                                        size={24}
+                                        className={classes.buttonProgress}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                        {/* this snackbar is used by both agree disagree */}
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: "top",
+                                horizontal: "center",
+                            }}
+                            open={openForAlreadyDone}
+                            autoHideDuration={2000}
+                            onClose={handleCloseForAlreadyDone}
+                        >
+                            <Alert severity="success" variant="filled">
+                                Already Done !
+                            </Alert>
+                        </Snackbar>
+                        <Box mt={1}>
                             <div className={classes.root}>
                                 <div className={classes.wrapper}>
                                     <Button
@@ -202,15 +268,15 @@ export default function SingleReview({
                                         fullWidth
                                         variant="contained"
                                         color={
-                                            userDidAgreedState
+                                            userDidDisagreedState
                                                 ? "secondary"
                                                 : "default"
                                         }
-                                        startIcon={<ThumbUpIcon />}
+                                        startIcon={<ThumbDownIcon />}
                                         onClick={() =>
-                                            handleAgree(
+                                            handleDisagree(
                                                 review,
-                                                setReviewAgreeLoading,
+                                                setReviewDisagreeLoading,
                                                 setOpenForAlreadyDone,
                                                 userDidAgreedState,
                                                 userDidDisagreedState,
@@ -224,14 +290,14 @@ export default function SingleReview({
                                         }
                                         // use this type of value sending in bag page
                                         disabled={
-                                            reviewAgreeLoading ||
                                             reviewDisagreeLoading ||
+                                            reviewAgreeLoading ||
                                             review.user.pk === (user && user.pk)
                                         }
                                     >
-                                        Agreed ({lengthForAgreed})
+                                        Disagreed ({lengthForDisagreed})
                                     </Button>
-                                    {reviewAgreeLoading && (
+                                    {reviewDisagreeLoading && (
                                         <CircularProgress
                                             size={24}
                                             className={classes.buttonProgress}
@@ -239,75 +305,10 @@ export default function SingleReview({
                                     )}
                                 </div>
                             </div>
-                            {/* this snackbar is used by both agree disagree */}
-                            <Snackbar
-                                anchorOrigin={{
-                                    vertical: "top",
-                                    horizontal: "center",
-                                }}
-                                open={openForAlreadyDone}
-                                autoHideDuration={2000}
-                                onClose={handleCloseForAlreadyDone}
-                            >
-                                <Alert severity="success" variant="filled">
-                                    Already Done !
-                                </Alert>
-                            </Snackbar>
-                            <Box mt={1}>
-                                <div className={classes.root}>
-                                    <div className={classes.wrapper}>
-                                        <Button
-                                            size="small"
-                                            fullWidth
-                                            variant="contained"
-                                            color={
-                                                userDidDisagreedState
-                                                    ? "secondary"
-                                                    : "default"
-                                            }
-                                            startIcon={<ThumbDownIcon />}
-                                            onClick={() =>
-                                                handleDisagree(
-                                                    review,
-                                                    setReviewDisagreeLoading,
-                                                    setOpenForAlreadyDone,
-                                                    userDidAgreedState,
-                                                    userDidDisagreedState,
-                                                    setUserDidAgreedState,
-                                                    setUserDidDisagreedState,
-                                                    setLengthForAgreed,
-                                                    setLengthForDisagreed,
-                                                    reviewCountId,
-                                                    setReviewCountId
-                                                )
-                                            }
-                                            // use this type of value sending in bag page
-                                            disabled={
-                                                reviewDisagreeLoading ||
-                                                reviewAgreeLoading ||
-                                                review.user.pk ===
-                                                    (user && user.pk)
-                                            }
-                                        >
-                                            Disagreed ({lengthForDisagreed})
-                                        </Button>
-                                        {reviewDisagreeLoading && (
-                                            <CircularProgress
-                                                size={24}
-                                                className={
-                                                    classes.buttonProgress
-                                                }
-                                            />
-                                        )}
-                                    </div>
-                                </div>
-                            </Box>
                         </Box>
-                    </Grid>
+                    </Box>
                 </Grid>
-            </Box>
-        );
-    } else {
-        return <></>;
-    }
+            </Grid>
+        </Box>
+    );
 }
