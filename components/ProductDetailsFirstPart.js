@@ -55,6 +55,8 @@ export default function ProductDetailsFirstPart({
     myBag,
     reviewArrayInState,
     videoReviewArrayInState,
+    categoryProductsWithQuantityExistInBag,
+    setCategoryProductsWithQuantityExistInBag,
 }) {
     const classes = useStyles();
     const [quantity, setQuantity] = useState(1);
@@ -133,34 +135,6 @@ export default function ProductDetailsFirstPart({
     // set the trail product length in this state with useEffect
     const [lengthOfTrialProducts, setLengthOfTrialProducts] = useState();
 
-    // ######## VVI code
-    // here we filter out same category productWithQuantity which already exist in bag
-    // this is for trial product adding
-    let allCategoryProductsWithQuantityExistInBag = [];
-    if (myBag) {
-        if (categoryProducts) {
-            categoryProducts.forEach((product) => {
-                let oneCategoryProductsWithQuantityExistInBag =
-                    myBag.product_with_quantity.filter(
-                        (productWithQuantity) =>
-                            productWithQuantity.product.id === product.id
-                    );
-                if (oneCategoryProductsWithQuantityExistInBag.length !== 0) {
-                    allCategoryProductsWithQuantityExistInBag.push(
-                        oneCategoryProductsWithQuantityExistInBag[0]
-                    );
-                }
-            });
-        }
-    }
-    // I don't need to use this state in [slug] page, this state have no use in ProductDetails component
-    // So set it here, so that [slug] page not re render when state change
-    // all filter productWithQuantity which is in bag will set in this state using useEffect
-    const [
-        categoryProductsWithQuantityExistInBag,
-        setCategoryProductsWithQuantityExistInBag,
-    ] = useState();
-
     // when componentDidMount happend that all necessary state for this section set here
     // also when product change by routing need to set again this state
     // because same path when change, nextjs not change state
@@ -174,9 +148,6 @@ export default function ProductDetailsFirstPart({
         );
         setLengthOfTrialProducts(
             trialProductsWithQuantityOfSameCategoryInBag.length
-        );
-        setCategoryProductsWithQuantityExistInBag(
-            allCategoryProductsWithQuantityExistInBag
         );
     }, [product]);
 

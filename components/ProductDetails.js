@@ -1,4 +1,4 @@
-import ProductCard from "./ProductCard";
+import ProductCardForProductDetailsCategory from "./ProductCardForProductDetailsCategory";
 import ProductDetailsTable from "../components/ProductDetailsTable";
 import Review from "./forms/Review";
 import VideoReview from "./forms/VideoReview";
@@ -30,6 +30,7 @@ export default function ProductDetails({
     setReviewArrayInState,
     videoReviewArrayInState,
     setVideoReviewArrayInState,
+    setCategoryProductsWithQuantityExistInBag,
 }) {
     const [needDisabled, setNeedDisabled] = React.useState(false);
     const [openForLogin, setOpenForLogin] = React.useState(false);
@@ -585,12 +586,15 @@ export default function ProductDetails({
                         {categoryProducts &&
                             categoryProducts.map((categoryProduct) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-                                    <ProductCard
+                                    <ProductCardForProductDetailsCategory
                                         product={categoryProduct}
                                         myBag={myBag}
                                         config={config}
                                         needDisabled={needDisabled}
                                         setNeedDisabled={setNeedDisabled}
+                                        setCategoryProductsWithQuantityExistInBag={
+                                            setCategoryProductsWithQuantityExistInBag
+                                        }
                                     />
                                 </Grid>
                             ))}

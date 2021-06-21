@@ -24,6 +24,32 @@ export default function Product({
     const [reviewArrayInState, setReviewArrayInState] = useState([]);
     const [videoReviewArrayInState, setVideoReviewArrayInState] = useState([]);
 
+    // ######## VVI code
+    // here we filter out same category productWithQuantity which already exist in bag
+    // this is for trial product adding
+    let allCategoryProductsWithQuantityExistInBag = [];
+    if (myBag) {
+        if (categoryProducts) {
+            categoryProducts.forEach((product) => {
+                let oneCategoryProductsWithQuantityExistInBag =
+                    myBag.product_with_quantity.filter(
+                        (productWithQuantity) =>
+                            productWithQuantity.product.id === product.id
+                    );
+                if (oneCategoryProductsWithQuantityExistInBag.length !== 0) {
+                    allCategoryProductsWithQuantityExistInBag.push(
+                        oneCategoryProductsWithQuantityExistInBag[0]
+                    );
+                }
+            });
+        }
+    }
+    // when category product added to bag from trial or category section, need to update it
+    const [
+        categoryProductsWithQuantityExistInBag,
+        setCategoryProductsWithQuantityExistInBag,
+    ] = useState();
+
     useEffect(() => {
         // when user 1st navigate this page it will happend, state will assign herer
         // when user navigate same page again with other product then
@@ -33,6 +59,9 @@ export default function Product({
         setReviewArrayInState(product && product.review ? product.review : []);
         setVideoReviewArrayInState(
             product && product.video_review ? product.video_review : []
+        );
+        setCategoryProductsWithQuantityExistInBag(
+            allCategoryProductsWithQuantityExistInBag
         );
     }, [product]);
 
@@ -85,6 +114,12 @@ export default function Product({
                         categoryProducts={categoryProducts}
                         reviewArrayInState={reviewArrayInState}
                         videoReviewArrayInState={videoReviewArrayInState}
+                        categoryProductsWithQuantityExistInBag={
+                            categoryProductsWithQuantityExistInBag
+                        }
+                        setCategoryProductsWithQuantityExistInBag={
+                            setCategoryProductsWithQuantityExistInBag
+                        }
                     />
 
                     <ProductDetails
@@ -98,6 +133,9 @@ export default function Product({
                         setReviewArrayInState={setReviewArrayInState}
                         videoReviewArrayInState={videoReviewArrayInState}
                         setVideoReviewArrayInState={setVideoReviewArrayInState}
+                        setCategoryProductsWithQuantityExistInBag={
+                            setCategoryProductsWithQuantityExistInBag
+                        }
                     />
                 </Box>
             )}
