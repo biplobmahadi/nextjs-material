@@ -203,7 +203,7 @@ export async function getServerSideProps({ req, params }) {
     const dataBags = await fetchDataForBags(config);
 
     // ###### Here for bag
-    // always create bag first if this page has add to bag avaiable
+    // always create bag first if this page has add to bag available
     // it's not good to create bag again again for visiting this page
     // if user already has an non order bag then find that, there have many in worst case, so find the 1st one
     // if user have no non order bag then create one bag for this user
