@@ -28,7 +28,8 @@ export default function AddForTrialDialog({
     config,
     lengthOfTrialProducts,
     setLengthOfTrialProducts,
-    mainProduct,
+    categoryProductsWithQuantityExistInBag,
+    setCategoryProductsWithQuantityExistInBag,
 }) {
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState("paper");
@@ -95,7 +96,12 @@ export default function AddForTrialDialog({
                                             setLengthOfTrialProducts={
                                                 setLengthOfTrialProducts
                                             }
-                                            mainProduct={mainProduct}
+                                            categoryProductsWithQuantityExistInBag={
+                                                categoryProductsWithQuantityExistInBag
+                                            }
+                                            setCategoryProductsWithQuantityExistInBag={
+                                                setCategoryProductsWithQuantityExistInBag
+                                            }
                                         />
                                     </Grid>
                                 ))}

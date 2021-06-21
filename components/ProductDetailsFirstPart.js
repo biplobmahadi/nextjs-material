@@ -55,8 +55,6 @@ export default function ProductDetailsFirstPart({
     myBag,
     reviewArrayInState,
     videoReviewArrayInState,
-    lengthOfTrialProducts,
-    setLengthOfTrialProducts,
 }) {
     const classes = useStyles();
     const [quantity, setQuantity] = useState(1);
@@ -114,7 +112,45 @@ export default function ProductDetailsFirstPart({
     const [productWithQuantityInBag, setProductWithQuantityInBag] =
         useState(null);
 
-    // console.log("first part", productWithQuantityInBag);
+    // for trial product length
+    let trialProductsWithQuantityOfSameCategoryInBag;
+    if (myBag) {
+        trialProductsWithQuantityOfSameCategoryInBag =
+            myBag.product_with_quantity.filter(
+                (productWithQuantity) =>
+                    productWithQuantity.product.category.id ===
+                        product.category.id && productWithQuantity.add_as_trial
+            );
+    }
+
+    const [lengthOfTrialProducts, setLengthOfTrialProducts] = useState();
+
+    // console.log("trial card length", lengthOfTrialProducts);
+
+    // VVIP code
+
+    let allCategoryProductsWithQuantityExistInBag = [];
+    if (myBag) {
+        if (categoryProducts) {
+            categoryProducts.forEach((product) => {
+                let oneCategoryProductsWithQuantityExistInBag =
+                    myBag.product_with_quantity.filter(
+                        (productWithQuantity) =>
+                            productWithQuantity.product.id === product.id
+                    );
+                if (oneCategoryProductsWithQuantityExistInBag.length !== 0) {
+                    allCategoryProductsWithQuantityExistInBag.push(
+                        oneCategoryProductsWithQuantityExistInBag[0]
+                    );
+                }
+            });
+        }
+    }
+
+    const [
+        categoryProductsWithQuantityExistInBag,
+        setCategoryProductsWithQuantityExistInBag,
+    ] = useState();
 
     useEffect(() => {
         setProductWithQuantityInBag(
@@ -122,6 +158,12 @@ export default function ProductDetailsFirstPart({
                 productWithQuantityExistInBag.length !== 0
                 ? productWithQuantityExistInBag[0]
                 : null
+        );
+        setLengthOfTrialProducts(
+            trialProductsWithQuantityOfSameCategoryInBag.length
+        );
+        setCategoryProductsWithQuantityExistInBag(
+            allCategoryProductsWithQuantityExistInBag
         );
     }, [product]);
 
@@ -486,7 +528,12 @@ export default function ProductDetailsFirstPart({
                                                 setLengthOfTrialProducts={
                                                     setLengthOfTrialProducts
                                                 }
-                                                mainProduct={product}
+                                                categoryProductsWithQuantityExistInBag={
+                                                    categoryProductsWithQuantityExistInBag
+                                                }
+                                                setCategoryProductsWithQuantityExistInBag={
+                                                    setCategoryProductsWithQuantityExistInBag
+                                                }
                                             />
                                         )}
                                 </Grid>

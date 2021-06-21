@@ -53,7 +53,8 @@ export default function ProductForTrialCard({
     setNeedDisabled,
     lengthOfTrialProducts,
     setLengthOfTrialProducts,
-    mainProduct,
+    categoryProductsWithQuantityExistInBag,
+    setCategoryProductsWithQuantityExistInBag,
 }) {
     const classes = useStyles();
     // console.log('got product for card in trial', product);
@@ -87,27 +88,12 @@ export default function ProductForTrialCard({
         setOpenForTwoAlreadyAdded(false);
     };
 
-    let productWithQuantityExistInBag;
-    if (myBag) {
-        productWithQuantityExistInBag = myBag.product_with_quantity.filter(
-            (productWithQuantity) =>
-                productWithQuantity.product.id === product.id
+    const productExist =
+        categoryProductsWithQuantityExistInBag.length !== 0 &&
+        categoryProductsWithQuantityExistInBag.filter(
+            (productWithQuantityInBag) =>
+                productWithQuantityInBag.product.id === product.id
         );
-    }
-
-    const [productWithQuantityInBag, setProductWithQuantityInBag] =
-        useState(null);
-
-    console.log("trial card", productWithQuantityInBag);
-
-    useEffect(() => {
-        setProductWithQuantityInBag(
-            productWithQuantityExistInBag &&
-                productWithQuantityExistInBag.length !== 0
-                ? productWithQuantityExistInBag[0]
-                : null
-        );
-    }, [mainProduct]);
 
     const handleAddToBag = () => {
         // create a loading
@@ -153,7 +139,7 @@ export default function ProductForTrialCard({
             setOpenForTwoAlreadyAdded(true);
         } else {
             // I use productWithQuantityExistInBag.length !== 0, because [] == true.. if [] then loop will continue
-            if (productWithQuantityInBag) {
+            if (productExist.length !== 0) {
                 // console.log(
                 //     'already product add in bag or add as trial'
                 // );
@@ -175,7 +161,9 @@ export default function ProductForTrialCard({
                     )
                     .then((res) => {
                         console.log("trial e add", res.data);
-                        setProductWithQuantityInBag(res.data);
+                        setCategoryProductsWithQuantityExistInBag((prevState) =>
+                            prevState.concat(res.data)
+                        );
                         // need only one set state in async then
                     })
                     .catch((err) => console.log(err.response));

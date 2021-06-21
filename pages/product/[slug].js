@@ -25,19 +25,6 @@ export default function Product(props) {
     const [reviewArrayInState, setReviewArrayInState] = useState([]);
     const [videoReviewArrayInState, setVideoReviewArrayInState] = useState([]);
 
-    // for trial product length
-    let trialProductsWithQuantityOfSameCategoryInBag;
-    if (myBag) {
-        trialProductsWithQuantityOfSameCategoryInBag =
-            myBag.product_with_quantity.filter(
-                (productWithQuantity) =>
-                    productWithQuantity.product.category.id ===
-                        product.category.id && productWithQuantity.add_as_trial
-            );
-    }
-
-    const [lengthOfTrialProducts, setLengthOfTrialProducts] = useState();
-
     useEffect(() => {
         // when user 1st navigate this page it will happend
         // when user navigate same page again with other product then
@@ -45,9 +32,6 @@ export default function Product(props) {
         setReviewArrayInState(product && product.review ? product.review : []);
         setVideoReviewArrayInState(
             product && product.video_review ? product.video_review : []
-        );
-        setLengthOfTrialProducts(
-            trialProductsWithQuantityOfSameCategoryInBag.length
         );
     }, [product]);
 
@@ -64,7 +48,6 @@ export default function Product(props) {
         });
 
     console.log("re render - slug");
-    console.log("trial card length", lengthOfTrialProducts);
 
     return (
         <div>
@@ -100,8 +83,6 @@ export default function Product(props) {
                         categoryProducts={categoryProducts}
                         reviewArrayInState={reviewArrayInState}
                         videoReviewArrayInState={videoReviewArrayInState}
-                        lengthOfTrialProducts={lengthOfTrialProducts}
-                        setLengthOfTrialProducts={setLengthOfTrialProducts}
                     />
 
                     <ProductDetails
