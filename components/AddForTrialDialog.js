@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -22,7 +22,14 @@ import { TextField } from "formik-material-ui";
 import Rating from "@material-ui/lab/Rating";
 import ProductCardForTrial from "./ProductCardForTrial";
 
-export default function AddForTrialDialog({ categoryProducts, myBag, config }) {
+export default function AddForTrialDialog({
+    categoryProducts,
+    myBag,
+    config,
+    lengthOfTrialProducts,
+    setLengthOfTrialProducts,
+    mainProduct,
+}) {
     const [open, setOpen] = useState(false);
     const [scroll, setScroll] = useState("paper");
     const [needDisabled, setNeedDisabled] = useState(false);
@@ -36,16 +43,6 @@ export default function AddForTrialDialog({ categoryProducts, myBag, config }) {
     const handleClose = () => {
         setOpen(false);
     };
-
-    const descriptionElementRef = useRef(null);
-    useEffect(() => {
-        if (open) {
-            const { current: descriptionElement } = descriptionElementRef;
-            if (descriptionElement !== null) {
-                descriptionElement.focus();
-            }
-        }
-    }, [open]);
 
     return (
         <div>
@@ -92,6 +89,13 @@ export default function AddForTrialDialog({ categoryProducts, myBag, config }) {
                                             config={config}
                                             needDisabled={needDisabled}
                                             setNeedDisabled={setNeedDisabled}
+                                            lengthOfTrialProducts={
+                                                lengthOfTrialProducts
+                                            }
+                                            setLengthOfTrialProducts={
+                                                setLengthOfTrialProducts
+                                            }
+                                            mainProduct={mainProduct}
                                         />
                                     </Grid>
                                 ))}

@@ -13,7 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import Cookies from "js-cookie";
 import parseCookies from "../../lib/parseCookies";
 import axios from "axios";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function Product(props) {
     let product = props.product;
@@ -22,13 +22,21 @@ export default function Product(props) {
     let categoryProducts = props.categoryProducts;
     let myBag = props.myBag;
 
-    const [reviewArrayInState, setReviewArrayInState] = React.useState(
-        product && product.review ? product.review : []
-    );
-    const [videoReviewArrayInState, setVideoReviewArrayInState] =
-        React.useState(
-            product && product.video_review ? product.video_review : []
-        );
+    const [reviewArrayInState, setReviewArrayInState] = useState([]);
+    const [videoReviewArrayInState, setVideoReviewArrayInState] = useState([]);
+
+    // for trial product length
+    let trialProductsWithQuantityOfSameCategoryInBag;
+    if (myBag) {
+        trialProductsWithQuantityOfSameCategoryInBag =
+            myBag.product_with_quantity.filter(
+                (productWithQuantity) =>
+                    productWithQuantity.product.category.id ===
+                        product.category.id && productWithQuantity.add_as_trial
+            );
+    }
+
+    const [lengthOfTrialProducts, setLengthOfTrialProducts] = useState();
 
     useEffect(() => {
         // when user 1st navigate this page it will happend
@@ -37,6 +45,9 @@ export default function Product(props) {
         setReviewArrayInState(product && product.review ? product.review : []);
         setVideoReviewArrayInState(
             product && product.video_review ? product.video_review : []
+        );
+        setLengthOfTrialProducts(
+            trialProductsWithQuantityOfSameCategoryInBag.length
         );
     }, [product]);
 
@@ -48,11 +59,12 @@ export default function Product(props) {
         reviewArrayInState.length !== 0 &&
         reviewArrayInState.forEach((review) => {
             totalRating += review.rating_star;
+            let fractionalAvgRating = totalRating / reviewArrayInState.length;
+            avgRating = Math.floor(fractionalAvgRating);
         });
-    let fractionalAvgRating = totalRating / reviewArrayInState.length;
-    avgRating = Math.floor(fractionalAvgRating);
 
     console.log("re render - slug");
+    console.log("trial card length", lengthOfTrialProducts);
 
     return (
         <div>
@@ -88,6 +100,8 @@ export default function Product(props) {
                         categoryProducts={categoryProducts}
                         reviewArrayInState={reviewArrayInState}
                         videoReviewArrayInState={videoReviewArrayInState}
+                        lengthOfTrialProducts={lengthOfTrialProducts}
+                        setLengthOfTrialProducts={setLengthOfTrialProducts}
                     />
 
                     <ProductDetails

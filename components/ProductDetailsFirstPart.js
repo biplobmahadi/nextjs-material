@@ -23,7 +23,7 @@ import Zoom from "react-medium-image-zoom";
 
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -55,17 +55,19 @@ export default function ProductDetailsFirstPart({
     myBag,
     reviewArrayInState,
     videoReviewArrayInState,
+    lengthOfTrialProducts,
+    setLengthOfTrialProducts,
 }) {
     const classes = useStyles();
-    const [quantity, setQuantity] = React.useState(1);
-    const [value, setValue] = React.useState("/s1.jpg");
+    const [quantity, setQuantity] = useState(1);
+    const [value, setValue] = useState("/s1.jpg");
     // need for product image
-    // const [value, setValue] = React.useState(product.product_image[0].image);
-    const [loading, setLoading] = React.useState(false);
-    const [openForLogin, setOpenForLogin] = React.useState(false);
-    const [openForAdd, setOpenForAdd] = React.useState(false);
-    const [openForNotInStock, setOpenForNotInStock] = React.useState(false);
-    const [openForAddAsTrial, setOpenForAddAsTrial] = React.useState(false);
+    // const [value, setValue] = useState(product.product_image[0].image);
+    const [loading, setLoading] = useState(false);
+    const [openForLogin, setOpenForLogin] = useState(false);
+    const [openForAdd, setOpenForAdd] = useState(false);
+    const [openForNotInStock, setOpenForNotInStock] = useState(false);
+    const [openForAddAsTrial, setOpenForAddAsTrial] = useState(false);
 
     const handleImageClick = (value) => {
         setValue(value);
@@ -101,7 +103,6 @@ export default function ProductDetailsFirstPart({
         setOpenForAddAsTrial(false);
     };
 
-    // productWithQuantityExistInBag made here, because if not exist then trial add not shown
     let productWithQuantityExistInBag;
     if (myBag) {
         productWithQuantityExistInBag = myBag.product_with_quantity.filter(
@@ -111,12 +112,18 @@ export default function ProductDetailsFirstPart({
     }
 
     const [productWithQuantityInBag, setProductWithQuantityInBag] =
-        React.useState(
+        useState(null);
+
+    // console.log("first part", productWithQuantityInBag);
+
+    useEffect(() => {
+        setProductWithQuantityInBag(
             productWithQuantityExistInBag &&
                 productWithQuantityExistInBag.length !== 0
                 ? productWithQuantityExistInBag[0]
                 : null
         );
+    }, [product]);
 
     const handleAddToBag = () => {
         // create a loading
@@ -473,6 +480,13 @@ export default function ProductDetailsFirstPart({
                                                 }
                                                 config={config}
                                                 myBag={myBag}
+                                                lengthOfTrialProducts={
+                                                    lengthOfTrialProducts
+                                                }
+                                                setLengthOfTrialProducts={
+                                                    setLengthOfTrialProducts
+                                                }
+                                                mainProduct={product}
                                             />
                                         )}
                                 </Grid>

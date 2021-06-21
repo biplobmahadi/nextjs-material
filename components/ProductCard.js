@@ -15,6 +15,7 @@ import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import Snackbar from "@material-ui/core/Snackbar";
 import Cookies from "js-cookie";
+import { useState, useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
     boot: {
@@ -55,10 +56,10 @@ export default function ProductCard({
     const classes = useStyles();
     // console.log('got product for card', product);
 
-    const [loading, setLoading] = React.useState(false);
-    const [openForLogin, setOpenForLogin] = React.useState(false);
-    const [openForAdd, setOpenForAdd] = React.useState(false);
-    const [openForAddAsTrial, setOpenForAddAsTrial] = React.useState(false);
+    const [loading, setLoading] = useState(false);
+    const [openForLogin, setOpenForLogin] = useState(false);
+    const [openForAdd, setOpenForAdd] = useState(false);
+    const [openForAddAsTrial, setOpenForAddAsTrial] = useState(false);
 
     // this is for alert close
     const handleCloseForLogin = (event, reason) => {
@@ -117,12 +118,18 @@ export default function ProductCard({
     }
 
     const [productWithQuantityInBag, setProductWithQuantityInBag] =
-        React.useState(
+        useState(null);
+
+    // console.log("product card", productWithQuantityInBag);
+
+    useEffect(() => {
+        setProductWithQuantityInBag(
             productWithQuantityExistInBag &&
                 productWithQuantityExistInBag.length !== 0
                 ? productWithQuantityExistInBag[0]
                 : null
         );
+    }, [product]);
 
     const handleAddToBag = () => {
         // start loading

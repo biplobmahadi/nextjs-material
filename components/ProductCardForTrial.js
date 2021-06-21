@@ -14,6 +14,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
 import AlertTitle from "@material-ui/lab/AlertTitle";
 import Snackbar from "@material-ui/core/Snackbar";
+import { useState, useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
     boot: {
@@ -50,15 +51,17 @@ export default function ProductForTrialCard({
     config,
     needDisabled,
     setNeedDisabled,
+    lengthOfTrialProducts,
+    setLengthOfTrialProducts,
+    mainProduct,
 }) {
     const classes = useStyles();
     // console.log('got product for card in trial', product);
 
-    const [loading, setLoading] = React.useState(false);
-    const [openForAdd, setOpenForAdd] = React.useState(false);
-    const [openForAddAsTrial, setOpenForAddAsTrial] = React.useState(false);
-    const [openForTwoAlreadyAdded, setOpenForTwoAlreadyAdded] =
-        React.useState(false);
+    const [loading, setLoading] = useState(false);
+    const [openForAdd, setOpenForAdd] = useState(false);
+    const [openForAddAsTrial, setOpenForAddAsTrial] = useState(false);
+    const [openForTwoAlreadyAdded, setOpenForTwoAlreadyAdded] = useState(false);
 
     // this is for alert close
     const handleCloseForAdd = (event, reason) => {
@@ -93,26 +96,18 @@ export default function ProductForTrialCard({
     }
 
     const [productWithQuantityInBag, setProductWithQuantityInBag] =
-        React.useState(
+        useState(null);
+
+    console.log("trial card", productWithQuantityInBag);
+
+    useEffect(() => {
+        setProductWithQuantityInBag(
             productWithQuantityExistInBag &&
                 productWithQuantityExistInBag.length !== 0
                 ? productWithQuantityExistInBag[0]
                 : null
         );
-
-    let trialProductsWithQuantityOfSameCategoryInBag;
-    if (myBag) {
-        trialProductsWithQuantityOfSameCategoryInBag =
-            myBag.product_with_quantity.filter(
-                (filterProduct) =>
-                    filterProduct.product.category.id === product.category.id &&
-                    filterProduct.add_as_trial
-            );
-    }
-
-    const [lengthOfTrialProducts, setLengthOfTrialProducts] = React.useState(
-        trialProductsWithQuantityOfSameCategoryInBag.length
-    );
+    }, [mainProduct]);
 
     const handleAddToBag = () => {
         // create a loading
@@ -171,7 +166,7 @@ export default function ProductForTrialCard({
                 setOpenForAdd(true);
                 setLoading(false);
                 setNeedDisabled(false);
-                setLengthOfTrialProducts(lengthOfTrialProducts + 1);
+                setLengthOfTrialProducts((prevState) => prevState + 1);
                 axios
                     .post(
                         `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/`,
@@ -179,8 +174,7 @@ export default function ProductForTrialCard({
                         config
                     )
                     .then((res) => {
-                        console.log("bag nai - pwq", res.data);
-                        console.log("len", lengthOfTrialProducts);
+                        console.log("trial e add", res.data);
                         setProductWithQuantityInBag(res.data);
                         // need only one set state in async then
                     })
