@@ -18,13 +18,21 @@ import AlertTitle from "@material-ui/lab/AlertTitle";
 import Snackbar from "@material-ui/core/Snackbar";
 
 import Cookies from "js-cookie";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
-export default function Bag({ myBag, config }) {
+export default function Bag(props) {
     const router = useRouter();
 
-    let rows = myBag.length !== 0 ? myBag.product_with_quantity : [];
+    const [myBag, setMyBag] = useState(props.myBag);
 
+    const lengthProductWithQuantity = myBag.product_with_quantity.length;
+    // product_with_quantity must be an [], so if product_with_quantity has nothing then it will set 0
+
+    // ##### use for add, remove only.. no need to use it in delete
+    const [subTotal, setSubTotal] = useState(myBag.sub_total);
+
+    console.log("in bag", myBag);
+    const config = props.config;
     // evabe na #########################
     const handleCheckout = () => {
         axios
@@ -69,9 +77,7 @@ export default function Bag({ myBag, config }) {
                 ></meta>
             </Head>
             <ButtonAppBar
-                totalProductInBag={
-                    myBag.length !== 0 && myBag.product_with_quantity.length
-                }
+                totalProductInBag={myBag.product_with_quantity.length}
             />
             <Box pb={8} style={{ backgroundColor: "#E6E6FA" }}>
                 <Box pt={9} px={3}>
@@ -102,13 +108,7 @@ export default function Bag({ myBag, config }) {
                                         <Typography variant="h5" component="h5">
                                             <strong>My Bag</strong>{" "}
                                             <Chip
-                                                label={`${
-                                                    myBag.length !== 0
-                                                        ? myBag
-                                                              .product_with_quantity
-                                                              .length
-                                                        : 0
-                                                } item`}
+                                                label={`${lengthProductWithQuantity} item`}
                                                 color="secondary"
                                                 size="small"
                                             />
@@ -118,16 +118,13 @@ export default function Bag({ myBag, config }) {
                                     <Grid item>
                                         <Button variant="contained">
                                             <Box px={3}>
-                                                Total Tk.{" "}
-                                                {myBag.length !== 0
-                                                    ? myBag.sub_total
-                                                    : 0}
+                                                Total Tk. {subTotal}
                                             </Box>
                                         </Button>
                                     </Grid>
                                 </Grid>
                             </Box>
-                            {rows.length === 0 ? (
+                            {lengthProductWithQuantity === 0 ? (
                                 <Box pt={2}>
                                     <Alert severity="error">
                                         <AlertTitle>Sorry Dear</AlertTitle>
@@ -140,9 +137,12 @@ export default function Bag({ myBag, config }) {
                                 </Box>
                             ) : (
                                 <ProductWithQuantityInBag
-                                    myBag={myBag.length !== 0 && myBag}
-                                    rows={rows}
-                                    config={config}
+                                    myBag={myBag}
+                                    setMyBag={setMyBag}
+                                    setSubTotal={setSubTotal}
+                                    lengthProductWithQuantity={
+                                        lengthProductWithQuantity
+                                    }
                                 />
                             )}
                         </Grid>
@@ -186,9 +186,7 @@ export default function Bag({ myBag, config }) {
                                         <Box px={5}>
                                             {" "}
                                             <Typography>
-                                                {myBag.length !== 0 &&
-                                                    myBag.sub_total}{" "}
-                                                TK.
+                                                {subTotal} TK.
                                             </Typography>
                                         </Box>
                                     </Grid>
@@ -218,11 +216,7 @@ export default function Bag({ myBag, config }) {
                                     <Grid item>
                                         <Box px={5}>
                                             <Typography>
-                                                {myBag.length !== 0 &&
-                                                myBag.sub_total !== 0
-                                                    ? 50
-                                                    : 0}{" "}
-                                                TK.
+                                                {subTotal ? 50 : 0} TK.
                                             </Typography>
                                         </Box>
                                     </Grid>
@@ -252,11 +246,7 @@ export default function Bag({ myBag, config }) {
                                     <Grid item>
                                         <Box px={5}>
                                             <Typography>
-                                                {myBag.length !== 0
-                                                    ? myBag.sub_total !== 0
-                                                        ? myBag.sub_total + 50
-                                                        : 0
-                                                    : 0}{" "}
+                                                {subTotal ? subTotal + 50 : 0}{" "}
                                                 TK.
                                             </Typography>
                                         </Box>
@@ -290,11 +280,8 @@ export default function Bag({ myBag, config }) {
                                         <Box px={5}>
                                             <Typography>
                                                 <strong>
-                                                    {myBag.length !== 0
-                                                        ? myBag.sub_total !== 0
-                                                            ? myBag.sub_total +
-                                                              50
-                                                            : 0
+                                                    {subTotal
+                                                        ? subTotal + 50
                                                         : 0}{" "}
                                                     TK.
                                                 </strong>
@@ -311,10 +298,7 @@ export default function Bag({ myBag, config }) {
                                         color="primary"
                                         onClick={handleCheckout}
                                         disabled={
-                                            !myBag ||
-                                            (myBag &&
-                                                myBag.product_with_quantity
-                                                    .length === 0)
+                                            lengthProductWithQuantity === 0
                                         }
                                     >
                                         <Box textAlign="center" px={4}>

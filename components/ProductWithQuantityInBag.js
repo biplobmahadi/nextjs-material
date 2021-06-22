@@ -122,13 +122,21 @@ const useStyles2 = makeStyles({
     },
 });
 
-export default function Bag({ myBag, rows, config }) {
+export default function Bag({
+    myBag,
+    setMyBag,
+    setSubTotal,
+    lengthProductWithQuantity,
+}) {
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+    const allProductWithQuantity = myBag.product_with_quantity;
+
     const emptyRows =
-        rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+        rowsPerPage -
+        Math.min(rowsPerPage, lengthProductWithQuantity - page * rowsPerPage);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -157,15 +165,17 @@ export default function Bag({ myBag, rows, config }) {
                     </TableHead>
                     <TableBody>
                         {(rowsPerPage > 0
-                            ? rows.slice(
+                            ? allProductWithQuantity.slice(
                                   page * rowsPerPage,
                                   page * rowsPerPage + rowsPerPage
                               )
-                            : rows
-                        ).map((row) => (
+                            : allProductWithQuantity
+                        ).map((productWithQuantity) => (
                             <ProductWithQuantityInBagTableRow
-                                row={row}
                                 myBag={myBag}
+                                setMyBag={setMyBag}
+                                productWithQuantity={productWithQuantity}
+                                setSubTotal={setSubTotal}
                             />
                         ))}
 
@@ -192,7 +202,7 @@ export default function Bag({ myBag, rows, config }) {
                                     },
                                 ]}
                                 colSpan={5}
-                                count={rows.length}
+                                count={lengthProductWithQuantity}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{

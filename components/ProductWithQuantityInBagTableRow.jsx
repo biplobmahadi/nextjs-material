@@ -39,10 +39,12 @@ const handleAdd = (
     productWithQuantity,
     quantity,
     setQuantity,
-    setTotalCost
+    setTotalCost,
+    setSubTotal
 ) => {
     setQuantity((prevState) => prevState + 1);
     setTotalCost((prevState) => prevState + productWithQuantity.product.price);
+    setSubTotal((prevState) => prevState + productWithQuantity.product.price);
     axios
         .patch(
             `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantity.id}/`,
@@ -61,10 +63,12 @@ const handleRemove = (
     productWithQuantity,
     quantity,
     setQuantity,
-    setTotalCost
+    setTotalCost,
+    setSubTotal
 ) => {
     setQuantity((prevState) => prevState - 1);
     setTotalCost((prevState) => prevState - productWithQuantity.product.price);
+    setSubTotal((prevState) => prevState - productWithQuantity.product.price);
     axios
         .patch(
             `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantity.id}/`,
@@ -80,13 +84,11 @@ const handleRemove = (
 };
 
 const handleDelete = (
+    myBag,
+    setMyBag,
     productWithQuantity,
-    setProductWithQuantity,
     setOpen,
-    sameCategoryProductsWithQuantityNotAddAsTrialInState,
-    setSameCategoryProductsWithQuantityNotAddAsTrialInState,
-    sameCategoryProductsWithQuantityAddAsTrialInState,
-    setSameCategoryProductsWithQuantityAddAsTrialInState
+    totalCost
 ) => {
     // ###### Most Important
     // when the productWithQuantity select for delete is added as trial
@@ -102,15 +104,17 @@ const handleDelete = (
     // ##########
 
     if (productWithQuantity.add_as_trial) {
-        setProductWithQuantity(null);
-        let newSameCategoryProductsWithQuantityAddAsTrialInState =
-            sameCategoryProductsWithQuantityAddAsTrialInState.filter(
-                (hereProductWithQuantity) =>
-                    hereProductWithQuantity.id !== productWithQuantity.id
+        const newAllProductWithQuantityWithoutDeletedOne =
+            myBag.product_with_quantity.filter(
+                (singleProductWithQuantity) =>
+                    singleProductWithQuantity.id !== productWithQuantity.id
             );
-        setSameCategoryProductsWithQuantityAddAsTrialInState(
-            newSameCategoryProductsWithQuantityAddAsTrialInState
-        );
+        const newMyBag = {
+            ...myBag,
+            sub_total: myBag.sub_total - totalCost,
+            product_with_quantity: newAllProductWithQuantityWithoutDeletedOne,
+        };
+        setMyBag(newMyBag);
         axios
             .delete(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantity.id}/`,
@@ -120,43 +124,91 @@ const handleDelete = (
                 console.log("only trial deleted");
             })
             .catch((err) => console.log(err));
-    } else if (
-        sameCategoryProductsWithQuantityNotAddAsTrialInState.length > 1
-    ) {
-        setProductWithQuantity(null);
-        let newSameCategoryProductsWithQuantityNotAddAsTrialInState =
-            sameCategoryProductsWithQuantityNotAddAsTrialInState.filter(
-                (hereProductWithQuantity) =>
-                    hereProductWithQuantity.id !== productWithQuantity.id
-            );
-        setSameCategoryProductsWithQuantityNotAddAsTrialInState(
-            newSameCategoryProductsWithQuantityNotAddAsTrialInState
-        );
-        axios
-            .delete(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantity.id}/`,
-                config
-            )
-            .then((res) => {
-                console.log("only main deleted");
-            })
-            .catch((err) => console.log(err));
     } else {
-        setProductWithQuantity(null);
-        axios
-            .delete(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantity.id}/`,
-                config
-            )
-            .then((res) => {
-                console.log("main deleted");
-            })
-            .catch((err) => console.log(err));
+        // ##### if productWithQuantity not add as trial
+        // check is there other same category productWithQuantity available
+        // if available then just delete this one
+        const sameCategoryProductWithQuantityNotAddAsTrial =
+            myBag.product_with_quantity.filter(
+                (singleProductWithQuantity) =>
+                    singleProductWithQuantity.product.category.id ===
+                        productWithQuantity.product.category.id &&
+                    singleProductWithQuantity.add_as_trial === false
+            );
+        if (sameCategoryProductWithQuantityNotAddAsTrial.length > 1) {
+            const newAllProductWithQuantityWithoutDeletedOne =
+                myBag.product_with_quantity.filter(
+                    (singleProductWithQuantity) =>
+                        singleProductWithQuantity.id !== productWithQuantity.id
+                );
+            const newMyBag = {
+                ...myBag,
+                sub_total: myBag.sub_total - totalCost,
+                product_with_quantity:
+                    newAllProductWithQuantityWithoutDeletedOne,
+            };
+            setMyBag(newMyBag);
+            axios
+                .delete(
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantity.id}/`,
+                    config
+                )
+                .then((res) => {
+                    console.log("only main deleted");
+                })
+                .catch((err) => console.log(err));
+        } else {
+            // ###### if there is only this same category productWithQuantity available in bag
+            // then delete this one, and also delete others same category trial
+            const sameCategoryProductWithQuantityAddAsTrial =
+                myBag.product_with_quantity.filter(
+                    (singleProductWithQuantity) =>
+                        singleProductWithQuantity.product.category.id ===
+                            productWithQuantity.product.category.id &&
+                        singleProductWithQuantity.add_as_trial === true
+                );
 
-        if (sameCategoryProductsWithQuantityAddAsTrialInState.length !== 0) {
-            sameCategoryProductsWithQuantityAddAsTrialInState.forEach(
+            let newAllProductWithQuantityWithoutDeletedOneAndTrials =
+                myBag.product_with_quantity.filter(
+                    (singleProductWithQuantity) =>
+                        singleProductWithQuantity.id !== productWithQuantity.id
+                );
+
+            if (sameCategoryProductWithQuantityAddAsTrial.length !== 0) {
+                sameCategoryProductWithQuantityAddAsTrial.map(
+                    (singleSameCategoryProductWithQuantityAddAsTrial) => {
+                        newAllProductWithQuantityWithoutDeletedOneAndTrials =
+                            newAllProductWithQuantityWithoutDeletedOneAndTrials.filter(
+                                (singleProductWithQuantity) =>
+                                    singleProductWithQuantity.id !==
+                                    singleSameCategoryProductWithQuantityAddAsTrial.id
+                            );
+                    }
+                );
+            }
+
+            const newMyBag = {
+                ...myBag,
+                sub_total: myBag.sub_total - totalCost,
+                product_with_quantity:
+                    newAllProductWithQuantityWithoutDeletedOneAndTrials,
+            };
+            setMyBag(newMyBag);
+            setOpen(true);
+            console.log("last");
+            axios
+                .delete(
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${productWithQuantity.id}/`,
+                    config
+                )
+                .then((res) => {
+                    console.log("main deleted");
+                })
+                .catch((err) => console.log(err));
+            // finally delete trial
+
+            sameCategoryProductWithQuantityAddAsTrial.forEach(
                 (singleSameCategoryProductsWithQuantityAddAsTrial) => {
-                    setProductWithQuantity(null);
                     axios
                         .delete(
                             `${process.env.NEXT_PUBLIC_BASE_URL}/product-with-quantity/${singleSameCategoryProductsWithQuantityAddAsTrial.id}/`,
@@ -164,7 +216,6 @@ const handleDelete = (
                         )
                         .then((res) => {
                             console.log("trial deleted");
-                            setOpen(true);
                         })
                         .catch((err) => console.log(err));
                 }
@@ -173,38 +224,15 @@ const handleDelete = (
     }
 };
 
-export default function ProductWithQuantityInBagTableRow({ row, myBag }) {
-    const [productWithQuantity, setProductWithQuantity] = useState(row);
-    const [quantity, setQuantity] = useState(row.quantity);
-    const [totalCost, setTotalCost] = useState(row.total_cost);
+export default function ProductWithQuantityInBagTableRow({
+    myBag,
+    setMyBag,
+    productWithQuantity,
+    setSubTotal,
+}) {
+    const [quantity, setQuantity] = useState(productWithQuantity.quantity);
+    const [totalCost, setTotalCost] = useState(productWithQuantity.total_cost);
     const [open, setOpen] = useState(false);
-
-    let sameCategoryProductsWithQuantityNotAddAsTrial =
-        myBag.product_with_quantity.filter(
-            (productWithQuantityInBag) =>
-                !productWithQuantityInBag.add_as_trial &&
-                productWithQuantityInBag.product.category ===
-                    (productWithQuantity &&
-                        productWithQuantity.product.category)
-        );
-
-    let sameCategoryProductsWithQuantityAddAsTrial =
-        myBag.product_with_quantity.filter(
-            (productWithQuantityInBag) =>
-                productWithQuantityInBag.add_as_trial &&
-                productWithQuantityInBag.product.category ===
-                    (productWithQuantity &&
-                        productWithQuantity.product.category)
-        );
-
-    const [
-        sameCategoryProductsWithQuantityNotAddAsTrialInState,
-        setSameCategoryProductsWithQuantityNotAddAsTrialInState,
-    ] = useState(sameCategoryProductsWithQuantityNotAddAsTrial);
-    const [
-        sameCategoryProductsWithQuantityAddAsTrialInState,
-        setSameCategoryProductsWithQuantityAddAsTrialInState,
-    ] = useState(sameCategoryProductsWithQuantityAddAsTrial);
 
     // this is for alert close
     const handleClose = (event, reason) => {
@@ -214,126 +242,120 @@ export default function ProductWithQuantityInBagTableRow({ row, myBag }) {
         setOpen(false);
     };
 
-    if (productWithQuantity) {
-        return (
-            <>
-                <TableRow key={productWithQuantity.id} hover>
-                    <TableCell component="th" scope="row" align="center">
-                        {productWithQuantity.product.name}
-                    </TableCell>
-                    <TableCell
-                        style={{
-                            width: 160,
-                        }}
-                        align="center"
-                    >
-                        {productWithQuantity.product.price}
-                    </TableCell>
-                    <TableCell
-                        style={{
-                            width: 160,
-                        }}
-                        align="center"
-                    >
-                        {!productWithQuantity.add_as_trial && (
-                            <IconButton
-                                color="error"
-                                disabled={quantity < 2}
-                                onClick={() =>
-                                    handleRemove(
-                                        productWithQuantity,
-                                        quantity,
-                                        setQuantity,
-                                        setTotalCost
-                                    )
-                                }
-                            >
-                                <RemoveCircleIcon />
-                            </IconButton>
-                        )}
-
-                        {quantity}
-                        {!productWithQuantity.add_as_trial && (
-                            <IconButton
-                                color="error"
-                                disabled={
-                                    !productWithQuantity.product.is_available
-                                }
-                                onClick={() =>
-                                    handleAdd(
-                                        productWithQuantity,
-                                        quantity,
-                                        setQuantity,
-                                        setTotalCost
-                                    )
-                                }
-                            >
-                                <AddCircleIcon />
-                            </IconButton>
-                        )}
-                    </TableCell>
-                    <TableCell
-                        style={{
-                            width: 160,
-                        }}
-                        align="center"
-                    >
-                        {!productWithQuantity.add_as_trial ? (
-                            totalCost
-                        ) : (
-                            <Chip
-                                label="Free Trial"
-                                color="secondary"
-                                size="small"
-                            />
-                        )}
-                    </TableCell>
-
-                    <TableCell
-                        style={{
-                            width: 160,
-                        }}
-                        align="center"
-                    >
+    return (
+        <>
+            <TableRow key={productWithQuantity.id} hover>
+                <TableCell component="th" scope="row" align="center">
+                    {productWithQuantity.product.name}
+                </TableCell>
+                <TableCell
+                    style={{
+                        width: 160,
+                    }}
+                    align="center"
+                >
+                    {productWithQuantity.product.price}
+                </TableCell>
+                <TableCell
+                    style={{
+                        width: 160,
+                    }}
+                    align="center"
+                >
+                    {!productWithQuantity.add_as_trial && (
                         <IconButton
                             color="error"
+                            disabled={quantity < 2}
                             onClick={() =>
-                                handleDelete(
+                                handleRemove(
                                     productWithQuantity,
-                                    setProductWithQuantity,
-                                    setOpen,
-                                    sameCategoryProductsWithQuantityNotAddAsTrialInState,
-                                    setSameCategoryProductsWithQuantityNotAddAsTrialInState,
-                                    sameCategoryProductsWithQuantityAddAsTrialInState,
-                                    setSameCategoryProductsWithQuantityAddAsTrialInState
+                                    quantity,
+                                    setQuantity,
+                                    setTotalCost,
+                                    setSubTotal
                                 )
                             }
                         >
-                            <DeleteIcon />
+                            <RemoveCircleIcon />
                         </IconButton>
-                    </TableCell>
-                </TableRow>
+                    )}
 
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "center",
+                    {quantity}
+                    {!productWithQuantity.add_as_trial && (
+                        <IconButton
+                            color="error"
+                            disabled={!productWithQuantity.product.is_available}
+                            onClick={() =>
+                                handleAdd(
+                                    productWithQuantity,
+                                    quantity,
+                                    setQuantity,
+                                    setTotalCost,
+                                    setSubTotal
+                                )
+                            }
+                        >
+                            <AddCircleIcon />
+                        </IconButton>
+                    )}
+                </TableCell>
+                <TableCell
+                    style={{
+                        width: 160,
                     }}
-                    open={open}
-                    autoHideDuration={4000}
-                    onClose={handleClose}
+                    align="center"
                 >
-                    <Alert severity="info" variant="filled">
-                        <AlertTitle>
-                            Trial Products of This Similar Product are Deleted!
-                        </AlertTitle>
-                        You Need At Least 1 Similar Product to Trail Max 2
-                        Similar Products.
-                    </Alert>
-                </Snackbar>
-            </>
-        );
-    } else {
-        return <></>;
-    }
+                    {!productWithQuantity.add_as_trial ? (
+                        totalCost
+                    ) : (
+                        <Chip
+                            label="Free Trial"
+                            color="secondary"
+                            size="small"
+                        />
+                    )}
+                </TableCell>
+
+                <TableCell
+                    style={{
+                        width: 160,
+                    }}
+                    align="center"
+                >
+                    <IconButton
+                        color="error"
+                        onClick={() =>
+                            handleDelete(
+                                myBag,
+                                setMyBag,
+                                productWithQuantity,
+                                setOpen,
+                                totalCost
+                            )
+                        }
+                    >
+                        <DeleteIcon />
+                    </IconButton>
+                </TableCell>
+            </TableRow>
+
+            <Snackbar
+                anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                }}
+                open={open}
+                autoHideDuration={4000}
+                onClose={handleClose}
+            >
+                <Alert severity="info" variant="filled">
+                    <AlertTitle>
+                        Trial Products of This Similar Product are Deleted!
+                    </AlertTitle>
+                    You Need At Least 1 Similar Product to Trail Max 2 Similar
+                    Products.
+                </Alert>
+            </Snackbar>
+        </>
+    );
 }
