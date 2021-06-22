@@ -52,6 +52,7 @@ export default function ProductCardForProductDetailsCategory({
     config,
     needDisabled,
     setNeedDisabled,
+    categoryProductsWithQuantityExistInBag,
     setCategoryProductsWithQuantityExistInBag,
 }) {
     const classes = useStyles();
@@ -84,14 +85,24 @@ export default function ProductCardForProductDetailsCategory({
         setOpenForAddAsTrial(false);
     };
 
-    // check productWithQuantity exist in bag or not
-    let productWithQuantityExistInBag;
-    if (myBag) {
-        productWithQuantityExistInBag = myBag.product_with_quantity.filter(
-            (productWithQuantity) =>
-                productWithQuantity.product.id === product.id
+    // we get all categoryProductsWithQuantityExistInBag
+    // now check this productWithQuantity exist in bag or not
+    // if exist then no need to add this as trial
+    const productWithQuantityExist =
+        categoryProductsWithQuantityExistInBag &&
+        categoryProductsWithQuantityExistInBag.length !== 0 &&
+        categoryProductsWithQuantityExistInBag.filter(
+            (productWithQuantityInBag) =>
+                productWithQuantityInBag.product.id === product.id ||
+                productWithQuantityInBag.product === product.id
+            // ######### VVI
+            // here we need to add two type filter
+            // 1st, when we get categoryProductsWithQuantityExistInBag,
+            // here productWithQuantityInBag has product details object
+            // but when we set categoryProductsWithQuantityExistInBag after adding new productWithQuantity,
+            // then the post method only give productId as product with productWithQuantity
         );
-    }
+
     // I don't need to use this state in [slug] page and ProductDetailsFirst component,
     // this state have no use in [slug] page and ProductDetails component
     // So set it here, so that [slug] page and ProductDetails component not re render when state change
@@ -99,19 +110,38 @@ export default function ProductCardForProductDetailsCategory({
     // it will just an object
     const [productWithQuantityInBag, setProductWithQuantityInBag] =
         useState(null);
+    const [productWithQuantityInBagExist, setProductWithQuantityInBagExist] =
+        useState(null);
 
+    console.log("productWithQuantityInBag", productWithQuantityInBag);
+    console.log("productWithQuantityInBagExist", productWithQuantityInBagExist);
     // when componentDidMount happend that all necessary state for this section set here
     // also when product change(mainly categoryProducts) by routing need to set again this state
     // because same path when change, nextjs not change state
     // so need to change it
     useEffect(() => {
         setProductWithQuantityInBag(
-            productWithQuantityExistInBag &&
-                productWithQuantityExistInBag.length !== 0
-                ? productWithQuantityExistInBag[0]
+            productWithQuantityExist && productWithQuantityExist.length !== 0
+                ? productWithQuantityExist[0]
                 : null
         );
     }, [product]);
+
+    // ############# same jinish 2 times
+    // when we 1st add from this, need to patch it next time, so need to set on state
+    // but when patch no need to concat setCategoryProductsWithQuantityExistInBag again with same product
+    // so for patch we make it separate
+    // because after add 5 from this, the quantity only will 1 for concated list, so when
+    // add from trial, then it will rerender and set 1 instead of 5
+    // to concating again and again when patch we trace in 2 params
+
+    useEffect(() => {
+        setProductWithQuantityInBagExist(
+            productWithQuantityExist && productWithQuantityExist.length !== 0
+                ? productWithQuantityExist[0]
+                : null
+        );
+    }, [categoryProductsWithQuantityExistInBag]);
 
     const handleAddToBag = () => {
         // start loading
@@ -136,8 +166,13 @@ export default function ProductCardForProductDetailsCategory({
             // if productWithQuantityInBag then need to patch it, obvoisly check is it add_as_trial
             // if already add_as_trial then no need to add this quantity with that productWithQuantity's quantity
             // if there have no productWithQuantityInBag, then just post it
-            if (productWithQuantityInBag) {
-                if (productWithQuantityInBag.add_as_trial) {
+            if (productWithQuantityInBag || productWithQuantityInBagExist) {
+                if (
+                    (productWithQuantityInBag &&
+                        productWithQuantityInBag.add_as_trial) ||
+                    (productWithQuantityInBagExist &&
+                        productWithQuantityInBagExist.add_as_trial)
+                ) {
                     setLoading(false);
                     setNeedDisabled(false);
                     setOpenForAddAsTrial(true);

@@ -30,6 +30,7 @@ export default function ProductDetails({
     setReviewArrayInState,
     videoReviewArrayInState,
     setVideoReviewArrayInState,
+    categoryProductsWithQuantityExistInBag,
     setCategoryProductsWithQuantityExistInBag,
 }) {
     const [needDisabled, setNeedDisabled] = React.useState(false);
@@ -592,6 +593,9 @@ export default function ProductDetails({
                                         config={config}
                                         needDisabled={needDisabled}
                                         setNeedDisabled={setNeedDisabled}
+                                        categoryProductsWithQuantityExistInBag={
+                                            categoryProductsWithQuantityExistInBag
+                                        }
                                         setCategoryProductsWithQuantityExistInBag={
                                             setCategoryProductsWithQuantityExistInBag
                                         }

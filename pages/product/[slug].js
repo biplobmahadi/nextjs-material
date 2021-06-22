@@ -65,6 +65,10 @@ export default function Product({
         );
     }, [product]);
 
+    console.log(
+        "categoryProductsWithQuantityExistInBag",
+        categoryProductsWithQuantityExistInBag
+    );
     // ### Calculate product review rating
     // it will show in productDetailsFirst part, and also review and rating section
     let avgRating = 0;
@@ -133,6 +137,9 @@ export default function Product({
                         setReviewArrayInState={setReviewArrayInState}
                         videoReviewArrayInState={videoReviewArrayInState}
                         setVideoReviewArrayInState={setVideoReviewArrayInState}
+                        categoryProductsWithQuantityExistInBag={
+                            categoryProductsWithQuantityExistInBag
+                        }
                         setCategoryProductsWithQuantityExistInBag={
                             setCategoryProductsWithQuantityExistInBag
                         }
