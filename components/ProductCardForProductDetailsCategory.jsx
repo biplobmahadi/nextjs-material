@@ -102,46 +102,12 @@ export default function ProductCardForProductDetailsCategory({
             // but when we set categoryProductsWithQuantityExistInBag after adding new productWithQuantity,
             // then the post method only give productId as product with productWithQuantity
         );
+    const productWithQuantityInBag =
+        productWithQuantityExist && productWithQuantityExist.length !== 0
+            ? productWithQuantityExist[0]
+            : null;
 
-    // I don't need to use this state in [slug] page and ProductDetailsFirst component,
-    // this state have no use in [slug] page and ProductDetails component
-    // So set it here, so that [slug] page and ProductDetails component not re render when state change
-    // If productWithQuantity exist in bag then set it on state called another name with useEffect
-    // it will just an object
-    const [productWithQuantityInBag, setProductWithQuantityInBag] =
-        useState(null);
-    const [productWithQuantityInBagExist, setProductWithQuantityInBagExist] =
-        useState(null);
-
-    console.log("productWithQuantityInBag", productWithQuantityInBag);
-    console.log("productWithQuantityInBagExist", productWithQuantityInBagExist);
-    // when componentDidMount happend that all necessary state for this section set here
-    // also when product change(mainly categoryProducts) by routing need to set again this state
-    // because same path when change, nextjs not change state
-    // so need to change it
-    useEffect(() => {
-        setProductWithQuantityInBag(
-            productWithQuantityExist && productWithQuantityExist.length !== 0
-                ? productWithQuantityExist[0]
-                : null
-        );
-    }, [product]);
-
-    // ############# same jinish 2 times
-    // when we 1st add from this, need to patch it next time, so need to set on state
-    // but when patch no need to concat setCategoryProductsWithQuantityExistInBag again with same product
-    // so for patch we make it separate
-    // because after add 5 from this, the quantity only will 1 for concated list, so when
-    // add from trial, then it will rerender and set 1 instead of 5
-    // to concating again and again when patch we trace in 2 params
-
-    useEffect(() => {
-        setProductWithQuantityInBagExist(
-            productWithQuantityExist && productWithQuantityExist.length !== 0
-                ? productWithQuantityExist[0]
-                : null
-        );
-    }, [categoryProductsWithQuantityExistInBag]);
+    // console.log("productWithQuantityInBag", productWithQuantityInBag);
 
     const handleAddToBag = () => {
         // start loading
@@ -162,17 +128,16 @@ export default function ProductCardForProductDetailsCategory({
             };
 
             // ############ Adding in bag for product
+            //
+            // ################ this product also depends on trial products,
+            // so create a common state for this and trial and after post or patch update the common state
+            //
             // we mainly just add productWithQuantity with bag id, we implement it in backend
             // if productWithQuantityInBag then need to patch it, obvoisly check is it add_as_trial
             // if already add_as_trial then no need to add this quantity with that productWithQuantity's quantity
             // if there have no productWithQuantityInBag, then just post it
-            if (productWithQuantityInBag || productWithQuantityInBagExist) {
-                if (
-                    (productWithQuantityInBag &&
-                        productWithQuantityInBag.add_as_trial) ||
-                    (productWithQuantityInBagExist &&
-                        productWithQuantityInBagExist.add_as_trial)
-                ) {
+            if (productWithQuantityInBag) {
+                if (productWithQuantityInBag.add_as_trial) {
                     setLoading(false);
                     setNeedDisabled(false);
                     setOpenForAddAsTrial(true);
@@ -191,10 +156,23 @@ export default function ProductCardForProductDetailsCategory({
                         )
                         .then((res) => {
                             console.log("patched product", res.data);
-                            setProductWithQuantityInBag(res.data);
-                            // when patch is done need to trace it in client site
-                            // because when we press add button again and agian
-                            // we need to check productWithQuantityInBag with new quantity to patch with it again
+                            const newCategoryProductsWithQuantityExistInBag =
+                                categoryProductsWithQuantityExistInBag.map(
+                                    (productWithQuantity) => {
+                                        if (
+                                            productWithQuantity.id ===
+                                            res.data.id
+                                        ) {
+                                            productWithQuantity = res.data;
+                                        }
+                                        return productWithQuantity;
+                                    }
+                                );
+                            setCategoryProductsWithQuantityExistInBag(
+                                newCategoryProductsWithQuantityExistInBag
+                            );
+                            // when patch it, then just change this object using mapping all
+                            // finally return new array and set it as state
                         })
                         .catch((err) => console.log(err.response));
                 }
@@ -210,13 +188,10 @@ export default function ProductCardForProductDetailsCategory({
                     )
                     .then((res) => {
                         console.log("bag nai - pwq", res.data);
-                        setProductWithQuantityInBag(res.data);
                         setCategoryProductsWithQuantityExistInBag((prevState) =>
                             prevState.concat(res.data)
                         );
-                        // when we 1st post productWithQuantity then need to set it in productWithQuantityInBag
-                        // because when we click add button again then need to patch by productWithQuantityInBag condition check
-                        // if we don't set it then it will post again and again, which is not good to add same productWithQuantity in bag.. just quantity will update
+                        // just when post new, then concat it with previous all
                     })
                     .catch((err) => console.log(err.response));
             }
