@@ -29,9 +29,14 @@ export default function Bag(props) {
     // product_with_quantity must be an [], so if product_with_quantity has nothing then it will set 0
 
     // ##### use for add, remove only.. no need to use it in delete
-    const [subTotal, setSubTotal] = useState(myBag.sub_total);
+    const [subTotal, setSubTotal] = useState(0);
+
+    useEffect(() => {
+        setSubTotal(myBag.sub_total);
+    }, [myBag]);
 
     console.log("in bag", myBag);
+    console.log("subTotal", subTotal);
     const config = props.config;
     // evabe na #########################
     const handleCheckout = () => {
