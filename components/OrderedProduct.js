@@ -1,29 +1,29 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
-import AddBox from '@material-ui/icons/AddBox';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
-import Chip from '@material-ui/core/Chip';
+import React from "react";
+import PropTypes from "prop-types";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableFooter from "@material-ui/core/TableFooter";
+import TablePagination from "@material-ui/core/TablePagination";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import Box from "@material-ui/core/Box";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
+import AddBox from "@material-ui/icons/AddBox";
+import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
+import FirstPageIcon from "@material-ui/icons/FirstPage";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import LastPageIcon from "@material-ui/icons/LastPage";
+import Chip from "@material-ui/core/Chip";
 
-import axios from 'axios';
-import TableHead from '@material-ui/core/TableHead';
+import axios from "axios";
+import TableHead from "@material-ui/core/TableHead";
 const useStyles1 = makeStyles((theme) => ({
     root: {
         flexShrink: 0,
@@ -57,9 +57,9 @@ function TablePaginationActions(props) {
             <IconButton
                 onClick={handleFirstPageButtonClick}
                 disabled={page === 0}
-                aria-label='first page'
+                aria-label="first page"
             >
-                {theme.direction === 'rtl' ? (
+                {theme.direction === "rtl" ? (
                     <LastPageIcon />
                 ) : (
                     <FirstPageIcon />
@@ -68,9 +68,9 @@ function TablePaginationActions(props) {
             <IconButton
                 onClick={handleBackButtonClick}
                 disabled={page === 0}
-                aria-label='previous page'
+                aria-label="previous page"
             >
-                {theme.direction === 'rtl' ? (
+                {theme.direction === "rtl" ? (
                     <KeyboardArrowRight />
                 ) : (
                     <KeyboardArrowLeft />
@@ -79,9 +79,9 @@ function TablePaginationActions(props) {
             <IconButton
                 onClick={handleNextButtonClick}
                 disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label='next page'
+                aria-label="next page"
             >
-                {theme.direction === 'rtl' ? (
+                {theme.direction === "rtl" ? (
                     <KeyboardArrowLeft />
                 ) : (
                     <KeyboardArrowRight />
@@ -90,9 +90,9 @@ function TablePaginationActions(props) {
             <IconButton
                 onClick={handleLastPageButtonClick}
                 disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label='last page'
+                aria-label="last page"
             >
-                {theme.direction === 'rtl' ? (
+                {theme.direction === "rtl" ? (
                     <FirstPageIcon />
                 ) : (
                     <LastPageIcon />
@@ -124,10 +124,14 @@ export default function OrderedProductTable({ order }) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    let rows = order.my_bag.product_with_quantity;
+    let productWithQuantityArray = order.my_bag.product_with_quantity;
 
     const emptyRows =
-        rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+        rowsPerPage -
+        Math.min(
+            rowsPerPage,
+            productWithQuantityArray.length - page * rowsPerPage
+        );
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -143,55 +147,55 @@ export default function OrderedProductTable({ order }) {
             <TableContainer component={Paper}>
                 <Table
                     className={classes.table}
-                    aria-label='custom pagination table'
+                    aria-label="custom pagination table"
                 >
                     <TableHead>
                         <TableRow>
-                            <TableCell align='center'>Name</TableCell>
-                            <TableCell align='center'>Price</TableCell>
-                            <TableCell align='center'>Quantity</TableCell>
-                            <TableCell align='center'>Cost</TableCell>
+                            <TableCell align="center">Name</TableCell>
+                            <TableCell align="center">Price</TableCell>
+                            <TableCell align="center">Quantity</TableCell>
+                            <TableCell align="center">Cost</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {(rowsPerPage > 0
-                            ? rows.slice(
+                            ? productWithQuantityArray.slice(
                                   page * rowsPerPage,
                                   page * rowsPerPage + rowsPerPage
                               )
-                            : rows
-                        ).map((row) => (
-                            <TableRow key={row.name} hover>
+                            : productWithQuantityArray
+                        ).map((productWithQuantity) => (
+                            <TableRow key={productWithQuantity.name} hover>
                                 <TableCell
-                                    component='th'
-                                    scope='row'
-                                    align='center'
+                                    component="th"
+                                    scope="row"
+                                    align="center"
                                 >
-                                    {row.product.name}
+                                    {productWithQuantity.product.name}
                                 </TableCell>
                                 <TableCell
                                     // style={{ width: 160 }}
-                                    align='center'
+                                    align="center"
                                 >
-                                    {row.product.price}
+                                    {productWithQuantity.product.price}
                                 </TableCell>
                                 <TableCell
                                     // style={{ width: 160 }}
-                                    align='center'
+                                    align="center"
                                 >
-                                    {row.quantity}
+                                    {productWithQuantity.quantity}
                                 </TableCell>
                                 <TableCell
                                     // style={{ width: 160 }}
-                                    align='center'
+                                    align="center"
                                 >
-                                    {!row.add_as_trial ? (
-                                        row.cost
+                                    {!productWithQuantity.add_as_trial ? (
+                                        productWithQuantity.total_cost
                                     ) : (
                                         <Chip
-                                            label='Free Trial'
-                                            color='secondary'
-                                            size='small'
+                                            label="Free Trial"
+                                            color="secondary"
+                                            size="small"
                                         />
                                     )}
                                 </TableCell>
@@ -211,15 +215,15 @@ export default function OrderedProductTable({ order }) {
                                     5,
                                     10,
                                     25,
-                                    { label: 'All', value: -1 },
+                                    { label: "All", value: -1 },
                                 ]}
                                 colSpan={5}
-                                count={rows.length}
+                                count={productWithQuantityArray.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{
                                     inputProps: {
-                                        'aria-label': 'rows per page',
+                                        "aria-label": "rows per page",
                                     },
                                     native: true,
                                 }}

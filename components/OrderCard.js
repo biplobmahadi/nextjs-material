@@ -13,12 +13,37 @@ import Grid from "@material-ui/core/Grid";
 import AccountOptionList from "../components/AccountOptionList";
 
 import Divider from "@material-ui/core/Divider";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { useState } from "react";
+
+const config = {
+    headers: {
+        Authorization: "Token " + Cookies.get("haha_ecom_bangla_token"),
+    },
+};
 
 export default function OrderCard({ myOrder }) {
-    console.log("myOrder", myOrder);
+    const [orderStatus, setOrderStatus] = useState(myOrder.order_status);
+
     const fullOrderId = myOrder.id;
     const splittedArray = fullOrderId.split("-");
     const orderId = splittedArray[0].toUpperCase();
+
+    const cancelOrder = () => {
+        setOrderStatus("cancelled");
+        axios
+            .patch(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/my-order/${fullOrderId}/`,
+                {
+                    order_status: "cancelled",
+                },
+                config
+            )
+            .then((res) => console.log("order cancelled"))
+            .catch((err) => console.log(err));
+    };
+
     return (
         <Box
             p={2}
@@ -108,50 +133,60 @@ export default function OrderCard({ myOrder }) {
                 </Grid>
 
                 <Grid item>
-                    <Box>
-                        {myOrder.is_processing ? (
-                            myOrder.is_processing && myOrder.is_placed ? (
-                                myOrder.is_processing &&
-                                myOrder.is_placed &&
-                                myOrder.is_on_road ? (
+                    {orderStatus === "cancelled" ? (
+                        <Box>
+                            <Chip
+                                label={`Cancelled`}
+                                color="default"
+                                size="small"
+                            />
+                        </Box>
+                    ) : (
+                        <Box>
+                            {myOrder.is_processing ? (
+                                myOrder.is_processing && myOrder.is_placed ? (
                                     myOrder.is_processing &&
                                     myOrder.is_placed &&
-                                    myOrder.is_on_road &&
-                                    myOrder.is_completed ? (
-                                        <Chip
-                                            label={`Completed`}
-                                            color="primary"
-                                            size="small"
-                                        />
+                                    myOrder.is_on_road ? (
+                                        myOrder.is_processing &&
+                                        myOrder.is_placed &&
+                                        myOrder.is_on_road &&
+                                        myOrder.is_completed ? (
+                                            <Chip
+                                                label={`Completed`}
+                                                color="primary"
+                                                size="small"
+                                            />
+                                        ) : (
+                                            <Chip
+                                                label={`In Road`}
+                                                color="primary"
+                                                size="small"
+                                            />
+                                        )
                                     ) : (
                                         <Chip
-                                            label={`In Road`}
+                                            label={`Is Placed`}
                                             color="primary"
                                             size="small"
                                         />
                                     )
                                 ) : (
                                     <Chip
-                                        label={`Is Placed`}
+                                        label={`Is Processing`}
                                         color="primary"
                                         size="small"
                                     />
                                 )
                             ) : (
                                 <Chip
-                                    label={`Is Processing`}
+                                    label={`On Obsevation`}
                                     color="primary"
                                     size="small"
                                 />
-                            )
-                        ) : (
-                            <Chip
-                                label={`On Obsevation`}
-                                color="primary"
-                                size="small"
-                            />
-                        )}
-                    </Box>
+                            )}
+                        </Box>
+                    )}
                 </Grid>
             </Grid>
             <Box py={1}>
@@ -182,9 +217,12 @@ export default function OrderCard({ myOrder }) {
                                 color="secondary"
                                 variant="contained"
                                 size="small"
+                                onClick={cancelOrder}
+                                disabled={orderStatus === "cancelled"}
                             >
-                                {" "}
-                                Cancel Order{" "}
+                                {orderStatus === "cancelled"
+                                    ? "Cancelled"
+                                    : "Cancel Order"}
                             </Button>
                         )}
                     </Box>

@@ -34,6 +34,10 @@ export default function MyOrderDetails({ order, myBag, user }) {
     const classes = useStyles();
     const router = useRouter();
 
+    const fullOrderId = order.id;
+    const splittedArray = fullOrderId.split("-");
+    const orderId = splittedArray[0].toUpperCase();
+
     useEffect(() => {
         if (!Cookies.get("haha_ecom_bangla_token")) {
             router.push("/login");
@@ -54,6 +58,7 @@ export default function MyOrderDetails({ order, myBag, user }) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+    // where is the new value man
     return (
         <div>
             <Head>
@@ -171,8 +176,8 @@ export default function MyOrderDetails({ order, myBag, user }) {
                                                     variant="contained"
                                                     size="small"
                                                 >
-                                                    <Box px={3}>
-                                                        Order ID: {order.id}
+                                                    <Box px={1}>
+                                                        Order ID: {orderId}
                                                     </Box>
                                                 </Button>
                                             </Grid>
@@ -226,11 +231,11 @@ export default function MyOrderDetails({ order, myBag, user }) {
     );
 }
 
-const fetchDataForBag = async (config) =>
+const fetchDataForBags = async (config) =>
     await axios
         .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, config)
         .then((res) => ({
-            bag: res.data,
+            bags: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
@@ -271,22 +276,15 @@ export async function getServerSideProps({ req, params }) {
             Authorization: "Token " + haha_ecom_bangla_token,
         },
     };
-    const dataBag = await fetchDataForBag(config);
 
+    const dataBags = await fetchDataForBags(config);
+
+    // ###### Here for bag
+    // no need to create bag, if not available then null will be passed
     let myBag = null;
-    if (dataBag.bag) {
-        let allMyBag = dataBag.bag;
-        let myBagNotSendToMyOrder = allMyBag.filter(
-            (myBag) => myBag.is_send_to_my_order === false
-        );
-        // console.log(myBagNotSendToMyOrder[0])
-        if (myBagNotSendToMyOrder[0]) {
-            myBag = myBagNotSendToMyOrder[0];
-            // We got exact bag for user
-            // 1st we filter out the bags whose not send to my order
-            // then there have many bags for that user because of backend, hacker can do anything!!
-            // the 1st created one is selected as myBag
-        }
+    if (dataBags.bags && dataBags.bags.length !== 0) {
+        let allMyBag = dataBags.bags;
+        myBag = allMyBag[0];
     }
 
     const dataOrder = await fetchDataForOrder(params, config);
