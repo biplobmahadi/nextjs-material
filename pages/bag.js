@@ -30,15 +30,16 @@ export default function Bag(props) {
 
     // ##### use for add, remove only.. no need to use it in delete
     const [subTotal, setSubTotal] = useState(0);
+    // if we set state directly then when the dependent state change the value of this state not change
+    // that's why change it from useEffect hooks
 
     useEffect(() => {
         setSubTotal(myBag.sub_total);
     }, [myBag]);
 
-    console.log("in bag", myBag);
-    console.log("subTotal", subTotal);
-    const config = props.config;
-    // evabe na #########################
+    // console.log("in bag", myBag);
+    // console.log("subTotal", subTotal);
+
     const handleCheckout = () => {
         axios
             .post(
@@ -301,7 +302,9 @@ export default function Bag(props) {
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        onClick={handleCheckout}
+                                        onClick={() =>
+                                            router.push("/checkout/address")
+                                        }
                                         disabled={
                                             lengthProductWithQuantity === 0
                                         }

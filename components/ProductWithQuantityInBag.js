@@ -122,7 +122,7 @@ const useStyles2 = makeStyles({
     },
 });
 
-export default function Bag({
+export default function ProductWithQuantityInBag({
     myBag,
     setMyBag,
     setSubTotal,

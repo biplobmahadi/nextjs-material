@@ -109,10 +109,11 @@ const handleDelete = (
                 (singleProductWithQuantity) =>
                     singleProductWithQuantity.id !== productWithQuantity.id
             );
+        const newSubTotal = myBag.sub_total - totalCost;
         const newMyBag = {
             ...myBag,
-            sub_total: myBag.sub_total - totalCost,
             product_with_quantity: newAllProductWithQuantityWithoutDeletedOne,
+            sub_total: newSubTotal,
         };
         setMyBag(newMyBag);
         axios
@@ -141,11 +142,13 @@ const handleDelete = (
                     (singleProductWithQuantity) =>
                         singleProductWithQuantity.id !== productWithQuantity.id
                 );
+
+            const newSubTotal = myBag.sub_total - totalCost;
             const newMyBag = {
                 ...myBag,
-                sub_total: myBag.sub_total - totalCost,
                 product_with_quantity:
                     newAllProductWithQuantityWithoutDeletedOne,
+                sub_total: newSubTotal,
             };
             setMyBag(newMyBag);
             axios
@@ -187,11 +190,12 @@ const handleDelete = (
                 );
             }
 
+            const newSubTotal = myBag.sub_total - totalCost;
             const newMyBag = {
                 ...myBag,
-                sub_total: myBag.sub_total - totalCost,
                 product_with_quantity:
                     newAllProductWithQuantityWithoutDeletedOneAndTrials,
+                sub_total: newSubTotal,
             };
             setMyBag(newMyBag);
             setOpen(true);
@@ -230,8 +234,10 @@ export default function ProductWithQuantityInBagTableRow({
     productWithQuantity,
     setSubTotal,
 }) {
-    const [quantity, setQuantity] = useState(productWithQuantity.quantity);
-    const [totalCost, setTotalCost] = useState(productWithQuantity.total_cost);
+    const [quantity, setQuantity] = useState(0);
+    const [totalCost, setTotalCost] = useState(0);
+    // if we set state directly then when the dependent state change the value of this state not change
+    // that's why change it from useEffect hooks
     const [open, setOpen] = useState(false);
 
     // this is for alert close
@@ -241,6 +247,11 @@ export default function ProductWithQuantityInBagTableRow({
         }
         setOpen(false);
     };
+
+    useEffect(() => {
+        setQuantity(productWithQuantity.quantity);
+        setTotalCost(productWithQuantity.total_cost);
+    }, [productWithQuantity]);
 
     return (
         <>
