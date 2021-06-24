@@ -1,32 +1,32 @@
-import Head from 'next/head';
-import ButtonAppBar from '../../components/ButtonAppBar';
-import MainFooter from '../../components/MainFooter';
-import OrderDetails from '../../components/OrderDetails';
-import ReceiverAddress from '../../components/ReceiverAddress';
-import OrderedProduct from '../../components/OrderedProduct';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import AccountOptionList from '../../components/AccountOptionList';
-import parseCookies from '../../lib/parseCookies';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import Head from "next/head";
+import ButtonAppBar from "../../components/ButtonAppBar";
+import MainFooter from "../../components/MainFooter";
+import OrderDetails from "../../components/OrderDetails";
+import ReceiverAddress from "../../components/ReceiverAddress";
+import OrderedProduct from "../../components/OrderedProduct";
+import Box from "@material-ui/core/Box";
+import Chip from "@material-ui/core/Chip";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import AccountOptionList from "../../components/AccountOptionList";
+import parseCookies from "../../lib/parseCookies";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-import Hidden from '@material-ui/core/Hidden';
-import TrackingStepper from '../../components/TrackingStepper';
+import Hidden from "@material-ui/core/Hidden";
+import TrackingStepper from "../../components/TrackingStepper";
 
 const useStyles = makeStyles({
     root: {
         flexGrow: 1,
-        marginTop: '16px',
+        marginTop: "16px",
     },
 });
 
@@ -35,16 +35,16 @@ export default function MyOrderDetails({ order, myBag, user }) {
     const router = useRouter();
 
     useEffect(() => {
-        if (!Cookies.get('haha_ecom_bangla_token')) {
-            router.push('/login');
+        if (!Cookies.get("haha_ecom_bangla_token")) {
+            router.push("/login");
         }
     }, []);
 
-    const [value, setValue] = React.useState('0');
+    const [value, setValue] = React.useState("0");
     let output;
-    if (value === '0') {
+    if (value === "0") {
         output = <OrderDetails order={order && order} />;
-    } else if (value === '1') {
+    } else if (value === "1") {
         output = <ReceiverAddress order={order && order} />;
     } else {
         output = <OrderedProduct order={order && order} />;
@@ -58,11 +58,11 @@ export default function MyOrderDetails({ order, myBag, user }) {
         <div>
             <Head>
                 <title>My Order Details</title>
-                <link rel='icon' href='/a.ico' />
+                <link rel="icon" href="/a.ico" />
 
                 <meta
-                    name='viewport'
-                    content='width=device-width, initial-scale=1.0'
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
                 ></meta>
             </Head>
             <ButtonAppBar
@@ -70,38 +70,38 @@ export default function MyOrderDetails({ order, myBag, user }) {
             />
             {!order ? (
                 <Box
-                    textAlign='center'
+                    textAlign="center"
                     pt={18}
                     pb={12}
-                    style={{ backgroundColor: '#E6E6FA' }}
+                    style={{ backgroundColor: "#E6E6FA" }}
                 >
-                    <Typography variant='h4' color='secondary'>
+                    <Typography variant="h4" color="secondary">
                         <strong>Sorry - There have nothing !</strong>
                     </Typography>
                 </Box>
             ) : (
-                <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                <Box pb={8} style={{ backgroundColor: "#E6E6FA" }}>
                     <Box pt={11} px={3}>
                         <Box
                             p={2}
                             boxShadow={1}
-                            textAlign='center'
-                            borderRadius='borderRadius'
-                            style={{ backgroundColor: 'white' }}
+                            textAlign="center"
+                            borderRadius="borderRadius"
+                            style={{ backgroundColor: "white" }}
                         >
                             <img
-                                src='/aa.jpg'
-                                alt=''
-                                srcset=''
-                                height='60'
-                                width='60'
-                                style={{ borderRadius: '50%' }}
+                                src="/aa.jpg"
+                                alt=""
+                                srcset=""
+                                height="60"
+                                width="60"
+                                style={{ borderRadius: "50%" }}
                             />
-                            <Typography variant='h5'>
+                            <Typography variant="h5">
                                 <strong>
                                     {user &&
                                         user.first_name.toUpperCase() +
-                                            ' ' +
+                                            " " +
                                             user.last_name.toUpperCase()}
                                 </strong>
                             </Typography>
@@ -120,8 +120,8 @@ export default function MyOrderDetails({ order, myBag, user }) {
                                         <Box
                                             p={1}
                                             boxShadow={1}
-                                            borderRadius='borderRadius'
-                                            style={{ backgroundColor: 'white' }}
+                                            borderRadius="borderRadius"
+                                            style={{ backgroundColor: "white" }}
                                         >
                                             <AccountOptionList />
                                         </Box>
@@ -138,14 +138,14 @@ export default function MyOrderDetails({ order, myBag, user }) {
                                     <Box
                                         p={2}
                                         boxShadow={1}
-                                        borderRadius='borderRadius'
-                                        style={{ backgroundColor: 'white' }}
+                                        borderRadius="borderRadius"
+                                        style={{ backgroundColor: "white" }}
                                     >
                                         <Grid
                                             container
-                                            direction='row'
-                                            justify='space-between'
-                                            alignItems='center'
+                                            direction="row"
+                                            justify="space-between"
+                                            alignItems="center"
                                             spacing={2}
                                         >
                                             <Grid
@@ -157,19 +157,19 @@ export default function MyOrderDetails({ order, myBag, user }) {
                                                 xl={6}
                                             >
                                                 <Typography
-                                                    variant='h5'
-                                                    component='h5'
+                                                    variant="h5"
+                                                    component="h5"
                                                 >
                                                     <strong>
                                                         My Orders Details
-                                                    </strong>{' '}
+                                                    </strong>{" "}
                                                 </Typography>
                                             </Grid>
 
                                             <Grid item>
                                                 <Button
-                                                    variant='contained'
-                                                    size='small'
+                                                    variant="contained"
+                                                    size="small"
                                                 >
                                                     <Box px={3}>
                                                         Order ID: {order.id}
@@ -182,8 +182,8 @@ export default function MyOrderDetails({ order, myBag, user }) {
                                         p={2}
                                         mt={2}
                                         boxShadow={1}
-                                        borderRadius='borderRadius'
-                                        style={{ backgroundColor: 'white' }}
+                                        borderRadius="borderRadius"
+                                        style={{ backgroundColor: "white" }}
                                     >
                                         <TrackingStepper
                                             order={order && order}
@@ -193,22 +193,22 @@ export default function MyOrderDetails({ order, myBag, user }) {
                                         <Tabs
                                             value={value}
                                             onChange={handleChange}
-                                            indicatorColor='primary'
-                                            textColor='primary'
-                                            variant='fullWidth'
+                                            indicatorColor="primary"
+                                            textColor="primary"
+                                            variant="fullWidth"
                                             centered
                                         >
                                             <Tab
-                                                label='Order Details'
-                                                value='0'
+                                                label="Order Details"
+                                                value="0"
                                             />
                                             <Tab
-                                                label='Receiver Address'
-                                                value='1'
+                                                label="Receiver Address"
+                                                value="1"
                                             />
                                             <Tab
-                                                label='Ordered Products'
-                                                value='2'
+                                                label="Ordered Products"
+                                                value="2"
                                             />
                                         </Tabs>
                                     </Paper>
@@ -228,7 +228,7 @@ export default function MyOrderDetails({ order, myBag, user }) {
 
 const fetchDataForBag = async (config) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -268,7 +268,7 @@ export async function getServerSideProps({ req, params }) {
 
     const config = {
         headers: {
-            Authorization: 'Token ' + haha_ecom_bangla_token,
+            Authorization: "Token " + haha_ecom_bangla_token,
         },
     };
     const dataBag = await fetchDataForBag(config);

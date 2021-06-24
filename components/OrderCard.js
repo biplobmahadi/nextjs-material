@@ -1,35 +1,38 @@
-import Link from '../src/Link';
-import Head from 'next/head';
-import ButtonAppBar from '../components/ButtonAppBar';
-import Card from '../components/Card';
-import ProductCard from '../components/ProductCard';
-import Footer from '../components/Footer';
-import MainFooter from '../components/MainFooter';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import AccountOptionList from '../components/AccountOptionList';
+import Link from "../src/Link";
+import Head from "next/head";
+import ButtonAppBar from "../components/ButtonAppBar";
+import Card from "../components/Card";
+import ProductCard from "../components/ProductCard";
+import Footer from "../components/Footer";
+import MainFooter from "../components/MainFooter";
+import Box from "@material-ui/core/Box";
+import Chip from "@material-ui/core/Chip";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import AccountOptionList from "../components/AccountOptionList";
 
-import Divider from '@material-ui/core/Divider';
+import Divider from "@material-ui/core/Divider";
 
 export default function OrderCard({ myOrder }) {
-    console.log('myOrder', myOrder);
+    console.log("myOrder", myOrder);
+    const fullOrderId = myOrder.id;
+    const splittedArray = fullOrderId.split("-");
+    const orderId = splittedArray[0].toUpperCase();
     return (
         <Box
             p={2}
             boxShadow={1}
-            borderRadius='borderRadius'
+            borderRadius="borderRadius"
             style={{
-                backgroundColor: 'white',
+                backgroundColor: "white",
             }}
         >
             <Grid
                 container
-                direction='row'
-                justify='space-between'
-                alignItems='center'
+                direction="row"
+                justify="space-between"
+                alignItems="center"
             >
                 <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
                     <Box>
@@ -39,8 +42,8 @@ export default function OrderCard({ myOrder }) {
 
                 <Grid item>
                     <Box>
-                        {' '}
-                        <Typography>{myOrder.id}</Typography>
+                        {" "}
+                        <Typography>{orderId}</Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -49,9 +52,9 @@ export default function OrderCard({ myOrder }) {
             </Box>
             <Grid
                 container
-                direction='row'
-                justify='space-between'
-                alignItems='center'
+                direction="row"
+                justify="space-between"
+                alignItems="center"
             >
                 <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
                     <Box>
@@ -61,7 +64,7 @@ export default function OrderCard({ myOrder }) {
 
                 <Grid item>
                     <Box>
-                        {' '}
+                        {" "}
                         <Typography>{myOrder.created_at}</Typography>
                     </Box>
                 </Grid>
@@ -71,9 +74,9 @@ export default function OrderCard({ myOrder }) {
             </Box>
             <Grid
                 container
-                direction='row'
-                justify='space-between'
-                alignItems='center'
+                direction="row"
+                justify="space-between"
+                alignItems="center"
             >
                 <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
                     <Box>
@@ -94,9 +97,9 @@ export default function OrderCard({ myOrder }) {
             </Box>
             <Grid
                 container
-                direction='row'
-                justify='space-between'
-                alignItems='center'
+                direction="row"
+                justify="space-between"
+                alignItems="center"
             >
                 <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
                     <Box>
@@ -117,35 +120,35 @@ export default function OrderCard({ myOrder }) {
                                     myOrder.is_completed ? (
                                         <Chip
                                             label={`Completed`}
-                                            color='primary'
-                                            size='small'
+                                            color="primary"
+                                            size="small"
                                         />
                                     ) : (
                                         <Chip
                                             label={`In Road`}
-                                            color='primary'
-                                            size='small'
+                                            color="primary"
+                                            size="small"
                                         />
                                     )
                                 ) : (
                                     <Chip
                                         label={`Is Placed`}
-                                        color='primary'
-                                        size='small'
+                                        color="primary"
+                                        size="small"
                                     />
                                 )
                             ) : (
                                 <Chip
                                     label={`Is Processing`}
-                                    color='primary'
-                                    size='small'
+                                    color="primary"
+                                    size="small"
                                 />
                             )
                         ) : (
                             <Chip
                                 label={`On Obsevation`}
-                                color='primary'
-                                size='small'
+                                color="primary"
+                                size="small"
                             />
                         )}
                     </Box>
@@ -156,9 +159,9 @@ export default function OrderCard({ myOrder }) {
             </Box>
             <Grid
                 container
-                direction='row'
-                justify='space-between'
-                alignItems='center'
+                direction="row"
+                justify="space-between"
+                alignItems="center"
             >
                 <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
                     <Box>
@@ -168,43 +171,21 @@ export default function OrderCard({ myOrder }) {
 
                 <Grid item>
                     <Box>
-                        {myOrder.is_confirm && myOrder.is_payment_confirm ? (
+                        {myOrder.order_status === "confirmed" ? (
                             <Chip
                                 label={`Confirmed`}
-                                color='primary'
-                                size='small'
+                                color="primary"
+                                size="small"
                             />
                         ) : (
-                            <>
-                                {!myOrder.is_confirm && (
-                                    <Link
-                                        href={`/receiver/${myOrder.order_code}`}
-                                    >
-                                        <Button
-                                            color='primary'
-                                            variant='contained'
-                                            size='small'
-                                        >
-                                            {' '}
-                                            Confirm Now{' '}
-                                        </Button>
-                                    </Link>
-                                )}
-                                {myOrder.is_confirm && (
-                                    <Link
-                                        href={`/payment/${myOrder.order_code}`}
-                                    >
-                                        <Button
-                                            color='primary'
-                                            variant='contained'
-                                            size='small'
-                                        >
-                                            {' '}
-                                            Confirm Now{' '}
-                                        </Button>
-                                    </Link>
-                                )}
-                            </>
+                            <Button
+                                color="secondary"
+                                variant="contained"
+                                size="small"
+                            >
+                                {" "}
+                                Cancel Order{" "}
+                            </Button>
                         )}
                     </Box>
                 </Grid>
@@ -212,9 +193,9 @@ export default function OrderCard({ myOrder }) {
             <Box py={1}>
                 <Divider />
             </Box>
-            <Box pt={2} textAlign='center'>
-                <Link href={`/my-order-details/${myOrder.order_code}`}>
-                    <Button variant='contained' size='small' color='primary'>
+            <Box pt={2} textAlign="center">
+                <Link href={`/my-order-details/${fullOrderId}`}>
+                    <Button variant="contained" size="small" color="primary">
                         <Box px={3}>See Details</Box>
                     </Button>
                 </Link>

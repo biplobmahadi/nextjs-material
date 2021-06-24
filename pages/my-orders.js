@@ -1,31 +1,31 @@
-import Link from 'next/link';
-import Head from 'next/head';
-import ButtonAppBar from '../components/ButtonAppBar';
-import Card from '../components/Card';
-import OrderCard from '../components/OrderCard';
-import Footer from '../components/Footer';
-import MainFooter from '../components/MainFooter';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import AccountOptionList from '../components/AccountOptionList';
-import { makeStyles } from '@material-ui/core/styles';
-import Divider from '@material-ui/core/Divider';
-import Hidden from '@material-ui/core/Hidden';
-import parseCookies from '../lib/parseCookies';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
+import Link from "next/link";
+import Head from "next/head";
+import ButtonAppBar from "../components/ButtonAppBar";
+import Card from "../components/Card";
+import OrderCard from "../components/OrderCard";
+import Footer from "../components/Footer";
+import MainFooter from "../components/MainFooter";
+import Box from "@material-ui/core/Box";
+import Chip from "@material-ui/core/Chip";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import AccountOptionList from "../components/AccountOptionList";
+import { makeStyles } from "@material-ui/core/styles";
+import Divider from "@material-ui/core/Divider";
+import Hidden from "@material-ui/core/Hidden";
+import parseCookies from "../lib/parseCookies";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        [theme.breakpoints.only('xs')]: {
-            textAlign: 'center',
+        [theme.breakpoints.only("xs")]: {
+            textAlign: "center",
         },
     },
 }));
@@ -35,8 +35,8 @@ export default function MyOrders({ orders, myBag, user }) {
     const router = useRouter();
 
     useEffect(() => {
-        if (!Cookies.get('haha_ecom_bangla_token')) {
-            router.push('/login');
+        if (!Cookies.get("haha_ecom_bangla_token")) {
+            router.push("/login");
         }
     }, []);
 
@@ -45,37 +45,37 @@ export default function MyOrders({ orders, myBag, user }) {
         <div>
             <Head>
                 <title>My Orders</title>
-                <link rel='icon' href='/a.ico' />
+                <link rel="icon" href="/a.ico" />
                 <meta
-                    name='viewport'
-                    content='width=device-width, initial-scale=1.0'
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
                 ></meta>
             </Head>
             <ButtonAppBar
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
-            <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+            <Box pb={8} style={{ backgroundColor: "#E6E6FA" }}>
                 <Box pt={11} px={3}>
                     <Box
                         p={2}
                         boxShadow={1}
-                        textAlign='center'
-                        borderRadius='borderRadius'
-                        style={{ backgroundColor: 'white' }}
+                        textAlign="center"
+                        borderRadius="borderRadius"
+                        style={{ backgroundColor: "white" }}
                     >
                         <img
-                            src='/aa.jpg'
-                            alt=''
-                            srcset=''
-                            height='60'
-                            width='60'
-                            style={{ borderRadius: '50%' }}
+                            src="/aa.jpg"
+                            alt=""
+                            srcset=""
+                            height="60"
+                            width="60"
+                            style={{ borderRadius: "50%" }}
                         />
-                        <Typography variant='h5'>
+                        <Typography variant="h5">
                             <strong>
                                 {user &&
                                     user.first_name.toUpperCase() +
-                                        ' ' +
+                                        " " +
                                         user.last_name.toUpperCase()}
                             </strong>
                         </Typography>
@@ -94,8 +94,8 @@ export default function MyOrders({ orders, myBag, user }) {
                                     <Box
                                         p={1}
                                         boxShadow={1}
-                                        borderRadius='borderRadius'
-                                        style={{ backgroundColor: 'white' }}
+                                        borderRadius="borderRadius"
+                                        style={{ backgroundColor: "white" }}
                                     >
                                         <AccountOptionList />
                                     </Box>
@@ -105,15 +105,15 @@ export default function MyOrders({ orders, myBag, user }) {
                                 <Box
                                     p={2}
                                     boxShadow={1}
-                                    borderRadius='borderRadius'
-                                    style={{ backgroundColor: 'white' }}
+                                    borderRadius="borderRadius"
+                                    style={{ backgroundColor: "white" }}
                                     className={classes.root}
                                 >
                                     <Grid
                                         container
-                                        direction='row'
-                                        justify='space-between'
-                                        alignItems='center'
+                                        direction="row"
+                                        justify="space-between"
+                                        alignItems="center"
                                         spacing={2}
                                     >
                                         <Grid
@@ -125,20 +125,21 @@ export default function MyOrders({ orders, myBag, user }) {
                                             xl={6}
                                         >
                                             <Typography
-                                                variant='h5'
-                                                component='h5'
+                                                variant="h5"
+                                                component="h5"
                                             >
-                                                <strong>My Orders</strong>{' '}
+                                                <strong>My Orders</strong>{" "}
                                             </Typography>
                                         </Grid>
 
                                         <Grid item>
                                             <Button
-                                                variant='contained'
-                                                size='small'
+                                                variant="contained"
+                                                size="small"
                                             >
                                                 <Box px={3}>
-                                                    Total: {orders.length}
+                                                    Total:{" "}
+                                                    {orders && orders.length}
                                                 </Box>
                                             </Button>
                                         </Grid>
@@ -146,7 +147,7 @@ export default function MyOrders({ orders, myBag, user }) {
                                 </Box>
 
                                 <Box mt={2}>
-                                    {orders.length !== 0 ? (
+                                    {orders && orders.length !== 0 ? (
                                         <Grid container spacing={3}>
                                             {orders.map((myOrder) => (
                                                 <Grid
@@ -164,9 +165,9 @@ export default function MyOrders({ orders, myBag, user }) {
                                             ))}
                                         </Grid>
                                     ) : (
-                                        <Alert severity='error'>
+                                        <Alert severity="error">
                                             <AlertTitle>Sorry Dear</AlertTitle>
-                                            You Have No Order Right Now —{' '}
+                                            You Have No Order Right Now —{" "}
                                             <strong>
                                                 Hope You Will Make Order Very
                                                 Soon!
@@ -188,7 +189,7 @@ export default function MyOrders({ orders, myBag, user }) {
 
 const fetchDataForBag = async (config) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -208,7 +209,7 @@ const fetchDataForUser = async (config) =>
 
 const fetchDataForOrder = async (config) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-order/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-orders/`, config)
         .then((res) => ({
             orders: res.data,
         }))
@@ -225,7 +226,7 @@ export async function getServerSideProps({ req, params }) {
 
     const config = {
         headers: {
-            Authorization: 'Token ' + haha_ecom_bangla_token,
+            Authorization: "Token " + haha_ecom_bangla_token,
         },
     };
 
