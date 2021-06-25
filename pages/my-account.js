@@ -1,34 +1,34 @@
-import Head from 'next/head';
-import ButtonAppBar from '../components/ButtonAppBar';
-import Card from '../components/Card';
-import ProfileCard from '../components/ProfileCard';
-import UpdateAccount from '../components/forms/UpdateAccount';
-import PasswordChange from '../components/forms/PasswordChange';
-import Logout from '../components/forms/Logout';
-import Footer from '../components/Footer';
-import MainFooter from '../components/MainFooter';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import AccountOptionList from '../components/AccountOptionList';
-import Cookies from 'js-cookie';
-import { useRouter } from 'next/router';
-import parseCookies from '../lib/parseCookies';
-import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import Hidden from '@material-ui/core/Hidden';
+import Head from "next/head";
+import ButtonAppBar from "../components/ButtonAppBar";
+import Card from "../components/Card";
+import ProfileCard from "../components/ProfileCard";
+import UpdateAccount from "../components/forms/UpdateAccount";
+import PasswordChange from "../components/forms/PasswordChange";
+import Logout from "../components/forms/Logout";
+import Footer from "../components/Footer";
+import MainFooter from "../components/MainFooter";
+import Box from "@material-ui/core/Box";
+import Chip from "@material-ui/core/Chip";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import AccountOptionList from "../components/AccountOptionList";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
+import parseCookies from "../lib/parseCookies";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import Hidden from "@material-ui/core/Hidden";
 
 const useStyles = makeStyles({
     root: {
         flexGrow: 1,
-        marginTop: '16px',
+        marginTop: "16px",
     },
 });
 
@@ -54,19 +54,19 @@ export default function MyAccount(props) {
     // here no need to set userRe undefined
     // because only one user can see any customer
     useEffect(() => {
-        if (!Cookies.get('haha_ecom_bangla_token')) {
-            router.push('/login');
+        if (!Cookies.get("haha_ecom_bangla_token")) {
+            router.push("/login");
         }
     });
 
-    const [value, setValue] = React.useState('0');
+    const [value, setValue] = React.useState("0");
 
     let output;
-    if (value === '0') {
+    if (value === "0") {
         output = <ProfileCard user={user && user} />;
-    } else if (value === '1') {
+    } else if (value === "1") {
         output = <UpdateAccount changeUser={changeUser} />;
-    } else if (value === '2') {
+    } else if (value === "2") {
         output = <PasswordChange />;
     } else {
         output = <Logout />;
@@ -80,37 +80,37 @@ export default function MyAccount(props) {
         <div>
             <Head>
                 <title>My Account</title>
-                <link rel='icon' href='/a.ico' />
+                <link rel="icon" href="/a.ico" />
                 <meta
-                    name='viewport'
-                    content='width=device-width, initial-scale=1.0'
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
                 ></meta>
             </Head>
             <ButtonAppBar
                 totalProductInBag={myBag && myBag.product_with_quantity.length}
             />
-            <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+            <Box pb={8} style={{ backgroundColor: "#E6E6FA" }}>
                 <Box pt={11} px={3}>
                     <Box
                         p={2}
                         boxShadow={1}
-                        textAlign='center'
-                        borderRadius='borderRadius'
-                        style={{ backgroundColor: 'white' }}
+                        textAlign="center"
+                        borderRadius="borderRadius"
+                        style={{ backgroundColor: "white" }}
                     >
                         <img
-                            src='/aa.jpg'
-                            alt=''
-                            srcset=''
-                            height='60'
-                            width='60'
-                            style={{ borderRadius: '50%' }}
+                            src="/aa.jpg"
+                            alt=""
+                            srcset=""
+                            height="60"
+                            width="60"
+                            style={{ borderRadius: "50%" }}
                         />
-                        <Typography variant='h5'>
+                        <Typography variant="h5">
                             <strong>
                                 {user &&
                                     user.first_name.toUpperCase() +
-                                        ' ' +
+                                        " " +
                                         user.last_name.toUpperCase()}
                             </strong>
                         </Typography>
@@ -129,8 +129,8 @@ export default function MyAccount(props) {
                                     <Box
                                         p={1}
                                         boxShadow={1}
-                                        borderRadius='borderRadius'
-                                        style={{ backgroundColor: 'white' }}
+                                        borderRadius="borderRadius"
+                                        style={{ backgroundColor: "white" }}
                                     >
                                         <AccountOptionList />
                                     </Box>
@@ -140,10 +140,10 @@ export default function MyAccount(props) {
                                 <Box
                                     p={2}
                                     boxShadow={1}
-                                    borderRadius='borderRadius'
-                                    style={{ backgroundColor: 'white' }}
+                                    borderRadius="borderRadius"
+                                    style={{ backgroundColor: "white" }}
                                 >
-                                    <Typography variant='h5'>
+                                    <Typography variant="h5">
                                         <strong>My Account</strong>
                                     </Typography>
                                 </Box>
@@ -151,20 +151,20 @@ export default function MyAccount(props) {
                                     <Tabs
                                         value={value}
                                         onChange={handleChange}
-                                        indicatorColor='primary'
-                                        textColor='primary'
-                                        variant='fullWidth'
+                                        indicatorColor="primary"
+                                        textColor="primary"
+                                        variant="fullWidth"
                                     >
                                         <Tab
-                                            label='Account Details'
-                                            value='0'
+                                            label="Account Details"
+                                            value="0"
                                         />
-                                        <Tab label='Update Account' value='1' />
+                                        <Tab label="Update Account" value="1" />
                                         <Tab
-                                            label='Change Password'
-                                            value='2'
+                                            label="Change Password"
+                                            value="2"
                                         />
-                                        <Tab label='Logout' value='3' />
+                                        <Tab label="Logout" value="3" />
                                     </Tabs>
                                 </Paper>
 
@@ -172,8 +172,8 @@ export default function MyAccount(props) {
                                     mt={2}
                                     p={2}
                                     boxShadow={1}
-                                    borderRadius='borderRadius'
-                                    style={{ backgroundColor: 'white' }}
+                                    borderRadius="borderRadius"
+                                    style={{ backgroundColor: "white" }}
                                 >
                                     {output}
                                 </Box>
@@ -189,11 +189,11 @@ export default function MyAccount(props) {
     );
 }
 
-const fetchDataForBag = async (config) =>
+const fetchDataForBags = async (config) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, config)
         .then((res) => ({
-            bag: res.data,
+            bags: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
@@ -218,26 +218,18 @@ export async function getServerSideProps({ req }) {
 
     const config = {
         headers: {
-            Authorization: 'Token ' + haha_ecom_bangla_token,
+            Authorization: "Token " + haha_ecom_bangla_token,
         },
     };
 
-    const dataBag = await fetchDataForBag(config);
+    const dataBags = await fetchDataForBags(config);
 
+    // ###### Here for bag
+    // no need to create bag, if not available then null will be passed
     let myBag = null;
-    if (dataBag.bag) {
-        let allMyBag = dataBag.bag;
-        let myBagNotSendToMyOrder = allMyBag.filter(
-            (myBag) => myBag.is_send_to_my_order === false
-        );
-        // console.log(myBagNotSendToMyOrder[0])
-        if (myBagNotSendToMyOrder[0]) {
-            myBag = myBagNotSendToMyOrder[0];
-            // We got exact bag for user
-            // 1st we filter out the bags whose not send to my order
-            // then there have many bags for that user because of backend, hacker can do anything!!
-            // the 1st created one is selected as myBag
-        }
+    if (dataBags.bags && dataBags.bags.length !== 0) {
+        let allMyBag = dataBags.bags;
+        myBag = allMyBag[0];
     }
 
     const dataUser = await fetchDataForUser(config);
