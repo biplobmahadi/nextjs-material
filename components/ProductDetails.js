@@ -15,6 +15,7 @@ import ReactPlayer from "react-player/youtube";
 
 import SingleVideoReview from "./SingleVideoReview";
 import SingleReview from "./SingleReview";
+import Chip from "@material-ui/core/Chip";
 
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -773,12 +774,13 @@ export default function ProductDetails({
                                             />{" "}
                                             <span>
                                                 <Box pl={2}>
-                                                    <Typography>
-                                                        {" "}
-                                                        [
-                                                        {totalFiveRating.length}
-                                                        ]
-                                                    </Typography>
+                                                    <Chip
+                                                        label={
+                                                            totalFiveRating.length
+                                                        }
+                                                        variant="outlined"
+                                                        size="small"
+                                                    />
                                                 </Box>
                                             </span>
                                         </Grid>
@@ -796,12 +798,13 @@ export default function ProductDetails({
                                             />{" "}
                                             <span>
                                                 <Box pl={2}>
-                                                    <Typography>
-                                                        {" "}
-                                                        [
-                                                        {totalFourRating.length}
-                                                        ]
-                                                    </Typography>
+                                                    <Chip
+                                                        label={
+                                                            totalFourRating.length
+                                                        }
+                                                        variant="outlined"
+                                                        size="small"
+                                                    />
                                                 </Box>
                                             </span>
                                         </Grid>
@@ -819,14 +822,13 @@ export default function ProductDetails({
                                             />{" "}
                                             <span>
                                                 <Box pl={2}>
-                                                    <Typography>
-                                                        {" "}
-                                                        [
-                                                        {
+                                                    <Chip
+                                                        label={
                                                             totalThreeRating.length
                                                         }
-                                                        ]
-                                                    </Typography>
+                                                        variant="outlined"
+                                                        size="small"
+                                                    />
                                                 </Box>
                                             </span>
                                         </Grid>
@@ -844,11 +846,13 @@ export default function ProductDetails({
                                             />{" "}
                                             <span>
                                                 <Box pl={2}>
-                                                    <Typography>
-                                                        {" "}
-                                                        [{totalTwoRating.length}
-                                                        ]
-                                                    </Typography>
+                                                    <Chip
+                                                        label={
+                                                            totalTwoRating.length
+                                                        }
+                                                        variant="outlined"
+                                                        size="small"
+                                                    />
                                                 </Box>
                                             </span>
                                         </Grid>
@@ -866,11 +870,13 @@ export default function ProductDetails({
                                             />{" "}
                                             <span>
                                                 <Box pl={2}>
-                                                    <Typography>
-                                                        {" "}
-                                                        [{totalOneRating.length}
-                                                        ]
-                                                    </Typography>
+                                                    <Chip
+                                                        label={
+                                                            totalOneRating.length
+                                                        }
+                                                        variant="outlined"
+                                                        size="small"
+                                                    />
                                                 </Box>
                                             </span>
                                         </Grid>

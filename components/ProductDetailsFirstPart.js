@@ -60,6 +60,8 @@ export default function ProductDetailsFirstPart({
 }) {
     const classes = useStyles();
     const [quantity, setQuantity] = useState(1);
+    const [size, setSize] = useState(null);
+    const [color, setColor] = useState(null);
     const [value, setValue] = useState("/s1.jpg");
     // need for product image
     // const [value, setValue] = useState(product.product_image[0].image);
@@ -149,6 +151,9 @@ export default function ProductDetailsFirstPart({
         setLengthOfTrialProducts(
             trialProductsWithQuantityOfSameCategoryInBag.length
         );
+        setQuantity(1);
+        setSize(null);
+        setColor(null);
     }, [product]);
 
     const handleAddToBag = () => {
@@ -165,6 +170,8 @@ export default function ProductDetailsFirstPart({
                 product: product.id,
                 quantity: quantity, // here the quantity is from state which will user selected
                 my_bag: myBag.id,
+                size: size,
+                color: color,
             };
 
             // ############ Adding in bag for product
@@ -378,16 +385,27 @@ export default function ProductDetailsFirstPart({
                                 <strong>Tk. {product && product.price}</strong>
                             </Typography>
                         </Box>
-                        <Box pt={3}>
-                            {/* {product && product.has_size && (
+                        <Box pt={4}>
+                            {product && product.product_size.length !== 0 && (
                                 <Grid container spacing={2} alignItems="center">
                                     <Grid item xs={12} sm>
-                                        <Size />
+                                        {product &&
+                                            product.product_size.map(
+                                                (productSize) => (
+                                                    <Size
+                                                        size={size}
+                                                        setSize={setSize}
+                                                        productSize={
+                                                            productSize
+                                                        }
+                                                    />
+                                                )
+                                            )}
                                     </Grid>
                                     <Grid item xs={12} sm>
                                         <Button
                                             variant="contained"
-                                            color="secondary"
+                                            color="default"
                                             size="small"
                                         >
                                             <Box textAlign="center" px={2}>
@@ -396,13 +414,16 @@ export default function ProductDetailsFirstPart({
                                         </Button>
                                     </Grid>
                                 </Grid>
-                            )} */}
+                            )}
                         </Box>
-                        <Box pt={2}>
+                        <Box pt={3}>
                             <Grid container spacing={2} alignItems="center">
-                                {/* <Grid item xs={12} sm>
-                                    <Quantity setQuantity={setQuantity} />
-                                </Grid> */}
+                                <Grid item xs={12} sm>
+                                    <Quantity
+                                        quantity={quantity}
+                                        setQuantity={setQuantity}
+                                    />
+                                </Grid>
                                 <Grid item xs={12} sm>
                                     {product && product.is_available ? (
                                         <Chip
@@ -420,7 +441,7 @@ export default function ProductDetailsFirstPart({
                                 </Grid>
                             </Grid>
                         </Box>
-                        <Box pt={6}>
+                        <Box pt={4}>
                             <Grid container spacing={2} alignItems="center">
                                 <Grid item xs={12} sm={6}>
                                     <div className={classes.root}>

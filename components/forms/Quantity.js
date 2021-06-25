@@ -1,33 +1,26 @@
-import { Formik, Field, Form, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { TextField } from 'formik-material-ui';
-import { InputBase } from 'formik-material-ui';
+import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
 
-export default function SignupForm({ setQuantity }) {
-    const handleChange = (event) => {
-        // console.log('ev1', event.target.inputBase);
-        console.log('ev2', event.target.value);
+import Button from "@material-ui/core/Button";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+
+export default function Quantity({ quantity, setQuantity }) {
+    const addHandler = () => {
+        setQuantity((prevState) => prevState + 1);
     };
+    const removeHandler = () => {
+        setQuantity((prevState) => prevState - 1);
+    };
+
     return (
-        <Formik
-            initialValues={{
-                inputBase: 1,
-            }}
-            validationSchema={Yup.object({
-                inputBase: Yup.number().required('Required'),
-            })}
-        >
-            <Form>
-                <Field
-                    component={TextField}
-                    type='number'
-                    name='inputBase'
-                    label='Quantity *'
-                    variant='outlined'
-                    size='small'
-                    fullWidth
-                />
-            </Form>
-        </Formik>
+        <ButtonGroup size="small" aria-label="small outlined button group">
+            <Button onClick={removeHandler} disabled={quantity < 2}>
+                <RemoveIcon />
+            </Button>
+            <Button>{quantity}</Button>
+            <Button onClick={addHandler}>
+                <AddIcon />
+            </Button>
+        </ButtonGroup>
     );
 }
