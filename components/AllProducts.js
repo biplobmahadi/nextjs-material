@@ -25,21 +25,14 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
-// this is only for grid system
-// same like AllProducts
-
-export default function AllProductsForTrendingOutfit({
-    products,
-    myBag,
-    config,
-}) {
+export default function AllProducts({ products, myBag, config }) {
     const [needDisabled, setNeedDisabled] = React.useState(false);
 
     return (
         <Grid container spacing={2}>
             {products &&
                 products.map((product) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+                    <Grid item xs={12} sm={6} md={4} lg={4} xl={3}>
                         <ProductCard
                             product={product && product}
                             myBag={myBag}

@@ -1,86 +1,50 @@
-import Head from 'next/head';
-import ButtonAppBar from '../../components/ButtonAppBar';
-import AllProductsForMultiple from '../../components/AllProductsForMultiple';
-import FilterProductDialog from '../../components/FilterProductDialog';
-import MainFooter from '../../components/MainFooter';
-import FilterProduct from '../../components/FilterProduct';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import { makeStyles } from '@material-ui/core/styles';
-import Hidden from '@material-ui/core/Hidden';
+import Head from "next/head";
+import ButtonAppBar from "../../components/ButtonAppBar";
+import AllProducts from "../../components/AllProducts";
+import FilterProductDialog from "../../components/FilterProductDialog";
+import MainFooter from "../../components/MainFooter";
+import FilterProduct from "../../components/FilterProduct";
+import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import { makeStyles } from "@material-ui/core/styles";
+import Hidden from "@material-ui/core/Hidden";
 
-import parseCookies from '../../lib/parseCookies';
-import axios from 'axios';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import parseCookies from "../../lib/parseCookies";
+import axios from "axios";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        [theme.breakpoints.up('xl')]: {
+        [theme.breakpoints.up("xl")]: {
             marginRight: theme.spacing(5),
         },
     },
     boot: {
-        [theme.breakpoints.up('xl')]: {
+        [theme.breakpoints.up("xl")]: {
             marginLeft: theme.spacing(4),
         },
     },
 }));
 
-// 1. when anything change on state the component will re render
-// 2. we use useEffect only if we need anything to do before component mount or willmount
-// 3. these two are most important about react component
-// 4. Don't depend on state for data, which related to backend. because state can be changed from devtools
-//    if state change then in server everything will be changed which is too harmful..
-// 5. we can't change component props. so this is secure
-// 6. formik to get form value, here also no need to use state.
-
-let myBagRe;
-let brandRe;
-
-export default function SubCategories(props) {
+export default function SubCategories({ brand, myBag, config }) {
     const classes = useStyles();
-    const router = useRouter();
-
-    const { brandSlug } = router.query;
 
     const [priceFilter100TK, setPriceFilter100TK] = React.useState(0);
     const [priceFilter500TK, setPriceFilter500TK] = React.useState(0);
     const [priceFilter1000TK, setPriceFilter1000TK] = React.useState(0);
     const [priceFilter2000TK, setPriceFilter2000TK] = React.useState(0);
     const [priceFilter5000TK, setPriceFilter5000TK] = React.useState(0);
-    const [reRender, setReRender] = React.useState(false);
 
-    const { config } = props;
-    let myBag = myBagRe ? myBagRe : props.myBag;
-    let brand = brandRe ? brandRe : props.brand;
+    // useEffect(() => {
 
-    const changeBrand = (value) => {
-        brandRe = value;
-
-        // setReRender(!reRender);
-    };
-    const changeMyBag = (value) => {
-        myBagRe = value;
-        // console.log('my bag now', myBagRe);
-
-        setReRender(!reRender);
-    };
-
-    // here useEffect -> when component mount and update myBagRe will undefined
-    // because, when we change route then myBagRe again remain previous one which is not
-    // updated one, that's why we make it undefined and bag will server rendered
-
-    useEffect(() => {
-        myBagRe = undefined;
-        brandRe = undefined;
-    });
+    // });
 
     // console.log('my bag 1st ', myBag);
     // console.log('my bag Re ', myBagRe);
@@ -101,7 +65,7 @@ export default function SubCategories(props) {
         setPriceFilter5000TK(event.target.checked ? event.target.value : 0);
     };
 
-    let allProducts = brand && brand.product ? brand.product : [];
+    let allProducts = brand && brand.product.length !== 0 ? brand.product : [];
     let products;
 
     if (
@@ -446,11 +410,11 @@ export default function SubCategories(props) {
     return (
         <div>
             <Head>
-                <title>Brand - {brand ? brand.brand_name : 'Not Valid'}</title>
-                <link rel='icon' href='/a.ico' />
+                <title>Brand - {brand ? brand.brand_name : "Not Valid"}</title>
+                <link rel="icon" href="/a.ico" />
                 <meta
-                    name='viewport'
-                    content='width=device-width, initial-scale=1.0'
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
                 ></meta>
             </Head>
             <ButtonAppBar
@@ -458,25 +422,25 @@ export default function SubCategories(props) {
             />
             {!brand ? (
                 <Box
-                    textAlign='center'
+                    textAlign="center"
                     pt={18}
                     pb={12}
-                    style={{ backgroundColor: '#E6E6FA' }}
+                    style={{ backgroundColor: "#E6E6FA" }}
                 >
-                    <Typography variant='h4' color='secondary'>
+                    <Typography variant="h4" color="secondary">
                         <strong>Sorry - There have nothing !</strong>
                     </Typography>
                 </Box>
             ) : (
-                <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                <Box pb={8} style={{ backgroundColor: "#E6E6FA" }}>
                     <Box pt={11} px={3}>
                         <Box
                             py={2}
-                            borderRadius='borderRadius'
-                            style={{ backgroundColor: 'white' }}
-                            textAlign='center'
+                            borderRadius="borderRadius"
+                            style={{ backgroundColor: "white" }}
+                            textAlign="center"
                         >
-                            <Typography variant='h5' component='h5'>
+                            <Typography variant="h5" component="h5">
                                 <strong>{brand.brand_name}</strong>
                             </Typography>
                         </Box>
@@ -519,28 +483,28 @@ export default function SubCategories(props) {
                                         xl={3}
                                     >
                                         <Box
-                                            style={{ backgroundColor: 'white' }}
+                                            style={{ backgroundColor: "white" }}
                                             p={3}
                                             className={classes.root}
-                                            borderRadius='borderRadius'
+                                            borderRadius="borderRadius"
                                         >
                                             <Typography
                                                 gutterBottom
-                                                variant='h6'
-                                                component='h6'
+                                                variant="h6"
+                                                component="h6"
                                             >
                                                 Filter by Price
                                             </Typography>
-                                            <FormControl component='fieldset'>
+                                            <FormControl component="fieldset">
                                                 <FormGroup
-                                                    aria-label='position'
+                                                    aria-label="position"
                                                     row
                                                 >
                                                     <FormControlLabel
                                                         control={
                                                             <Checkbox
                                                                 value={100}
-                                                                color='secondary'
+                                                                color="secondary"
                                                                 onClick={(
                                                                     event
                                                                 ) =>
@@ -550,19 +514,19 @@ export default function SubCategories(props) {
                                                                 }
                                                             />
                                                         }
-                                                        label='Tk. 0 - 100'
-                                                        labelPlacement='end'
+                                                        label="Tk. 0 - 100"
+                                                        labelPlacement="end"
                                                     />
                                                 </FormGroup>
                                                 <FormGroup
-                                                    aria-label='position'
+                                                    aria-label="position"
                                                     row
                                                 >
                                                     <FormControlLabel
                                                         control={
                                                             <Checkbox
                                                                 value={500}
-                                                                color='secondary'
+                                                                color="secondary"
                                                                 onClick={(
                                                                     event
                                                                 ) =>
@@ -572,19 +536,19 @@ export default function SubCategories(props) {
                                                                 }
                                                             />
                                                         }
-                                                        label='Tk. 100 - 500'
-                                                        labelPlacement='end'
+                                                        label="Tk. 100 - 500"
+                                                        labelPlacement="end"
                                                     />
                                                 </FormGroup>
                                                 <FormGroup
-                                                    aria-label='position'
+                                                    aria-label="position"
                                                     row
                                                 >
                                                     <FormControlLabel
                                                         control={
                                                             <Checkbox
                                                                 value={1000}
-                                                                color='secondary'
+                                                                color="secondary"
                                                                 onClick={(
                                                                     event
                                                                 ) =>
@@ -594,19 +558,19 @@ export default function SubCategories(props) {
                                                                 }
                                                             />
                                                         }
-                                                        label='Tk. 500 - 1000'
-                                                        labelPlacement='end'
+                                                        label="Tk. 500 - 1000"
+                                                        labelPlacement="end"
                                                     />
                                                 </FormGroup>
                                                 <FormGroup
-                                                    aria-label='position'
+                                                    aria-label="position"
                                                     row
                                                 >
                                                     <FormControlLabel
                                                         control={
                                                             <Checkbox
                                                                 value={2000}
-                                                                color='secondary'
+                                                                color="secondary"
                                                                 onClick={(
                                                                     event
                                                                 ) =>
@@ -616,19 +580,19 @@ export default function SubCategories(props) {
                                                                 }
                                                             />
                                                         }
-                                                        label='Tk. 1000 - 2000'
-                                                        labelPlacement='end'
+                                                        label="Tk. 1000 - 2000"
+                                                        labelPlacement="end"
                                                     />
                                                 </FormGroup>
                                                 <FormGroup
-                                                    aria-label='position'
+                                                    aria-label="position"
                                                     row
                                                 >
                                                     <FormControlLabel
                                                         control={
                                                             <Checkbox
                                                                 value={5000}
-                                                                color='secondary'
+                                                                color="secondary"
                                                                 onClick={(
                                                                     event
                                                                 ) =>
@@ -638,8 +602,8 @@ export default function SubCategories(props) {
                                                                 }
                                                             />
                                                         }
-                                                        label='Tk. 2000 - 5000'
-                                                        labelPlacement='end'
+                                                        label="Tk. 2000 - 5000"
+                                                        labelPlacement="end"
                                                     />
                                                 </FormGroup>
                                             </FormControl>
@@ -656,12 +620,9 @@ export default function SubCategories(props) {
                                     xl={9}
                                 >
                                     <Box className={classes.boot}>
-                                        <AllProductsForMultiple
+                                        <AllProducts
                                             products={products}
                                             myBag={myBag}
-                                            changeMyBag={changeMyBag}
-                                            changeForMultiple={changeBrand}
-                                            urlForChangeCardForMultiple={`${process.env.NEXT_PUBLIC_BASE_URL}/brands/${brandSlug}/`}
                                             config={config}
                                         />
                                     </Box>
@@ -679,9 +640,19 @@ export default function SubCategories(props) {
     );
 }
 
-const fetchDataForBag = async (config) =>
+const fetchDataForBags = async (config) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, config)
+        .then((res) => ({
+            bags: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
+const fetchDataForBagCreate = async (config) =>
+    await axios
+        .post(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, {}, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -691,7 +662,7 @@ const fetchDataForBag = async (config) =>
 
 const fetchDataForBrand = async (params) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/brands/${params.brandSlug}/`)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/brand/${params.brandSlug}/`)
         .then((res) => ({
             brand: res.data,
         }))
@@ -708,25 +679,30 @@ export async function getServerSideProps({ req, params }) {
 
     const config = {
         headers: {
-            Authorization: 'Token ' + haha_ecom_bangla_token,
+            Authorization: "Token " + haha_ecom_bangla_token,
         },
     };
-    const dataBag = await fetchDataForBag(config);
 
+    const dataBags = await fetchDataForBags(config);
+
+    // ###### Here for bag
+    // always create bag first if this page has add to bag available
+    // it's not good to create bag again again for visiting this page
+    // if user already has an non order bag then find that, there have many in worst case, so find the 1st one
+    // if user have no non order bag then create one bag for this user
+    // if user not logged in then also they can view this page, so here we don't
+    // get any bag and user, so myBag will null in this case -> no bug will occur
     let myBag = null;
-    if (dataBag.bag) {
-        let allMyBag = dataBag.bag;
-        let myBagNotSendToMyOrder = allMyBag.filter(
-            (myBag) => myBag.is_send_to_my_order === false
-        );
-        // console.log(myBagNotSendToMyOrder[0])
-        if (myBagNotSendToMyOrder[0]) {
-            myBag = myBagNotSendToMyOrder[0];
-        }
+    if (dataBags.bags && dataBags.bags.length !== 0) {
+        let allMyBag = dataBags.bags;
+        myBag = allMyBag[0];
+    } else if (dataBags.bags && dataBags.bags.length === 0) {
+        const dataBagCreate = await fetchDataForBagCreate(config);
+        myBag = dataBagCreate.bag;
     }
 
     const dataBrand = await fetchDataForBrand(params);
-    const brand = dataBrand.brand;
+    const brand = dataBrand.brand ? dataBrand.brand : null;
 
     return {
         props: {

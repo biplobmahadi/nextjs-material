@@ -112,6 +112,8 @@ export default function ProductCard({
         );
     }, [product]);
 
+    console.log("productWithQuantityInBag", productWithQuantityInBag);
+
     const handleAddToBag = () => {
         // start loading
         setLoading(true);
@@ -132,7 +134,7 @@ export default function ProductCard({
 
             // ############ Adding in bag for product
             // we mainly just add productWithQuantity with bag id, we implement it in backend
-            // if productWithQuantityInBag then need to patch it, obvoisly check is it add_as_trial
+            // if productWithQuantityInBag then need to patch it, obviously check is it add_as_trial
             // if already add_as_trial then no need to add this quantity with that productWithQuantity's quantity
             // if there have no productWithQuantityInBag, then just post it
             if (productWithQuantityInBag) {

@@ -1,25 +1,25 @@
-import Head from 'next/head';
-import ButtonAppBar from '../../components/ButtonAppBar';
-import BrandCard from '../../components/BrandCard';
-import Card from '../../components/Card';
-import MainFooter from '../../components/MainFooter';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import Head from "next/head";
+import ButtonAppBar from "../../components/ButtonAppBar";
+import BrandCard from "../../components/BrandCard";
+import Card from "../../components/Card";
+import MainFooter from "../../components/MainFooter";
+import Box from "@material-ui/core/Box";
+import Divider from "@material-ui/core/Divider";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
 
-import axios from 'axios';
-import parseCookies from '../../lib/parseCookies';
+import axios from "axios";
+import parseCookies from "../../lib/parseCookies";
 
 export default function Trending({ trending, myBag }) {
     return (
         <div>
             <Head>
                 <title>Trending - Logo.com</title>
-                <link rel='icon' href='/a.ico' />
+                <link rel="icon" href="/a.ico" />
                 <meta
-                    name='viewport'
-                    content='width=device-width, initial-scale=1.0'
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
                 ></meta>
             </Head>
             <ButtonAppBar
@@ -27,34 +27,34 @@ export default function Trending({ trending, myBag }) {
             />
             {!trending ? (
                 <Box
-                    textAlign='center'
+                    textAlign="center"
                     pt={18}
                     pb={12}
-                    style={{ backgroundColor: '#E6E6FA' }}
+                    style={{ backgroundColor: "#E6E6FA" }}
                 >
-                    <Typography variant='h4' color='secondary'>
+                    <Typography variant="h4" color="secondary">
                         <strong>Sorry - There have nothing !</strong>
                     </Typography>
                 </Box>
             ) : (
-                <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                <Box pb={8} style={{ backgroundColor: "#E6E6FA" }}>
                     <Box mt={8} pt={3} px={3}>
-                        <Box mb={2} borderRadius='borderRadius'>
+                        <Box mb={2} borderRadius="borderRadius">
                             <img
-                                src='/aa.jpg'
-                                alt='trending'
-                                srcset=''
-                                height='250'
-                                width='100%'
+                                src="/aa.jpg"
+                                alt="trending"
+                                srcset=""
+                                height="250"
+                                width="100%"
                             />
                         </Box>
                         <Box
                             py={2}
-                            borderRadius='borderRadius'
-                            style={{ backgroundColor: 'white' }}
-                            textAlign='center'
+                            borderRadius="borderRadius"
+                            style={{ backgroundColor: "white" }}
+                            textAlign="center"
                         >
-                            <Typography variant='h5' component='h5'>
+                            <Typography variant="h5" component="h5">
                                 <strong>{trending.trend_name}</strong>
                             </Typography>
                         </Box>
@@ -93,11 +93,11 @@ export default function Trending({ trending, myBag }) {
     );
 }
 
-const fetchDataForBag = async (config) =>
+const fetchDataForBags = async (config) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, config)
         .then((res) => ({
-            bag: res.data,
+            bags: res.data,
         }))
         .catch((err) => ({
             error: err.response.data,
@@ -124,21 +124,18 @@ export async function getServerSideProps({ req, params }) {
 
     const config = {
         headers: {
-            Authorization: 'Token ' + haha_ecom_bangla_token,
+            Authorization: "Token " + haha_ecom_bangla_token,
         },
     };
-    const dataBag = await fetchDataForBag(config);
 
+    const dataBags = await fetchDataForBags(config);
+
+    // ###### Here for bag
+    // no need to create bag, if not available then null will be passed
     let myBag = null;
-    if (dataBag.bag) {
-        let allMyBag = dataBag.bag;
-        let myBagNotSendToMyOrder = allMyBag.filter(
-            (myBag) => myBag.is_send_to_my_order === false
-        );
-        // console.log(myBagNotSendToMyOrder[0])
-        if (myBagNotSendToMyOrder[0]) {
-            myBag = myBagNotSendToMyOrder[0];
-        }
+    if (dataBags.bags && dataBags.bags.length !== 0) {
+        let allMyBag = dataBags.bags;
+        myBag = allMyBag[0];
     }
 
     const dataTrending = await fetchDataForTrending(params);

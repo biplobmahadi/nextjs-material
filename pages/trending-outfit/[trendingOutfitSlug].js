@@ -1,58 +1,26 @@
-import Head from 'next/head';
-import ButtonAppBar from '../../components/ButtonAppBar';
-import BrandCard from '../../components/BrandCard';
-import Card from '../../components/Card';
-import AllProductsForTrendingOutfit from '../../components/AllProductsForTrendingOutfit';
-import ProductCard from '../../components/ProductCard';
-import MainFooter from '../../components/MainFooter';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import Head from "next/head";
+import ButtonAppBar from "../../components/ButtonAppBar";
+import BrandCard from "../../components/BrandCard";
+import Card from "../../components/Card";
+import AllProductsForTrendingOutfit from "../../components/AllProductsForTrendingOutfit";
+import ProductCard from "../../components/ProductCard";
+import MainFooter from "../../components/MainFooter";
+import Box from "@material-ui/core/Box";
+import Divider from "@material-ui/core/Divider";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
 
-import axios from 'axios';
-import parseCookies from '../../lib/parseCookies';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import axios from "axios";
+import parseCookies from "../../lib/parseCookies";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
-let myBagRe;
-let trendingOutfitRe;
+export default function Trending({ trendingOutfit, myBag, config }) {
+    let products =
+        trendingOutfit.product.length !== 0 ? trendingOutfit.product : [];
 
-export default function Trending(props) {
-    const router = useRouter();
-
-    const { trendingOutfitSlug } = router.query;
-
-    const [reRender, setReRender] = React.useState(false);
-
-    const { config } = props;
-    let trendingOutfit = trendingOutfitRe
-        ? trendingOutfitRe
-        : props.trendingOutfit;
-    let myBag = myBagRe ? myBagRe : props.myBag;
-
-    const changeTrendingOutfit = (value) => {
-        trendingOutfitRe = value;
-
-        // setReRender(!reRender);
-    };
-    const changeMyBag = (value) => {
-        myBagRe = value;
-        // console.log('my bag now', myBagRe);
-
-        setReRender(!reRender);
-    };
-
-    // here useEffect -> when component mount and update myBagRe will undefined
-    // because, when we change route then myBagRe again remain previous one which is not
-    // updated one, that's why we make it undefined and bag will server rendered
-
-    useEffect(() => {
-        myBagRe = undefined;
-        trendingOutfitRe = undefined;
-    });
-
-    let products = trendingOutfit.product ? trendingOutfit.product : [];
+    // useEffect(() => {
+    // });
 
     // console.log('my bag 1st ', myBag);
     // console.log('my bag Re ', myBagRe);
@@ -61,10 +29,10 @@ export default function Trending(props) {
         <div>
             <Head>
                 <title>Trending Outfit - Logo.com</title>
-                <link rel='icon' href='/a.ico' />
+                <link rel="icon" href="/a.ico" />
                 <meta
-                    name='viewport'
-                    content='width=device-width, initial-scale=1.0'
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
                 ></meta>
             </Head>
             <ButtonAppBar
@@ -72,34 +40,34 @@ export default function Trending(props) {
             />
             {!trendingOutfit ? (
                 <Box
-                    textAlign='center'
+                    textAlign="center"
                     pt={18}
                     pb={12}
-                    style={{ backgroundColor: '#E6E6FA' }}
+                    style={{ backgroundColor: "#E6E6FA" }}
                 >
-                    <Typography variant='h4' color='secondary'>
+                    <Typography variant="h4" color="secondary">
                         <strong>Sorry - There have nothing !</strong>
                     </Typography>
                 </Box>
             ) : (
-                <Box pb={8} style={{ backgroundColor: '#E6E6FA' }}>
+                <Box pb={8} style={{ backgroundColor: "#E6E6FA" }}>
                     <Box pt={11} px={3}>
-                        <Box mb={2} borderRadius='borderRadius'>
+                        <Box mb={2} borderRadius="borderRadius">
                             <img
-                                src='/aa.jpg'
-                                alt='trending outfit'
-                                srcset=''
-                                height='250'
-                                width='100%'
+                                src="/aa.jpg"
+                                alt="trending outfit"
+                                srcset=""
+                                height="250"
+                                width="100%"
                             />
                         </Box>
                         <Box
                             py={2}
-                            borderRadius='borderRadius'
-                            style={{ backgroundColor: 'white' }}
-                            textAlign='center'
+                            borderRadius="borderRadius"
+                            style={{ backgroundColor: "white" }}
+                            textAlign="center"
                         >
-                            <Typography variant='h5' component='h5'>
+                            <Typography variant="h5" component="h5">
                                 <strong>
                                     {trendingOutfit.trend_outfit_name}
                                 </strong>
@@ -109,9 +77,6 @@ export default function Trending(props) {
                             <AllProductsForTrendingOutfit
                                 products={products}
                                 myBag={myBag}
-                                changeMyBag={changeMyBag}
-                                changeForMultiple={changeTrendingOutfit}
-                                urlForChangeCardForMultiple={`${process.env.NEXT_PUBLIC_BASE_URL}/trending-outfit/${trendingOutfitSlug}/`}
                                 config={config}
                             />
                         </Box>
@@ -126,9 +91,19 @@ export default function Trending(props) {
     );
 }
 
-const fetchDataForBag = async (config) =>
+const fetchDataForBags = async (config) =>
     await axios
-        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bag/`, config)
+        .get(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, config)
+        .then((res) => ({
+            bags: res.data,
+        }))
+        .catch((err) => ({
+            error: err.response.data,
+        }));
+
+const fetchDataForBagCreate = async (config) =>
+    await axios
+        .post(`${process.env.NEXT_PUBLIC_BASE_URL}/my-bags/`, {}, config)
         .then((res) => ({
             bag: res.data,
         }))
@@ -157,21 +132,26 @@ export async function getServerSideProps({ req, params }) {
 
     const config = {
         headers: {
-            Authorization: 'Token ' + haha_ecom_bangla_token,
+            Authorization: "Token " + haha_ecom_bangla_token,
         },
     };
-    const dataBag = await fetchDataForBag(config);
 
+    const dataBags = await fetchDataForBags(config);
+
+    // ###### Here for bag
+    // always create bag first if this page has add to bag available
+    // it's not good to create bag again again for visiting this page
+    // if user already has an non order bag then find that, there have many in worst case, so find the 1st one
+    // if user have no non order bag then create one bag for this user
+    // if user not logged in then also they can view this page, so here we don't
+    // get any bag and user, so myBag will null in this case -> no bug will occur
     let myBag = null;
-    if (dataBag.bag) {
-        let allMyBag = dataBag.bag;
-        let myBagNotSendToMyOrder = allMyBag.filter(
-            (myBag) => myBag.is_send_to_my_order === false
-        );
-        // console.log(myBagNotSendToMyOrder[0])
-        if (myBagNotSendToMyOrder[0]) {
-            myBag = myBagNotSendToMyOrder[0];
-        }
+    if (dataBags.bags && dataBags.bags.length !== 0) {
+        let allMyBag = dataBags.bags;
+        myBag = allMyBag[0];
+    } else if (dataBags.bags && dataBags.bags.length === 0) {
+        const dataBagCreate = await fetchDataForBagCreate(config);
+        myBag = dataBagCreate.bag;
     }
 
     const dataTrendingOutfit = await fetchDataForTrendingOutfit(params);
