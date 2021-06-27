@@ -60,8 +60,8 @@ export default function ProductDetailsFirstPart({
 }) {
     const classes = useStyles();
     const [quantity, setQuantity] = useState(1);
-    const [size, setSize] = useState('');
-    const [color, setColor] = useState('');
+    const [size, setSize] = useState();
+    const [color, setColor] = useState();
     const [value, setValue] = useState("/s1.jpg");
     // need for product image
     // const [value, setValue] = useState(product.product_image[0].image);
@@ -152,8 +152,8 @@ export default function ProductDetailsFirstPart({
             trialProductsWithQuantityOfSameCategoryInBag.length
         );
         setQuantity(1);
-        setSize(null);
-        setColor(null);
+        setSize('');
+        setColor('');
     }, [product]);
 
     const handleAddToBag = () => {
