@@ -60,8 +60,8 @@ export default function ProductDetailsFirstPart({
 }) {
     const classes = useStyles();
     const [quantity, setQuantity] = useState(1);
-    const [size, setSize] = useState(null);
-    const [color, setColor] = useState(null);
+    const [size, setSize] = useState('');
+    const [color, setColor] = useState('');
     const [value, setValue] = useState("/s1.jpg");
     // need for product image
     // const [value, setValue] = useState(product.product_image[0].image);
