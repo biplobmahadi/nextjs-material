@@ -90,7 +90,7 @@ export default function SingleReview({
         review &&
         review.review_count.filter(
             (review_count) =>
-                review_count.user.pk === user.pk &&
+                review_count.user.pk === (user && user.pk) &&
                 review_count.vote === "agreed"
         );
 
@@ -102,7 +102,7 @@ export default function SingleReview({
         review &&
         review.review_count.filter(
             (review_count) =>
-                review_count.user.pk === user.pk &&
+                review_count.user.pk === (user && user.pk) &&
                 review_count.vote === "disagreed"
         );
 

@@ -123,7 +123,7 @@ export default function ProductDetailsFirstPart({
     // ######### Most Important, if anybody add multiple product of same category then also
     // 2 product can be added as trial of this category ######
     // for trial product length
-    let trialProductsWithQuantityOfSameCategoryInBag;
+    let trialProductsWithQuantityOfSameCategoryInBag = [];
     if (myBag) {
         trialProductsWithQuantityOfSameCategoryInBag =
             myBag.product_with_quantity.filter(

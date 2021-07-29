@@ -93,7 +93,7 @@ export default function SingleVideoReview({
         videoReview &&
         videoReview.video_review_count.filter(
             (video_review_count) =>
-                video_review_count.user.pk === user.pk &&
+                video_review_count.user.pk === (user && user.pk) &&
                 video_review_count.vote === "agreed"
         );
 
@@ -105,7 +105,7 @@ export default function SingleVideoReview({
         videoReview &&
         videoReview.video_review_count.filter(
             (video_review_count) =>
-                video_review_count.user.pk === user.pk &&
+                video_review_count.user.pk === (user && user.pk) &&
                 video_review_count.vote === "disagreed"
         );
 
